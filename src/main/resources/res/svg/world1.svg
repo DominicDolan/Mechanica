@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="4096px" height="4096px" viewBox="0 0 4096 4096" enable-background="new 0 0 4096 4096" xml:space="preserve">
+<g id="EdgeShape">
+	<polygon fill="#FFFFFF" stroke="#231F20" stroke-miterlimit="10" points="2048,2048 2138.086,2067.59 2241.581,2057.795 
+		2354.075,2067.59 2516.066,2057.795 2570.064,2117.087 2505.566,2249.081 2343.576,2334.576 2121.587,2234.081 1988.094,2292.578 
+		1874.099,2270.08 1920.597,2093.089 	"/>
+	<polygon fill="#FFFFFF" stroke="#231F20" stroke-miterlimit="10" points="2951.045,2342.076 2618.063,2291.078 2519.066,2165.085 
+		2516.066,2057.795 2654.061,2036.091 2793.553,2072.09 2951.045,2078.089 3069.539,2055.59 3144.535,2060.09 3230.031,2084.089 
+		3314.027,2087.089 3384.523,2123.087 3390.523,2228.082 3275.029,2315.077 3107.037,2352.575 	"/>
+	
+		<rect x="2648.061" y="2001.593" fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="986.947" height="103.495"/>
+	<polygon fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" points="3591.51,2001.593 
+		4187.262,2406.566 3635.008,2105.088 3591.51,2105.088 	"/>
+	
+		<rect x="2648.061" y="1694.108" fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="775.459" height="47.248"/>
+	
+		<rect x="2648.061" y="1377.624" fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="41.994" height="413.979"/>
+	
+		<rect x="2648.061" y="1377.624" fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="986.947" height="40.493"/>
+	<polygon fill="#FFFFFF" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" points="3931.508,2296.345 4051.5,2322.5 
+		4216.5,2343.5 4323.5,2355.5 4456.5,2355.5 4544.5,2344.5 4665.5,2363.5 4752.5,2343.5 4888.5,2379.5 4929.5,2570.5 4752.5,2602.5 
+		4643.5,2532.5 4661.5,2487.5 4727.5,2469.5 4644.5,2435.5 4536.5,2441.5 4502.5,2504.5 4590.5,2482.5 4632.5,2469.5 4577.5,2538.5 
+		4584.5,2576.5 4613.5,2602.5 4487.5,2643.5 4343.5,2672.5 4181.5,2651.5 4039.5,2619.5 3880.5,2513.5 3826.5,2430.5 3675.5,2301.5 
+		3815.5,2255.5 	"/>
+</g>
+<g id="Ladders">
+	
+		<line fill="none" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" x1="3435.518" y1="1619.106" x2="3435.518" y2="1989.587"/>
+	
+		<line fill="none" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" x1="1770.601" y1="2165.078" x2="1770.601" y2="2648.054"/>
+</g>
+<g id="Graphics">
+	
+		<image overflow="visible" width="512" height="512" xlink:href="../images/banner-01.png"  transform="matrix(3.292 0 0 3.292 4001.9961 1446.7461)">
+	</image>
+	
+		<rect x="2637.561" y="2001.593" fill="#462815" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="1004.949" height="103.495"/>
+	
+		<image overflow="visible" enable-background="new    " width="512" height="512" xlink:href="../images/grass-02-01.png"  transform="matrix(1.5802 0 0 1.5802 1860.0137 1760.5557)">
+	</image>
+	<polygon fill="#462815" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" points="3591.51,2001.593 4357.5,2499.5 
+		3635.008,2105.088 3591.51,2105.088 	"/>
+	
+		<rect x="2648.061" y="1694.108" fill="#462815" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="775.459" height="47.248"/>
+	
+		<rect x="2648.061" y="1377.624" fill="#462815" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="41.994" height="413.979"/>
+	
+		<rect x="2648.061" y="1377.624" fill="#462815" stroke="#231F20" stroke-width="1.1336" stroke-miterlimit="10" width="986.947" height="40.493"/>
+	
+		<image overflow="visible" enable-background="new    " width="512" height="512" xlink:href="../images/grass-03-01-01.png"  transform="matrix(1.6151 0 0 1.5956 2648.0605 1742.1299)">
+	</image>
+	
+		<image overflow="visible" enable-background="new    " width="512" height="512" xlink:href="../images/grass-02-01.png"  transform="matrix(-1.7443 0 0 1.5802 4953.0732 2053.3398)">
+	</image>
+</g>
+<g id="KeyLocations">
+	<text transform="matrix(1 0 0 1 2983 1574)" font-family="'MyriadPro-Regular'" font-size="12">startpoint</text>
+	<text transform="matrix(1 0 0 1 1971 2048)" font-family="'MyriadPro-Regular'" font-size="12">box</text>
+</g>
+<g id="Chests">
+	<text transform="matrix(1.0687 0 0 1 2501.501 2048)" font-family="'MyriadPro-Regular'" font-size="12">W:10 global.G:3</text>
+	<text transform="matrix(1 0 0 1 2255.5 2053.3398)" font-family="'MyriadPro-Regular'" font-size="12">W:5</text>
+</g>
+</svg>
