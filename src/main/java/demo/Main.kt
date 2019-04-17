@@ -10,8 +10,10 @@ import state.State
 fun main(args: Array<String>) {
 
     var colors = 0;
+    //Test comment
     GameBuilder()
             .setResolution(1280, 720)
+            .setViewPort(height = 10.0)
             .setLoader(object : LoadState() {
                 override fun preLoad() {
 
@@ -41,11 +43,11 @@ fun main(args: Array<String>) {
 
                 override fun render(g: Painter) {
                     g.color = 0xFF00FFFF
-                    g.drawRect(0.0, 0.0, 200.0, 200.0)
+                    g.drawRect(0.0, 0.0, 2.0, 2.0)
                     g.color = 0x00FF00FF
-                    g.fillCircle(50.0, -100.0, 20.0)
-                    g.drawImage(colors, 0.0, 0.0, 300.0, 200.0)
-                    g.drawText("Hello World", 100.0, -64.0, 0.0)
+                    g.fillCircle(4.0, -1.0, 2.0)
+                    g.drawImage(colors, -10.0, 0.0, 3.0, 2.0)
+                    g.drawText("Hello World", 1.0, -1.0, 0.0)
                 }
 
             })
