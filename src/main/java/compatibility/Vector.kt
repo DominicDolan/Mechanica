@@ -12,6 +12,7 @@ import org.joml.Vector3f
 class Vector(x: Double, y: Double) {
     var x = 0.0
         set(value) {
+            println(coordinate)
             coordinate.x = value
             vector2f.x = value.toFloat()
             vector3f.x = value.toFloat()
@@ -44,13 +45,13 @@ class Vector(x: Double, y: Double) {
     fun set(vec2: Vec2)             { this.x = vec2.x.toDouble();     this.y = vec2.y.toDouble()     }
 
     init {
-        this.x = x
-        this.y = y
-
         coordinate = Coordinate(x, y)
         vector2f = Vector2f(x.toFloat(), y.toFloat())
         vector3f = Vector3f(x.toFloat(), y.toFloat(), 0f)
         vec2 = Vec2(x.toFloat(), y.toFloat())
+
+        this.x = x
+        this.y = y
     }
 
     fun toCoordinate() = coordinate
