@@ -26,10 +26,10 @@ class Polygon(floatArray: FloatArray) {
 
     constructor(vecArray: Array<Vec2>): this(Array(vecArray.size*3, {0f}).toFloatArray()){
         this.vecArray = vecArray
-        vecArray.forEachIndexed({i, v ->
+        vecArray.forEachIndexed { i, v ->
             floatArray[3*i] = v.x
             floatArray[3*i+1] = v.y
-        })
+        }
         geometry = createGeometry(floatArray)
         model = createModel(floatArray)
     }
@@ -49,16 +49,16 @@ class Polygon(floatArray: FloatArray) {
 
 
     private fun createVecArray(floatArray: FloatArray): Array<Vec2>{
-        return Array(floatArray.size/3, { Vec2(floatArray[3*it], floatArray[3*it+1]) })
+        return Array(floatArray.size/3) { Vec2(floatArray[3*it], floatArray[3*it+1]) }
     }
 
     private fun createGeometry(floatArray: FloatArray): Geometry{
-        val coordinates = Array(floatArray.size/3 + 1, {
+        val coordinates = Array(floatArray.size/3 + 1) {
             if (3*it < floatArray.size)
                 Coordinate(floatArray[3*it].toDouble(), floatArray[3*it+1].toDouble())
             else
                 Coordinate(floatArray[0].toDouble(), floatArray[1].toDouble())
-        })
+        }
         return GeometryFactory().createPolygon(coordinates)
     }
 
