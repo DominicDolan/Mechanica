@@ -12,7 +12,6 @@ import org.joml.Vector3f
 class Vector(x: Double, y: Double) {
     var x = 0.0
         set(value) {
-            println(coordinate)
             coordinate.x = value
             vector2f.x = value.toFloat()
             vector3f.x = value.toFloat()
@@ -58,4 +57,8 @@ class Vector(x: Double, y: Double) {
     fun toVector2f() = vector2f
     fun toVector3f() = vector3f
     fun toVec2() = vec2
+
+    override fun toString(): String {
+        return "($x, $y)"
+    }
 }
