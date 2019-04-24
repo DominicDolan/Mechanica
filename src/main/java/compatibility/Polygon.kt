@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.GeometryFactory
 import loader.loadTriangulatedModel
 import models.Model
 import org.jbox2d.common.Vec2
+import svg.SVGPolygon
 import java.util.*
 
 /**
@@ -44,6 +45,16 @@ class Polygon(floatArray: FloatArray) {
         }
 
         vecArray = createVecArray(floatArray)
+        model = createModel(floatArray)
+    }
+
+    constructor(svgPolygon: SVGPolygon): this(Array(svgPolygon.path.size*3, {0f}).toFloatArray()){
+        svgPolygon.path.forEachIndexed { i, v ->
+            floatArray[3*i] = v.x.toFloat()
+            floatArray[3*i+1] = v.y.toFloat()
+        }
+        vecArray = createVecArray(floatArray)
+        geometry = createGeometry(floatArray)
         model = createModel(floatArray)
     }
 

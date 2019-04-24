@@ -28,7 +28,10 @@ fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
             .split("L", "C")
             .map { coordsStr ->
                 val coords: List<Double> = coordsStr
-                        .split(",")
+                        .trim()
+                        .replace(" ,", ",")
+                        .replace(", ", ",")
+                        .split(",", " ")
                         .map { it.toDouble() }
                 Vector(coords[0], coords[1])
             }
