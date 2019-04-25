@@ -180,6 +180,7 @@ class Painter {
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
         renderer.strokeWidth = 1.0
         renderer.circleRenderer()
+        transformationMatrix.rewind()
     }
 
     fun drawEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, strokeWidth: Number){

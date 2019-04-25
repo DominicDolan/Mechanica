@@ -1,6 +1,7 @@
 package display
 
 import input.KeyboardHandler
+import input.MouseHandler
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -43,6 +44,8 @@ class DisplayManager(val width: Int, val height: Int) {
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         GLFW.glfwSetKeyCallback(window, KeyboardHandler())
+        GLFW.glfwSetMouseButtonCallback(window, MouseHandler.ButtonHandler())
+        GLFW.glfwSetCursorPosCallback(window, MouseHandler.CursorHandler())
 
         // Get the thread stack and push a new frame
         MemoryStack.stackPush().use { stack ->
