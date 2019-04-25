@@ -75,8 +75,12 @@ class Painter {
         colorRenderer(model)
     }
 
-    fun fillRotatedPolygon(model: Model, centerX: Double, centerY: Double, width: Double, height: Double, degrees: Double) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun fillRotatedPolygon(model: Model, centerX: Double, centerY: Double, degrees: Double, pivotX: Double = 0.0, pivotY: Double = 0.0) {
+        transformationMatrix.setPivot(pivotX, pivotY)
+        transformationMatrix.setTranslate(centerX, centerY, 0.0)
+        transformationMatrix.setRotate(0.0, 0.0, degrees)
+        colorRenderer(model)
+        transformationMatrix.setRotate(0.0, 0.0, 0.0)
     }
 
     fun fillPolygon(model: Model, x: Double, y: Double) {

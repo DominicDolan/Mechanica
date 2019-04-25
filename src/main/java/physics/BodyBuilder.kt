@@ -1,6 +1,7 @@
 package physics
 
 
+import org.jbox2d.collision.shapes.EdgeShape
 import org.jbox2d.collision.shapes.Shape
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.Body
@@ -16,6 +17,7 @@ class BodyBuilder<T : Shape>(private val shape: T) {
     private var fixedRotation = false
     private var bodyType = BodyType.DYNAMIC
     private var userData: Int? = null
+    private var vertices: Array<Vec2>? = null
 
     fun setPosition(position: Vec2): BodyBuilder<T> {
         this.position = position
@@ -47,6 +49,11 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         return this
     }
 
+    fun setVertices(vertices: Array<Vec2>): BodyBuilder<T> {
+        this.vertices = vertices
+        return this
+    }
+
     fun build(): Body {
         val bodyDef = BodyDef()
         val fixtureDef = FixtureDef()
@@ -60,7 +67,16 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         fixtureDef.density = density
         fixtureDef.friction = friction
 
-        body.createFixture(fixtureDef)
+        val vertices = this.vertices
+        if (vertices != null && shape is EdgeShape) {
+            for (i in 0..vertices.size - 2) {
+                shape.set(vertices[i], vertices[i + 1])
+                body.createFixture(fixtureDef)
+            }
+        } else {
+            body.createFixture(fixtureDef)
+        }
+
 
         if (userData != null) body.userData = userData
 
