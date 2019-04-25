@@ -10,6 +10,7 @@ import state.State
 fun main(args: Array<String>) {
 
     var colors = 0;
+    //Test comment
     GameBuilder()
             .setResolution(1280, 720)
             .setViewPort(height = 10.0)

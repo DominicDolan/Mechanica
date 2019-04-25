@@ -2,6 +2,7 @@ package loader
 
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
+import compatibility.Vector
 import font.FontType
 import models.Model
 import org.lwjgl.BufferUtils
@@ -20,6 +21,7 @@ import java.nio.ShortBuffer
 import java.nio.channels.Channels
 import java.nio.channels.FileChannel
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by domin on 26/10/2017.
@@ -103,6 +105,18 @@ fun loadUnitQuad(): Model {
     )
 
     return loadModel(vertices, indices, textureCoords, 0)
+}
+
+fun loadTriangulatedModel(positions: List<Vector>): Model {
+    val list = ArrayList<Float>()
+
+    for (p in positions) {
+        list.add(p.x.toFloat())
+        list.add(p.y.toFloat())
+        list.add(0.0f)
+    }
+
+    return loadTriangulatedModel(list.toFloatArray())
 }
 
 fun loadTriangulatedModel(positions: FloatArray): Model {
