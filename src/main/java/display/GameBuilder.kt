@@ -20,6 +20,8 @@ class GameBuilder {
     private var viewHeight: Double = 0.0
     private var resolutionWidth: Int = 0
     private var resolutionHeight: Int = 0
+    private var fullscreen: Boolean = false
+    private var borderless: Boolean = false
     private var viewPositionX: Double = 0.0
     private var viewPositionY: Double = 0.0
     private var gravity = Vec2(0f, -9.8f)
@@ -28,6 +30,12 @@ class GameBuilder {
     fun setResolution(width: Int, height: Int): GameBuilder{
         resolutionWidth = width
         resolutionHeight = height
+        return this
+    }
+
+    fun setFullscreen(fullscreen: Boolean, borderless: Boolean): GameBuilder {
+        this.fullscreen = fullscreen
+        this.borderless = borderless
         return this
     }
 
@@ -66,7 +74,7 @@ class GameBuilder {
     }
 
     fun start(){
-        Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight)
+        Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
         Game.view = View(viewWidth, viewHeight, viewPositionX, viewPositionY)
         Game.world = World(gravity)
 

@@ -14,7 +14,7 @@ class MouseHandler {
 
     class CursorHandler : GLFWCursorPosCallback() {
         override fun invoke(p0: Long, p1: Double, p2: Double) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
         }
 
     }

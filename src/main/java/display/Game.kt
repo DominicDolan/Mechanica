@@ -15,7 +15,7 @@ import state.State
  * Created by domin on 25/10/2017.
  */
 object Game {
-    internal var ready = false
+    var ready = false
 
     internal var displayManager: DisplayManager? = null
     internal var view: WorldView? = null
