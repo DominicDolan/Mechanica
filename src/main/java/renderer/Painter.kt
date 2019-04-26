@@ -43,6 +43,7 @@ class Painter {
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
+        transformationMatrix.rewind()
     }
 
     fun drawCenteredRect(x: Number, y: Number, width: Number, height: Number) {
