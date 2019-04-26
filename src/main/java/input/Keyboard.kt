@@ -1,23 +1,36 @@
 package input
 
+import org.lwjgl.glfw.GLFW
+
 object Keyboard {
-    var Q = false; internal set
-    var W = false; internal set
-    var E = false; internal set
-    var R = false; internal set
-    var T = false; internal set
-    var A = false; internal set
-    var S = false; internal set
-    var D = false; internal set
-    var F = false; internal set
-    var Z = false; internal set
-    var X = false; internal set
-    var C = false; internal set
-    var V = false; internal set
-    var SHIFT = false; internal set
-    var CTRL = false; internal set
-    var TAB = false; internal set
-    var LALT = false; internal set
-    var ESC = false; internal set
+    internal val map = HashMap<Int, Key>()
+
+    val Q = Key(map, GLFW.GLFW_KEY_Q)
+    val W = Key(map, GLFW.GLFW_KEY_W)
+    val E = Key(map, GLFW.GLFW_KEY_E)
+    val R = Key(map, GLFW.GLFW_KEY_R)
+    val T = Key(map, GLFW.GLFW_KEY_T)
+    val A = Key(map, GLFW.GLFW_KEY_A)
+    val S = Key(map, GLFW.GLFW_KEY_S)
+    val D = Key(map, GLFW.GLFW_KEY_D)
+    val F = Key(map, GLFW.GLFW_KEY_F)
+    val Z = Key(map, GLFW.GLFW_KEY_Z)
+    val X = Key(map, GLFW.GLFW_KEY_X)
+    val C = Key(map, GLFW.GLFW_KEY_C)
+    val V = Key(map, GLFW.GLFW_KEY_V)
+    val SPACE = Key(map, GLFW.GLFW_KEY_SPACE)
+    val SHIFT = Key(map, GLFW.GLFW_KEY_LEFT_SHIFT)
+    val CTRL = Key(map, GLFW.GLFW_KEY_LEFT_CONTROL)
+    val TAB = Key(map, GLFW.GLFW_KEY_TAB)
+    val LALT = Key(map, GLFW.GLFW_KEY_LEFT_ALT)
+    val ESC = Key(map, GLFW.GLFW_KEY_ESCAPE)
+
+    operator fun get(keyId: Int): Key {
+        val key = map[keyId]
+        if (key != null) {
+            return key
+        }
+        return Key(map, keyId)
+    }
 
 }

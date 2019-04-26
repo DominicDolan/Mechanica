@@ -159,7 +159,11 @@ object Game {
         displayManager?.destroy()
     }
 
-    abstract class GameLoop(){
+    fun close() {
+        glfwSetWindowShouldClose(window, true) // We will detect this in the rendering update
+    }
+
+    abstract class GameLoop {
         abstract var currentState: State
 
         abstract fun update()
