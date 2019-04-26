@@ -1,7 +1,5 @@
 package input
 
-import org.lwjgl.glfw.GLFW.*
-
 object Keyboard {
     private val map = HashMap<Int, ArrayList<Key>>()
 
@@ -18,8 +16,9 @@ object Keyboard {
     val X = KeyboardKey(Keys.X)
     val C = KeyboardKey(Keys.C)
     val V = KeyboardKey(Keys.V)
-    val M1 = KeyboardKey(Keys.M1)
-    val M2 = KeyboardKey(Keys.M2)
+    val MB1 = KeyboardKey(Keys.M1)
+    val MB2 = KeyboardKey(Keys.M2)
+    val MMB = KeyboardKey(Keys.M3)
     val SPACE = KeyboardKey(Keys.SPACE)
     val SHIFT = KeyboardKey(Keys.LSHIFT)
     val CTRL = KeyboardKey(Keys.LCTRL)
