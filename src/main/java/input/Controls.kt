@@ -3,15 +3,18 @@ package input
 import org.lwjgl.glfw.GLFW.*
 
 object Controls {
-    val map = HashMap<Int, Key>()
+    private val map = HashMap<Int, ArrayList<Key>>()
 
-    val UP = Key(map, GLFW_KEY_W, GLFW_KEY_UP)
+    var UP = ControlsKey(Keys.W, Keys.UP)
+    var JUMP = ControlsKey(Keys.SPACE, Keys.W)
 
-    operator fun get(keyId: Int): Key {
-        val key = map[keyId]
-        if (key != null) {
-            return key
+    operator fun get(keyId: Int): ArrayList<Key> {
+        val keys = map[keyId]
+        if (keys != null) {
+            return keys
         }
-        return Key(map, keyId)
+        return arrayListOf(Key(map, keyId))
     }
+
+    class ControlsKey(vararg keys: Keys) : Key(map, *keys)
 }

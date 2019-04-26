@@ -6,15 +6,22 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback
 
 class MouseHandler {
     class ButtonHandler : GLFWMouseButtonCallback() {
-        override fun invoke(p0: Long, p1: Int, p2: Int, p3: Int) {
-
+        override fun invoke(window: Long, button: Int, action: Int, mods: Int) {
+            if (action == GLFW.GLFW_RELEASE) {
+                Keyboard[button].forEach { it.isDown = false }
+                Controls[button].forEach { it.isDown = false }
+            } else if (action == GLFW.GLFW_PRESS) {
+                Keyboard[button].forEach { it.isDown = true }
+                Controls[button].forEach { it.isDown = true }
+            }
         }
 
     }
 
     class CursorHandler : GLFWCursorPosCallback() {
-        override fun invoke(p0: Long, p1: Double, p2: Double) {
-
+        override fun invoke(window: Long, x: Double, y: Double) {
+            Cursor.x = x
+            Cursor.y = y
         }
 
     }

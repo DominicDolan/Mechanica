@@ -1,10 +1,10 @@
 package input
 
-class Key (map: HashMap<Int, Key>, vararg key: Int) {
+open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
     internal var isDown: Boolean = false
         set(value) {
             if (value) hasBeenDown = true
-            else hasBeenUp = false
+            else hasBeenUp = true
             field = value
         }
 
@@ -24,7 +24,7 @@ class Key (map: HashMap<Int, Key>, vararg key: Int) {
             return privateHasBeenDown
         }
 
-    private var privateHasBeenUp = false
+    private var privateHasBeenUp = true
     var hasBeenUp: Boolean
         private set(value) {
             privateHasBeenUp = value
@@ -47,8 +47,17 @@ class Key (map: HashMap<Int, Key>, vararg key: Int) {
 
     init {
         key.forEach {
-            map[it] = this
+            if (map.containsKey(it)) {
+                map[it]?.add(this)
+            } else {
+                map[it] = arrayListOf(this)
+            }
         }
     }
+
+    constructor(map: HashMap<Int, ArrayList<Key>>, vararg keys: Keys) : this(
+            map,
+            *(keys.map { it.id }).toIntArray()
+            )
 
 }

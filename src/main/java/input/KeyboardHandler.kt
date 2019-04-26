@@ -9,11 +9,11 @@ import org.lwjgl.glfw.GLFWKeyCallback
 class KeyboardHandler : GLFWKeyCallback() {
     override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
         if (action == GLFW_RELEASE) {
-            Keyboard[key].isDown = false
-            Controls[key].isDown = false
+            Keyboard[key].forEach { it.isDown = false }
+            Controls[key].forEach { it.isDown = false }
         } else if (action == GLFW_PRESS) {
-            Keyboard[key].isDown = true
-            Controls[key].isDown = true
+            Keyboard[key].forEach { it.isDown = true }
+            Controls[key].forEach { it.isDown = true }
         }
     }
 }
