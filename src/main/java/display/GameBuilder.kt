@@ -25,6 +25,7 @@ class GameBuilder {
     private var viewPositionX: Double = 0.0
     private var viewPositionY: Double = 0.0
     private var gravity = Vec2(0f, -9.8f)
+    private var debug = false
 
 
     fun setResolution(width: Int, height: Int): GameBuilder{
@@ -73,10 +74,16 @@ class GameBuilder {
         return this
     }
 
+    fun setDebugMode(debug: Boolean): GameBuilder {
+        this.debug = debug
+        return this
+    }
+
     fun start(){
         Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
         Game.view = View(viewWidth, viewHeight, viewPositionX, viewPositionY)
         Game.world = World(gravity)
+        Game.debug = debug
 
         val state = startingState?:emptyState()
         val loadState = this.loadState?:emptyLoadState()

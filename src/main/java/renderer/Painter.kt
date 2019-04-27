@@ -82,6 +82,7 @@ class Painter {
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
+        transformationMatrix.rewind()
     }
 
     fun fillPolygon(model: Model, x: Number, y: Number) {
@@ -141,6 +142,7 @@ class Painter {
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         textureRenderer(model)
+        transformationMatrix.rewind()
     }
 
     fun drawCenteredImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
@@ -174,6 +176,7 @@ class Painter {
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
         renderer.strokeWidth = strokeWidth.toDouble()/radius.toDouble()
         renderer.circleRenderer()
+        transformationMatrix.rewind()
     }
 
     fun fillCircle(centerX: Number, centerY: Number, radius: Number){

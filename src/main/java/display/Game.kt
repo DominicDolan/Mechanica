@@ -1,5 +1,6 @@
 package display
 
+import debug.renderPhysicsBodies
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
@@ -15,6 +16,7 @@ import state.State
  * Created by domin on 25/10/2017.
  */
 object Game {
+    internal var debug: Boolean = false
     var ready = false
 
     internal var displayManager: DisplayManager? = null
@@ -132,6 +134,9 @@ object Game {
                         currentState.update(del)
                         world.step(del, 8, 3)
                         currentState.render(painter)
+                        if (debug) {
+                            renderPhysicsBodies(painter)
+                        }
                     }
 
 		            fbo.unbindFrameBuffer()
