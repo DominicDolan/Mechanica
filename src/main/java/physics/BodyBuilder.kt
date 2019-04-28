@@ -2,8 +2,6 @@ package physics
 
 
 import compatibility.Polygon
-import debug.BodyProperties
-import debug.debugBodies
 import display.Game
 import models.Model
 import org.jbox2d.collision.shapes.EdgeShape
@@ -15,7 +13,6 @@ import org.jbox2d.dynamics.BodyDef
 import org.jbox2d.dynamics.BodyType
 import org.jbox2d.dynamics.FixtureDef
 import util.extensions.get
-import java.util.*
 
 class BodyBuilder<T : Shape>(private val shape: T) {
     private var position = Vec2(0f, 0f)
@@ -93,25 +90,6 @@ class BodyBuilder<T : Shape>(private val shape: T) {
 
         if (userData != null) body.userData = userData
 
-        if (Game.debug) {
-            println("Debug mode: ${model == null}, ${vertices != null}, ${shape is PolygonShape}")
-            if (model == null && vertices != null && shape is EdgeShape) {
-//                val vertices = shape.vertices
-//                val array = arrayOf(*vertices[0 until shape.vertexCount], vertices[0])
-                println(Arrays.toString(vertices))
-                val polygon = Polygon(vertices)
-                model = polygon.toModel()
-            }
-            if (model == null && shape is PolygonShape) {
-                val verts = shape.vertices
-                val array = arrayOf(*verts[0 until shape.vertexCount], verts[0])
-                val polygon = Polygon(array)
-                model = polygon.toModel()
-            }
-            debugBodies.add(BodyProperties(
-                    body, shape, model
-            ))
-        }
         return body
     }
 

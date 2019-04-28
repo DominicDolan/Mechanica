@@ -6,6 +6,7 @@ import font.GUIText
 import loader.loadFont
 import loader.loadTexturedQuad
 import models.Model
+import org.jbox2d.common.Vec2
 import org.joml.Matrix4f
 
 /**
@@ -106,6 +107,17 @@ class Painter {
 
     fun fillScreenPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number, degrees: Float) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun drawPolygon(vertices: Array<out Vec2>, strokeWidth: Number, vertexCount: Int = vertices.size, looped: Boolean = false) {
+        for (i in 0..vertexCount-2) {
+            val v1 = vertices[i]
+            val v2 = vertices[i+1]
+            drawLine(strokeWidth, v1.x, v1.y, v2.x, v2.y)
+        }
+        if (looped) {
+            drawLine(strokeWidth, vertices[vertexCount-1].x, vertices[vertexCount-1].y, vertices[0].x, vertices[0].y)
+        }
     }
 
     fun drawImage(image: Int) {
@@ -217,7 +229,7 @@ class Painter {
         val triangleHeight = y2.toDouble() - y1.toDouble()
         transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth.toDouble(), 1.0)
 
-        transformationMatrix.setTranslate(x1.toDouble(), y1.toDouble(), 0.0)
+        transformationMatrix.setTranslate(x1.toDouble(), y1.toDouble() - strokeWidth.toDouble()/2.0, 0.0)
         transformationMatrix.setPivot(0.0, strokeWidth.toDouble() / 2.0)
         transformationMatrix.setRotate(0.0, 0.0, Math.toDegrees(Math.atan2(triangleHeight, triangleWidth)))
 

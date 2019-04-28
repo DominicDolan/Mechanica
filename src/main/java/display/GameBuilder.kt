@@ -1,9 +1,12 @@
 package display
 
 import matrices.ProjectionMatrix
+import debug.BodyRenderer
 import matrices.ViewMatrix
+import org.jbox2d.callbacks.DebugDraw
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
+import physics.ContactEvents
 import renderer.Painter
 import state.LoadState
 import state.State
@@ -83,7 +86,11 @@ class GameBuilder {
         Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
         Game.view = View(viewWidth, viewHeight, viewPositionX, viewPositionY)
         Game.world = World(gravity)
+        Game.world.setContactListener(ContactEvents)
         Game.debug = debug
+        if (debug) {
+            BodyRenderer.init()
+        }
 
         val state = startingState?:emptyState()
         val loadState = this.loadState?:emptyLoadState()

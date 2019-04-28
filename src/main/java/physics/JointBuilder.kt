@@ -3,10 +3,8 @@ package physics
 import display.Game
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.Body
-import org.jbox2d.dynamics.joints.Joint
-import org.jbox2d.dynamics.joints.JointDef
-import org.jbox2d.dynamics.joints.PrismaticJointDef
-import org.jbox2d.dynamics.joints.RevoluteJointDef
+import org.jbox2d.dynamics.joints.*
+
 //https://www.iforce2d.net/b2dtut/joints-overview
 
 
@@ -59,6 +57,34 @@ fun Body.attachPrismaticJoint(
         def.enableMotor = true
         def.maxMotorForce = (motorForce?: 0.0).toFloat()
         def.motorSpeed = (motorSpeed?: 0.0).toFloat()
+    }
+
+    return JointProperties(def)
+}
+
+fun Body.attachWeldJoint(
+        body: Body,
+        anchorA: Vec2,
+        anchorB: Vec2 = Vec2(),
+        collision: Boolean = false,
+        dampingRatio: Double? = null,
+        frequency:  Double? = null
+): JointProperties<WeldJointDef> {
+
+    val def = WeldJointDef()
+
+    def.collideConnected = collision
+    def.bodyA = this
+    def.bodyB = body
+
+    def.localAnchorA.set(anchorA)
+    def.localAnchorB.set(anchorB)
+
+    if (frequency != null) {
+        def.frequencyHz = frequency.toFloat()
+    }
+    if (dampingRatio != null) {
+        def.dampingRatio = dampingRatio.toFloat()
     }
 
     return JointProperties(def)

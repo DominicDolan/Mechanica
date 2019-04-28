@@ -1,12 +1,12 @@
 package display
 
-import debug.renderPhysicsBodies
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glClearColor
+import debug.BodyRenderer
 import renderer.Painter
 import renderer.backRenderer
 import renderer.fbo
@@ -135,7 +135,8 @@ object Game {
                         world.step(del, 8, 3)
                         currentState.render(painter)
                         if (debug) {
-                            renderPhysicsBodies(painter)
+                            BodyRenderer.update(painter)
+                            world.drawDebugData()
                         }
                     }
 
