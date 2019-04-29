@@ -4,7 +4,8 @@ object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): String {
             val fileFixed = fixExtension(file)
-            return Thread.currentThread().contextClassLoader.getResource("$prefix$fileFixed").file
+            return this.javaClass.classLoader.getResource("$prefix$fileFixed").file
+//            return Thread.currentThread().contextClassLoader.getResource("$prefix$fileFixed").file
         }
 
         private fun fixExtension(file: String): String {

@@ -12,7 +12,7 @@ uniform mat4 transformation;
 
 void main(void){
 
-	gl_Position = projection * view * transformation * vec4((position + translation * vec2(1.0, -1.0))*0.1, 0.0, 1.0);
+	gl_Position = projection * view * transformation * vec4((position + translation * vec2(1.0, -1.0)), 0.0, 1.0);
 //	gl_Position = projectionAndView * vec4(position*0.1, 0.0, 1.0);
 	pass_textureCoords = textureCoords;
 
