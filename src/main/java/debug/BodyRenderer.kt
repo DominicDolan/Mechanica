@@ -33,7 +33,7 @@ object BodyRenderer : DebugDraw(null) {
 
     override fun drawSolidCircle(center: Vec2?, radius: Float, axis: Vec2?, color: Color3f?) {
         val c = center?:Vec2()
-        g?.drawCircle(c.x, c.y, radius, radius/5f)
+        g?.drawCircle(c.x, c.y, radius, radius/5.0)
     }
 
 
