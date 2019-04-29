@@ -22,7 +22,6 @@ class BodyBuilder<T : Shape>(private val shape: T) {
     private var bodyType = BodyType.DYNAMIC
     private var userData: Int? = null
     private var vertices: Array<Vec2>? = null
-    private var model: Model? = null
 
     fun setPosition(position: Vec2): BodyBuilder<T> {
         this.position = position
@@ -56,11 +55,6 @@ class BodyBuilder<T : Shape>(private val shape: T) {
 
     fun setVertices(vertices: Array<Vec2>): BodyBuilder<T> {
         this.vertices = vertices
-        return this
-    }
-
-    fun setDebugModel(model: Model): BodyBuilder<T> {
-        this.model = model
         return this
     }
 

@@ -175,11 +175,11 @@ class Painter {
     }
 
     fun drawText(text: String, fontSize: Number, x: Number, y: Number) {
-        transformationMatrix.rewind()
         transformationMatrix.setScale(100.0, 100.0, 1.0)
         guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
 
         renderer.fontRenderer(guiText)
+        transformationMatrix.rewind()
     }
 
 

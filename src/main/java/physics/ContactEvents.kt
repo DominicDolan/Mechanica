@@ -25,30 +25,48 @@ object ContactEvents : ContactListener {
 
     override fun beginContact(contact: Contact?) {
         if (contact != null) {
-//            println("User Data A: ${contact.fixtureA.body.userData}")
-//            println("User Data B: ${contact.fixtureB.body.userData}")
-            val lamdaA = map[contact.fixtureA.body.userData]
-            val lamdaB = map[contact.fixtureB.body.userData]
+            val lamdaBodyA = map[contact.fixtureA.body.userData]
+            val lamdaBodyB = map[contact.fixtureB.body.userData]
 
-            if (lamdaA != null) {
-                lamdaA.first()
+            val lamdaFixtureA = map[contact.fixtureA.userData]
+            val lamdaFixtureB = map[contact.fixtureB.userData]
+
+            if (lamdaBodyA != null) {
+                lamdaBodyA.first()
             }
-            if (lamdaB != null) {
-                lamdaB.first()
+            if (lamdaBodyB != null) {
+                lamdaBodyB.first()
+            }
+
+            if (lamdaFixtureA != null) {
+                lamdaFixtureA.first()
+            }
+            if (lamdaFixtureB != null) {
+                lamdaFixtureB.first()
             }
         }
     }
 
     override fun endContact(contact: Contact?) {
         if (contact != null) {
-            val lamdaA = map[contact.fixtureA.body.userData]
-            val lamdaB = map[contact.fixtureB.body.userData]
+            val lamdaBodyA = map[contact.fixtureA.body.userData]
+            val lamdaBodyB = map[contact.fixtureB.body.userData]
 
-            if (lamdaA != null) {
-                lamdaA.second()
+            val lamdaFixtureA = map[contact.fixtureA.userData]
+            val lamdaFixtureB = map[contact.fixtureB.userData]
+
+            if (lamdaBodyA != null) {
+                lamdaBodyA.second()
             }
-            if (lamdaB != null) {
-                lamdaB.second()
+            if (lamdaBodyB != null) {
+                lamdaBodyB.second()
+            }
+
+            if (lamdaFixtureA != null) {
+                lamdaFixtureA.second()
+            }
+            if (lamdaFixtureB != null) {
+                lamdaFixtureB.second()
             }
         }
     }
