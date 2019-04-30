@@ -122,7 +122,7 @@ object Game {
                     val beforeUpdateRender = System.nanoTime()
                     val deltaMillis = sleepDurationMillis + updateDurationMillis
 
-                    fbo.bindFrameBuffer()
+//                    fbo.bindFrameBuffer()
                     val painter = painter
                     if (ready && painter == null){
                         Game.painter = Painter()
@@ -140,8 +140,8 @@ object Game {
                         }
                     }
 
-		            fbo.unbindFrameBuffer()
-                    fbo.doPostProcessing()
+//		            fbo.unbindFrameBuffer()
+//                    fbo.doPostProcessing()
 
                     updateDurationMillis = (System.nanoTime() - beforeUpdateRender) / 1000000L
                     sleepDurationMillis = Math.max(2, 17 - updateDurationMillis)
