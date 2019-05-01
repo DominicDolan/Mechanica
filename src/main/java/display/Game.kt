@@ -38,10 +38,12 @@ object Game {
     val viewWidth: Double
         get() = view?.width?: 0.0
 
-    val viewX: Double
+    var viewX: Double
         get() = view?.positionX?: 0.0
-    val viewY: Double
+        set(value) {view?.positionX = value}
+    var viewY: Double
         get() = view?.positionY?: 0.0
+        set(value) {view?.positionY = value}
 
     val viewMatrix: ViewMatrix
         get() = view?.viewMatrix?: ViewMatrix()

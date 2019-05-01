@@ -3,11 +3,14 @@ package svg
 import compatibility.Vector
 import java.lang.Long.parseLong
 import java.lang.Long.toHexString
+import java.lang.NumberFormatException
 import kotlin.math.roundToLong
 
 fun parseColor(hex: String, opacity: String): Long {
     val opacityHex = toHexString(((opacity.toFloat() * 255.0f).roundToLong()))
-    return parseLong(hex.replace("#", "") + opacityHex, 16)
+    return try {
+        parseLong(hex.replace("#", "") + opacityHex, 16)
+    } catch (e: NumberFormatException) { 0 }
 }
 
 
