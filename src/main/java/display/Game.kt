@@ -134,7 +134,7 @@ object Game {
 
                         val del = deltaMillis.toFloat() / 1000f
                         currentState.update(del)
-                        world.step(del, 8, 3)
+                        world.step(del, 8, 5)
                         currentState.render(painter)
                         if (debug) {
                             BodyRenderer.update(painter)
