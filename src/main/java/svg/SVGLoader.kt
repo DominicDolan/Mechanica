@@ -51,7 +51,13 @@ fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
     for (array in listOfArrayOfVerts) {
         when (mode) {
             1 -> {
-                array.forEach { returnList.add(it) }
+                val vTotal = Vector(0.0, 0.0)
+                array.forEachIndexed { i, v ->
+                        vTotal.x += v.x
+                        vTotal.y += v.y
+                        println("vec: $vTotal")
+                        returnList.add(Vector(vTotal.x, vTotal.y))
+                }
             }
             2 -> {
                 array.forEach { returnList.add(it) }
@@ -59,6 +65,7 @@ fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
         }
     }
 
+    println(returnList)
     return returnList.flipVertically()
 }
 
@@ -92,6 +99,6 @@ fun Element.getVector(xAttr: String, yAttr: String): Vec2 {
     val y = try {
         Regex("\\d+").find(yStr)?.value?.toFloat() ?: 0f
     } catch (e: NumberFormatException) { 0f }
-
-    return Vec2(-x, -y)
+    println("($x, $y)")
+    return Vec2(x, -y)
 }
