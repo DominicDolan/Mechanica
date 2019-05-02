@@ -1,7 +1,5 @@
 package resources
 
-import org.intellij.lang.annotations.Language
-
 object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): String {
