@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.lang.NumberFormatException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<Vector> {
@@ -24,31 +25,41 @@ fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): Li
 }
 
 fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
+    println(element.attr("d"))
+    var count = 0
+    var mode = 0
     val pathStr = element
             .attr("d")
-            .toUpperCase()
+            .also { count = it.length }
             .replace("M", "")
-            .replace("Z", "")
+            .also {  mode = if (count == it.length) 1 else 2 }
+            .replace("m", "")
+            .replace("z", "")
             .trim()
-            .also { println("Remove m and z: $it") }
 
-    val split = if (pathStr.contains("L")) {
-        println("Contains L")
-        pathStr.split("L", "C")
-    } else pathStr.split(Regex("\\s"))
-    println("First split: ${pathStr.split(Regex("\\s"))}")
-    return split.map { coordsStr ->
-        val coords: List<Double> = coordsStr
-                .trim()
-                .also { println("trim: $it") }
-                .replace(" ,", ",")
-                .replace(", ", ",")
-                .split(",", " ")
-                .also { println("Second split: ${it.toString()}") }
-                .map { it.toDouble() }
-        Vector(coords[0], coords[1])
+    val lSplit = pathStr.split("L", "C")
+    val listOfArrayOfVerts = lSplit.map {lString ->
+        val points = lString.trim().split(",", " ").map { it.trim() }
+        println(points)
+        val size = points.size/2
+        val xValues = Array(size) { points[it*2] }
+        val yValues = Array(size) { points[it*2+1] }
+        val vertices = Array(size) { println("x: ${xValues[it]}, y: ${yValues[it]}");Vector(xValues[it].toDouble(), yValues[it].toDouble())}
+        vertices
     }
-    .flipVertically()
+    var returnList = ArrayList<Vector>()
+    for (array in listOfArrayOfVerts) {
+        when (mode) {
+            1 -> {
+                array.forEach { returnList.add(it) }
+            }
+            2 -> {
+                array.forEach { returnList.add(it) }
+            }
+        }
+    }
+
+    return returnList.flipVertically()
 }
 
 fun loadSVGPolygon(fileName: String, pathId: String? = null): SVGPolygon {
