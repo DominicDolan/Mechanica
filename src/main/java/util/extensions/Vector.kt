@@ -1,5 +1,6 @@
 package util.extensions
 
+import compatibility.Vector
 import org.jbox2d.common.Vec2
 
 /**

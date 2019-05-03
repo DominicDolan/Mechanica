@@ -61,4 +61,12 @@ class Vector(x: Double, y: Double) {
     override fun toString(): String {
         return "($x, $y)"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is Vector) {
+            return false
+        } else {
+            return this.x == other.x && this.y == other.y
+        }
+    }
 }

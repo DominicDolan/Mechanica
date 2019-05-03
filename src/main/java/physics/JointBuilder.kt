@@ -90,6 +90,27 @@ fun Body.attachWeldJoint(
     return JointProperties(def)
 }
 
+fun Body.attachRopeJoint(
+        body: Body,
+        anchorA: Vec2,
+        anchorB: Vec2 = Vec2(),
+        collision: Boolean = false,
+        maxLength: Float = 5f
+): JointProperties<RopeJointDef> {
+
+    val def = RopeJointDef()
+
+    def.collideConnected = collision
+    def.bodyA = this
+    def.bodyB = body
+    def.maxLength = maxLength
+
+    def.localAnchorA.set(anchorA)
+    def.localAnchorB.set(anchorB)
+
+    return JointProperties(def)
+}
+
 class JointProperties<T : JointDef>(val jointDef: T) {
     val joint: Joint = Game.world.createJoint(jointDef)
 

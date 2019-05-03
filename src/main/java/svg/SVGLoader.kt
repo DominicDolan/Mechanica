@@ -25,37 +25,37 @@ fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): Li
 }
 
 fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
-    println(element.attr("d"))
     var count = 0
     var mode = 0
+    var closed = false
     val pathStr = element
             .attr("d")
             .also { count = it.length }
             .replace("M", "")
-            .also {  mode = if (count == it.length) 1 else 2 }
+            .also { mode = if (count == it.length) 1 else 2 }
             .replace("m", "")
-            .replace("z", "")
+            .also { count = it.length }
+            .replace("z", "").replace("Z", "")
+            .also { closed = count != it.length }
             .trim()
 
     val lSplit = pathStr.split("L", "C")
     val listOfArrayOfVerts = lSplit.map {lString ->
         val points = lString.trim().split(",", " ").map { it.trim() }
-        println(points)
         val size = points.size/2
         val xValues = Array(size) { points[it*2] }
         val yValues = Array(size) { points[it*2+1] }
-        val vertices = Array(size) { println("x: ${xValues[it]}, y: ${yValues[it]}");Vector(xValues[it].toDouble(), yValues[it].toDouble())}
+        val vertices = Array(size) { Vector(xValues[it].toDouble(), yValues[it].toDouble())}
         vertices
     }
-    var returnList = ArrayList<Vector>()
+    val returnList = ArrayList<Vector>()
     for (array in listOfArrayOfVerts) {
         when (mode) {
             1 -> {
                 val vTotal = Vector(0.0, 0.0)
-                array.forEachIndexed { i, v ->
+                array.forEach { v ->
                         vTotal.x += v.x
                         vTotal.y += v.y
-                        println("vec: $vTotal")
                         returnList.add(Vector(vTotal.x, vTotal.y))
                 }
             }
@@ -64,8 +64,14 @@ fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
             }
         }
     }
+    if (closed) {
+        val first = returnList[0]
+        val last = returnList.last()
+        if (first != last) {
+            returnList.add(Vector(returnList[0].x, returnList[0].y))
+        }
+    }
 
-    println(returnList)
     return returnList.flipVertically()
 }
 
@@ -99,6 +105,5 @@ fun Element.getVector(xAttr: String, yAttr: String): Vec2 {
     val y = try {
         Regex("\\d+").find(yStr)?.value?.toFloat() ?: 0f
     } catch (e: NumberFormatException) { 0f }
-    println("($x, $y)")
     return Vec2(x, -y)
 }
