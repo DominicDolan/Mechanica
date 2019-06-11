@@ -1,5 +1,7 @@
 package resources
 
+import java.lang.IllegalStateException
+
 object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): String {
@@ -21,6 +23,7 @@ object Res {
     val font = SpecificResource("res/fonts/", "png")
 
     operator fun get(file: String): String {
+        val resource = this.javaClass.classLoader.getResource("res/$file")
         return this.javaClass.classLoader.getResource("res/$file").file
     }
 }

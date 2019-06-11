@@ -1,5 +1,6 @@
 package display
 
+import data.saveData
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
@@ -21,6 +22,7 @@ object Game {
 
     internal var displayManager: DisplayManager? = null
     internal var view: WorldView? = null
+    internal var saveData: Any = object {}
 
     private var loop: GameLoop? = null
 
@@ -59,7 +61,6 @@ object Game {
         set(value) {
             (loop?: createGameLoop()).currentState = value
         }
-
 
     // The window handle
     private val window: Long
@@ -170,6 +171,10 @@ object Game {
 
     fun close() {
         glfwSetWindowShouldClose(window, true) // We will detect this in the rendering update
+    }
+
+    fun save() {
+        data.saveData(saveData)
     }
 
     abstract class GameLoop {
