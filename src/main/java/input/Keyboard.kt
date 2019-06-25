@@ -25,6 +25,8 @@ object Keyboard {
     val TAB = KeyboardKey(Keys.TAB)
     val LALT = KeyboardKey(Keys.LALT)
     val ESC = KeyboardKey(Keys.ESC)
+    val COMMA = KeyboardKey(Keys.COMMA)
+    val PERIOD = KeyboardKey(Keys.PERIOD)
 
     operator fun get(keyId: Int): ArrayList<Key> {
         val keys = map[keyId]

@@ -1,5 +1,6 @@
 package resources
 
+import java.io.File
 import java.lang.IllegalStateException
 
 object Res {
@@ -22,8 +23,15 @@ object Res {
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "png")
 
+    private val location get() = this.javaClass.classLoader.getResource("res").path.toString()
+
     operator fun get(file: String): String {
+        println("Location: $location")
         val resource = this.javaClass.classLoader.getResource("res/$file")
+        if (resource == null) {
+            println("Resource is null")
+            return "$location/$file"
+        }
         return this.javaClass.classLoader.getResource("res/$file").file
     }
 }
