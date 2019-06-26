@@ -8,11 +8,11 @@ import java.io.IOException
 import java.io.BufferedWriter
 import java.io.FileWriter
 import java.lang.StringBuilder
+import kotlin.system.exitProcess
 
 fun saveData(dataObj: Any) {
     val getters = ArrayList<Method>()
-    val allMethods = dataObj::class.java.methods
-    for (method in allMethods) {
+    for (method in dataObj.methods) {
         if (method.name.startsWith("get") && method.name != "getClass") {
             getters.add(method)
         }
@@ -24,8 +24,8 @@ fun saveData(dataObj: Any) {
 
     for (method in getters) {
         contentBuilder
-                .append(method.name.replace("get", "")).append(",")
-                .append(method.returnType).append(",")
+                .append(method.camelCaseName).append(",")
+                .append(method.returnType.simpleName).append(",")
                 .append(method.invoke(dataObj)).append("\n")
     }
     val content = contentBuilder.toString()
@@ -38,30 +38,58 @@ fun saveData(dataObj: Any) {
         bw.close()
     } catch (e: IOException) {
         e.printStackTrace()
-        System.exit(-1)
+        exitProcess(-1)
     }
 }
 
 fun loadData(dataObj: Any) {
-    data class Variable(val name: String, val type: String, val value: String)
-    val vars = ArrayList<Variable>()
+    data class Variable(val name: String, val type: String, val value: String, val setter: Method?, val getter: Method?)
+    fun Variable.set() {
+        if (this.setter != null) {
+            when (this.type) {
+                "int" -> setter.invoke(dataObj, value.toIntOrNull()?: getter?.invoke(dataObj)?: 0)
+                "double" -> setter.invoke(dataObj, value.toDoubleOrNull()?: getter?.invoke(dataObj)?: 0.0)
+                "float" -> setter.invoke(dataObj, value.toFloatOrNull()?: getter?.invoke(dataObj)?: 0f)
+                "long" -> setter.invoke(dataObj, value.toLongOrNull()?: getter?.invoke(dataObj)?: 0L)
+                "boolean" -> setter.invoke(dataObj, value.toBoolean())
+                "String" -> setter.invoke(dataObj, value)
+            }
+        }
+    }
+
+    val setters = getSetters(dataObj)
+    val getters = getGetters(dataObj)
 
     File(dataObj.dataFile).forEachLine {
         val params = it.split(",")
-        vars.add(Variable(params[0], params[1], params[2]))
+        val name = params[0]
+        val v = Variable(name, params[1], params[2], setters[name], getters[name])
+        v.set()
     }
-    val setters = HashMap<String, Method>()
-    val allMethods = dataObj::class.java.methods
-    for (method in allMethods) {
-        if (method.name.startsWith("set") && method.name != "getClass") {
-            setters.put(method.name, method)
+
+}
+
+private fun getGetters(dataObj: Any): HashMap<String, Method> {
+    val getters = HashMap<String, Method>()
+    for (method in dataObj.methods) {
+        if (method.name.startsWith("get") && method.name != "getClass") {
+            getters[method.camelCaseName] = method
         }
     }
-    println("\nAll Fields: ")
-//    setters.forEach { it.invoke(dataObj) }
+
+    return getters
+}
 
 
+private fun getSetters(dataObj: Any): HashMap<String, Method> {
+    val setters = HashMap<String, Method>()
+    for (method in dataObj.methods) {
+        if (method.name.startsWith("set")) {
+            setters[method.camelCaseName] = method
+        }
+    }
 
+    return setters
 }
 
 private val Method.camelCaseName: String
@@ -69,7 +97,6 @@ private val Method.camelCaseName: String
             .replace("get", "")
             .replace("set", "")
             .replace(0..1) { it.toLowerCase() + this }
-
 
 private fun String.replace(range: IntRange, function: String.(String) -> String): String {
     val rangeString = this.substring(range)
@@ -84,6 +111,8 @@ private val directory: String get() {
     }
     return directory.absolutePath
 }
+
+private val Any.methods get() = this::class.java.methods
 
 private val Any.dataFile get() = directory + sep + this.name + ".txt"
 

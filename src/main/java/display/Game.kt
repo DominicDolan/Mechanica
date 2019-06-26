@@ -1,5 +1,6 @@
 package display
 
+import data.loadData
 import data.saveData
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
@@ -166,6 +167,7 @@ object Game {
 
 
     fun destroy(){
+        save()
         displayManager?.destroy()
     }
 
@@ -174,7 +176,11 @@ object Game {
     }
 
     fun save() {
-        data.saveData(saveData)
+        saveData(saveData)
+    }
+
+    fun load() {
+        loadData(saveData)
     }
 
     abstract class GameLoop {

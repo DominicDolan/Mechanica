@@ -86,6 +86,7 @@ class GameBuilder {
         Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
         Game.view = View(viewWidth, viewHeight, viewPositionX, viewPositionY)
         Game.saveData = saveData ?: object {}
+        Game.load()
         Game.world = World(gravity)
         Game.world.setContactListener(ContactEvents)
         Game.debug = debug
