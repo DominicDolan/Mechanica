@@ -106,8 +106,8 @@ object Game {
         else {
             this.loop = object : GameLoop() {
 
-                internal var updateDurationMillis: Long = 0
-                internal var sleepDurationMillis: Long = 0
+                var updateDurationMillis: Long = 0
+                var sleepDurationMillis: Long = 0
 
                 override var currentState: State
                     set(value) {
@@ -115,8 +115,12 @@ object Game {
                         if (!value.initialised)
                             value.init()
                         value.initialised = true
-                        field = value;
+                        field = value
                     }
+
+                override fun setCurrentState(setState: () -> State) {
+                    currentState = setState()
+                }
 
                 init {
                     currentState = emptyState()
@@ -185,6 +189,8 @@ object Game {
 
     abstract class GameLoop {
         abstract var currentState: State
+
+        abstract fun setCurrentState(setState: () -> State)
 
         abstract fun update()
     }
