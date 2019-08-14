@@ -57,11 +57,15 @@ object Game {
 
     var world: World = World(Vec2(0f, -9.8f))
 
-    var currentState: State
-        get() = (loop?: createGameLoop()).currentState
-        set(value) {
-            (loop?: createGameLoop()).currentState = value
-        }
+//    var currentState: State
+//        get() = (loop?: createGameLoop()).currentState
+//        private set(value) {
+//            (loop?: createGameLoop()).currentState = value
+//        }
+
+    fun setCurrentState(setter: () -> State) {
+        (loop?: createGameLoop()).setCurrentState(setter)
+    }
 
     // The window handle
     private val window: Long
@@ -69,7 +73,6 @@ object Game {
 
     private fun emptyState(): State {
         return object : State(){
-            override fun init() {}
             override fun update(delta: Float) {}
             override fun render(g: Painter) {}
 
@@ -109,21 +112,15 @@ object Game {
                 var updateDurationMillis: Long = 0
                 var sleepDurationMillis: Long = 0
 
-                override var currentState: State
-                    set(value) {
-                        System.gc()
-                        if (!value.initialised)
-                            value.init()
-                        value.initialised = true
-                        field = value
-                    }
-
-                override fun setCurrentState(setState: () -> State) {
-                    currentState = setState()
+                override fun setCurrentState(setter: () -> State) {
+                    System.gc()
+                    currentState = setter()
                 }
 
+                private lateinit var currentState: State
+
                 init {
-                    currentState = emptyState()
+                    setCurrentState { emptyState() }
                 }
 
                 override fun update() {
@@ -188,9 +185,7 @@ object Game {
     }
 
     abstract class GameLoop {
-        abstract var currentState: State
-
-        abstract fun setCurrentState(setState: () -> State)
+        abstract fun setCurrentState(setter: () -> State)
 
         abstract fun update()
     }

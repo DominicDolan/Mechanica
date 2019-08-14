@@ -7,10 +7,6 @@ import renderer.Painter
  */
 
 abstract class State {
-    var initialised = false
-
-    abstract fun init()
-
     abstract fun update(delta: Float)
 
     abstract fun render(g: Painter)

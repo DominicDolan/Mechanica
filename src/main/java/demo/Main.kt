@@ -9,7 +9,7 @@ import state.State
 
 fun main(args: Array<String>) {
 
-    var colors = 0;
+    var colors = 0
     //Test comment
     GameBuilder()
             .setResolution(1280, 720)
@@ -29,12 +29,9 @@ fun main(args: Array<String>) {
                     Thread.sleep(1000)
                 }
             })
-            .setStartingState(object : State() {
+            .setStartingState { object : State() {
                 var scale = 1.0
                 var translate = 0.0
-                override fun init() {
-
-                }
 
                 override fun update(delta: Float) {
                     scale *= 1.001
@@ -50,7 +47,7 @@ fun main(args: Array<String>) {
                     g.drawText("Hello World", 1.0, -1.0, 0.0)
                 }
 
-            })
+            }}
             .start()
     Game.update()
     Game.destroy()

@@ -6,7 +6,7 @@ import renderer.Painter
 /**
  * Created by domin on 4 Aug 2017.
  */
-abstract class LoadState() : State() {
+abstract class LoadState : State() {
     private val waitTime = 0.2f
     private val minLoops = 2
 
@@ -14,19 +14,7 @@ abstract class LoadState() : State() {
     private var currentWait = 0f
     private var startLoading = false
     private var finishedLoading = false
-    var startingState: State = emptyState()
-    override fun init() {
-        preLoad()
-    }
-
-    private fun emptyState(): State {
-        return object : State(){
-            override fun init() {}
-            override fun update(delta: Float) {}
-            override fun render(g: Painter) {}
-
-        }
-    }
+    var startingState: () -> State = { EmptyState }
 
     override fun update(delta: Float) {
         currentWait += delta
@@ -51,6 +39,6 @@ abstract class LoadState() : State() {
     abstract fun load()
 
     private fun onFinish(){
-        Game.currentState = startingState
+        Game.setCurrentState(startingState)
     }
 }

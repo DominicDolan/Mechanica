@@ -8,6 +8,7 @@ import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import physics.ContactEvents
 import renderer.Painter
+import state.EmptyState
 import state.LoadState
 import state.State
 
@@ -15,7 +16,7 @@ import state.State
  * Created by domin on 28/10/2017.
  */
 class GameBuilder {
-    private var startingState: State? = null
+    private var startingState: (() -> State)? = null
     private var loadState: LoadState? = null
     private var saveData: Any? = null
 
@@ -43,7 +44,7 @@ class GameBuilder {
         return this
     }
 
-    fun setStartingState(state: State): GameBuilder {
+    fun setStartingState(state: () -> State): GameBuilder {
         startingState = state
         return this
     }
@@ -94,19 +95,13 @@ class GameBuilder {
             BodyRenderer.init()
         }
 
-        val state = startingState?:emptyState()
+        val state = startingState?:{ EmptyState }
         val loadState = this.loadState?:emptyLoadState()
         loadState.startingState = state
 
-        Game.currentState = loadState
-    }
-
-    private fun emptyState(): State {
-        return object : State(){
-            override fun init() {}
-            override fun update(delta: Float) {}
-            override fun render(g: Painter) {}
-
+        Game.setCurrentState {
+            loadState.preLoad()
+            loadState
         }
     }
 
