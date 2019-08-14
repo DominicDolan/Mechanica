@@ -3,7 +3,6 @@ package display
 import matrices.ProjectionMatrix
 import debug.BodyRenderer
 import matrices.ViewMatrix
-import org.jbox2d.callbacks.DebugDraw
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import physics.ContactEvents
@@ -15,102 +14,89 @@ import state.State
 /**
  * Created by domin on 28/10/2017.
  */
-class GameBuilder {
-    private var startingState: (() -> State)? = null
-    private var loadState: LoadState? = null
-    private var saveData: Any? = null
+class GameOptions {
+    var startingState: (() -> State)? = null
+        private set
+    var loadState: LoadState? = null
+        private set
+    var saveData: Any? = null
+        private set
 
-    private var viewWidth: Double = 0.0
-    private var viewHeight: Double = 0.0
-    private var resolutionWidth: Int = 0
-    private var resolutionHeight: Int = 0
-    private var fullscreen: Boolean = false
-    private var borderless: Boolean = false
-    private var viewPositionX: Double = 0.0
-    private var viewPositionY: Double = 0.0
-    private var gravity = Vec2(0f, -9.8f)
-    private var debug = false
+    var viewWidth: Double = 0.0
+        private set
+    var viewHeight: Double = 0.0
+        private set
+    var resolutionWidth: Int = 0
+        private set
+    var resolutionHeight: Int = 0
+        private set
+    var fullscreen: Boolean = false
+        private set
+    var borderless: Boolean = false
+        private set
+    var viewPositionX: Double = 0.0
+        private set
+    var viewPositionY: Double = 0.0
+        private set
+    var gravity = Vec2(0f, -9.8f)
+        private set
+    var debug = false
+        private set
 
 
-    fun setResolution(width: Int, height: Int): GameBuilder{
+    fun setResolution(width: Int, height: Int): GameOptions{
         resolutionWidth = width
         resolutionHeight = height
         return this
     }
 
-    fun setFullscreen(fullscreen: Boolean, borderless: Boolean): GameBuilder {
+    fun setFullscreen(fullscreen: Boolean, borderless: Boolean): GameOptions {
         this.fullscreen = fullscreen
         this.borderless = borderless
         return this
     }
 
-    fun setStartingState(state: () -> State): GameBuilder {
+    fun setStartingState(state: () -> State): GameOptions {
         startingState = state
         return this
     }
 
 
-    fun setViewPort(width: Double = 0.0, height: Double = 0.0): GameBuilder{
+    fun setViewPort(width: Double = 0.0, height: Double = 0.0): GameOptions{
         viewWidth = width
         viewHeight = height
         return this
     }
 
-    fun setPhysics(gravity: Vec2): GameBuilder{
+    fun setPhysics(gravity: Vec2): GameOptions{
         this.gravity = gravity
 
         return this
     }
 
-    fun setViewLocation(positionX: Double = 0.0, positionY: Double = 0.0): GameBuilder{
+    fun setViewLocation(positionX: Double = 0.0, positionY: Double = 0.0): GameOptions{
         viewPositionX = positionX
         viewPositionY = positionY
         return this
     }
 
-    fun setLoader(loader: LoadState): GameBuilder{
+    fun setLoader(loader: LoadState): GameOptions{
         loadState = loader
         return this
     }
 
-    fun setSaveData(saveData: Any): GameBuilder{
+    fun setSaveData(saveData: Any): GameOptions{
         this.saveData = saveData
         return this
     }
 
-    fun setDebugMode(debug: Boolean): GameBuilder {
+    fun setDebugMode(debug: Boolean): GameOptions {
         this.debug = debug
         return this
     }
 
-    fun start(){
-        Game.displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
-        Game.view = View(viewWidth, viewHeight, viewPositionX, viewPositionY)
-        Game.saveData = saveData ?: object {}
-        Game.load()
-        Game.world = World(gravity)
-        Game.world.setContactListener(ContactEvents)
-        Game.debug = debug
-        if (debug) {
-            BodyRenderer.init()
-        }
-
-        val state = startingState?:{ EmptyState }
-        val loadState = this.loadState?:emptyLoadState()
-        loadState.startingState = state
-
-        Game.setCurrentState {
-            loadState.preLoad()
-            loadState
-        }
-    }
-
-    private fun emptyLoadState(): LoadState {
-        return object : LoadState(){
-            override fun preLoad() {}
-            override fun renderLoadScreen(g: Painter) {}
-            override fun load() {}
-        }
+    fun getView() : WorldView {
+        return View(viewWidth, viewHeight, viewPositionX, viewPositionY)
     }
 
     private class View(width: Double = 0.0, height: Double = 0.0, positionX: Double = 0.0, positionY: Double = 0.0) : WorldView(){

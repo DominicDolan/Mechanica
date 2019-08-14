@@ -1,7 +1,7 @@
 package demo
 
 import display.Game
-import display.GameBuilder
+import display.GameOptions
 import loader.loadTexture
 import renderer.Painter
 import state.LoadState
@@ -11,7 +11,7 @@ fun main(args: Array<String>) {
 
     var colors = 0
     //Test comment
-    GameBuilder()
+    val options = GameOptions()
             .setResolution(1280, 720)
             .setViewPort(height = 10.0)
             .setLoader(object : LoadState() {
@@ -48,7 +48,8 @@ fun main(args: Array<String>) {
                 }
 
             }}
-            .start()
+
+    Game.start(options)
     Game.update()
     Game.destroy()
 }

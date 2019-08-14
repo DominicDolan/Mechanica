@@ -9,9 +9,11 @@ import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glClearColor
 import debug.BodyRenderer
+import physics.ContactEvents
 import renderer.Painter
 import renderer.backRenderer
-import renderer.fbo
+import state.EmptyState
+import state.EmptyLoadState
 import state.State
 
 /**
@@ -23,7 +25,7 @@ object Game {
 
     internal var displayManager: DisplayManager? = null
     internal var view: WorldView? = null
-    internal var saveData: Any = object {}
+    internal var saveData: Any? = null
 
     private var loop: GameLoop? = null
 
@@ -76,6 +78,30 @@ object Game {
             override fun update(delta: Float) {}
             override fun render(g: Painter) {}
 
+        }
+    }
+
+    fun start(options: GameOptions) {
+        with(options) {
+            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
+            view = getView()
+            Game.saveData = this.saveData
+            loadData()
+            world = World(gravity)
+            world.setContactListener(ContactEvents)
+            Game.debug = debug
+            if (debug) {
+                BodyRenderer.init()
+            }
+
+            val state = startingState ?: { EmptyState }
+            val loadState = this.loadState ?: EmptyLoadState
+            loadState.startingState = state
+
+            setCurrentState {
+                loadState.preLoad()
+                loadState
+            }
         }
     }
 
@@ -168,7 +194,7 @@ object Game {
 
 
     fun destroy(){
-        save()
+        saveData()
         displayManager?.destroy()
     }
 
@@ -176,12 +202,18 @@ object Game {
         glfwSetWindowShouldClose(window, true) // We will detect this in the rendering update
     }
 
-    fun save() {
-        saveData(saveData)
+    fun saveData() {
+        val saveData = saveData
+        if (saveData != null) {
+            saveData(saveData)
+        }
     }
 
-    fun load() {
-        loadData(saveData)
+    fun loadData() {
+        val saveData = saveData
+        if (saveData != null) {
+            loadData(saveData)
+        }
     }
 
     abstract class GameLoop {
