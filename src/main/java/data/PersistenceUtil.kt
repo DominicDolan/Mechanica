@@ -17,8 +17,6 @@ fun saveData(dataObj: Any) {
             getters.add(method)
         }
     }
-    println("\nAll Fields: ")
-    getters.forEach { println("Name: ${it.name}, Type: ${it.returnType}, Value: ${it.invoke(dataObj)}, Camel case: ${it.camelCaseName}") }
 
     val contentBuilder = StringBuilder()
 
