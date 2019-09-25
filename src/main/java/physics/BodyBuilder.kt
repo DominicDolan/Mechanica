@@ -1,14 +1,18 @@
 package physics
 
 
+import compatibility.Polygon
+import display.Game
+import models.Model
 import org.jbox2d.collision.shapes.EdgeShape
+import org.jbox2d.collision.shapes.PolygonShape
 import org.jbox2d.collision.shapes.Shape
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyDef
 import org.jbox2d.dynamics.BodyType
 import org.jbox2d.dynamics.FixtureDef
-import world.World
+import util.extensions.get
 
 class BodyBuilder<T : Shape>(private val shape: T) {
     private var position = Vec2(0f, 0f)
@@ -61,7 +65,7 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         bodyDef.position.set(position)
         bodyDef.type = bodyType
         bodyDef.fixedRotation = fixedRotation
-        val body = World.createBody(bodyDef)
+        val body = Game.world.createBody(bodyDef)
 
         fixtureDef.shape = shape
         fixtureDef.density = density

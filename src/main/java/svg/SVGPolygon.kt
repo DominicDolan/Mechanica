@@ -7,7 +7,13 @@ import org.jsoup.nodes.Element
 
 class SVGPolygon(element: Element) : SVGElement(element) {
     val path: List<Vector> = loadPolygonCoordinatesAsIs(element)
-    var model: Model = loadTriangulatedModel(path)
+    var model: Model? = null
+        get() {
+            if (field == null) {
+                field = loadTriangulatedModel(path)
+            }
+            return field
+        }
         private set
 
     fun adjust(

@@ -6,6 +6,7 @@ import font.GUIText
 import loader.loadFont
 import loader.loadTexturedQuad
 import models.Model
+import org.jbox2d.common.Vec2
 import org.joml.Matrix4f
 
 /**
@@ -39,32 +40,33 @@ class Painter {
     val model = loadTexturedQuad(0, 0f, 1f, 1f, 0f)
 
 
-    fun drawRect(x: Double, y: Double, width: Double, height: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawRect(x: Number, y: Number, width: Number, height: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
+        transformationMatrix.rewind()
     }
 
-    fun drawCenteredRect(x: Double, y: Double, width: Double, height: Double) {
-        drawRect(x - width/2.0, y - height/2.0, width, height)
+    fun drawCenteredRect(x: Number, y: Number, width: Number, height: Number) {
+        drawRect(x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, width.toDouble(), height.toDouble())
     }
 
-    fun drawPositionalRect(left: Double, top: Double, right: Double, bottom: Double){
-        drawRect(left, bottom, right - left, top - bottom)
+    fun drawPositionalRect(left: Number, top: Number, right: Number, bottom: Number){
+        drawRect(left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
-    fun drawRotatedRect(centerX: Double, centerY: Double, width: Double, height: Double, degrees: Double) {
-        transformationMatrix.setPivot(width / 2, height / 2)
-        transformationMatrix.setTranslate(centerX - width / 2, centerY - height / 2, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawRotatedRect(centerX: Number, centerY: Number, width: Number, height: Number, degrees: Number) {
+        transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
+        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
     }
 
-    fun drawScreenRect(x: Double, y: Double, width: Double, height: Double){
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawScreenRect(x: Number, y: Number, width: Number, height: Number){
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         renderer.drawingViewMatrix = Game.uiViewMatrix
         colorRenderer(model)
         renderer.drawingViewMatrix = Game.viewMatrix
@@ -75,35 +77,47 @@ class Painter {
         colorRenderer(model)
     }
 
-    fun fillRotatedPolygon(model: Model, centerX: Double, centerY: Double, degrees: Double, pivotX: Double = 0.0, pivotY: Double = 0.0) {
-        transformationMatrix.setPivot(pivotX, pivotY)
-        transformationMatrix.setTranslate(centerX, centerY, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees)
+    fun fillRotatedPolygon(model: Model, centerX: Number, centerY: Number, degrees: Number, pivotX: Number = 0.0, pivotY: Number = 0.0) {
+        transformationMatrix.setPivot(pivotX.toDouble(), pivotY.toDouble())
+        transformationMatrix.setTranslate(centerX.toDouble(), centerY.toDouble(), 0.0)
+        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
+        transformationMatrix.rewind()
     }
 
-    fun fillPolygon(model: Model, x: Double, y: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
+    fun fillPolygon(model: Model, x: Number, y: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         colorRenderer(model)
     }
 
-    fun fillPolygon(model: Model, x: Double, y: Double, scaleWidth: Double, scaleHeight: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(scaleWidth, scaleHeight, 1.0)
+    fun fillPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(scaleWidth.toDouble(), scaleHeight.toDouble(), 1.0)
         colorRenderer(model)
     }
 
-    fun fillScreenPolygon(model: Model, x: Double, y: Double, scaleWidth: Double, scaleHeight: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(scaleWidth, scaleHeight, 1.0)
+    fun fillScreenPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(scaleWidth.toDouble(), scaleHeight.toDouble(), 1.0)
         renderer.drawingViewMatrix = Game.uiViewMatrix
         colorRenderer(model)
         renderer.drawingViewMatrix = Game.viewMatrix
     }
 
-    fun fillScreenPolygon(model: Model, x: Double, y: Double, scaleWidth: Double, scaleHeight: Double, degrees: Float) {
+    fun fillScreenPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number, degrees: Float) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun drawPolygon(vertices: Array<out Vec2>, strokeWidth: Number, vertexCount: Int = vertices.size, looped: Boolean = false) {
+        for (i in 0..vertexCount-2) {
+            val v1 = vertices[i]
+            val v2 = vertices[i+1]
+            drawLine(strokeWidth, v1.x, v1.y, v2.x, v2.y)
+        }
+        if (looped) {
+            drawLine(strokeWidth, vertices[vertexCount-1].x, vertices[vertexCount-1].y, vertices[0].x, vertices[0].y)
+        }
     }
 
     fun drawImage(image: Int) {
@@ -111,18 +125,18 @@ class Painter {
         textureRenderer(model)
     }
 
-    fun drawScreenImage(image: Int, x: Double, y: Double, width: Double, height: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawScreenImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         renderer.drawingViewMatrix = Game.uiViewMatrix
         textureRenderer(model)
         renderer.drawingViewMatrix = Game.viewMatrix
     }
 
-    fun drawCenteredScreenImage(image: Int, x: Double, y: Double, width: Double, height: Double) {
-        transformationMatrix.setTranslate(x - width/2.0, y - height/2.0, 0.0)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawCenteredScreenImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+        transformationMatrix.setTranslate(x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, 0.0)
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         renderer.drawingViewMatrix = Game.uiViewMatrix
         textureRenderer(model)
@@ -135,100 +149,102 @@ class Painter {
         textureRenderer(model)
     }
 
-    fun drawImage(image: Int, x: Double, y: Double, width: Double, height: Double) {
-        transformationMatrix.setTranslate(x, y, 0.0)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+        transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         textureRenderer(model)
+        transformationMatrix.rewind()
     }
 
-    fun drawCenteredImage(image: Int, x: Double, y: Double, width: Double, height: Double) {
-        drawImage(image, x - width/2.0, y - height/2.0, width, height)
+    fun drawCenteredImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+        drawImage(image, x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, width.toDouble(), height.toDouble())
     }
 
-    fun drawPositionalImage(image: Int, left: Double, top: Double, right: Double, bottom: Double) {
-        drawImage(image, left, bottom, right - left, top - bottom)
+    fun drawPositionalImage(image: Int, left: Number, top: Number, right: Number, bottom: Number) {
+        drawImage(image, left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
-    fun drawRotatedImage(image: Int, centerX: Double, centerY: Double, width: Double, height: Double, degrees: Double) {
-        transformationMatrix.setPivot(width / 2, height / 2)
-        transformationMatrix.setTranslate(centerX - width / 2, centerY - height / 2, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees)
-        transformationMatrix.setScale(width, height, 1.0)
+    fun drawRotatedImage(image: Int, centerX: Number, centerY: Number, width: Number, height: Number, degrees: Number) {
+        transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
+        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
+        transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
     }
 
-    fun drawText(text: String, fontSize: Double, x: Double, y: Double) {
-        transformationMatrix.rewind()
-        transformationMatrix.setScale(100.0, 100.0, 1.0)
+    fun drawText(text: String, fontSize: Number, x: Number, y: Number) {
         guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
 
         renderer.fontRenderer(guiText)
+        transformationMatrix.rewind()
     }
 
 
-    fun drawCircle(centerX: Double, centerY: Double, radius: Double, strokeWidth: Double){
-        transformationMatrix.setScale(radius*2, radius*2, 1.0)
-        transformationMatrix.setTranslate(centerX - radius, centerY - radius, 0.0)
-        renderer.strokeWidth = strokeWidth/radius
+    fun drawCircle(centerX: Number, centerY: Number, radius: Number, strokeWidth: Number){
+        transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
+        renderer.strokeWidth = strokeWidth.toDouble()/radius.toDouble()
+        renderer.circleRenderer()
+        transformationMatrix.rewind()
+    }
+
+    fun fillCircle(centerX: Number, centerY: Number, radius: Number){
+        transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
+        renderer.strokeWidth = 1.0
+        renderer.circleRenderer()
+        transformationMatrix.rewind()
+    }
+
+    fun drawEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, strokeWidth: Number){
+        transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
+        renderer.strokeWidth = 4.0*strokeWidth.toDouble()/(horizontalAxis.toDouble() + verticalAxis.toDouble())
         renderer.circleRenderer()
     }
 
-    fun fillCircle(centerX: Double, centerY: Double, radius: Double){
-        transformationMatrix.setScale(radius*2, radius*2, 1.0)
-        transformationMatrix.setTranslate(centerX - radius, centerY - radius, 0.0)
+    fun fillEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number){
+        transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         renderer.strokeWidth = 1.0
         renderer.circleRenderer()
     }
 
-    fun drawEllipse(centerX: Double, centerY: Double, horizontalAxis: Double, verticalAxis: Double, strokeWidth: Double){
-        transformationMatrix.setScale(horizontalAxis, verticalAxis, 1.0)
-        transformationMatrix.setTranslate(centerX - horizontalAxis/2.0, centerY - verticalAxis/2.0, 0.0)
-        renderer.strokeWidth = 4.0*strokeWidth/(horizontalAxis + verticalAxis)
-        renderer.circleRenderer()
-    }
-
-    fun fillEllipse(centerX: Double, centerY: Double, horizontalAxis: Double, verticalAxis: Double){
-        transformationMatrix.setScale(horizontalAxis, verticalAxis, 1.0)
-        transformationMatrix.setTranslate(centerX - horizontalAxis/2.0, centerY - verticalAxis/2.0, 0.0)
-        renderer.strokeWidth = 1.0
-        renderer.circleRenderer()
-    }
-
-    fun fillRotatedEllipse(centerX: Double, centerY: Double, horizontalAxis: Double, verticalAxis: Double, degrees: Double){
-        transformationMatrix.setPivot(horizontalAxis / 2, verticalAxis / 2)
-        transformationMatrix.setScale(horizontalAxis, verticalAxis, 1.0)
-        transformationMatrix.setTranslate(centerX - horizontalAxis/2.0, centerY - verticalAxis/2.0, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees)
+    fun fillRotatedEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, degrees: Number){
+        transformationMatrix.setPivot(horizontalAxis.toDouble() / 2.0, verticalAxis.toDouble() / 2.0)
+        transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
+        transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
+        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
         renderer.strokeWidth = 1.0
         renderer.circleRenderer()
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
 
     }
 
-    fun drawLine(strokeWidth: Double, x1: Double, y1: Double, x2: Double, y2: Double) {
-        val triangleWidth = x2 - x1
-        val triangleHeight = y2 - y1
-        transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
+    fun drawLine(strokeWidth: Number, x1: Number, y1: Number, x2: Number, y2: Number) {
+        val triangleWidth = x2.toDouble() - x1.toDouble()
+        val triangleHeight = y2.toDouble() - y1.toDouble()
+        transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth.toDouble(), 1.0)
 
-        transformationMatrix.setTranslate(x1, y1, 0.0)
-        transformationMatrix.setPivot(0.0, strokeWidth / 2)
+        transformationMatrix.setTranslate(x1.toDouble(), y1.toDouble() - strokeWidth.toDouble()/2.0, 0.0)
+        transformationMatrix.setPivot(0.0, strokeWidth.toDouble() / 2.0)
         transformationMatrix.setRotate(0.0, 0.0, Math.toDegrees(Math.atan2(triangleHeight, triangleWidth)))
 
         colorRenderer(model)
     }
 
-    fun drawHorizontalLine(strokeWidth: Double, y: Double) {
-        transformationMatrix.setScale(Game.viewWidth, strokeWidth, 0.0)
-        transformationMatrix.setTranslate(Game.viewX - Game.viewWidth / 2.0, y, 0.0)
+    fun drawHorizontalLine(strokeWidth: Number, y: Number) {
+        transformationMatrix.setScale(Game.viewWidth, strokeWidth.toDouble(), 0.0)
+        transformationMatrix.setTranslate(Game.viewX - Game.viewWidth / 2.0, y.toDouble(), 0.0)
 
         colorRenderer(model)
     }
 
-    fun drawVerticalLine(strokeWidth: Double, x: Double) {
-        transformationMatrix.setScale(strokeWidth, Game.viewHeight, 0.0)
-        transformationMatrix.setTranslate(x, Game.viewY - Game.viewHeight / 2.0, 0.0)
+    fun drawVerticalLine(strokeWidth: Number, x: Number) {
+        transformationMatrix.setScale(strokeWidth.toDouble(), Game.viewHeight, 0.0)
+        transformationMatrix.setTranslate(x.toDouble(), Game.viewY - Game.viewHeight / 2.0, 0.0)
 
         colorRenderer(model)
     }

@@ -12,8 +12,10 @@ import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.stb.STBImage.stbi_image_free
 import org.lwjgl.stb.STBImage.stbi_load_from_memory
 import org.lwjgl.system.MemoryUtil.*
+import resources.Res
 import util.triangulate.EarClipper
 import java.io.*
+import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -193,31 +195,28 @@ private fun hashCoordinates(x: Double, y: Double): String {
 
 fun loadTexture(name: String):Int{
 
-    val fileName = "res/" + name + (if (name.endsWith(".png")) "" else ".png")
+//    val fileName = "res/" + name + (if (name.endsWith(".png")) "" else ".png")
     val width = getBuffer<Int>(1) as IntBuffer
     val height = getBuffer<Int>(1) as IntBuffer
     val components = getBuffer<Int>(1) as IntBuffer
 
-    val data = stbi_load_from_memory(ioResourceToByteBuffer(fileName, 1024), width, height, components, 4)
+    val data = stbi_load_from_memory(ioResourceToByteBuffer(name, 1024), width, height, components, 4)
     val id = glGenTextures()
     glBindTexture(GL_TEXTURE_2D, id)
     glGenerateMipmap(GL_TEXTURE_2D)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-//    println("width: " + width.get() + ", height: " + height.get())
-    if(GL.getCapabilities().GL_EXT_texture_filter_anisotropic){
-
-    }
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(), height.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
-    stbi_image_free(data)
+    if (data != null) {
+        stbi_image_free(data)
+    }
     return id
 }
 
 @Throws(IOException::class)
 fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
-    var buffer: ByteBuffer
-    val url = Thread.currentThread().contextClassLoader.getResource(resource)
+    val buffer: ByteBuffer
     val file = File(resource)
     if (file.isFile) {
         val fis = FileInputStream(file)
@@ -227,20 +226,24 @@ fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
         fis.close()
     } else {
         buffer = BufferUtils.createByteBuffer(bufferSize)
-        val source = url.openStream() ?: throw FileNotFoundException(resource)
-        source.use { s ->
-            Channels.newChannel(s).use { rbc ->
-                while (true) {
-                    val bytes = rbc.read(buffer)
-                    if (bytes == -1)
-                        break
-                    if (buffer.remaining() == 0)
-                        buffer = resizeBuffer(buffer, buffer.capacity() * 2)
-                }
-                buffer.flip()
-            }
-        }
     }
+//    else {
+//        println("Is not file")
+//        buffer = BufferUtils.createByteBuffer(bufferSize)
+//        val source = url.openStream() ?: throw FileNotFoundException(resource)
+//        source.use { s ->
+//            Channels.newChannel(s).use { rbc ->
+//                while (true) {
+//                    val bytes = rbc.read(buffer)
+//                    if (bytes == -1)
+//                        break
+//                    if (buffer.remaining() == 0)
+//                        buffer = resizeBuffer(buffer, buffer.capacity() * 2)
+//                }
+//                buffer.flip()
+//            }
+//        }
+//    }
     return buffer
 }
 
@@ -263,13 +266,12 @@ fun loadTextFile(filename: String): String {
 }
 
 fun loadFont(name: String): FontType {
-    return FontType(loadTexture("fonts/" + name), "res/fonts/$name.fnt")
+    return FontType(loadTexture(Res.font["$name.png"]), Res.font["$name.fnt"])
 }
 
 fun loadBufferedReader(file: String): BufferedReader? {
     return try {
-        val path = Thread.currentThread().contextClassLoader.getResource(file).path
-        BufferedReader(FileReader(path))
+        BufferedReader(FileReader(file))
     } catch (e: Exception) {
         e.printStackTrace()
         System.err.println("Couldn't read font meta file!")

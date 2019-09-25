@@ -1,7 +1,7 @@
 package demo
 
 import display.Game
-import display.GameBuilder
+import display.GameOptions
 import loader.loadTexture
 import renderer.Painter
 import state.LoadState
@@ -9,9 +9,9 @@ import state.State
 
 fun main(args: Array<String>) {
 
-    var colors = 0;
+    var colors = 0
     //Test comment
-    GameBuilder()
+    val options = GameOptions()
             .setResolution(1280, 720)
             .setViewPort(height = 10.0)
             .setLoader(object : LoadState() {
@@ -29,12 +29,9 @@ fun main(args: Array<String>) {
                     Thread.sleep(1000)
                 }
             })
-            .setStartingState(object : State() {
+            .setStartingState { object : State() {
                 var scale = 1.0
                 var translate = 0.0
-                override fun init() {
-
-                }
 
                 override fun update(delta: Float) {
                     scale *= 1.001
@@ -50,8 +47,9 @@ fun main(args: Array<String>) {
                     g.drawText("Hello World", 1.0, -1.0, 0.0)
                 }
 
-            })
-            .start()
+            }}
+
+    Game.start(options)
     Game.update()
     Game.destroy()
 }

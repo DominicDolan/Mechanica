@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import renderer.framebuffer.Fbo
+import resources.Res
 import shaders.circle.CircleShader
 import shaders.color.ColorShader
 import shaders.font.FontShader
@@ -64,7 +65,7 @@ var colorRenderer:(Model)-> Unit = {
 }
 
 val circleShader = CircleShader()
-val circleModel = loadTexturedQuad(loadTexture("images/oval"), 0f, 1f, 1f, 0f)
+val circleModel = loadTexturedQuad(loadTexture(Res.image["oval"]), 0f, 1f, 1f, 0f)
 var strokeWidth = 0.1
 private var border = 0.05
 

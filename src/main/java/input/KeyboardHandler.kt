@@ -1,6 +1,6 @@
 package input
 
-import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWKeyCallback
 
 /**
@@ -8,21 +8,12 @@ import org.lwjgl.glfw.GLFWKeyCallback
  */
 class KeyboardHandler : GLFWKeyCallback() {
     override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
-        if (key == GLFW.GLFW_KEY_W){
-//            inverseRes[0] *= 1.005f
-//            inverseRes[1] = inverseRes[0]*0.5625f
+        if (action == GLFW_RELEASE) {
+            Keyboard[key].forEach { it.isDown = false }
+            Controls[key].forEach { it.isDown = false }
+        } else if (action == GLFW_PRESS) {
+            Keyboard[key].forEach { it.isDown = true }
+            Controls[key].forEach { it.isDown = true }
         }
-
-        if (key == GLFW.GLFW_KEY_S){
-//            inverseRes[0] /= 1.005f
-//            inverseRes[1] = inverseRes[0]*0.5625f
-        }
-
-        if (action == GLFW.GLFW_RELEASE){
-
-        }
-
-        if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE)
-            GLFW.glfwSetWindowShouldClose(window, true) // We will detect this in the rendering update
     }
 }
