@@ -58,6 +58,11 @@ fun loadData(dataObj: Any) {
     val setters = getSetters(dataObj)
     val getters = getGetters(dataObj)
 
+    val dataFile = File(dataObj.dataFile)
+    if (!dataFile.exists()) {
+        dataFile.createNewFile()
+    }
+
     File(dataObj.dataFile).forEachLine {
         val params = it.split(",")
         val name = params[0]
