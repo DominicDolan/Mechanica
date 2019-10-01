@@ -170,7 +170,8 @@ class Painter {
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
-        colorRenderer(model)
+        model.texture = image
+        textureRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
     }
 
