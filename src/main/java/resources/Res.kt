@@ -4,9 +4,7 @@ object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): String {
             val fileFixed = fixExtension(file)
-            val resource = this.javaClass.classLoader.getResource("$prefix$fileFixed")
-            return resource?.file ?: "$location/$file"
-//            return Thread.currentThread().contextClassLoader.getResource("$prefix$fileFixed").file
+            return getResource("$prefix$fileFixed")
         }
 
         private fun fixExtension(file: String): String {
@@ -20,11 +18,21 @@ object Res {
     val svg = SpecificResource("res/svg/", "svg")
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "png")
+    val animations = SpecificResource("res/animations/", "")
 
     private val location get() = this.javaClass.classLoader.getResource("res")?.path?.toString() ?: ""
 
     operator fun get(file: String): String {
-        val resource = this.javaClass.classLoader.getResource("res/$file")
-        return resource?.file ?: "$location/$file"
+        return getResource("res/$file")
+    }
+
+    private fun getResource(file: String) : String {
+        val resource = this.javaClass.classLoader.getResource(file)
+        return if (resource == null) {
+            System.err.println("Resource not found at location: $location/$file")
+            "$location/$file"
+        } else {
+            resource.file ?: "$location/$file"
+        }
     }
 }

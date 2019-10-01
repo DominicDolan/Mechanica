@@ -38,10 +38,12 @@ object Game {
     val ratio: Double
         get() = displayManager?.ratio?: 1.0
 
-    val viewHeight: Double
+    var viewHeight: Double
         get() = view?.height?: 0.0
-    val viewWidth: Double
+        set(value) { view?.height = value}
+    var viewWidth: Double
         get() = view?.width?: 0.0
+        set(value) { view?.width = value}
 
     var viewX: Double
         get() = view?.positionX?: 0.0

@@ -1,5 +1,6 @@
 package loader
 
+import animation.FrameAnimation
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
 import compatibility.Vector
@@ -62,7 +63,7 @@ fun loadTextureModel(positions: FloatBuffer, textureCoords: FloatBuffer, vertexC
     unbindVAO()
 
     val model = Model(vaoID, vertexCount, texture)
-    model.drawType = GL11.GL_TRIANGLES
+    model.drawType = GL_TRIANGLES
     return model
 }
 
@@ -214,6 +215,10 @@ fun loadTexture(name: String):Int{
     return id
 }
 
+fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadTexture(it.absolutePath) }.toList()
+
+fun loadAnimation(directory: String, frameRate: Double = 24.0) = FrameAnimation(loadTextureDirectory(directory), frameRate)
+
 @Throws(IOException::class)
 fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
     val buffer: ByteBuffer
@@ -325,7 +330,7 @@ private fun storeDataInAttributeList(attributeNumber: Int, data: FloatArray, coo
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data.toBuffer(), GL15.GL_STATIC_DRAW)
     freeMemory()
-    GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0)
+    GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, false, 0, 0)
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
 }
 
@@ -334,7 +339,7 @@ private fun storeDataInAttributeList(attributeNumber: Int, coordinateSize: Int, 
     vbos.add(vboID)
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW)
-    GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0)
+    GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, false, 0, 0)
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
 }
 
