@@ -7,7 +7,7 @@ import renderer.Painter
  */
 
 abstract class State {
-    abstract fun update(delta: Float)
+    abstract fun update(delta: Double)
 
     abstract fun render(g: Painter)
 

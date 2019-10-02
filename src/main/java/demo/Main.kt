@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
 
 class StartState : State() {
     var position = -8.0
-    override fun update(delta: Float) {
+    override fun update(delta: Double) {
         position
         Game.viewHeight = Game.viewHeight + delta
     }

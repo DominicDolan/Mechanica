@@ -11,12 +11,12 @@ abstract class LoadState : State() {
     private val minLoops = 2
 
     private var currentLoops = 0
-    private var currentWait = 0f
+    private var currentWait = 0.0
     private var startLoading = false
     private var finishedLoading = false
     var startingState: () -> State = { EmptyState }
 
-    override fun update(delta: Float) {
+    override fun update(delta: Double) {
         currentWait += delta
         currentLoops++
         startLoading = currentWait > waitTime && currentLoops > minLoops

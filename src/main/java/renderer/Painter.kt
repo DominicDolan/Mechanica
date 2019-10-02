@@ -67,9 +67,9 @@ class Painter {
     fun drawScreenRect(x: Number, y: Number, width: Number, height: Number){
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
-        renderer.drawingViewMatrix = Game.uiViewMatrix
+        drawingViewMatrix = Game.uiViewMatrix
         colorRenderer(model)
-        renderer.drawingViewMatrix = Game.viewMatrix
+        drawingViewMatrix = Game.viewMatrix
     }
 
     fun fillPolygon(model: Model) {

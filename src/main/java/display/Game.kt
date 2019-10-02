@@ -15,6 +15,9 @@ import renderer.backRenderer
 import state.EmptyState
 import state.EmptyLoadState
 import state.State
+import util.Timer
+import java.util.*
+import java.util.concurrent.ArrayBlockingQueue
 
 /**
  * Created by domin on 25/10/2017.
@@ -77,7 +80,7 @@ object Game {
 
     private fun emptyState(): State {
         return object : State(){
-            override fun update(delta: Float) {}
+            override fun update(delta: Double) {}
             override fun render(g: Painter) {}
 
         }
@@ -118,6 +121,9 @@ object Game {
         // Set the clear color
         glClearColor(1.0f, 0.5f, 0.0f, 0.0f)
 
+        // Just mentioning the Timer object will initialize it here
+        Timer
+
         // Run the rendering update until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window)) {
@@ -136,9 +142,12 @@ object Game {
         if (loop != null) return loop
         else {
             this.loop = object : GameLoop() {
+                var startOfLoop = Timer.now
+                var endOfLoop = Timer.now - 0.1
+                var updateDuration = startOfLoop - endOfLoop
 
-                var updateDurationMillis: Long = 0
-                var sleepDurationMillis: Long = 0
+                private val capacity = 20
+                private val last20Frames: Queue<Double> = ArrayDeque<Double>(capacity)
 
                 override fun setCurrentState(setter: () -> State) {
                     System.gc()
@@ -149,13 +158,17 @@ object Game {
 
                 init {
                     setCurrentState { emptyState() }
+                    for (i in 1..capacity) {
+                        last20Frames.add(17.0/1000.0)
+                    }
                 }
 
                 override fun update() {
-                    val beforeUpdateRender = System.nanoTime()
-                    val deltaMillis = sleepDurationMillis + updateDurationMillis
+                    updateDuration = Timer.now - startOfLoop
+                    startOfLoop = Timer.now
+                    last20Frames.remove()
+                    last20Frames.add(updateDuration)
 
-//                    fbo.bindFrameBuffer()
                     val painter = painter
                     if (ready && painter == null){
                         Game.painter = Painter()
@@ -163,29 +176,21 @@ object Game {
                     if (ready && painter != null) {
                         backRenderer()
 
-                        val del = deltaMillis.toFloat() / 1000f
+                        val del = updateDuration
                         currentState.update(del)
-                        world.step(del, 8, 5)
-                        world.step(del, 8, 5)
+                        world.step(last20Frames.average().toFloat(), 8, 5)
                         currentState.render(painter)
                         if (debug) {
                             BodyRenderer.update(painter)
                             world.drawDebugData()
                         }
                     }
+                }
 
-//		            fbo.unbindFrameBuffer()
-//                    fbo.doPostProcessing()
-
-                    updateDurationMillis = (System.nanoTime() - beforeUpdateRender) / 1000000L
-                    sleepDurationMillis = Math.max(2, 17 - updateDurationMillis)
-
-                    try {
-                        Thread.sleep(sleepDurationMillis)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-
+                private fun Queue<Double>.average(): Double {
+                    var total = 0.0
+                    this.forEach { total += it }
+                    return total/this.size
                 }
 
             }
