@@ -174,10 +174,11 @@ object Game {
                         val del = updateDuration
                         currentState.update(del)
 
+                        val average = frameQueue.average.toFloat()
                         // world.step is called twice because it tends to resolve contacts in one frame instead of two
                         // which makes it easier to deal with
-                        world.step(frameQueue.average.toFloat()/2.0f, 8, 5)
-                        world.step(frameQueue.average.toFloat()/2.0f, 8, 5)
+                        world.step(average/2.0f, 8, 5)
+                        world.step(average/2.0f, 8, 5)
 
                         currentState.render(painter)
                         if (debug) {
