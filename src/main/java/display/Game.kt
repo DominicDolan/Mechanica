@@ -15,9 +15,9 @@ import renderer.backRenderer
 import state.EmptyState
 import state.EmptyLoadState
 import state.State
+import util.FrameQueue
 import util.Timer
 import java.util.*
-import java.util.concurrent.ArrayBlockingQueue
 
 /**
  * Created by domin on 25/10/2017.
@@ -146,8 +146,7 @@ object Game {
                 var endOfLoop = Timer.now - 0.1
                 var updateDuration = startOfLoop - endOfLoop
 
-                private val capacity = 20
-                private val last20Frames: Queue<Double> = ArrayDeque<Double>(capacity)
+                private val frameQueue = FrameQueue(60, 17.0/1000.0)
 
                 override fun setCurrentState(setter: () -> State) {
                     System.gc()
@@ -158,16 +157,12 @@ object Game {
 
                 init {
                     setCurrentState { emptyState() }
-                    for (i in 1..capacity) {
-                        last20Frames.add(17.0/1000.0)
-                    }
                 }
 
                 override fun update() {
                     updateDuration = Timer.now - startOfLoop
                     startOfLoop = Timer.now
-                    last20Frames.remove()
-                    last20Frames.add(updateDuration)
+                    frameQueue.add(updateDuration)
 
                     val painter = painter
                     if (ready && painter == null){
@@ -178,7 +173,12 @@ object Game {
 
                         val del = updateDuration
                         currentState.update(del)
-                        world.step(last20Frames.average().toFloat(), 8, 5)
+
+                        // world.step is called twice because it tends to resolve contacts in one frame instead of two
+                        // which makes it easier to deal with
+                        world.step(frameQueue.average.toFloat()/2.0f, 8, 5)
+                        world.step(frameQueue.average.toFloat()/2.0f, 8, 5)
+
                         currentState.render(painter)
                         if (debug) {
                             BodyRenderer.update(painter)
