@@ -4,9 +4,11 @@ import compatibility.Vector
 import loader.loadTriangulatedModel
 import models.Model
 import org.jsoup.nodes.Element
+import util.extensions.centroid
 
 class SVGPolygon(element: Element) : SVGElement(element) {
     val path: List<Vector> = loadPolygonCoordinatesAsIs(element)
+    val centroid: Vector = path.centroid()
     var model: Model? = null
         get() {
             if (field == null) {

@@ -77,3 +77,14 @@ fun Vec2.scale(scale: Double, center: Vec2){
     this *= scale
     this.set(center.x + this.x, center.y + this.y)
 }
+
+fun List<Vector>.centroid(): Vector {
+    var xAverage = 0.0
+    var yAverage = 0.0
+    this.forEachIndexed { i, vec ->
+        xAverage = (xAverage*i + vec.x)/(i+1)
+        yAverage = (yAverage*i + vec.y)/(i+1)
+    }
+
+    return Vector(xAverage, yAverage)
+}

@@ -12,3 +12,16 @@ operator fun Array<Vec2>.timesAssign(scale: Double){
 inline operator fun <reified T> Array<T>.get(range: IntRange): Array<T>{
     return range.map { this[it] }.toTypedArray()
 }
+
+fun Array<Float>.mean(): Float {
+    return this.sum()/this.size
+}
+
+fun List<Float>.mean(): Float {
+    return this.sum()/this.size
+}
+
+
+fun List<Double>.mean(): Double {
+    return this.sum()/this.size
+}

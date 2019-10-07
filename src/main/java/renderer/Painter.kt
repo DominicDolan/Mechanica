@@ -8,6 +8,7 @@ import loader.loadTexturedQuad
 import models.Model
 import org.jbox2d.common.Vec2
 import org.joml.Matrix4f
+import util.units.Angle
 
 /**
  * Created by domin on 28/10/2017.
@@ -55,10 +56,10 @@ class Painter {
         drawRect(left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
-    fun drawRotatedRect(centerX: Number, centerY: Number, width: Number, height: Number, degrees: Number) {
+    fun drawRotatedRect(centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
         transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
+        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
@@ -100,11 +101,12 @@ class Painter {
     fun fillScreenPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(scaleWidth.toDouble(), scaleHeight.toDouble(), 1.0)
-        renderer.drawingViewMatrix = Game.uiViewMatrix
+        drawingViewMatrix = Game.uiViewMatrix
         colorRenderer(model)
-        renderer.drawingViewMatrix = Game.viewMatrix
+        drawingViewMatrix = Game.viewMatrix
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun fillScreenPolygon(model: Model, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number, degrees: Float) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -129,18 +131,18 @@ class Painter {
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
-        renderer.drawingViewMatrix = Game.uiViewMatrix
+        drawingViewMatrix = Game.uiViewMatrix
         textureRenderer(model)
-        renderer.drawingViewMatrix = Game.viewMatrix
+        drawingViewMatrix = Game.viewMatrix
     }
 
     fun drawCenteredScreenImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
         transformationMatrix.setTranslate(x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
-        renderer.drawingViewMatrix = Game.uiViewMatrix
+        drawingViewMatrix = Game.uiViewMatrix
         textureRenderer(model)
-        renderer.drawingViewMatrix = Game.viewMatrix
+        drawingViewMatrix = Game.viewMatrix
     }
 
     fun drawImage(image: Int, matrix: Matrix4f) {
@@ -165,10 +167,10 @@ class Painter {
         drawImage(image, left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
-    fun drawRotatedImage(image: Int, centerX: Number, centerY: Number, width: Number, height: Number, degrees: Number) {
+    fun drawRotatedImage(image: Int, centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
         transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
+        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         textureRenderer(model)
@@ -178,7 +180,7 @@ class Painter {
     fun drawText(text: String, fontSize: Number, x: Number, y: Number) {
         guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
 
-        renderer.fontRenderer(guiText)
+        fontRenderer(guiText)
         transformationMatrix.rewind()
     }
 
@@ -194,7 +196,7 @@ class Painter {
     fun fillCircle(centerX: Number, centerY: Number, radius: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        renderer.strokeWidth = 1.0
+        strokeWidth = 1.0
         renderer.circleRenderer()
         transformationMatrix.rewind()
     }
@@ -209,7 +211,7 @@ class Painter {
     fun fillEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        renderer.strokeWidth = 1.0
+        strokeWidth = 1.0
         renderer.circleRenderer()
     }
 
@@ -218,7 +220,7 @@ class Painter {
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
-        renderer.strokeWidth = 1.0
+        strokeWidth = 1.0
         renderer.circleRenderer()
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
 
