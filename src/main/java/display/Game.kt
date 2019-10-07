@@ -9,11 +9,13 @@ import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glClearColor
 import debug.BodyRenderer
+import input.ControlsMap
 import physics.ContactEvents
 import renderer.Painter
 import renderer.backRenderer
 import state.EmptyState
 import state.EmptyLoadState
+import state.LoadState
 import state.State
 import util.FrameQueue
 import util.Timer
@@ -29,6 +31,7 @@ object Game {
     internal var displayManager: DisplayManager? = null
     internal var view: WorldView? = null
     internal var saveData: Any? = null
+    internal var controls: ControlsMap = object : ControlsMap() { }
 
     private var loop: GameLoop? = null
 
@@ -92,6 +95,7 @@ object Game {
             view = getView()
             Game.saveData = this.saveData
             loadData()
+            controls = controlsMap
             world = World(gravity)
             world.setContactListener(ContactEvents)
             Game.debug = debug
@@ -162,7 +166,9 @@ object Game {
                 override fun update() {
                     updateDuration = Timer.now - startOfLoop
                     startOfLoop = Timer.now
-                    frameQueue.add(updateDuration)
+                    if (currentState !is LoadState) {
+                        frameQueue.add(updateDuration)
+                    }
 
                     val painter = painter
                     if (ready && painter == null){

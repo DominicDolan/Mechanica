@@ -2,6 +2,7 @@ package display
 
 import matrices.ProjectionMatrix
 import debug.BodyRenderer
+import input.ControlsMap
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
@@ -15,32 +16,30 @@ import state.State
  * Created by domin on 28/10/2017.
  */
 class GameOptions {
-    var startingState: (() -> State)? = null
+    internal var startingState: (() -> State)? = null
         private set
-    var loadState: LoadState? = null
+    internal var loadState: LoadState? = null
         private set
-    var saveData: Any? = null
+    internal var saveData: Any? = null
         private set
+    internal var controlsMap: ControlsMap = object : ControlsMap() { }
 
-    var viewWidth: Double = 0.0
+    private var viewWidth: Double = 0.0
+    private var viewHeight: Double = 0.0
+    private var viewPositionX: Double = 0.0
+    private var viewPositionY: Double = 0.0
+
+    internal var resolutionWidth: Int = 0
         private set
-    var viewHeight: Double = 0.0
+    internal var resolutionHeight: Int = 0
         private set
-    var resolutionWidth: Int = 0
+    internal var fullscreen: Boolean = false
         private set
-    var resolutionHeight: Int = 0
+    internal var borderless: Boolean = false
         private set
-    var fullscreen: Boolean = false
+    internal var gravity = Vec2(0f, -9.8f)
         private set
-    var borderless: Boolean = false
-        private set
-    var viewPositionX: Double = 0.0
-        private set
-    var viewPositionY: Double = 0.0
-        private set
-    var gravity = Vec2(0f, -9.8f)
-        private set
-    var debug = false
+    internal var debug = false
         private set
 
 
@@ -92,6 +91,11 @@ class GameOptions {
 
     fun setDebugMode(debug: Boolean): GameOptions {
         this.debug = debug
+        return this
+    }
+
+    fun setControlMapping(controlsMap: ControlsMap): GameOptions {
+        this.controlsMap = controlsMap
         return this
     }
 
@@ -148,8 +152,8 @@ class GameOptions {
 
         private fun setPort(width: Double, height: Double){
             if ((width == 0.0)&&(height == 0.0)){
-                privateHeight = Game.height.toDouble()
-                privateWidth = Game.width.toDouble()
+                privateHeight = height
+                privateWidth = width
             }else if ((width == 0.0)||(height == 0.0)) {
                 if (height == 0.0) {
                     privateWidth = width
