@@ -1,8 +1,10 @@
 package util.colors
 
 interface Color {
-    fun toHex(): HexColor
-    fun toRgba(): RGBAColor
-    fun lighten(amount: Int): Color
-    fun darken(amount: Int): Color
+    val a: Double
+    val r: Double
+    val g: Double
+    val b: Double
+
+    fun toLong(): Long
 }
