@@ -11,5 +11,7 @@ abstract class ControlsMap {
         return arrayListOf(Key(map, keyId))
     }
 
-    inner class ControlsKey(vararg keys: Keys) : Key(map, *keys)
+    protected fun mapToKeys(vararg keys: Keys): Key {
+        return Key(map, *keys)
+    }
 }
