@@ -1,6 +1,7 @@
 package graphics.framebuffer
 
 import display.Game
+import graphics.Image
 import loader.loadTexturedQuad
 import models.Model
 import org.lwjgl.opengl.GL11
@@ -16,12 +17,12 @@ import java.nio.ByteBuffer
 class Fbo (private val width: Int, private val height: Int, depthBufferType: Int = DEPTH_RENDER_BUFFER) {
 
     private var frameBuffer: Int = 0
-    private val quad: Model = loadTexturedQuad(0, -1f, 1f, 1f, -1f)
+    private val quad: Model = loadTexturedQuad(Image(0), -1f, 1f, 1f, -1f)
 
     /**
      * @return The ID of the texture containing the colour buffer of the FBO.
      */
-    var colourTexture: Int = 0
+    var colourTexture: Image = Image(0)
         private set
     /**
      * @return The texture containing the FBOs depth buffer.
@@ -75,8 +76,8 @@ class Fbo (private val width: Int, private val height: Int, depthBufferType: Int
      * FBO.
      */
     private fun createTextureAttachment() {
-        colourTexture = GL11.glGenTextures()
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colourTexture)
+        colourTexture = Image(GL11.glGenTextures())
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colourTexture.id)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
                 null as ByteBuffer?)
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
@@ -91,7 +92,7 @@ class Fbo (private val width: Int, private val height: Int, depthBufferType: Int
 //            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount)
 //        }
 
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colourTexture, 0)
+        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colourTexture.id, 0)
     }
 
     /**
@@ -177,7 +178,7 @@ class Fbo (private val width: Int, private val height: Int, depthBufferType: Int
      */
     fun cleanUp() {
         GL30.glDeleteFramebuffers(frameBuffer)
-        GL11.glDeleteTextures(colourTexture)
+        GL11.glDeleteTextures(colourTexture.id)
         GL11.glDeleteTextures(depthTexture)
         GL30.glDeleteRenderbuffers(depthBuffer)
         GL30.glDeleteRenderbuffers(colourBuffer)

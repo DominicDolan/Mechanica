@@ -1,6 +1,7 @@
-package graphics
+package graphics.drawer
 
-import graphics.drawer.Drawer
+import graphics.Image
+import graphics.colorArray
 import util.colors.Color
 import util.colors.hex
 import util.units.Angle
@@ -11,6 +12,18 @@ object Centered : Layout() {
         get() = x - width/2.0
     override val outY: Double
         get() = y - height/2.0
+    override val outWidth: Double
+        get() = width
+    override val outHeight: Double
+        get() = height
+}
+
+
+object Normal : Layout() {
+    override val outX: Double
+        get() = x
+    override val outY: Double
+        get() = y
     override val outWidth: Double
         get() = width
     override val outHeight: Double
@@ -28,6 +41,18 @@ class Positional(private val drawer: Drawer) {
         drawer.ellipse(left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
+    fun image(image: Image, left: Number, top: Number, right: Number, bottom: Number) {
+        Drawer.layout = Normal
+        drawer.image(image, left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
+    }
+
+}
+
+object Stroke : Drawer() {
+    operator fun invoke(stroke: Double): Drawer {
+        strokeWidth = stroke
+        return this
+    }
 }
 
 object Rotated : Drawer() {
@@ -70,15 +95,4 @@ abstract class Layout {
     abstract val outY: Double
     abstract val outWidth: Double
     abstract val outHeight: Double
-}
-
-object Normal : Layout() {
-    override val outX: Double
-        get() = x
-    override val outY: Double
-        get() = y
-    override val outWidth: Double
-        get() = width
-    override val outHeight: Double
-        get() = height
 }

@@ -14,6 +14,7 @@ import util.units.Angle
 /**
  * Created by domin on 28/10/2017.
  */
+@Deprecated("Painter is being deprecated and won't work as normal, use Drawer instead")
 class Painter {
     var colorRenderer: (Model) -> Unit = {}
     var textureRenderer: (Model) -> Unit = {}
@@ -39,7 +40,7 @@ class Painter {
 
     val font: FontType = loadFont("arial")
     val guiText = GUIText("", 10f, font, 0f, 0f, 5f)
-    val model = loadTexturedQuad(0, 0f, 1f, 1f, 0f)
+    val model = loadTexturedQuad(Image(0), 0f, 1f, 1f, 0f)
 
 
     fun drawRect(x: Number, y: Number, width: Number, height: Number) {
@@ -123,12 +124,12 @@ class Painter {
         }
     }
 
-    fun drawImage(image: Int) {
+    fun drawImage(image: Image) {
         model.texture = image
         textureRenderer(model)
     }
 
-    fun drawScreenImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+    fun drawScreenImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
@@ -137,7 +138,7 @@ class Painter {
         drawingViewMatrix = Game.viewMatrix
     }
 
-    fun drawCenteredScreenImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+    fun drawCenteredScreenImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         transformationMatrix.setTranslate(x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
@@ -146,13 +147,13 @@ class Painter {
         drawingViewMatrix = Game.viewMatrix
     }
 
-    fun drawImage(image: Int, matrix: Matrix4f) {
+    fun drawImage(image: Image, matrix: Matrix4f) {
         transformationMatrix.setMatrix(matrix)
         model.texture = image
         textureRenderer(model)
     }
 
-    fun drawImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+    fun drawImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         transformationMatrix.setTranslate(x.toDouble(), y.toDouble(), 0.0)
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
@@ -160,15 +161,15 @@ class Painter {
         transformationMatrix.rewind()
     }
 
-    fun drawCenteredImage(image: Int, x: Number, y: Number, width: Number, height: Number) {
+    fun drawCenteredImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         drawImage(image, x.toDouble() - width.toDouble()/2.0, y.toDouble() - height.toDouble()/2.0, width.toDouble(), height.toDouble())
     }
 
-    fun drawPositionalImage(image: Int, left: Number, top: Number, right: Number, bottom: Number) {
+    fun drawPositionalImage(image: Image, left: Number, top: Number, right: Number, bottom: Number) {
         drawImage(image, left, bottom, right.toDouble() - left.toDouble(), top.toDouble() - bottom.toDouble())
     }
 
-    fun drawRotatedImage(image: Int, centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
+    fun drawRotatedImage(image: Image, centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
         transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
@@ -189,7 +190,6 @@ class Painter {
     fun drawCircle(centerX: Number, centerY: Number, radius: Number, strokeWidth: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        graphics.strokeWidth = strokeWidth.toDouble()/radius.toDouble()
         graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
@@ -197,7 +197,6 @@ class Painter {
     fun fillCircle(centerX: Number, centerY: Number, radius: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        strokeWidth = 1.0
         graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
@@ -205,14 +204,12 @@ class Painter {
     fun drawEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, strokeWidth: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        graphics.strokeWidth = 4.0*strokeWidth.toDouble()/(horizontalAxis.toDouble() + verticalAxis.toDouble())
         graphics.circleRenderer(Drawer.Companion)
     }
 
     fun fillEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        strokeWidth = 1.0
         graphics.circleRenderer(Drawer.Companion)
     }
 
@@ -221,7 +218,6 @@ class Painter {
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
-        strokeWidth = 1.0
         graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
 

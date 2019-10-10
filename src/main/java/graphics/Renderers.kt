@@ -68,7 +68,6 @@ var colorRenderer:(Drawer.Companion)-> Unit = {
 
 val circleShader = CircleShader()
 val circleModel = loadTexturedQuad(loadTexture(Res.image["oval"]), 0f, 1f, 1f, 0f)
-var strokeWidth = 0.1
 private var border = 0.05
 
 var circleRenderer:(Drawer.Companion)-> Unit = {
@@ -79,7 +78,7 @@ var circleRenderer:(Drawer.Companion)-> Unit = {
     border = 0.03/((transformationMatrix.scaleX + transformationMatrix.scaleY))
     circleShader.loadTransformationMatrix(transformationMatrix.create())
     circleShader.setUniform4fv(circleShader.color, colorArray)
-    circleShader.loadFloat(circleShader.strokeWidth, strokeWidth.toFloat())
+    circleShader.loadFloat(circleShader.strokeWidth, it.strokeWidth.toFloat())
     circleShader.loadFloat(circleShader.border, border.toFloat())
 
     enableAlphaBlending()
@@ -105,7 +104,7 @@ var fontRenderer:(Drawer.Companion)-> Unit = {
     fontShader.loadTransformationMatrix(transformationMatrix)
 
     glActiveTexture(GL_TEXTURE0)
-    glBindTexture(GL_TEXTURE_2D, model.texture)
+    glBindTexture(GL_TEXTURE_2D, model.texture.id)
 //    glDrawElements(GL11.GL_TRIANGLES, circleModel.vertexCount,
 //            GL11.GL_UNSIGNED_SHORT, 0)
     glDrawArrays(GL_TRIANGLES, 0, model.vertexCount)
@@ -124,7 +123,7 @@ var frameRenderer: (Model) -> Unit = {
     AAShader.setUniform2fv(AAShader.inverseRes, inverseRes)
 
     GL13.glActiveTexture(GL13.GL_TEXTURE0)
-    GL11.glBindTexture(GL11.GL_TEXTURE_2D, it.texture)
+    GL11.glBindTexture(GL11.GL_TEXTURE_2D, it.texture.id)
 
     GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount,
             GL11.GL_UNSIGNED_SHORT, 0)
@@ -134,7 +133,7 @@ var frameRenderer: (Model) -> Unit = {
     disableVertexArrays()
 }
 
-val quad: Model = loadTexturedQuad(0, -1f, 1f, 1f, -1f)
+val quad: Model = loadTexturedQuad(Image(0), -1f, 1f, 1f, -1f)
 var backRenderer = {
     prepareVertexArrays(quad.vaoID, 1)
 

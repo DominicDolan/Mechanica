@@ -6,6 +6,9 @@ import org.jbox2d.common.Vec2
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import util.extensions.flipVertically
+import util.extensions.scale
+import util.extensions.toOrigin
 import java.lang.NumberFormatException
 import java.util.*
 import kotlin.collections.ArrayList

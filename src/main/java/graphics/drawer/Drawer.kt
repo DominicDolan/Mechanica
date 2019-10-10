@@ -10,10 +10,12 @@ import matrices.ViewMatrix
 import util.colors.hex
 import util.extensions.degrees
 import util.units.Angle
+import kotlin.math.atan2
 
 open class Drawer {
     companion object {
-        val model = loadTexturedQuad(0, 0f, 1f, 1f, 0f)
+        private val quad = loadTexturedQuad(Image(0), 0f, 1f, 1f, 0f)
+        var model = quad
 
         var renderer: (Companion)-> Unit = colorRenderer
 
@@ -28,6 +30,9 @@ open class Drawer {
         var pivotX: Double = 0.0
         var pivotY: Double = 0.0
 
+        var isStrokeSet = false
+        var strokeWidth: Double = 1.0
+
         var isMatrixSet = false
         var viewMatrix: ViewMatrix = Game.viewMatrix
 
@@ -40,6 +45,9 @@ open class Drawer {
             isPivotSet = false
             isLayoutSet = false
             isMatrixSet = false
+            isStrokeSet = false
+            strokeWidth = 1.0
+            model = quad
             viewMatrix = Game.viewMatrix
             transformationMatrix.setRotate(0.0, 0.0, 0.0)
             transformationMatrix.rewind()
@@ -62,7 +70,86 @@ open class Drawer {
             renderer(this)
             reset()
         }
+
+        fun drawLine(strokeWidth: Double, x1: Double, y1: Double, x2: Double, y2: Double) {
+            val triangleWidth = x2 - x1
+            val triangleHeight = y2 - y1
+            transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
+
+            transformationMatrix.setTranslate(x1, y1 - strokeWidth/2.0, 0.0)
+            transformationMatrix.setPivot(0.0, strokeWidth / 2.0)
+            transformationMatrix.setRotate(0.0, 0.0, Math.toDegrees(atan2(triangleHeight, triangleWidth)))
+
+            colorRenderer(this)
+            reset()
+        }
     }
+
+
+    fun rectangle(x: Number, y: Number, width: Number, height: Number){
+        renderer = colorRenderer
+        layout(x,y,width, height)
+        draw()
+    }
+
+    fun circle(x: Number, y: Number, radius: Number) {
+        val diameter = 2.0*radius.toDouble()
+        if (!isStrokeSet) {
+            strokeWidth = 1.0
+        }
+        ellipse(x, y, diameter, diameter)
+    }
+
+    fun ellipse(x: Number, y: Number, width: Number, height: Number) {
+        if (!isLayoutSet) {
+            layout = Centered
+        }
+        renderer = circleRenderer
+        layout(x, y, width, height)
+        draw()
+    }
+
+    fun text(text: String, fontSize: Number, x: Number, y: Number) {
+        if (!isMatrixSet) {
+            viewMatrix = Game.uiViewMatrix
+        }
+        guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
+        layout(0.0, 0.0, 1.0, 1.0)
+        renderer = fontRenderer
+        draw()
+    }
+
+    fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
+        model.texture = image
+        renderer = textureRenderer
+        layout(x,y,width,height)
+        draw()
+    }
+
+    fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0, looped: Boolean = true) {
+        if (isStrokeSet) {
+            val p = polygon.path
+            for (i in 0..p.size-2) {
+                val v1 = p[i]
+                val v2 = p[i+1]
+                drawLine(strokeWidth, v1.x, v1.y, v2.x, v2.y)
+            }
+            if (looped) {
+                drawLine(strokeWidth, p[p.size-1].x, p[p.size-1].y, p[0].x, p[0].y)
+            }
+        } else {
+            layout = Normal
+            layout(x,y, scaleWidth, scaleHeight)
+            renderer = colorRenderer
+            model = polygon.model
+            draw()
+        }
+    }
+
+    fun line(x1: Number, y1: Number, x2: Number, y2: Number) {
+        drawLine(strokeWidth, x1.toDouble(), y1.toDouble(), x2.toDouble(), y2.toDouble())
+    }
+
 
     val normal: Drawer
         get() {
@@ -117,6 +204,12 @@ open class Drawer {
             return this
         }
 
+    val stroke: Stroke
+        get() {
+            isStrokeSet = true
+            return Stroke
+        }
+
     val rotated: Rotated
         get() {
             isRotationSet = true
@@ -135,43 +228,6 @@ open class Drawer {
             viewMatrix = Game.viewMatrix
             return this
         }
-
-    fun rectangle(x: Number, y: Number, width: Number, height: Number){
-        renderer = colorRenderer
-        layout(x,y,width, height)
-        draw()
-    }
-
-    fun circle(x: Number, y: Number, radius: Number) {
-        val diameter = 2.0*radius.toDouble()
-        ellipse(x, y, diameter, diameter)
-    }
-
-    fun ellipse(x: Number, y: Number, width: Number, height: Number) {
-        if (!isLayoutSet) {
-            layout = Centered
-        }
-        renderer = circleRenderer
-        layout(x, y, width, height)
-        draw()
-    }
-
-    fun text(text: String, fontSize: Number, x: Number, y: Number) {
-        if (!isMatrixSet) {
-            viewMatrix = Game.uiViewMatrix
-        }
-        guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
-        layout(0.0, 0.0, 1.0, 1.0)
-        renderer = fontRenderer
-        draw()
-    }
-
-    fun image(image: Int, x: Number, y: Number, width: Number, height: Number) {
-        model.texture = image
-        renderer = textureRenderer
-        layout(x,y,width,height)
-        draw()
-    }
 
     private operator fun Layout.invoke(x: Number, y: Number, width: Number, height: Number) {
         this.x = x.toDouble()

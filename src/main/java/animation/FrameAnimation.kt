@@ -1,9 +1,10 @@
 package animation
 
+import graphics.Image
 import kotlin.math.abs
 import kotlin.math.floor
 
-class FrameAnimation(private val frames: List<Int>, frameRate : Double) {
+class FrameAnimation(private val frames: List<Image>, frameRate : Double) {
     val duration = frames.size.toDouble()/frameRate
     private var progress = 0.0
         set(value) { field = value%duration }
@@ -14,13 +15,13 @@ class FrameAnimation(private val frames: List<Int>, frameRate : Double) {
             progress = value*duration
         }
 
-    var currentFrame: Int
+    var currentFrame: Image
         get() {
             val index = floor(fraction*frames.size).toInt()
             return frames[index]
         }
         set(value) {
-            fraction = value.toDouble()/frames.size.toDouble()
+            fraction = value.id.toDouble()/frames.size.toDouble()
         }
 
     var scale: Double = 1.0

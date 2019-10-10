@@ -1,5 +1,6 @@
 package font
 
+import graphics.Image
 import loader.loadBufferedReader
 
 /**
@@ -19,6 +20,6 @@ class FontType
  * - the font file containing information about each character in
  * the texture atlas.
  */
-(val textureAtlas: Int, fontFile: String) {
+(val textureAtlas: Image, fontFile: String) {
     val metaFile: MetaFile = MetaFile(loadBufferedReader(fontFile))
 }

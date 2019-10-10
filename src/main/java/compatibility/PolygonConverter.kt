@@ -12,7 +12,7 @@ import java.util.*
 /**
  * Created by domin on 02/11/2017.
  */
-class Polygon(floatArray: FloatArray) {
+class PolygonConverter(floatArray: FloatArray) {
     private var floatArray = createUnitQuad()
     private var model: Model? = null
     private var vecArray: Array<Vec2>? = null

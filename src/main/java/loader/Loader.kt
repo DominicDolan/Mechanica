@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
 import compatibility.Vector
 import font.FontType
+import graphics.Image
 import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
@@ -45,7 +46,7 @@ fun loadModel(positions: FloatArray, indices: ShortArray): Model {
 }
 
 
-fun loadModel(positions: FloatArray, indices: ShortArray, textureCoords: FloatArray, texture: Int): Model {
+fun loadModel(positions: FloatArray, indices: ShortArray, textureCoords: FloatArray, texture: Image): Model {
     val vaoID = createVAO()
     bindIndicesBuffer(indices.toBuffer())
     storeDataInAttributeList(0, positions)
@@ -56,7 +57,7 @@ fun loadModel(positions: FloatArray, indices: ShortArray, textureCoords: FloatAr
     return model
 }
 
-fun loadTextureModel(positions: FloatBuffer, textureCoords: FloatBuffer, vertexCount: Int, texture: Int): Model {
+fun loadTextureModel(positions: FloatBuffer, textureCoords: FloatBuffer, vertexCount: Int, texture: Image): Model {
     val vaoID = createVAO()
     storeDataInAttributeList(0, 2, positions)
     storeDataInAttributeList(1, 2, textureCoords)
@@ -82,7 +83,7 @@ fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Model {
 }
 
 
-fun loadTexturedQuad(texture: Int, left: Float, top: Float, right: Float, bottom: Float): Model {
+fun loadTexturedQuad(texture: Image, left: Float, top: Float, right: Float, bottom: Float): Model {
     val vertices = floatArrayOf(left, top, 0.0f, left, bottom, 0.0f, right, bottom, 0.0f, right, top, 0.0f)
 
     val indices = shortArrayOf(0, 1, 2, 0, 2, 3) // The order of vertexrendering.
@@ -107,7 +108,7 @@ fun loadUnitQuad(): Model {
             1f, 0f  //V3
     )
 
-    return loadModel(vertices, indices, textureCoords, 0)
+    return loadModel(vertices, indices, textureCoords, Image(0))
 }
 
 fun loadTriangulatedModel(positions: List<Vector>): Model {
@@ -194,7 +195,7 @@ private fun hashCoordinates(x: Double, y: Double): String {
 }
 
 
-fun loadTexture(name: String):Int{
+fun loadTexture(name: String): Image{
 
 //    val fileName = "res/" + name + (if (name.endsWith(".png")) "" else ".png")
     val width = getBuffer<Int>(1) as IntBuffer
@@ -212,7 +213,7 @@ fun loadTexture(name: String):Int{
     if (data != null) {
         stbi_image_free(data)
     }
-    return id
+    return Image(id)
 }
 
 fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadTexture(it.absolutePath) }.toList()

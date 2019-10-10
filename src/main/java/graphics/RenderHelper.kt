@@ -30,7 +30,7 @@ fun enableAlphaBlending() {
 
 
 fun drawTexture(model: Model) {
-    glBindTexture(GL_TEXTURE_2D, model.texture)
+    glBindTexture(GL_TEXTURE_2D, model.texture.id)
     glDrawElements(GL_TRIANGLES, model.vertexCount,
             GL_UNSIGNED_SHORT, 0)
 }
@@ -45,7 +45,7 @@ fun defaultDraw(model: Model, shader: ShaderProgram) {
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-    GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.texture)
+    GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.texture.id)
     GL11.glDrawElements(GL11.GL_TRIANGLES, model.vertexCount,
             GL11.GL_UNSIGNED_SHORT, 0)
 
@@ -63,7 +63,7 @@ fun defaultEnd() {
 fun renderTexture(model: Model){
     prepareVertexArrays(model.vaoID, 1)
 
-    glBindTexture(GL_TEXTURE_2D, model.texture)
+    glBindTexture(GL_TEXTURE_2D, model.texture.id)
     glDrawElements(GL_TRIANGLES, model.vertexCount,
             GL_UNSIGNED_SHORT, 0)
 

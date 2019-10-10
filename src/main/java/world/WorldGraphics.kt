@@ -1,6 +1,7 @@
 package world
 
-import compatibility.Polygon
+import compatibility.PolygonConverter
+import graphics.Image
 import loader.loadTriangulatedModel
 import loader.loadUnitQuad
 import models.Model
@@ -13,12 +14,12 @@ class WorldGraphics : Iterable<Model>{
     private val model = loadUnitQuad()
     private val graphics = ArrayList<Model>()
 
-    fun add(texture: Int, matrix: Matrix4f){
+    fun add(texture: Image, matrix: Matrix4f){
         graphics.add(MatrixModel(texture, matrix))
     }
 
-    fun add(polygon: Polygon){
-        graphics.add(loadTriangulatedModel(polygon.toFloatArray()))
+    fun add(polygonConverter: PolygonConverter){
+        graphics.add(loadTriangulatedModel(polygonConverter.toFloatArray()))
     }
 
     override fun iterator() = graphics.iterator()
@@ -31,5 +32,5 @@ class WorldGraphics : Iterable<Model>{
         return str
     }
 
-    inner class MatrixModel(texture: Int, val matrix: Matrix4f) : Model(model.vaoID, model.vertexCount, texture)
+    inner class MatrixModel(texture: Image, val matrix: Matrix4f) : Model(model.vaoID, model.vertexCount, texture)
 }

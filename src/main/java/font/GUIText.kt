@@ -1,5 +1,6 @@
 package font
 
+import graphics.Image
 import models.Model
 
 import java.nio.Buffer
@@ -111,7 +112,7 @@ class GUIText
     var isCentered = false
         private set
 
-    val textureAtlas: Int
+    val textureAtlas: Image
         get() = font!!.textureAtlas
 
     init {
