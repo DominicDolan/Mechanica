@@ -1,24 +1,25 @@
 package svg
 
-import graphics.Polygon
+import graphics.SolidPolygon
 import compatibility.Vector
+import graphics.Polygon
 import models.Model
 import org.jsoup.nodes.Element
 
-class SVGPolygon(element: Element) : SVGElement(element) {
-    private val polygon: Polygon = Polygon(loadPolygonCoordinatesAsIs(element))
-    val path: List<Vector>
+class SVGPolygon(element: Element) : SVGElement(element), Polygon {
+    private val polygon: SolidPolygon = SolidPolygon(loadPolygonCoordinatesAsIs(element))
+    override val path: List<Vector>
         get() = polygon.path
-    val centroid: Vector
+    override val centroid: Vector
         get() = polygon.centroid
-    val model: Model
+    override val model: Model
         get() = polygon.model
 
-    fun adjust(
-            toOrigin: Boolean = false,
-            keepAspectRatio: Boolean = true,
-            width: Double = 0.0,
-            height: Double = 0.0) {
+    override fun adjust(
+            toOrigin: Boolean,
+            keepAspectRatio: Boolean,
+            width: Double,
+            height: Double) {
 
         polygon.adjust(toOrigin, keepAspectRatio, width, height)
     }

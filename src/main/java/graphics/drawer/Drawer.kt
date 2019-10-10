@@ -120,6 +120,9 @@ open class Drawer {
     }
 
     fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
+        if (!isLayoutSet) {
+            layout = Centered
+        }
         model.texture = image
         renderer = textureRenderer
         layout(x,y,width,height)
