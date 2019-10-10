@@ -1,7 +1,7 @@
 package shaders.circle
 
 import display.Game
-import renderer.WorldShader
+import graphics.WorldShader
 
 /**
  * Created by domin on 07/11/2017.

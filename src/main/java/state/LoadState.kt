@@ -1,7 +1,7 @@
 package state
 
 import display.Game
-import renderer.Painter
+import graphics.drawer.Drawer
 
 /**
  * Created by domin on 4 Aug 2017.
@@ -24,8 +24,8 @@ abstract class LoadState : State() {
 
     }
 
-    override fun render(g: Painter) {
-        renderLoadScreen(g)
+    override fun render(draw: Drawer) {
+        renderLoadScreen(draw)
         if (startLoading) {
             load()
             finishedLoading = true
@@ -34,7 +34,7 @@ abstract class LoadState : State() {
     }
 
     abstract fun preLoad()
-    abstract fun renderLoadScreen(g: Painter)
+    abstract fun renderLoadScreen(g: Drawer)
 
     abstract fun load()
 

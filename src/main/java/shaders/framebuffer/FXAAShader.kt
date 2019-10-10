@@ -1,6 +1,6 @@
 package shaders.framebuffer
 
-import renderer.ShaderProgram
+import graphics.ShaderProgram
 
 class FXAAShader : ShaderProgram("framebuffer/fxaaVertex.glsl", "framebuffer/fxaaFragment.glsl") {
 

@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL11.glClearColor
 import debug.BodyRenderer
 import input.ControlsMap
 import physics.ContactEvents
-import renderer.Painter
-import renderer.backRenderer
+import graphics.drawer.Drawer
+import graphics.backRenderer
 import state.EmptyState
 import state.EmptyLoadState
 import state.LoadState
@@ -35,7 +35,7 @@ object Game {
 
     private var loop: GameLoop? = null
 
-    private var painter: Painter? = null
+    private var painter: Drawer? = null
 
     val height: Int
         get() = displayManager?.height?: 0
@@ -84,7 +84,7 @@ object Game {
     private fun emptyState(): State {
         return object : State(){
             override fun update(delta: Double) {}
-            override fun render(g: Painter) {}
+            override fun render(draw: Drawer) {}
 
         }
     }
@@ -172,7 +172,7 @@ object Game {
 
                     val painter = painter
                     if (ready && painter == null){
-                        Game.painter = Painter()
+                        Game.painter = Drawer()
                     }
                     if (ready && painter != null) {
                         backRenderer()

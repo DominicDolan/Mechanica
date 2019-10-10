@@ -3,7 +3,7 @@ package shaders.font
 import matrices.ProjectionMatrix
 import matrices.TransformationMatrix
 import matrices.ViewMatrix
-import renderer.ShaderProgram
+import graphics.ShaderProgram
 
 class FontShader : ShaderProgram("font/fontVertex.glsl", "font/fontFragment.glsl") {
     private val ratio = 1f

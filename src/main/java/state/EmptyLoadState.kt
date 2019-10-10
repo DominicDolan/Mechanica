@@ -1,9 +1,9 @@
 package state
 
-import renderer.Painter
+import graphics.drawer.Drawer
 
 object EmptyLoadState : LoadState() {
     override fun preLoad() {}
-    override fun renderLoadScreen(g: Painter) {}
+    override fun renderLoadScreen(g: Drawer) {}
     override fun load() {}
 }

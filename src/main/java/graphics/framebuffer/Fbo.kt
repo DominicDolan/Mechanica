@@ -1,4 +1,4 @@
-package renderer.framebuffer
+package graphics.framebuffer
 
 import display.Game
 import loader.loadTexturedQuad
@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
 import org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS
 import org.lwjgl.opengl.GL30
-import renderer.frameRenderer
+import graphics.frameRenderer
 import java.nio.ByteBuffer
 
 class Fbo (private val width: Int, private val height: Int, depthBufferType: Int = DEPTH_RENDER_BUFFER) {

@@ -1,7 +1,7 @@
 package shaders.texture
 
 import display.Game
-import renderer.WorldShader
+import graphics.WorldShader
 
 
 /**

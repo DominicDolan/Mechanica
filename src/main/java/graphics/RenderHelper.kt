@@ -1,4 +1,4 @@
-package renderer
+package graphics
 
 import models.Model
 import org.lwjgl.opengl.GL11

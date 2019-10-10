@@ -1,7 +1,7 @@
 package shaders.color
 
 import display.Game
-import renderer.WorldShader
+import graphics.WorldShader
 
 /**
  * Created by domin on 28/10/2017.

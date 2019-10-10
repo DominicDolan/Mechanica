@@ -1,14 +1,9 @@
 package display
 
 import matrices.ProjectionMatrix
-import debug.BodyRenderer
 import input.ControlsMap
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
-import org.jbox2d.dynamics.World
-import physics.ContactEvents
-import renderer.Painter
-import state.EmptyState
 import state.LoadState
 import state.State
 

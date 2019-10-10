@@ -1,4 +1,4 @@
-package renderer
+package graphics
 
 import display.Game
 import font.FontType
@@ -8,15 +8,16 @@ import loader.loadTexturedQuad
 import models.Model
 import org.jbox2d.common.Vec2
 import org.joml.Matrix4f
+import graphics.drawer.Drawer
 import util.units.Angle
 
 /**
  * Created by domin on 28/10/2017.
  */
 class Painter {
-    var colorRenderer: (Model) -> Unit = renderer.colorRenderer
-    var textureRenderer: (Model) -> Unit = renderer.textureRenderer
-    var circleRenderer: () -> Unit = renderer.circleRenderer
+    var colorRenderer: (Model) -> Unit = {}
+    var textureRenderer: (Model) -> Unit = {}
+    var circleRenderer: () -> Unit = {}
     var color: Long = 0xFFFFFFFF
         set(value) {
             var color = value
@@ -180,7 +181,7 @@ class Painter {
     fun drawText(text: String, fontSize: Number, x: Number, y: Number) {
         guiText.set(text, fontSize.toFloat(), font, x.toFloat(), y.toFloat(), guiText.maxLineSize, guiText.isCentered)
 
-        fontRenderer(guiText)
+        fontRenderer(Drawer)
         transformationMatrix.rewind()
     }
 
@@ -188,8 +189,8 @@ class Painter {
     fun drawCircle(centerX: Number, centerY: Number, radius: Number, strokeWidth: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        renderer.strokeWidth = strokeWidth.toDouble()/radius.toDouble()
-        renderer.circleRenderer()
+        graphics.strokeWidth = strokeWidth.toDouble()/radius.toDouble()
+        graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
 
@@ -197,22 +198,22 @@ class Painter {
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
         strokeWidth = 1.0
-        renderer.circleRenderer()
+        graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
 
     fun drawEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, strokeWidth: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        renderer.strokeWidth = 4.0*strokeWidth.toDouble()/(horizontalAxis.toDouble() + verticalAxis.toDouble())
-        renderer.circleRenderer()
+        graphics.strokeWidth = 4.0*strokeWidth.toDouble()/(horizontalAxis.toDouble() + verticalAxis.toDouble())
+        graphics.circleRenderer(Drawer.Companion)
     }
 
     fun fillEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         strokeWidth = 1.0
-        renderer.circleRenderer()
+        graphics.circleRenderer(Drawer.Companion)
     }
 
     fun fillRotatedEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, degrees: Number){
@@ -221,7 +222,7 @@ class Painter {
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
         strokeWidth = 1.0
-        renderer.circleRenderer()
+        graphics.circleRenderer(Drawer.Companion)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
 
     }

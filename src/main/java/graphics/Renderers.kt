@@ -1,4 +1,4 @@
-package renderer
+package graphics
 
 import display.Game
 import font.GUIText
@@ -11,7 +11,8 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
-import renderer.framebuffer.Fbo
+import graphics.drawer.Drawer
+import graphics.framebuffer.Fbo
 import resources.Res
 import shaders.circle.CircleShader
 import shaders.color.ColorShader
@@ -28,15 +29,15 @@ val transformationMatrix = TransformationMatrix()
 var drawingViewMatrix =  Game.viewMatrix
 
 var textureShader = TextureShader()
-var textureRenderer:(Model)-> Unit = {
-    prepareVertexArrays(it.vaoID, 2)
+var textureRenderer:(Drawer.Companion)-> Unit = {
+    prepareVertexArrays(it.model.vaoID, 2)
 
     textureShader.start()
     textureShader.loadViewMatrix(drawingViewMatrix.create())
     textureShader.loadTransformationMatrix(transformationMatrix.create())
 
     enableAlphaBlending()
-    drawTexture(it)
+    drawTexture(it.model)
 
     disableVertexArrays()
     textureShader.stop()
@@ -44,20 +45,21 @@ var textureRenderer:(Model)-> Unit = {
 
 var colorShader = ColorShader()
 var colorArray: FloatArray = floatArrayOf(1f,1f,1f,1f)
-var colorRenderer:(Model)-> Unit = {
-    prepareVertexArrays(it.vaoID, 1)
+var colorRenderer:(Drawer.Companion)-> Unit = {
+
+    prepareVertexArrays(it.model.vaoID, 1)
 
     colorShader.start()
-    colorShader.loadViewMatrix(drawingViewMatrix.create())
+    colorShader.loadViewMatrix(it.viewMatrix.create())
     colorShader.loadTransformationMatrix(transformationMatrix.create())
     colorShader.setUniform4fv(colorShader.color, colorArray)
 
-    if (it.drawType == GL_TRIANGLES) {
-        glDrawElements(GL_TRIANGLES, it.vertexCount,
+    if (it.model.drawType == GL_TRIANGLES) {
+        glDrawElements(GL_TRIANGLES, it.model.vertexCount,
                 GL_UNSIGNED_SHORT, 0)
     } else
-        glDrawArrays(it.drawType, 0,
-                it.vertexCount)
+        glDrawArrays(it.model.drawType, 0,
+                it.model.vertexCount)
 
     colorShader.stop()
 
@@ -69,11 +71,11 @@ val circleModel = loadTexturedQuad(loadTexture(Res.image["oval"]), 0f, 1f, 1f, 0
 var strokeWidth = 0.1
 private var border = 0.05
 
-var circleRenderer:()-> Unit = {
+var circleRenderer:(Drawer.Companion)-> Unit = {
     prepareVertexArrays(circleModel.vaoID, 2)
 
     circleShader.start()
-    circleShader.loadViewMatrix(drawingViewMatrix.create())
+    circleShader.loadViewMatrix(it.viewMatrix.create())
     border = 0.03/((transformationMatrix.scaleX + transformationMatrix.scaleY))
     circleShader.loadTransformationMatrix(transformationMatrix.create())
     circleShader.setUniform4fv(circleShader.color, colorArray)
@@ -88,35 +90,15 @@ var circleRenderer:()-> Unit = {
     disableVertexArrays()
 }
 
-var colorRendererTemp:(GUIText)-> Unit = {
-    prepareVertexArrays(it.model.vaoID, 1)
-
-    colorShader.start()
-    colorShader.loadViewMatrix(drawingViewMatrix.create())
-    colorShader.loadTransformationMatrix(transformationMatrix.create())
-    colorShader.setUniform4fv(colorShader.color, colorArray)
-
-//    if (it.drawType == GL_TRIANGLES) {
-//        glDrawElements(GL_TRIANGLES, it.vertexCount,
-//                GL_UNSIGNED_SHORT, 0)
-//    } else
-    glDrawArrays(it.model.drawType, 0,
-            it.model.vertexCount)
-
-    colorShader.stop()
-
-    disableVertexArrays()
-}
-
 var fontShader = FontShader()
-var fontRenderer:(GUIText)-> Unit = { text ->
-    val model = text.model
+var fontRenderer:(Drawer.Companion)-> Unit = {
+    val model = it.guiText.model
     prepareVertexArrays(model.vaoID, 2)
     enableAlphaBlending()
 
 
     fontShader.start()
-    fontShader.loadTranslation(text.positionX, text.positionY)
+    fontShader.loadTranslation(it.guiText.positionX, it.guiText.positionY)
     fontShader.setUniform4fv(fontShader.color, colorArray)
     fontShader.loadProjectionMatrix(Game.projectionMatrix)
     fontShader.loadViewMatrix(Game.uiViewMatrix)

@@ -1,8 +1,8 @@
 package state
 
-import renderer.Painter
+import graphics.drawer.Drawer
 
 object EmptyState : State(){
     override fun update(delta: Double) { }
-    override fun render(g: Painter) { }
+    override fun render(draw: Drawer) { }
 }

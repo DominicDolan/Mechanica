@@ -1,22 +1,15 @@
 package debug
 
-import compatibility.toDegrees
 import display.Game
-import models.Model
 import org.jbox2d.callbacks.DebugDraw
-import org.jbox2d.collision.shapes.CircleShape
-import org.jbox2d.collision.shapes.EdgeShape
-import org.jbox2d.collision.shapes.PolygonShape
-import org.jbox2d.collision.shapes.Shape
 import org.jbox2d.common.Color3f
 import org.jbox2d.common.Transform
 import org.jbox2d.common.Vec2
-import org.jbox2d.dynamics.Body
-import renderer.Painter
+import graphics.drawer.Drawer
 
 object BodyRenderer : DebugDraw(null) {
 
-    private var g: Painter? = null
+    private var g: Drawer? = null
     const val debugColor: Long = 0x00FF4070
 
     fun init() {
@@ -26,27 +19,27 @@ object BodyRenderer : DebugDraw(null) {
         }
     }
 
-    fun update(g: Painter) {
-        g.color = debugColor
+    fun update(g: Drawer) {
+//        g.color = debugColor
         this.g = g
     }
 
     override fun drawSolidCircle(center: Vec2?, radius: Float, axis: Vec2?, color: Color3f?) {
         val c = center?:Vec2()
-        g?.drawCircle(c.x, c.y, radius, radius/5.0)
+//        g?.drawCircle(c.x, c.y, radius, radius/5.0)
     }
 
 
     override fun drawSegment(point1: Vec2?, point2: Vec2?, color: Color3f?) {
         val p1 = point1?:Vec2()
         val p2 = point2?:Vec2()
-        g?.drawLine(0.1, p1.x, p1.y, p2.x, p2.y)
+//        g?.drawLine(0.1, p1.x, p1.y, p2.x, p2.y)
     }
 
 
     override fun drawSolidPolygon(vertices: Array<out Vec2>?, vertexCount: Int, color: Color3f?) {
         val v = vertices?: emptyArray()
-        g?.drawPolygon(v, 0.1, vertexCount, true)
+//        g?.drawPolygon(v, 0.1, vertexCount, true)
     }
 
     override fun drawCircle(center: Vec2?, radius: Float, color: Color3f?) { }

@@ -1,6 +1,6 @@
 package state
 
-import renderer.Painter
+import graphics.drawer.Drawer
 
 /**
  * Created by domin on 22 Mar 2017.
@@ -9,7 +9,7 @@ import renderer.Painter
 abstract class State {
     abstract fun update(delta: Double)
 
-    abstract fun render(g: Painter)
+    abstract fun render(draw: Drawer)
 
 
 }
