@@ -6,21 +6,20 @@ import graphics.drawer.Drawer
 import loader.loadTexture
 import resources.Res
 import state.State
-import util.colors.hex
 import util.extensions.degrees
 
-fun main() {
+fun main(args: Array<String>) {
     val options = GameOptions()
             .setResolution(1280, 720)
             .setViewPort(height = 10.0)
-            .setStartingState { StartState() }
+            .setStartingState { StartMain() }
 
     Game.start(options)
     Game.update()
     Game.destroy()
 }
 
-private class StartState : State() {
+private class StartMain : State() {
     val image = loadTexture(Res.image["colors"])
     override fun update(delta: Double) {
     }

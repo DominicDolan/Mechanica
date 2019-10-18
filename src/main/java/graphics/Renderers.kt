@@ -100,7 +100,7 @@ var fontRenderer:(Drawer.Companion)-> Unit = {
     fontShader.loadTranslation(it.guiText.positionX, it.guiText.positionY)
     fontShader.setUniform4fv(fontShader.color, colorArray)
     fontShader.loadProjectionMatrix(Game.projectionMatrix)
-    fontShader.loadViewMatrix(Game.uiViewMatrix)
+    fontShader.loadViewMatrix(it.viewMatrix)
     fontShader.loadTransformationMatrix(transformationMatrix)
 
     glActiveTexture(GL_TEXTURE0)

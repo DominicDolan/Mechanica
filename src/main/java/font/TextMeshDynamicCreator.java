@@ -2,6 +2,8 @@ package font;
 
 import display.Game;
 
+import java.util.Arrays;
+
 /**
  * Created by domin on 29 Mar 2017.
  */
@@ -73,9 +75,11 @@ public class TextMeshDynamicCreator {
             }
             for (int word = 0; word <savedLines[line].getNumberOfWords(); word++) {
                 for (Character letter : savedLines[line].getWord(word).getCharacters()) {
+                    System.out.println("CursorX: " + cursorX + ", CursorY: " + cursorY);
                     addVerticesForCharacter(cursorX, cursorY, letter, text.getFontSize());
                     addTexCoords(letter.getXTextureCoord(), letter.getYTextureCoord(),
                             letter.getXMaxTextureCoord(), letter.getYMaxTextureCoord());
+                    System.out.println("xAdvance: " + letter.getXAdvance());
                     cursorX += letter.getXAdvance()*text.getFontSize()* Game.INSTANCE.getRatio();
                 }
                 cursorX += metaData.getSpaceWidth()*text.getFontSize()* Game.INSTANCE.getRatio();
@@ -85,16 +89,19 @@ public class TextMeshDynamicCreator {
         }
     }
 
-    private void addVerticesForCharacter(double curserX, double curserY, Character character, double fontSize) {
-        double x = curserX + (character.getXOffset() * fontSize * Game.INSTANCE.getRatio());
-        double y = curserY + ((character.getYOffset() - LINE_HEIGHT) * fontSize);
+    private void addVerticesForCharacter(double cursorX, double cursorY, Character character, double fontSize) {
+        System.out.println(character.getId());
+        double x = cursorX + (character.getXOffset() * fontSize * Game.INSTANCE.getRatio());
+        System.out.println("X offset: " + character.getXOffset());
+        double y = cursorY + ((character.getYOffset() - LINE_HEIGHT) * fontSize);
         double maxX = x + (character.getSizeX() * fontSize * Game.INSTANCE.getRatio());
         double maxY = y + (character.getSizeY() * fontSize);
         double properX = (2 * x);
         double properY = (-2 * y) ;
         double properMaxX = (2 * maxX);
         double properMaxY = (-2 * maxY);
-        addVertices(properX, properY, properMaxX, properMaxY);
+//        addVertices(properX, properY, properMaxX, properMaxY);
+        addVertices(x, -y, maxX, -maxY);
     }
 
     private void addVertices(double x, double y, double maxX, double maxY) {

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class TextMeshStaticCreator {
 
-	protected static final double LINE_HEIGHT = 0.03f;
+	protected static final double LINE_HEIGHT = 1f;
 	protected static final int SPACE_ASCII = 32;
 
 	private Line[] savedLines = new Line[32];
