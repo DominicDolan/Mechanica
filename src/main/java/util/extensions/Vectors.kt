@@ -2,6 +2,7 @@ package util.extensions
 
 import compatibility.Vector
 import org.jbox2d.common.Vec2
+import kotlin.math.sqrt
 
 /**
  * Created by domin on 02/11/2017.
@@ -156,4 +157,16 @@ fun List<Vector>.scaleY(factor: Double): List<Vector> {
         it.y = it.y*factor
     }
     return this
+}
+
+fun List<Vector>.calculateLength(): Double {
+    var previous = this[0]
+    var length = 0.0
+    for (vector in this) {
+        val x = vector.x - previous.x
+        val y = vector.y - previous.y
+        length += sqrt(x*x + y*y)
+        previous = vector
+    }
+    return length
 }

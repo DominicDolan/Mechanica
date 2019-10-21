@@ -3,10 +3,12 @@ package compatibility
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
+import graphics.Polygon
 import loader.loadTriangulatedModel
 import models.Model
 import org.jbox2d.common.Vec2
 import svg.SVGPolygon
+import util.extensions.centroid
 import java.util.*
 
 /**
@@ -92,4 +94,17 @@ class PolygonConverter(floatArray: FloatArray) {
     fun toGeometry() = geometry?: createGeometry(floatArray)
     fun toModel() = model?: createModel(floatArray)
     fun toFloatArray() = floatArray
+    fun toPolygon() = object : Polygon {
+        override val path: List<Vector>
+            get() = toVecArray().map { Vector(it) }
+        override val centroid: Vector
+            get() = path.centroid()
+        override val model: Model
+            get() = toModel()
+
+        override fun adjust(toOrigin: Boolean, keepAspectRatio: Boolean, width: Double, height: Double) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+    }
 }

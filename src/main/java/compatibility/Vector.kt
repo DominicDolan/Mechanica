@@ -33,6 +33,7 @@ class Vector(x: Double, y: Double) {
     private val vector3f: Vector3f
     private val vec2: Vec2
 
+    constructor(other: Vector)          : this(other.x,                other.y             )
     constructor(coordinate: Coordinate) : this(coordinate.x,          coordinate.y         )
     constructor(vector2f: Vector2f)     : this(vector2f.x.toDouble(), vector2f.y.toDouble())
     constructor(vector3f: Vector3f)     : this(vector3f.x.toDouble(), vector3f.y.toDouble())

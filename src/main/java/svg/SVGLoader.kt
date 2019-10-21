@@ -10,7 +10,6 @@ import util.extensions.flipVertically
 import util.extensions.scale
 import util.extensions.toOrigin
 import java.lang.NumberFormatException
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -21,22 +20,96 @@ fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): Li
     } else {
         doc.getElementById(pathId)
     }
-    val path = loadPolygonCoordinatesAsIs(element)
+    val path = loadPolygonCoordinates(element)
     path.toOrigin()
     path.scale(1.0/100.0)
     return path
 }
 
-fun loadPolygonCoordinatesAsIs(element: Element): List<Vector> {
+fun loadPolygonCoordinates(element: Element): List<Vector> {
+    val sequenceList = element
+            .attr("d")
+            .replace(Regex("\\s\\s+"), " ")
+            .split(Regex("(?=[lLmMzZhHvV])"))
+            .filter { it.isNotBlank() }
+
+    val coordinateList = ArrayList<Vector>()
+    for (sequence in sequenceList) {
+        val first = sequence.first()
+        println("Sequence:")
+        println(sequence)
+        when (first) {
+            'M', 'L' -> {
+                val absoluteValues = parseCoordinateSequence(sequence.substring(1))
+                coordinateList.addAll(absoluteValues)
+            }
+            'm', 'l' -> {
+                println("sequence: $sequence")
+                val relativeValues = parseCoordinateSequence(sequence.substring(1))
+                println("Coordinate values: $coordinateList")
+                val initial = if (coordinateList.isNotEmpty()) coordinateList.last() else Vector(0.0, 0.0)
+                val absoluteValues = relativeValues.relativeToAbsolute(initial)
+                coordinateList.addAll(absoluteValues)
+            }
+            'z', 'Z' -> {
+                coordinateList.add(Vector(coordinateList.first()))
+            }
+            'H' -> {
+
+            }
+            'h' -> {
+
+            }
+            'V' -> {
+
+            }
+            'v' -> {
+
+            }
+        }
+    }
+    return coordinateList.flipVertically()
+}
+
+private fun List<Vector>.relativeToAbsolute(initial: Vector): List<Vector> {
+    val absoluteList = ArrayList<Vector>()
+    var previous = initial
+    for (vector in this) {
+        val new = Vector(previous.x + vector.x, previous.y + vector.y)
+        absoluteList.add(new)
+        previous = new
+    }
+    return absoluteList
+}
+
+fun parseCoordinateSequence(text: String): List<Vector> {
+    val individualText = text.trim().split(" ")
+    return individualText.map {
+        val xy = it.split(",")
+        Vector(xy[0].toDouble(), xy[1].toDouble())
+    }
+}
+
+fun parseSingleValueSequence(text: String): List<Double> {
+    val individualText = text.trim().split(" ")
+    return individualText.map { it.toDouble() }
+}
+
+
+// This needs to be updated according to this:
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+fun loadPolygonCoordinatesOld(element: Element): List<Vector> {
     var count = 0
     var mode = 0
     var closed = false
     val pathStr = element
             .attr("d")
-            .also { count = it.length }
+            .also { println(it); count = it.length; println("Count before M: $count") }
             .replace("M", "")
-            .also { mode = if (count == it.length) 1 else 2 }
+            .also { mode = if (count == it.length) 1 else 2; println("Count after M: $count, mode: $mode") }
             .replace("m", "")
+            .replace("l", "")
+            .replace("  ", " ")
             .also { count = it.length }
             .replace("z", "").replace("Z", "")
             .also { closed = count != it.length }

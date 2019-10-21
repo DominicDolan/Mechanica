@@ -130,15 +130,16 @@ open class Drawer {
     }
 
     fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0, looped: Boolean = true) {
+        val stroke = strokeWidth
         if (isStrokeSet) {
             val p = polygon.path
             for (i in 0..p.size-2) {
                 val v1 = p[i]
                 val v2 = p[i+1]
-                drawLine(strokeWidth, v1.x, v1.y, v2.x, v2.y)
+                drawLine(stroke, v1.x, v1.y, v2.x, v2.y)
             }
             if (looped) {
-                drawLine(strokeWidth, p[p.size-1].x, p[p.size-1].y, p[0].x, p[0].y)
+                drawLine(stroke, p[p.size-1].x, p[p.size-1].y, p[0].x, p[0].y)
             }
         } else {
             layout = Normal
@@ -176,6 +177,16 @@ open class Drawer {
     val color: ColorDrawer
         get() = ColorDrawer
 
+    val black: Drawer
+        get() {
+            ColorDrawer(hex(0x000000FF))
+            return this
+        }
+    val white: Drawer
+        get() {
+            ColorDrawer(hex(0xFFFFFFFF))
+            return this
+        }
     val red: Drawer
         get() {
             ColorDrawer(hex(0xFF0000FF))
