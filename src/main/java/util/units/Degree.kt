@@ -9,7 +9,7 @@ inline class Degree(private val degrees: Double) : Angle {
 
     override fun toRadians() = (this.toDouble()*PI /180.0).radians
 
-    override fun toDouble() = (degrees+360.0)
+    override fun toDouble() = degrees
 
     override fun toString(): String {
         return toDouble().toString()

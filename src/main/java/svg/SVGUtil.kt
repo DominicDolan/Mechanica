@@ -1,6 +1,5 @@
 package svg
 
-import compatibility.Vector
 import java.lang.Long.parseLong
 import java.lang.Long.toHexString
 import java.lang.NumberFormatException

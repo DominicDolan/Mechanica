@@ -10,6 +10,7 @@ import matrices.ViewMatrix
 import util.colors.hex
 import util.extensions.degrees
 import util.units.Angle
+import util.units.Vector
 import kotlin.math.atan2
 
 open class Drawer {
@@ -100,6 +101,8 @@ open class Drawer {
         ellipse(x, y, diameter, diameter)
     }
 
+    fun circle(position: Vector, radius: Number) = circle(position.x, position.y, radius)
+
     fun ellipse(x: Number, y: Number, width: Number, height: Number) {
         if (!isLayoutSet) {
             layout = Centered
@@ -154,6 +157,7 @@ open class Drawer {
         drawLine(strokeWidth, x1.toDouble(), y1.toDouble(), x2.toDouble(), y2.toDouble())
     }
 
+    fun line(p1: Vector, p2: Vector) = line(p1.x, p1.y, p2.x, p2.y)
 
     val normal: Drawer
         get() {

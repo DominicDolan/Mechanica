@@ -1,5 +1,6 @@
 package util.extensions
 
+import util.units.Angle
 import util.units.Degree
 import util.units.Radian
 
@@ -8,6 +9,12 @@ inline val Number.degrees: Degree
 
 inline val Number.radians: Radian
     get() = Radian(this.toDouble())
+
+operator fun Angle.plus(other: Angle): Angle = (this.toRadians().toDouble() + other.toRadians().toDouble()).radians
+
+operator fun Angle.minus(other: Angle): Angle = (this.toRadians().toDouble() - other.toRadians().toDouble()).radians
+
+operator fun Angle.unaryMinus(): Angle = Radian(-(this.toRadians().toDouble()))
 
 operator fun Degree.plus(other: Degree): Degree {
     return (this.toDouble() + other.toDouble()).degrees

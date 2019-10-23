@@ -9,6 +9,8 @@ import models.Model
 import org.jbox2d.common.Vec2
 import svg.SVGPolygon
 import util.extensions.centroid
+import util.extensions.vec
+import util.units.Vector
 import java.util.*
 
 /**
@@ -27,7 +29,7 @@ class PolygonConverter(floatArray: FloatArray) {
         model = createModel(floatArray)
     }
 
-    constructor(vecArray: Array<Vec2>): this(Array(vecArray.size*3, {0f}).toFloatArray()){
+    constructor(vecArray: Array<Vec2>): this(FloatArray(vecArray.size*3) {0f}){
         this.vecArray = vecArray
         vecArray.forEachIndexed { i, v ->
             floatArray[3*i] = v.x
@@ -96,15 +98,8 @@ class PolygonConverter(floatArray: FloatArray) {
     fun toFloatArray() = floatArray
     fun toPolygon() = object : Polygon {
         override val path: List<Vector>
-            get() = toVecArray().map { Vector(it) }
-        override val centroid: Vector
-            get() = path.centroid()
+            get() = toVecArray().map { vec(it) }
         override val model: Model
             get() = toModel()
-
-        override fun adjust(toOrigin: Boolean, keepAspectRatio: Boolean, width: Double, height: Double) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
     }
 }

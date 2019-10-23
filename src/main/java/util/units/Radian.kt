@@ -9,7 +9,7 @@ inline class Radian(private val radians: Double) : Angle {
 
     override fun toRadians() = toDouble().radians
 
-    override fun toDouble() = (radians+2*PI)
+    override fun toDouble() = radians
 
     override fun toString(): String {
         return toDouble().toString()
