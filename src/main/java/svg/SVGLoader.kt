@@ -1,6 +1,7 @@
 package svg
 
 import compatibility.VectorConverter
+import display.Game
 import loader.loadTextFile
 import org.jbox2d.common.Vec2
 import org.jsoup.Jsoup
@@ -30,36 +31,57 @@ fun loadPolygonCoordinates(element: Element): List<VectorConverter> {
     val sequenceList = element
             .attr("d")
             .replace(Regex("\\s\\s+"), " ")
-            .split(Regex("(?=[lLmMzZhHvV])"))
+            .split(Regex("(?=[a-zA-Z])"))
             .filter { it.isNotBlank() }
+
+    fun ArrayList<VectorConverter>.addFromString(sequence: String, otherValue: ((Double) -> VectorConverter) = {throw IllegalArgumentException("Error reading svg path: $sequence")}) {
+        val initialChar = sequence[0]
+        val isAbsolute = initialChar.isLetter() && initialChar.isUpperCase()
+
+        val substring = sequence.substring(1)
+        val values = parseCoordinateSequence(substring, otherValue)
+
+        if (isAbsolute) {
+            this.addAll(values)
+        } else {
+            val firstCoordinate = if (this.isNotEmpty()) this.last() else VectorConverter(0.0, 0.0)
+            val absoluteValues = values.relativeToAbsolute(firstCoordinate)
+            this.addAll(absoluteValues)
+        }
+    }
 
     val coordinateList = ArrayList<VectorConverter>()
     for (sequence in sequenceList) {
-        when (sequence.first()) {
-            'M', 'L' -> {
-                val absoluteValues = parseCoordinateSequence(sequence.substring(1))
-                coordinateList.addAll(absoluteValues)
+        try {
+            when (sequence.first()) {
+                'M', 'm', 'L', 'l' -> {
+                    coordinateList.addFromString(sequence)
+                }
+                'z', 'Z' -> {
+                    coordinateList.add(VectorConverter(coordinateList.first()))
+                }
+                'H', 'h' -> {
+                    if (coordinateList.isNotEmpty() && sequence.first() != 'h') {
+                        coordinateList.addFromString(sequence) { VectorConverter(it, coordinateList.last().y) }
+                    } else {
+                        coordinateList.addFromString(sequence) { VectorConverter(it, 0.0) }
+                    }
+                }
+                'V', 'v' -> {
+                    if (coordinateList.isNotEmpty() && sequence.first() != 'v') {
+                        coordinateList.addFromString(sequence) { VectorConverter(coordinateList.last().x, it) }
+                    } else {
+                        coordinateList.addFromString(sequence) { VectorConverter(0.0, it) }
+                    }
+                }
+                'C', 'c', 'S', 's', 'Q', 'q', 'T', 't', 'A', 'a' -> throw IllegalArgumentException("Reading an SVG does not support curves. Path: $sequence")
+                else -> throw IllegalArgumentException("Unexpected character while reading SVG file. Path: $sequence")
             }
-            'm', 'l' -> {
-                val relativeValues = parseCoordinateSequence(sequence.substring(1))
-                val initial = if (coordinateList.isNotEmpty()) coordinateList.last() else VectorConverter(0.0, 0.0)
-                val absoluteValues = relativeValues.relativeToAbsolute(initial)
-                coordinateList.addAll(absoluteValues)
-            }
-            'z', 'Z' -> {
-                coordinateList.add(VectorConverter(coordinateList.first()))
-            }
-            'H' -> {
-
-            }
-            'h' -> {
-
-            }
-            'V' -> {
-
-            }
-            'v' -> {
-
+        } catch (e: IllegalArgumentException) {
+            if (Game.debug) {
+                throw e
+            } else {
+                System.err.println(e.localizedMessage)
             }
         }
     }
@@ -77,7 +99,19 @@ private fun List<VectorConverter>.relativeToAbsolute(initial: VectorConverter): 
     return absoluteList
 }
 
-fun parseCoordinateSequence(text: String): List<VectorConverter> {
+fun parseCoordinateSequence(text: String, otherValue: ((Double) -> VectorConverter)): List<VectorConverter> {
+    val individualText = text.trim().split(" ")
+    return individualText.map {
+        if (it.contains(",")) {
+            val xy = it.split(",")
+            VectorConverter(xy[0].toDouble(), xy[1].toDouble())
+        } else {
+            otherValue(it.trim().toDouble())
+        }
+    }
+}
+
+fun parseSingleValueCoordinate(text: String): List<VectorConverter> {
     val individualText = text.trim().split(" ")
     return individualText.map {
         val xy = it.split(",")

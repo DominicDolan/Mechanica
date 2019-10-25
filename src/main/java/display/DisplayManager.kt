@@ -93,7 +93,6 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
         glfwShowWindow(window)
 
         Game.ready = true
-
     }
 
 
