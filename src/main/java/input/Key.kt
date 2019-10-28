@@ -3,13 +3,13 @@ package input
 open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
     internal var isDown: Boolean = false
         set(value) {
-            if (value) hasBeenPressed = true
-            else hasBeenReleased = true
+            if (value) hasBeenReleased = true
+            else hasBeenPressed = true
             field = value
         }
 
     private var privateHasBeenDown = false
-    var hasBeenPressed: Boolean
+    var hasBeenReleased: Boolean
         private set(value) {
             privateHasBeenDown = value
         }
@@ -25,7 +25,7 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
         }
 
     private var privateHasBeenUp = true
-    var hasBeenReleased: Boolean
+    var hasBeenPressed: Boolean
         private set(value) {
             privateHasBeenUp = value
         }

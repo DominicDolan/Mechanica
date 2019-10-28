@@ -9,6 +9,7 @@ import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glClearColor
 import debug.BodyRenderer
+import debug.DebugDrawer
 import input.ControlsMap
 import physics.ContactEvents
 import graphics.drawer.Drawer
@@ -190,6 +191,7 @@ object Game {
                         if (debug) {
                             BodyRenderer.update(painter)
                             world.drawDebugData()
+                            DebugDrawer.render(painter)
                         }
                     }
                 }

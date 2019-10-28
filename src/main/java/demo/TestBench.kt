@@ -14,7 +14,7 @@ fun main() {
     val radius = 50.0
     println("Start, angle: $angle, radius: $radius")
     val vec = vec(radius, angle)
-    println("theta: ${vec.theta.toDegrees().toDouble()}, r: ${vec.r}")
+    println("theta: ${vec.theta.toDegrees().asDouble()}, r: ${vec.r}")
 
 }
 

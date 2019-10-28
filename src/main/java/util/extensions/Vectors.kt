@@ -195,8 +195,8 @@ fun vec(x: Number, y: Number): Vector {
 }
 
 fun vec(r: Number, theta: Angle): Vector {
-    val x = r.toDouble()*cos(theta.toRadians().toDouble())
-    val y = r.toDouble()*sin(theta.toRadians().toDouble())
+    val x = r.toDouble()*cos(theta.toRadians().asDouble())
+    val y = r.toDouble()*sin(theta.toRadians().asDouble())
     return vec(x, y)
 }
 
@@ -222,5 +222,7 @@ operator fun Vector.times(other: Vector): Float = x.toFloat()* other.x.toFloat()
 operator fun Vector.times(scale: Number) = vec(this.x.toFloat()*scale.toFloat(), this.y.toFloat()*scale.toFloat())
 
 operator fun Vector.div(scale: Number) = vec(this.x.toFloat()/scale.toFloat(), this.y.toFloat()/scale.toFloat())
+
+operator fun Vector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
 
 fun Vector.toVec2() = Vec2(this.x.toFloat(), this.y.toFloat())
