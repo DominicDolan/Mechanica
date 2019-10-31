@@ -225,4 +225,8 @@ operator fun Vector.div(scale: Number) = vec(this.x.toFloat()/scale.toFloat(), t
 
 operator fun Vector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
 
+infix fun Vector.equals(other: Vector) = this.x.toFloat() == other.x.toFloat() && this.y.toFloat() == other.y.toFloat()
+
+fun Vector.normalize() = vec(1.0, this.theta)
+
 fun Vector.toVec2() = Vec2(this.x.toFloat(), this.y.toFloat())

@@ -11,7 +11,7 @@ import util.extensions.toVec
 object BodyRenderer : DebugDraw(null) {
 
     private var draw: Drawer? = null
-    const val debugColor: Long = 0x00FF4070
+    private const val debugColor: Long = 0x00FF4070
 
     fun init() {
         if (Game.debug) {
@@ -27,7 +27,7 @@ object BodyRenderer : DebugDraw(null) {
 
     override fun drawSolidCircle(center: Vec2?, radius: Float, axis: Vec2?, color: Color3f?) {
         val c = center?:Vec2()
-        draw?.stroke?.invoke(radius/5.0)?.circle(c.x, c.y, radius)
+        draw?.stroke?.invoke(0.2)?.circle(c.x, c.y, radius)
     }
 
 
