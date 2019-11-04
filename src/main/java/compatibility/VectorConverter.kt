@@ -4,13 +4,14 @@ import com.vividsolutions.jts.geom.Coordinate
 import org.jbox2d.common.Vec2
 import org.joml.Vector2f
 import org.joml.Vector3f
+import util.units.Vector
 
 
 /**
  * Created by domin on 01/11/2017.
  */
-class Vector(x: Double, y: Double) {
-    var x = 0.0
+class VectorConverter(x: Double, y: Double): Vector {
+    override var x = 0.0
         set(value) {
             coordinate.x = value
             vector2f.x = value.toFloat()
@@ -19,7 +20,7 @@ class Vector(x: Double, y: Double) {
             field = value
         }
 
-    var y = 0.0
+    override var y = 0.0
         set(value) {
             coordinate.y = value
             vector2f.y = value.toFloat()
@@ -33,6 +34,7 @@ class Vector(x: Double, y: Double) {
     private val vector3f: Vector3f
     private val vec2: Vec2
 
+    constructor(other: VectorConverter) : this(other.x,                other.y             )
     constructor(coordinate: Coordinate) : this(coordinate.x,          coordinate.y         )
     constructor(vector2f: Vector2f)     : this(vector2f.x.toDouble(), vector2f.y.toDouble())
     constructor(vector3f: Vector3f)     : this(vector3f.x.toDouble(), vector3f.y.toDouble())
@@ -63,7 +65,7 @@ class Vector(x: Double, y: Double) {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null || other !is Vector) {
+        if (other == null || other !is VectorConverter) {
             return false
         } else {
             return this.x == other.x && this.y == other.y

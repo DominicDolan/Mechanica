@@ -9,6 +9,12 @@ operator fun Array<Vec2>.timesAssign(scale: Double){
     this.forEach { it *= scale }
 }
 
+fun <T> Array<T>.set(setter: (Int) -> T) {
+    for (i in 0..this.size) {
+        this[i] = setter(i)
+    }
+}
+
 inline operator fun <reified T> Array<T>.get(range: IntRange): Array<T>{
     return range.map { this[it] }.toTypedArray()
 }

@@ -2,20 +2,22 @@ package compatibility
 
 import org.jbox2d.common.Vec2
 import svg.SVGPolygon
+import util.extensions.toVec2
+import util.extensions.vec
+import util.units.LightweightVector
+import util.units.Vector
+import java.util.*
 
-private val degRad = Math.PI/180.0
-
-fun SVGPolygon.toVecArray(): Array<Vec2> {
+fun SVGPolygon.toVec2Array(): Array<Vec2> {
     val v = this.path
     return Array(v.size) {
         Vec2(v[it].toVec2())
     }
 }
 
-fun Number.toRadians(): Double {
-    return this.toDouble()*degRad
-}
-
-fun Number.toDegrees(): Double {
-    return this.toDouble()/degRad
+fun SVGPolygon.toLightWeightVectorArray(): Array<Vector> {
+    val v = this.path
+    return Array(v.size) {
+        vec(v[it].x, v[it].y)
+    }
 }

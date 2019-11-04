@@ -3,7 +3,7 @@ package loader
 import animation.FrameAnimation
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
-import compatibility.Vector
+import compatibility.VectorConverter
 import font.FontType
 import graphics.Image
 import models.Model
@@ -15,16 +15,15 @@ import org.lwjgl.stb.STBImage.stbi_image_free
 import org.lwjgl.stb.STBImage.stbi_load_from_memory
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
+import util.extensions.toFloatArray
 import util.triangulate.EarClipper
+import util.units.Vector
 import java.io.*
-import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
-import java.nio.channels.Channels
 import java.nio.channels.FileChannel
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -111,17 +110,7 @@ fun loadUnitQuad(): Model {
     return loadModel(vertices, indices, textureCoords, Image(0))
 }
 
-fun loadTriangulatedModel(positions: List<Vector>): Model {
-    val list = ArrayList<Float>()
-
-    for (p in positions) {
-        list.add(p.x.toFloat())
-        list.add(p.y.toFloat())
-        list.add(0.0f)
-    }
-
-    return loadTriangulatedModel(list.toFloatArray())
-}
+fun loadTriangulatedModel(positions: List<Vector>) = loadTriangulatedModel(positions.toFloatArray())
 
 fun loadTriangulatedModel(positions: FloatArray): Model {
     val coords = ArrayList<Coordinate>()

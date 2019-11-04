@@ -8,8 +8,11 @@ import graphics.*
 import loader.loadFont
 import matrices.ViewMatrix
 import util.colors.hex
+import util.extensions.component1
+import util.extensions.component2
 import util.extensions.degrees
 import util.units.Angle
+import util.units.Vector
 import kotlin.math.atan2
 
 open class Drawer {
@@ -64,7 +67,7 @@ open class Drawer {
                     transformationMatrix.setPivot(pivotX, pivotY)
                 }
                 transformationMatrix.setTranslate(l.outX, l.outY, 0.0)
-                transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
+                transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().asDouble())
             }
             transformationMatrix.setScale(l.outWidth, l.outHeight, 1.0)
             renderer(this)
@@ -100,6 +103,8 @@ open class Drawer {
         ellipse(x, y, diameter, diameter)
     }
 
+    fun circle(position: Vector, radius: Number) = circle(position.x, position.y, radius)
+
     fun ellipse(x: Number, y: Number, width: Number, height: Number) {
         if (!isLayoutSet) {
             layout = Centered
@@ -129,17 +134,22 @@ open class Drawer {
         draw()
     }
 
-    fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0, looped: Boolean = true) {
+    private fun drawLineForPath(stroke: Double, p1: Vector, p2: Vector, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0) {
+        val (x1, y1) = p1
+        val (x2, y2) = p2
+        drawLine(stroke,
+                x1*scaleWidth.toDouble() + x.toDouble(),
+                y1*scaleHeight.toDouble() + y.toDouble(),
+                x2*scaleWidth.toDouble() + x.toDouble(),
+                y2*scaleHeight.toDouble() + y.toDouble())
+    }
+
+    fun polygon(polygon: Polygon, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0) {
+        val stroke = strokeWidth
         if (isStrokeSet) {
             val p = polygon.path
-            for (i in 0..p.size-2) {
-                val v1 = p[i]
-                val v2 = p[i+1]
-                drawLine(strokeWidth, v1.x, v1.y, v2.x, v2.y)
-            }
-            if (looped) {
-                drawLine(strokeWidth, p[p.size-1].x, p[p.size-1].y, p[0].x, p[0].y)
-            }
+            path(p, x, y, scaleWidth, scaleHeight)
+            drawLineForPath(stroke, p[p.size-1], p[0], x, y, scaleWidth, scaleHeight)
         } else {
             layout = Normal
             layout(x,y, scaleWidth, scaleHeight)
@@ -149,10 +159,18 @@ open class Drawer {
         }
     }
 
+    fun path(path: List<Vector>, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0) {
+        val stroke = strokeWidth
+        for (i in 0..path.size-2) {
+            drawLineForPath(stroke, path[i], path[i+1], x, y, scaleWidth, scaleHeight)
+        }
+    }
+
     fun line(x1: Number, y1: Number, x2: Number, y2: Number) {
         drawLine(strokeWidth, x1.toDouble(), y1.toDouble(), x2.toDouble(), y2.toDouble())
     }
 
+    fun line(p1: Vector, p2: Vector) = line(p1.x, p1.y, p2.x, p2.y)
 
     val normal: Drawer
         get() {
@@ -176,6 +194,16 @@ open class Drawer {
     val color: ColorDrawer
         get() = ColorDrawer
 
+    val black: Drawer
+        get() {
+            ColorDrawer(hex(0x000000FF))
+            return this
+        }
+    val white: Drawer
+        get() {
+            ColorDrawer(hex(0xFFFFFFFF))
+            return this
+        }
     val red: Drawer
         get() {
             ColorDrawer(hex(0xFF0000FF))

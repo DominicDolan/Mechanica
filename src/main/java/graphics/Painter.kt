@@ -61,7 +61,7 @@ class Painter {
     fun drawRotatedRect(centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
         transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
+        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().asDouble())
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         colorRenderer(model)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
@@ -172,7 +172,7 @@ class Painter {
     fun drawRotatedImage(image: Image, centerX: Number, centerY: Number, width: Number, height: Number, angle: Angle) {
         transformationMatrix.setPivot(width.toDouble() / 2.0, height.toDouble() / 2.0)
         transformationMatrix.setTranslate(centerX.toDouble() - width.toDouble() / 2.0, centerY.toDouble() - height.toDouble() / 2.0, 0.0)
-        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().toDouble())
+        transformationMatrix.setRotate(0.0, 0.0, angle.toDegrees().asDouble())
         transformationMatrix.setScale(width.toDouble(), height.toDouble(), 1.0)
         model.texture = image
         textureRenderer(model)

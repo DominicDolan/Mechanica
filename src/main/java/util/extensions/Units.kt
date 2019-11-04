@@ -1,5 +1,6 @@
 package util.extensions
 
+import util.units.Angle
 import util.units.Degree
 import util.units.Radian
 
@@ -9,34 +10,40 @@ inline val Number.degrees: Degree
 inline val Number.radians: Radian
     get() = Radian(this.toDouble())
 
+operator fun Angle.plus(other: Angle): Angle = (this.toRadians().asDouble() + other.toRadians().asDouble()).radians
+
+operator fun Angle.minus(other: Angle): Angle = (this.toRadians().asDouble() - other.toRadians().asDouble()).radians
+
+operator fun Angle.unaryMinus(): Angle = Radian(-(this.toRadians().asDouble()))
+
 operator fun Degree.plus(other: Degree): Degree {
-    return (this.toDouble() + other.toDouble()).degrees
+    return (this.asDouble() + other.asDouble()).degrees
 }
 
 operator fun Radian.plus(other: Radian): Radian {
-    return (this.toDouble() + other.toDouble()).radians
+    return (this.asDouble() + other.asDouble()).radians
 }
 
 operator fun Degree.minus(other: Degree): Degree {
-    return (this.toDouble() - other.toDouble()).degrees
+    return (this.asDouble() - other.asDouble()).degrees
 }
 
 operator fun Radian.minus(other: Radian): Radian {
-    return (this.toDouble() - other.toDouble()).radians
+    return (this.asDouble() - other.asDouble()).radians
 }
 
 operator fun Degree.div(other: Degree): Double {
-    return (this.toDouble() / other.toDouble())
+    return (this.asDouble() / other.asDouble())
 }
 
 operator fun Radian.div(other: Radian): Double {
-    return (this.toDouble() / other.toDouble())
+    return (this.asDouble() / other.asDouble())
 }
 
 operator fun Degree.times(other: Number): Degree {
-    return (this.toDouble() * other.toDouble()).degrees
+    return (this.asDouble() * other.toDouble()).degrees
 }
 
 operator fun Radian.times(other: Number): Radian {
-    return (this.toDouble() * other.toDouble()).radians
+    return (this.asDouble() * other.toDouble()).radians
 }

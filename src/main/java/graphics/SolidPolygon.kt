@@ -1,21 +1,21 @@
 package graphics
 
-import compatibility.Vector
+import compatibility.VectorConverter
 import loader.loadTriangulatedModel
 import models.Model
 import util.extensions.*
+import util.units.Vector
 
-class SolidPolygon(override val path: List<Vector>) : Polygon {
-    override val centroid: Vector = path.centroid()
+class SolidPolygon(override val path: List<VectorConverter>) : Polygon {
     private var modelInstance: Model? = null
     override val model: Model
         get() {
-            val model: Model = modelInstance ?: loadTriangulatedModel(path)
+            val model: Model = modelInstance ?: loadTriangulatedModel(path.toFloatArray())
             this.modelInstance = model
             return model
         }
 
-    override fun adjust(
+    fun adjust(
             toOrigin: Boolean,
             keepAspectRatio: Boolean,
             width: Double,
