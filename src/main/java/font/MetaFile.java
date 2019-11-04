@@ -170,7 +170,6 @@ public class MetaFile {
 		processNextLine();
 		int lineHeightPixels = getValueOfVariable("lineHeight") - paddingHeight;
 		verticalPerPixelSize = TextMeshStaticCreator.LINE_HEIGHT / (double) lineHeightPixels;
-		System.out.println("verticalPerPixelSize: " + verticalPerPixelSize);
 		horizontalPerPixelSize = verticalPerPixelSize / aspectRatio;
 	}
 
@@ -209,13 +208,10 @@ public class MetaFile {
 		}
 		double xTex = ((double) getValueOfVariable("x") + (padding[PAD_LEFT] - DESIRED_PADDING)) / imageSize;
 		double yTex = ((double) getValueOfVariable("y") + (padding[PAD_TOP] - DESIRED_PADDING)) / imageSize;
-		System.out.println("id: " + id + ", xTex: " + xTex + ", yTex: " + yTex);
 		int width = getValueOfVariable("width") - (paddingWidth - (2 * DESIRED_PADDING));
 		int height = getValueOfVariable("height") - ((paddingHeight) - (2 * DESIRED_PADDING));
 		double quadWidth = width * horizontalPerPixelSize;
-		System.out.println("Quad width: " + quadWidth);
 		double quadHeight = height * verticalPerPixelSize;
-		System.out.println("Quad height*40: " + quadHeight*40);
 		double xTexSize = (double) width / imageSize;
 		double yTexSize = (double) height / imageSize;
 		double xOff = (getValueOfVariable("xoffset") + padding[PAD_LEFT] - DESIRED_PADDING) * horizontalPerPixelSize;
