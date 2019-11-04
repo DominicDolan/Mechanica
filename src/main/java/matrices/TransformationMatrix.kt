@@ -8,11 +8,11 @@ import org.joml.Vector3f
  */
 
 class TransformationMatrix {
-    private val matrix: Matrix4f
-    private val translation: Vector3f
-    private val pivot: Vector3f
-    private val unpivot: Vector3f
-    private val scale: Vector3f
+    private val matrix: Matrix4f = Matrix4f()
+    private val translation: Vector3f = Vector3f()
+    private val pivot: Vector3f = Vector3f()
+    private val unpivot: Vector3f = Vector3f()
+    private val scale: Vector3f = Vector3f(1f, 1f, 1f)
     private val xAxis = Vector3f(1f, 0f, 0f)
     private val yAxis = Vector3f(0f, 1f, 0f)
     private val zAxis = Vector3f(0f, 0f, 1f)
@@ -21,18 +21,14 @@ class TransformationMatrix {
     private var rz = 0f
     val scaleX = 1f
     val scaleY = 1f
-    val scaleZ = 1f
+    @Suppress("unused")
+    val scaleZ = 1f // ScaleZ will be unused most of the time
 
     private var scheduleRotation = true
     private var setMatrix = false
     private var customMatrix: Matrix4f = Matrix4f()
 
     init {
-        translation = Vector3f()
-        pivot = Vector3f()
-        unpivot = Vector3f()
-        scale = Vector3f(1f, 1f, 1f)
-        matrix = Matrix4f()
         matrix.identity()
     }
 

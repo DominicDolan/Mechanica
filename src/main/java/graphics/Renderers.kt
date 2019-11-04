@@ -1,18 +1,15 @@
 package graphics
 
 import display.Game
-import font.GUIText
+import graphics.drawer.Drawer
+import graphics.framebuffer.Fbo
 import loader.loadTexture
 import loader.loadTexturedQuad
 import matrices.TransformationMatrix
 import models.Model
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
-import graphics.drawer.Drawer
-import graphics.framebuffer.Fbo
 import resources.Res
 import shaders.circle.CircleShader
 import shaders.color.ColorShader
@@ -105,8 +102,8 @@ var fontRenderer:(Drawer.Companion)-> Unit = {
 
     glActiveTexture(GL_TEXTURE0)
     glBindTexture(GL_TEXTURE_2D, model.texture.id)
-//    glDrawElements(GL11.GL_TRIANGLES, circleModel.vertexCount,
-//            GL11.GL_UNSIGNED_SHORT, 0)
+//    glDrawElements(GL_TRIANGLES, circleModel.vertexCount,
+//            GL_UNSIGNED_SHORT, 0)
     glDrawArrays(GL_TRIANGLES, 0, model.vertexCount)
 
     disableVertexArrays()
@@ -114,6 +111,7 @@ var fontRenderer:(Drawer.Companion)-> Unit = {
 }
 
 val inverseRes = floatArrayOf(1f/Game.width.toFloat(), 1f/Game.height.toFloat())
+@Suppress("unused") // The frame buffer objected is not used and will likely be deleted in a later version
 val fbo = Fbo(Game.width, Game.height)
 val AAShader = FXAAShader()
 var frameRenderer: (Model) -> Unit = {
@@ -122,11 +120,11 @@ var frameRenderer: (Model) -> Unit = {
     AAShader.start()
     AAShader.setUniform2fv(AAShader.inverseRes, inverseRes)
 
-    GL13.glActiveTexture(GL13.GL_TEXTURE0)
-    GL11.glBindTexture(GL11.GL_TEXTURE_2D, it.texture.id)
+    glActiveTexture(GL_TEXTURE0)
+    glBindTexture(GL_TEXTURE_2D, it.texture.id)
 
-    GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount,
-            GL11.GL_UNSIGNED_SHORT, 0)
+    glDrawElements(GL_TRIANGLES, it.vertexCount,
+            GL_UNSIGNED_SHORT, 0)
 
     AAShader.stop()
 

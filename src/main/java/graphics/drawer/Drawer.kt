@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package graphics.drawer
 
 import display.Game
@@ -14,6 +15,7 @@ import util.extensions.degrees
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
+import kotlin.math.hypot
 
 open class Drawer {
     companion object {
@@ -77,7 +79,7 @@ open class Drawer {
         fun drawLine(strokeWidth: Double, x1: Double, y1: Double, x2: Double, y2: Double) {
             val triangleWidth = x2 - x1
             val triangleHeight = y2 - y1
-            transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
+            transformationMatrix.setScale(hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
 
             transformationMatrix.setTranslate(x1, y1 - strokeWidth/2.0, 0.0)
             transformationMatrix.setPivot(0.0, strokeWidth / 2.0)

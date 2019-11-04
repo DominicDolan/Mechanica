@@ -1,9 +1,9 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package loader
 
 import animation.FrameAnimation
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
-import compatibility.VectorConverter
 import font.FontType
 import graphics.Image
 import models.Model
@@ -25,6 +25,7 @@ import java.nio.IntBuffer
 import java.nio.ShortBuffer
 import java.nio.channels.FileChannel
 import kotlin.collections.ArrayList
+import kotlin.system.exitProcess
 
 /**
  * Created by domin on 26/10/2017.
@@ -32,7 +33,6 @@ import kotlin.collections.ArrayList
 
 private val vaos = ArrayList<Int>()
 private val vbos = ArrayList<Int>()
-private val textures = ArrayList<Int>()
 
 fun loadModel(positions: FloatArray, indices: ShortArray): Model {
     val vaoID = createVAO()
@@ -40,8 +40,7 @@ fun loadModel(positions: FloatArray, indices: ShortArray): Model {
     storeDataInAttributeList(0, positions)
     unbindVAO()
 
-    val model = Model(vaoID, indices.size, drawType = GL_TRIANGLES)
-    return model
+    return Model(vaoID, indices.size, drawType = GL_TRIANGLES)
 }
 
 
@@ -52,8 +51,7 @@ fun loadModel(positions: FloatArray, indices: ShortArray, textureCoords: FloatAr
     storeDataInAttributeList(1, textureCoords, 2)
     unbindVAO()
 
-    val model = Model(vaoID, indices.size, texture, drawType = GL_TRIANGLES)
-    return model
+    return Model(vaoID, indices.size, texture, drawType = GL_TRIANGLES)
 }
 
 fun loadTextureModel(positions: FloatBuffer, textureCoords: FloatBuffer, vertexCount: Int, texture: Image): Model {
@@ -129,7 +127,7 @@ fun loadTriangulatedModel(positions: FloatArray): Model {
     val polygon = geomFact.createPolygon(coordsArray)
 
     val clipper = EarClipper(polygon)
-    val triangulation = clipper.getResult()
+    val triangulation = clipper.result
 
     val newPositionsList = ArrayList<Float>()
     val indicesList = ArrayList<Short>()
@@ -137,9 +135,9 @@ fun loadTriangulatedModel(positions: FloatArray): Model {
     val vertexGetter = HashMap<String, Short>()
 
     var index: Short = 0
-    var len = triangulation.getNumGeometries()
+    var len = triangulation.numGeometries
     for (i in 0 until len) {
-        val triangle = triangulation.getGeometryN(i).getCoordinates().clone()
+        val triangle = triangulation.getGeometryN(i).coordinates.clone()
 
         for (j in 0..2) {
             val coord = triangle[j]
@@ -150,7 +148,7 @@ fun loadTriangulatedModel(positions: FloatArray): Model {
                 indicesList.add(existingIndex!!)
             } else {
                 indicesList.add(index)
-                vertexGetter.put(key, index)
+                vertexGetter[key] = index
                 index++
 
                 newPositionsList.add(coord.x.toFloat())
@@ -180,7 +178,7 @@ private fun hashCoordinates(coordinate: Coordinate): String {
 }
 
 private fun hashCoordinates(x: Double, y: Double): String {
-    return "" + x + ":" + y
+    return "$x:$y"
 }
 
 
@@ -254,7 +252,7 @@ fun loadTextFile(filename: String): String {
         reader.close()
     } catch (e: IOException) {
         e.printStackTrace()
-        System.exit(-1)
+        exitProcess(-1)
     }
 
     return text.toString()

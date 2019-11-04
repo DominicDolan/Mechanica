@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package debug
 
 import graphics.drawer.Drawer

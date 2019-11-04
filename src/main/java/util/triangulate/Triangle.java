@@ -1,6 +1,6 @@
 package util.triangulate;
 
-public class Triangle {
+class Triangle {
 
     private final int[] vertices;
 
@@ -37,9 +37,7 @@ public class Triangle {
      */
     public int[] getVertices() {
         int[] copy = new int[3];
-        for (int i = 0; i < 3; i++) {
-            copy[i] = vertices[i];
-        }
+        System.arraycopy(vertices, 0, copy, 0, 3);
         return copy;
     }
 

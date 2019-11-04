@@ -14,10 +14,11 @@ import java.util.List;
 /**
  * @author Michael Bedward
  */
-public class EdgeFlipper {
+class EdgeFlipper {
 
     private final List<Coordinate> shellCoords;
 
+    @SuppressWarnings("unused")
     EdgeFlipper(List<Coordinate> shellCoords) {
         this.shellCoords = Collections.unmodifiableList(shellCoords);
     }
@@ -26,7 +27,7 @@ public class EdgeFlipper {
         return flip(t0, t1, t0.getSharedVertices(t1));
     }
 
-    public boolean flip(Triangle ear0, Triangle ear1, int[] sharedVertices) {
+    boolean flip(Triangle ear0, Triangle ear1, int[] sharedVertices) {
         if (sharedVertices == null || sharedVertices.length != 2) {
             return false;
         }

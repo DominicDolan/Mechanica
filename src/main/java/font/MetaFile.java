@@ -27,7 +27,7 @@ public class MetaFile {
 	private static final String SPLITTER = " ";
 	private static final String NUMBER_SEPARATOR = ",";
 
-	private double aspectRatio;
+	private final double aspectRatio;
 
 	private double verticalPerPixelSize;
 	private double horizontalPerPixelSize;
@@ -36,10 +36,10 @@ public class MetaFile {
 	private int paddingWidth;
 	private int paddingHeight;
 
-	private Map<Integer, Character> metaData = new HashMap<Integer, Character>();
+	private final Map<Integer, Character> metaData = new HashMap<>();
 
 	private BufferedReader reader;
-	private Map<String, String> values = new HashMap<String, String>();
+	private final Map<String, String> values = new HashMap<>();
 
 	/**
 	 * Opens a font file in preparation for reading.
@@ -57,12 +57,11 @@ public class MetaFile {
 		close();
 	}
 
-	protected double getSpaceWidth() {
+	double getSpaceWidth() {
 		return spaceWidth;
 	}
 
-	protected Character getCharacter(int ascii) {
-		Character c = metaData.get(ascii);
+	Character getCharacter(int ascii) {
 		return metaData.get(ascii);
 	}
 
@@ -77,6 +76,7 @@ public class MetaFile {
 		try {
 			line = reader.readLine();
 		} catch (IOException e1) {
+            System.err.println("Something went wrong when reading the metafile");
 		}
 		if (line == null) {
 			return false;
@@ -115,7 +115,9 @@ public class MetaFile {
 	 *            - the name of the variable.
 	 * @return The int array of values associated with the variable.
 	 */
-	private int[] getValuesOfVariable(String variable) {
+	private int[] getValuesOfVariable(
+	                @SuppressWarnings("SameParameterValue") /*Other variable values may be used in the future*/
+                    String variable) {
 		String[] numbers = values.get(variable).split(NUMBER_SEPARATOR);
 		int[] actualValues = new int[numbers.length];
 		for (int i = 0; i < actualValues.length; i++) {

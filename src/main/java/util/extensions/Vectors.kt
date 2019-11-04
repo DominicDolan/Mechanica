@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package util.extensions
 
 import compatibility.VectorConverter
@@ -12,7 +13,7 @@ import kotlin.math.*
  * Created by domin on 02/11/2017.
  */
 
-fun Vec2.hyp() = Math.hypot(x.toDouble(),y.toDouble())
+fun Vec2.hyp() = hypot(x.toDouble(),y.toDouble())
 
 operator fun Vec2.plus(other: Vec2) : Vec2 {
     return Vec2(this.x + other.x, this.y + other.y)
@@ -35,7 +36,7 @@ operator fun Vec2.minusAssign(other: Vec2) {
 operator fun Vec2.times(other: Vec2): Float = x* other.x + y* other.y
 
 
-operator fun Vec2.times(scale: Double) = this.set(this.x*scale.toFloat(), this.y*scale.toFloat())
+operator fun Vec2.times(scale: Double): Vec2 = this.set(this.x*scale.toFloat(), this.y*scale.toFloat())
 
 operator fun Vec2.timesAssign(scale: Double) {
     this.x *= scale.toFloat()
@@ -54,16 +55,12 @@ operator fun Vec2.unaryMinus() : Vec2 {
     return this
 }
 
-fun Vec2.X() = this.x.toDouble()
-
-fun Vec2.Y() = this.y.toDouble()
-
 fun Vec2.midpoint(other: Vec2) : Vec2{
     return Vec2((this.x + other.x)/2f, (this.y + other.y)/2f)
 }
 
 fun Vec2.angle(): Double{
-    return Math.atan2(this.Y(), this.X())
+    return atan2(this.y.toDouble(), this.x.toDouble())
 }
 
 fun Vec2.rotate(angle: Double, center: Vec2){
@@ -71,8 +68,8 @@ fun Vec2.rotate(angle: Double, center: Vec2){
     val r = this.hyp()
     val a = this.angle() + angle
 
-    val newX = (r* Math.cos(a)).toFloat()
-    val newY = (r* Math.sin(a)).toFloat()
+    val newX = (r* cos(a)).toFloat()
+    val newY = (r* sin(a)).toFloat()
 
     this.set(center.x + newX, center.y + newY)
 }

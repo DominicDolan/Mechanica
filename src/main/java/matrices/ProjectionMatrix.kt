@@ -1,15 +1,16 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package matrices
-
 
 import display.Game
 import org.joml.Matrix4f
+import kotlin.math.tan
 
 /**
  * Created by domin on 23 Mar 2017.
  */
 
 class ProjectionMatrix {
-    private val matrix: Matrix4f
+    private val matrix: Matrix4f = Matrix4f()
 
     var fov = 70f
         set(fov) {
@@ -26,7 +27,6 @@ class ProjectionMatrix {
     var scheduleCreation = true
 
     init {
-        matrix = Matrix4f()
         matrix.identity()
         scheduleCreation = true
     }
@@ -40,20 +40,20 @@ class ProjectionMatrix {
         if (scheduleCreation) {
             val aspectRatio = Game.ratio
 
-            val y_scale = (1f / Math.tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()
-            val x_scale = (y_scale / aspectRatio).toFloat()
-            val frustum_length = this.farPlane - nearPlane
+            val yScale = (1f / tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()
+            val xScale = (yScale / aspectRatio).toFloat()
+            val frustumLength = this.farPlane - nearPlane
             //      0   1   2   3
             //  0 [ 0   1   2   3 ]
             //  1 [ 4   5   6   7 ]
             //  2 [ 8   9   10  11]
             //  3 [ 12  13  14  15]
             //
-            matrix._m00( x_scale )
-            matrix._m11( y_scale )
-            matrix._m22( -((this.farPlane + nearPlane) / frustum_length) )
+            matrix._m00( xScale )
+            matrix._m11( yScale )
+            matrix._m22( -((this.farPlane + nearPlane) / frustumLength) )
             matrix._m23( -1f )
-            matrix._m32( -(2f * nearPlane * this.farPlane / frustum_length) )
+            matrix._m32( -(2f * nearPlane * this.farPlane / frustumLength) )
             matrix._m33( 0f )
 
             //            matrix[0] = x_scale;

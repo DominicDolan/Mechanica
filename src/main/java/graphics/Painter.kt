@@ -10,10 +10,13 @@ import org.jbox2d.common.Vec2
 import org.joml.Matrix4f
 import graphics.drawer.Drawer
 import util.units.Angle
+import kotlin.math.atan2
+import kotlin.math.hypot
 
 /**
  * Created by domin on 28/10/2017.
  */
+@Suppress("unused") // There will be many functions here that go unused most of the time
 @Deprecated("Painter is being deprecated and won't work as normal, use Drawer instead")
 class Painter {
     var colorRenderer: (Model) -> Unit = {}
@@ -190,27 +193,27 @@ class Painter {
     fun drawCircle(centerX: Number, centerY: Number, radius: Number, strokeWidth: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        graphics.circleRenderer(Drawer.Companion)
+        circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
 
     fun fillCircle(centerX: Number, centerY: Number, radius: Number){
         transformationMatrix.setScale(radius.toDouble()*2.0, radius.toDouble()*2.0, 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - radius.toDouble(), centerY.toDouble() - radius.toDouble(), 0.0)
-        graphics.circleRenderer(Drawer.Companion)
+        circleRenderer(Drawer.Companion)
         transformationMatrix.rewind()
     }
 
     fun drawEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, strokeWidth: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        graphics.circleRenderer(Drawer.Companion)
+        circleRenderer(Drawer.Companion)
     }
 
     fun fillEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number){
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
-        graphics.circleRenderer(Drawer.Companion)
+        circleRenderer(Drawer.Companion)
     }
 
     fun fillRotatedEllipse(centerX: Number, centerY: Number, horizontalAxis: Number, verticalAxis: Number, degrees: Number){
@@ -218,7 +221,7 @@ class Painter {
         transformationMatrix.setScale(horizontalAxis.toDouble(), verticalAxis.toDouble(), 1.0)
         transformationMatrix.setTranslate(centerX.toDouble() - horizontalAxis.toDouble()/2.0, centerY.toDouble() - verticalAxis.toDouble()/2.0, 0.0)
         transformationMatrix.setRotate(0.0, 0.0, degrees.toDouble())
-        graphics.circleRenderer(Drawer.Companion)
+        circleRenderer(Drawer.Companion)
         transformationMatrix.setRotate(0.0, 0.0, 0.0)
 
     }
@@ -226,11 +229,11 @@ class Painter {
     fun drawLine(strokeWidth: Number, x1: Number, y1: Number, x2: Number, y2: Number) {
         val triangleWidth = x2.toDouble() - x1.toDouble()
         val triangleHeight = y2.toDouble() - y1.toDouble()
-        transformationMatrix.setScale(Math.hypot(triangleWidth, triangleHeight), strokeWidth.toDouble(), 1.0)
+        transformationMatrix.setScale(hypot(triangleWidth, triangleHeight), strokeWidth.toDouble(), 1.0)
 
         transformationMatrix.setTranslate(x1.toDouble(), y1.toDouble() - strokeWidth.toDouble()/2.0, 0.0)
         transformationMatrix.setPivot(0.0, strokeWidth.toDouble() / 2.0)
-        transformationMatrix.setRotate(0.0, 0.0, Math.toDegrees(Math.atan2(triangleHeight, triangleWidth)))
+        transformationMatrix.setRotate(0.0, 0.0, Math.toDegrees(atan2(triangleHeight, triangleWidth)))
 
         colorRenderer(model)
     }

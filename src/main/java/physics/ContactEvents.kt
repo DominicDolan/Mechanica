@@ -1,15 +1,11 @@
 package physics
 
-import debug.DebugDrawer
 import org.jbox2d.callbacks.ContactImpulse
 import org.jbox2d.callbacks.ContactListener
-import org.jbox2d.callbacks.DebugDraw
 import org.jbox2d.collision.Manifold
-import org.jbox2d.collision.WorldManifold
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.Fixture
 import org.jbox2d.dynamics.contacts.Contact
-import util.extensions.toVec
 
 object ContactEvents : ContactListener {
     private val map =  HashMap<Any, Pair<(Contact) -> Unit, (Contact) -> Unit>>()

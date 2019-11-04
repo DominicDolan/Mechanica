@@ -13,6 +13,6 @@ abstract class WorldView (height: Double = 0.0, width: Double = 0.0, positionX: 
     abstract var positionY: Double
     abstract val projectionMatrix: ProjectionMatrix
     abstract val viewMatrix: ViewMatrix
-    abstract val UIView: ViewMatrix
+    abstract val uiView: ViewMatrix
 
 }

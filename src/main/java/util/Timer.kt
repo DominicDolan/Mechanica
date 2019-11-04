@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be functions here that go unused most of the time
 package util
 
 object Timer {

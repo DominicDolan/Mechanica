@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package physics
 
 import display.Game
@@ -6,7 +7,6 @@ import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.joints.*
 
 //https://www.iforce2d.net/b2dtut/joints-overview
-
 
 //https://www.iforce2d.net/b2dtut/joints-revolute
 fun Body.attachRevoluteJoint(
@@ -111,7 +111,7 @@ fun Body.attachRopeJoint(
     return JointProperties(def)
 }
 
-class JointProperties<T : JointDef>(val jointDef: T) {
+class JointProperties<T : JointDef>(jointDef: T) {
     val joint: Joint = Game.world.createJoint(jointDef)
 
     var motorSpeed: Float

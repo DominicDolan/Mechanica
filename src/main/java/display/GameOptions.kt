@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package display
 
 import matrices.ProjectionMatrix
@@ -6,6 +7,7 @@ import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import state.LoadState
 import state.State
+import kotlin.math.tan
 
 /**
  * Created by domin on 28/10/2017.
@@ -129,13 +131,13 @@ class GameOptions {
 
         override val projectionMatrix: ProjectionMatrix
         override val viewMatrix: ViewMatrix
-        override val UIView: ViewMatrix
+        override val uiView: ViewMatrix
 
         init {
             setPort(width, height)
 
             viewMatrix = ViewMatrix()
-            UIView = ViewMatrix()
+            uiView = ViewMatrix()
             projectionMatrix = ProjectionMatrix()
 
             setViewMatrix()
@@ -174,7 +176,7 @@ class GameOptions {
             //D is distance away. ?
             //d/2*tan(δ/2) = D
 
-            val cameraZ = width / (2 * Math.tan(fov / 2))
+            val cameraZ = width / (2 * tan(fov / 2))
             viewMatrix.setTranslate(positionX, positionY, cameraZ)
 
 
@@ -190,9 +192,9 @@ class GameOptions {
             //D is distance away. ?
             //d/2*tan(δ/2) = D
 
-            val cameraZUI = width/ (2 * Math.tan(fov / 2))
+            val cameraZUI = width/ (2 * tan(fov / 2))
 
-            UIView.setTranslate(0.0, 0.0, cameraZUI)
+            uiView.setTranslate(0.0, 0.0, cameraZUI)
         }
 
     }

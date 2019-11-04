@@ -1,4 +1,4 @@
-package demo
+package demo.drawer
 
 import display.Game
 import display.GameOptions
@@ -8,7 +8,7 @@ import resources.Res
 import state.State
 import util.extensions.degrees
 
-fun main(args: Array<String>) {
+fun main() {
     val options = GameOptions()
             .setResolution(1280, 720)
             .setViewPort(height = 10.0)

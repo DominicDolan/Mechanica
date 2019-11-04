@@ -1,8 +1,8 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package svg
 
-import graphics.SolidPolygon
-import compatibility.VectorConverter
 import graphics.Polygon
+import graphics.SolidPolygon
 import models.Model
 import org.jsoup.nodes.Element
 import util.extensions.calculateLength

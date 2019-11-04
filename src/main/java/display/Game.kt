@@ -2,25 +2,24 @@ package display
 
 import data.loadData
 import data.saveData
+import debug.BodyRenderer
+import debug.DebugDrawer
+import graphics.backRenderer
+import graphics.drawer.Drawer
+import input.ControlsMap
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glClearColor
-import debug.BodyRenderer
-import debug.DebugDrawer
-import input.ControlsMap
 import physics.ContactEvents
-import graphics.drawer.Drawer
-import graphics.backRenderer
-import state.EmptyState
 import state.EmptyLoadState
+import state.EmptyState
 import state.LoadState
 import state.State
 import util.FrameQueue
 import util.Timer
-import java.util.*
 
 /**
  * Created by domin on 25/10/2017.
@@ -62,7 +61,7 @@ object Game {
     val viewMatrix: ViewMatrix
         get() = view?.viewMatrix?: ViewMatrix()
     val uiViewMatrix: ViewMatrix
-        get() = view?.UIView?: ViewMatrix()
+        get() = view?.uiView?: ViewMatrix()
     val projectionMatrix: ProjectionMatrix
         get() = view?.projectionMatrix?: ProjectionMatrix()
 
@@ -195,13 +194,6 @@ object Game {
                         }
                     }
                 }
-
-                private fun Queue<Double>.average(): Double {
-                    var total = 0.0
-                    this.forEach { total += it }
-                    return total/this.size
-                }
-
             }
 
             return this.loop ?: createGameLoop()

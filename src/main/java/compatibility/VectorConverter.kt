@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package compatibility
 
 import com.vividsolutions.jts.geom.Coordinate
@@ -29,10 +30,10 @@ class VectorConverter(x: Double, y: Double): Vector {
             field = value
         }
 
-    private val coordinate: Coordinate
-    private val vector2f: Vector2f
-    private val vector3f: Vector3f
-    private val vec2: Vec2
+    private val coordinate: Coordinate = Coordinate(x, y)
+    private val vector2f: Vector2f = Vector2f(x.toFloat(), y.toFloat())
+    private val vector3f: Vector3f = Vector3f(x.toFloat(), y.toFloat(), 0f)
+    private val vec2: Vec2 = Vec2(x.toFloat(), y.toFloat())
 
     constructor(other: VectorConverter) : this(other.x,                other.y             )
     constructor(coordinate: Coordinate) : this(coordinate.x,          coordinate.y         )
@@ -46,11 +47,6 @@ class VectorConverter(x: Double, y: Double): Vector {
     fun set(vec2: Vec2)             { this.x = vec2.x.toDouble();     this.y = vec2.y.toDouble()     }
 
     init {
-        coordinate = Coordinate(x, y)
-        vector2f = Vector2f(x.toFloat(), y.toFloat())
-        vector3f = Vector3f(x.toFloat(), y.toFloat(), 0f)
-        vec2 = Vec2(x.toFloat(), y.toFloat())
-
         this.x = x
         this.y = y
     }
@@ -65,10 +61,16 @@ class VectorConverter(x: Double, y: Double): Vector {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null || other !is VectorConverter) {
-            return false
+        return if (other == null || other !is VectorConverter) {
+            false
         } else {
-            return this.x == other.x && this.y == other.y
+            this.x == other.x && this.y == other.y
         }
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        return result
     }
 }

@@ -7,8 +7,8 @@ package font;
  */
 public class TextMeshData {
 	private static final int dataPoints = 512;
-	private float[] vertexPositions;
-	private float[] textureCoords;
+	private final float[] vertexPositions;
+	private final float[] textureCoords;
 	private int dataLength;
 
 	protected TextMeshData(){
@@ -16,7 +16,7 @@ public class TextMeshData {
 		this.textureCoords = new float[dataPoints];
 	}
 
-	protected TextMeshData(float[] vertexPositions, float[] textureCoords){
+	 TextMeshData(float[] vertexPositions, float[] textureCoords){
 		this.vertexPositions = vertexPositions;
 		this.textureCoords = textureCoords;
 	}
@@ -25,7 +25,7 @@ public class TextMeshData {
 		return dataLength;
 	}
 
-	public void setDataLength(int dataLength) {
+	void setDataLength(int dataLength) {
 		this.dataLength = dataLength;
 	}
 

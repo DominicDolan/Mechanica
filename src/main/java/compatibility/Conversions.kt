@@ -4,9 +4,7 @@ import org.jbox2d.common.Vec2
 import svg.SVGPolygon
 import util.extensions.toVec2
 import util.extensions.vec
-import util.units.LightweightVector
 import util.units.Vector
-import java.util.*
 
 fun SVGPolygon.toVec2Array(): Array<Vec2> {
     val v = this.path

@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many variables here that go unused most of the time
 package input
 
 import org.lwjgl.glfw.GLFW.*

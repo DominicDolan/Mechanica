@@ -1,6 +1,5 @@
 package graphics
 
-import compatibility.VectorConverter
 import models.Model
 import util.units.Vector
 

@@ -27,14 +27,13 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
         GLFWErrorCallback.createPrint(System.err).set()
 
         // Initialize  Most GLFW functions will not work before doing this.
-        if (!glfwInit())
-            throw IllegalStateException("Unable to initialize GLFW")
+        check(glfwInit()) { "Unable to initialize GLFW" }
 
         // Configure GLFW
         glfwDefaultWindowHints() // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
-        glfwWindowHint(GLFW_STENCIL_BITS, 8);
+        glfwWindowHint(GLFW_STENCIL_BITS, 8)
         glfwWindowHint(GLFW_SAMPLES, 8)
 
         val borderlessFullscreen = fullscreen && borderless
@@ -51,9 +50,7 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
         }
         // Create the window
         window = glfwCreateWindow(width, height, "Hello World!", if (fullscreen) monitor else MemoryUtil.NULL, MemoryUtil.NULL)
-        if (fullscreen) {
-//            glfwSetWindowMonitor(window, monitor, 0, 0, width, height, refreshRate)
-        }
+
         if (window == MemoryUtil.NULL)
             throw RuntimeException("Failed to create the GLFW window")
 
@@ -77,7 +74,7 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
             glfwSetWindowPos(
                     window,
                     (vidmode!!.width() - pWidth.get(0)) / 2,
-                    (vidmode!!.height() - pHeight.get(0)) / 2
+                    (vidmode.height() - pHeight.get(0)) / 2
             )
         } // the stack frame is popped automatically
 

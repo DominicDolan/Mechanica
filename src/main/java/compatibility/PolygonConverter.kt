@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package compatibility
 
 import com.vividsolutions.jts.geom.Coordinate
@@ -8,7 +9,6 @@ import loader.loadTriangulatedModel
 import models.Model
 import org.jbox2d.common.Vec2
 import svg.SVGPolygon
-import util.extensions.centroid
 import util.extensions.vec
 import util.units.Vector
 import java.util.*
@@ -39,7 +39,7 @@ class PolygonConverter(floatArray: FloatArray) {
         model = createModel(floatArray)
     }
 
-    constructor(geometry: Geometry): this(Array((geometry.coordinates.size-1)*3, {0f}).toFloatArray()){
+    constructor(geometry: Geometry): this(Array((geometry.coordinates.size-1)*3) {0f}.toFloatArray()){
         this.geometry = geometry
         val coordinates = geometry.coordinates
         for (i in 0..coordinates.size-2){
@@ -52,7 +52,7 @@ class PolygonConverter(floatArray: FloatArray) {
         model = createModel(floatArray)
     }
 
-    constructor(svgPolygon: SVGPolygon): this(Array(svgPolygon.path.size*3, {0f}).toFloatArray()){
+    constructor(svgPolygon: SVGPolygon): this(Array(svgPolygon.path.size*3) {0f}.toFloatArray()){
         svgPolygon.path.forEachIndexed { i, v ->
             floatArray[3*i] = v.x.toFloat()
             floatArray[3*i+1] = v.y.toFloat()
@@ -87,7 +87,7 @@ class PolygonConverter(floatArray: FloatArray) {
     }
 
     override fun toString(): String {
-        return "Float Array: ${Arrays.toString(floatArray)}" +
+        return "Float Array: ${floatArray.contentToString()}" +
                 "\nVec Array: ${Arrays.toString(vecArray)}" +
                 "\nGeometry: $geometry"
     }

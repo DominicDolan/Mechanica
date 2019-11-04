@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package font
 
 import graphics.Image
@@ -22,11 +23,11 @@ class GUIText
  * default size.
  * @param font
  * - the font that this text should use.
- * @param x
+ * @param positionX
  * - the x position on the screen where the top left corner of the
  * text should be rendered. The top left corner of the screen is
  * (0, 0) and the bottom right is (1, 1).
- * @param y
+ * @param positionY
  * - the y position on the screen where the top left corner of the
  * text should be rendered. The top left corner of the screen is
  * (0, 0) and the bottom right is (1, 1).
@@ -71,32 +72,17 @@ class GUIText
     //	private int vertexCount;
     var vertexBuffer: Buffer? = null
     var textureBuffer: Buffer? = null
-    /**
-     * @return the colour of the text.
-     */
+
     /**
      * Set the colour of the text.
-     *
-     * @param color
-     * - red value, between 0 and 1.
      */
-    var colour: Long = 0
+    var color: Long = 0
     /**
      * @return The maximum length of a line of this text.
      */
     var maxLineSize: Float = 0.toFloat()
         private set
-    /**
-     * @return The number of lines of text. This is determined when the text is
-     * loaded, based on the length of the text and the max line length
-     * that is set.
-     */
-    /**
-     * Sets the number of lines that this text covers (method used only in
-     * loading).
-     *
-     * @param number
-     */
+
     var numberOfLines: Int = 0
 
     /**

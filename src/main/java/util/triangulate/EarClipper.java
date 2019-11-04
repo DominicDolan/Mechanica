@@ -15,7 +15,7 @@ public class EarClipper {
     private List<Coordinate> shellCoords;
     private boolean[] shellCoordAvailable;
 
-    List<Triangle> earList;
+    private List<Triangle> earList;
 
     /**
      * Constructor
@@ -34,7 +34,7 @@ public class EarClipper {
      */
     public Geometry getResult() {
         if (ears == null) {
-            ears = triangulate(true);
+            ears = triangulate();
         }
 
         return ears;
@@ -43,13 +43,10 @@ public class EarClipper {
     /**
      * Perform the triangulation
      *
-     * @param improve if true, improvement of the triangulation is attempted
-     *        as a post-processing step
-     *
      * @return GeometryCollection of triangular polygons
      */
-    private Geometry triangulate(boolean improve) {
-        earList = new ArrayList<Triangle>();
+    private Geometry triangulate() {
+        earList = new ArrayList<>();
         createShell();
 
         int N = shellCoords.size() - 1;
@@ -57,7 +54,7 @@ public class EarClipper {
         Arrays.fill(shellCoordAvailable, true);
 
         boolean finished = false;
-        boolean found = false;
+        boolean found;
         int k0 = 0;
         int k1 = 1;
         int k2 = 2;
@@ -118,9 +115,7 @@ public class EarClipper {
 
         } while (!finished);
 
-        if (improve) {
-            doImprove();
-        }
+        doImprove();
 
         Geometry[] geoms = new Geometry[earList.size()];
         for (int i = 0; i < earList.size(); i++) {
@@ -140,14 +135,14 @@ public class EarClipper {
         Polygon poly = (Polygon) inputPolygon.clone();
         poly.normalize();
 
-        shellCoords = new ArrayList<Coordinate>();
+        shellCoords = new ArrayList<>();
         List<Geometry> orderedHoles = getOrderedHoles(poly);
 
         Coordinate[] coords = poly.getExteriorRing().getCoordinates();
         shellCoords.addAll(Arrays.asList(coords));
 
-        for (int i = 0; i < orderedHoles.size(); i++) {
-            joinHoleToShell(orderedHoles.get(i));
+        for (Geometry orderedHole : orderedHoles) {
+            joinHoleToShell(orderedHole);
         }
     }
 
@@ -242,18 +237,18 @@ public class EarClipper {
      *         (may be empty)
      */
     private List<Geometry> getOrderedHoles(final Polygon poly) {
-        List<Geometry> holes = new ArrayList<Geometry>();
-        List<IndexedEnvelope> bounds = new ArrayList<IndexedEnvelope>();
+        List<Geometry> holes = new ArrayList<>();
+        List<IndexedEnvelope> bounds = new ArrayList<>();
 
         if (poly.getNumInteriorRing() > 0) {
             for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-                bounds.add( new IndexedEnvelope(i, poly.getInteriorRingN(i).getEnvelopeInternal()) );
+                bounds.add(new IndexedEnvelope(i, poly.getInteriorRingN(i).getEnvelopeInternal()));
             }
 
-            Collections.sort(bounds, new IndexedEnvelopeComparator());
+            bounds.sort(new IndexedEnvelopeComparator());
 
-            for (int i = 0; i < bounds.size(); i++) {
-                holes.add(poly.getInteriorRingN(bounds.get(i).index));
+            for (IndexedEnvelope bound : bounds) {
+                holes.add(poly.getInteriorRingN(bound.index));
             }
         }
 
@@ -276,7 +271,7 @@ public class EarClipper {
         final Coordinate[] holeCoords = hole.getCoordinates();
 
         final Coordinate ch = holeCoords[holeVertexIndex];
-        List<IndexedDouble> distanceList = new ArrayList<IndexedDouble>();
+        List<IndexedDouble> distanceList = new ArrayList<>();
 
         /*
          * Note: it's important to scan the shell vertices in reverse so
@@ -309,7 +304,7 @@ public class EarClipper {
          * Quick join didn't work. Sort the shell coords on distance to the
          * hole vertex nnd choose the closest reachable one.
          */
-        Collections.sort(distanceList, new IndexedDoubleComparator());
+        distanceList.sort(new IndexedDoubleComparator());
         for (int i = 1; i < distanceList.size(); i++) {
             join = gf.createLineString(new Coordinate[] {ch, shellCoords.get(distanceList.get(i).index)});
             if (inputPolygon.covers(join)) {
@@ -326,14 +321,12 @@ public class EarClipper {
      * Helper method for joinHoleToShell. Insert the hole coordinates into
      * the shell coordinate list.
      *
-     * @param shellCoords list of current shell coordinates
      * @param shellVertexIndex insertion point in the shell coordinate list
      * @param holeCoords array of hole coordinates
      * @param holeVertexIndex attachment point of hole
      */
     private void doJoinHole(int shellVertexIndex, Coordinate[] holeCoords, int holeVertexIndex) {
-        List<Coordinate> newCoords = new ArrayList<Coordinate>();
-        List<Integer> newRingIndices = new ArrayList<Integer>();
+        List<Coordinate> newCoords = new ArrayList<>();
 
         newCoords.add(new Coordinate(shellCoords.get(shellVertexIndex)));
 
@@ -368,13 +361,15 @@ public class EarClipper {
         throw new IllegalStateException("Failed to find lowest vertex");
     }
 
+    @SuppressWarnings("unused")
     private static class IndexedEnvelope {
-        int index;
-        Envelope envelope;
+        final int index;
+        final Envelope envelope;
 
-        public IndexedEnvelope(int i, Envelope env) { index = i; envelope = env; }
+        IndexedEnvelope(int i, Envelope env) { index = i; envelope = env; }
     }
 
+    @SuppressWarnings("unused")
     private static class IndexedEnvelopeComparator implements Comparator<IndexedEnvelope> {
         public int compare(IndexedEnvelope o1, IndexedEnvelope o2) {
             double delta = o1.envelope.getMinY() - o2.envelope.getMinY();
@@ -389,10 +384,10 @@ public class EarClipper {
     }
 
     private static class IndexedDouble {
-        int index;
-        double value;
+        final int index;
+        final double value;
 
-        public IndexedDouble(int i, double v) { index = i; value = v; }
+        IndexedDouble(int i, double v) { index = i; value = v; }
     }
 
     private static class IndexedDoubleComparator implements Comparator<IndexedDouble> {

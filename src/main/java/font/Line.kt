@@ -17,7 +17,7 @@ class Line() {
     private var spaceSize: Double = 0.0
     private val fontSize: Double = 0.0
 
-    private val savedWords = Array<Word>(32, { Word() })
+    private val savedWords = Array(32) { Word(fontSize) }
     private var currentWord = 0
     private val words = ArrayList<Word>()
     /**
@@ -74,30 +74,26 @@ class Line() {
      */
     fun attemptToAddWord(word: Word): Boolean {
         var additionalLength = word.wordWidth
-        additionalLength += if (!words.isEmpty()) spaceSize else 0.0
-        if (lineLength + additionalLength <= maxLength) {
+        additionalLength += if (words.isNotEmpty()) spaceSize else 0.0
+        return if (lineLength + additionalLength <= maxLength) {
             words.add(word)
             lineLength += additionalLength
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
     fun attemptToAddWord(): Boolean {
         var additionalLength = savedWords[currentWord].wordWidth
         additionalLength += if (currentWord == 0) 0.0 else spaceSize
-        if (lineLength + additionalLength <= maxLength) {
+        return if (lineLength + additionalLength <= maxLength) {
             addWord()
             lineLength += additionalLength
-            return true
+            true
         } else {
-            return false
+            false
         }
-    }
-
-    fun setWord(word: Int) {
-        savedWords[word].set()
     }
 
     fun setCurrentWord() {
@@ -111,12 +107,6 @@ class Line() {
 
     fun getCurrentWord(): Word {
         return savedWords[currentWord]
-    }
-
-    fun arrayToList() {
-        for (i in 0..currentWord) {
-            words.add(savedWords[i])
-        }
     }
 
     /**

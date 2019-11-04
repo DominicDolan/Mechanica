@@ -2,22 +2,14 @@ package font;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class TextMeshStaticCreator {
+class TextMeshStaticCreator {
 
-	protected static final double LINE_HEIGHT = 1f;
-	protected static final int SPACE_ASCII = 32;
-
-	private Line[] savedLines = new Line[32];
+	static final double LINE_HEIGHT = 1f;
+	static final int SPACE_ASCII = 32;
 
 	private MetaFile metaData;
-
-	public TextMeshStaticCreator() {
-		for (int i = 0; i < savedLines.length; i++) {
-			savedLines[i] = new Line();
-		}
-
-	}
 
 	protected TextMeshData createTextMesh(GUIText text) {
 		metaData = text.getMetaFile();
@@ -28,13 +20,12 @@ public class TextMeshStaticCreator {
 	}
 
 	private List<Line> createStructure(GUIText text) {
-		char[] chars = text.getTextString().toCharArray();
-		List<Line> lines = new ArrayList<Line>();
+		char[] chars = Objects.requireNonNull(text.getTextString()).toCharArray();
+		List<Line> lines = new ArrayList<>();
 		Line currentLine = new Line(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
 		Word currentWord = new Word(text.getFontSize());
 		for (char c : chars) {
-			int ascii = (int) c;
-			if (ascii == SPACE_ASCII) {
+			if ((int) c == SPACE_ASCII) {
 				boolean added = currentLine.attemptToAddWord(currentWord);
 				if (!added) {
 					lines.add(currentLine);
@@ -44,7 +35,7 @@ public class TextMeshStaticCreator {
 				currentWord = new Word(text.getFontSize());
 				continue;
 			}
-			Character character = metaData.getCharacter(ascii);
+			Character character = metaData.getCharacter(c);
 			currentWord.addCharacter(character);
 		}
 		completeStructure(lines, currentLine, currentWord, text);
@@ -65,8 +56,8 @@ public class TextMeshStaticCreator {
 		text.setNumberOfLines(lines.size());
 		double curserX = 0f;
 		double curserY = 0f;
-		List<Float> vertices = new ArrayList<Float>();
-		List<Float> textureCoords = new ArrayList<Float>();
+		List<Float> vertices = new ArrayList<>();
+		List<Float> textureCoords = new ArrayList<>();
 		for (Line line : lines) {
 			if (text.isCentered()) {
 				curserX = (line.getMaxLength() - line.getLineLength()) / 2;

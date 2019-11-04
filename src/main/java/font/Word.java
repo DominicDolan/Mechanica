@@ -10,21 +10,12 @@ import java.util.List;
  */
 public class Word {
 
-	private Character[] savedCharacters = new Character[32];
-	private int currentCharacter = 0;
-	private List<Character> characters = new ArrayList<Character>();
+	private final List<Character> characters = new ArrayList<>();
 	private double width = 0;
 	private double fontSize;
 
-	protected Word(){
-		for (int i = 0; i < savedCharacters.length; i++) {
-			savedCharacters[i] = new Character();
-		}
-	}
-
 	protected void set(){
 		width = 0;
-		currentCharacter = 0;
 		characters.clear();
 	}
 
@@ -36,7 +27,7 @@ public class Word {
 	 * Create a new empty word.
 	 * @param fontSize - the font size of the text which this word is in.
 	 */
-	protected Word(double fontSize){
+	Word(double fontSize){
 		this.fontSize = fontSize;
 	}
 	
@@ -44,8 +35,7 @@ public class Word {
 	 * Adds a character to the end of the current word and increases the screen-space width of the word.
 	 * @param character - the character to be added.
 	 */
-	protected void addCharacter(Character character){
-		savedCharacters[currentCharacter] = character;
+	void addCharacter(Character character){
 		characters.add(character);
 		width += character.getXAdvance() * fontSize;
 	}
@@ -53,7 +43,7 @@ public class Word {
 	/**
 	 * @return The list of characters in the word.
 	 */
-	protected List<Character> getCharacters(){
+	List<Character> getCharacters(){
 		return characters;
 	}
 	

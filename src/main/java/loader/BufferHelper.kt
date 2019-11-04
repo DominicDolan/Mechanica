@@ -1,6 +1,7 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
+
 package loader
 
-import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.*
 import java.nio.Buffer
 import java.nio.FloatBuffer
@@ -19,7 +20,7 @@ private fun scheduleMemFree(buffer: Buffer){
 }
 
 fun freeMemory(){
-    buffers.forEach { MemoryUtil.memFree(it) }
+    buffers.forEach { memFree(it) }
     buffers.clear()
 }
 

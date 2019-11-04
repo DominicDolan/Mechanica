@@ -1,4 +1,4 @@
-package demo
+package demo.text
 
 import display.Game
 import display.GameOptions

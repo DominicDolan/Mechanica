@@ -1,9 +1,8 @@
+@file:Suppress("unused") // Experimentation class, many functions/variables will be unused
 package ui
 
-import loader.ioResourceToByteBuffer
-
 var i = 0
-fun main(args: Array<String>) {
+fun main() {
     val document = ui {
         div {
             div {
@@ -23,23 +22,12 @@ fun main(args: Array<String>) {
         }
     }
 
-    var currentDoc = document
-    var children = currentDoc.childCount
+    var children = document.childCount
     var siblings = 1
-
-    childRecursion(document)
 }
 
-fun childRecursion(element: TAG) : TAG? {
-    if (element.childCount == 0) return null
-    var i = 0
-    println("child")
-    while (childRecursion(element[i++]) != null) {
-    }
 
-    return childRecursion(element[element.childCount-1])
-}
-
+@Suppress("unused")
 open class TAG(var tag: String = "") : Iterable<TAG>{
     private var children = ArrayList<TAG>()
     val childCount: Int
@@ -104,16 +92,12 @@ fun ui(block: TAG.() -> Unit): TAG {
     return tag
 }
 
-class uiRenderer {
+class UiRenderer {
     fun render() {
 
     }
 }
 
-class Style {
+class Style
 
-}
-
-class Layout {
-
-}
+class Layout

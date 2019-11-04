@@ -2,7 +2,7 @@ package font;
 
 import display.Game;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by domin on 29 Mar 2017.
@@ -10,13 +10,13 @@ import java.util.Arrays;
 
 public class TextMeshDynamicCreator {
 
-    protected static final double LINE_HEIGHT = 0.03f;
-    protected static final int SPACE_ASCII = 32;
-    protected static final int RETURN = (int) '\n';
-    private float[] translatedPoints;
-    private TextBufferData bufferData;
+    private static final double LINE_HEIGHT = 0.03f;
+    private static final int SPACE_ASCII = 32;
+    private static final int RETURN = '\n';
+    private final float[] translatedPoints;
+    private final TextBufferData bufferData;
 
-    private Line[] savedLines = new Line[32];
+    private final Line[] savedLines = new Line[32];
 
     private MetaFile metaData;
 
@@ -30,7 +30,7 @@ public class TextMeshDynamicCreator {
 
     public TextBufferData createTextMesh(GUIText text) {
         metaData = text.getMetaFile();
-        bufferData.set(text.getCharArrayString().length);
+        bufferData.set(Objects.requireNonNull(text.getCharArrayString()).length);
         createQuadVertices(text, updateStructure(text));
         bufferData.flip();
         return bufferData;
@@ -41,15 +41,15 @@ public class TextMeshDynamicCreator {
         savedLines[currentLine].set(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
         savedLines[currentLine].setCurrentWord();
 
-        for (char c: text.getCharArrayString()){
-            int ascii = (int) c;
-            boolean returnCharacter = (ascii == RETURN);
-            if (ascii == SPACE_ASCII || returnCharacter) {
+        for (char c: Objects.requireNonNull(text.getCharArrayString())){
+            boolean returnCharacter = ((int) c == RETURN);
+            if ((int) c == SPACE_ASCII || returnCharacter) {
 
                 boolean added = false;
                 if (!returnCharacter)
                     added = savedLines[currentLine].attemptToAddWord();
-                if (!added || returnCharacter){
+
+                if (!added){
                     currentLine++;
                     savedLines[currentLine].set(metaData.getSpaceWidth(), text.getFontSize(), text.getMaxLineSize());
                     savedLines[currentLine].attemptToAddWord();
@@ -59,7 +59,7 @@ public class TextMeshDynamicCreator {
 
             savedLines[currentLine]
                     .getCurrentWord()
-                    .addCharacter(metaData.getCharacter(ascii));
+                    .addCharacter(metaData.getCharacter(c));
         }
         savedLines[currentLine].attemptToAddWord();
         return currentLine+1;

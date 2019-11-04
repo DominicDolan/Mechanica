@@ -11,36 +11,21 @@ import java.nio.FloatBuffer;
 public class TextBufferData {
     public FloatBuffer vertices;
     public FloatBuffer textureCoords;
-    public int dataLength;
     public int vertexCount;
-    float[] translatedPoints;
-
-    public TextBufferData(){
-        translatedPoints = new float[12];
-//
-//        this.dataLength = dataLength;
-//        ByteBuffer bb1 = ByteBuffer.allocateDirect(dataLength*4);
-//        bb1.order(ByteOrder.nativeOrder());
-//        polygons = bb1.asFloatBuffer();
-//
-//        ByteBuffer bb2 = ByteBuffer.allocateDirect(dataLength*4);
-//        bb2.order(ByteOrder.nativeOrder());
-//        textureCoords = bb2.asFloatBuffer();
-    }
 
     public void set(int characterCount){
-        this.dataLength = characterCount*12;
+        int dataLength = characterCount * 12;
         this.vertexCount = characterCount*6;
-        ByteBuffer bb1 = ByteBuffer.allocateDirect(dataLength*4);
+        ByteBuffer bb1 = ByteBuffer.allocateDirect(dataLength *4);
         bb1.order(ByteOrder.nativeOrder());
         vertices = bb1.asFloatBuffer();
 
-        ByteBuffer bb2 = ByteBuffer.allocateDirect(dataLength*4);
+        ByteBuffer bb2 = ByteBuffer.allocateDirect(dataLength *4);
         bb2.order(ByteOrder.nativeOrder());
         textureCoords = bb2.asFloatBuffer();
     }
 
-    public void putVertices(float[] characterVertices){
+    void putVertices(float[] characterVertices){
 //        for (int i = 0; i < 11; i+=2) {
 //            translatedPoints[i] = characterVertices[i] + positionX;
 //        }

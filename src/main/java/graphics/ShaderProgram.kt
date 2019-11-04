@@ -11,9 +11,10 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import kotlin.system.exitProcess
 
 
-
+@Suppress("LeakingThis") // This class should be updated or replaced in such a way that this warning no longer occurs
 abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
 
     private val matrixBuffer = BufferUtils.createFloatBuffer(16)
@@ -112,9 +113,9 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
     private fun loadShader(file: String, type: Int): Int {
         val shaderSource = StringBuilder()
         try {
-            val f  = ShaderProgram::class.java!!.getProtectionDomain().getCodeSource().getLocation().getPath()
+            val f  = ShaderProgram::class.java.protectionDomain.codeSource.location.path
 
-            val inputStream = FileInputStream(f + "/shaders/" + file)
+            val inputStream = FileInputStream("$f/shaders/$file")
             val reader = BufferedReader(InputStreamReader(inputStream))
             var line: String? = reader.readLine()
             while (true) {
@@ -127,7 +128,7 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
             reader.close()
         } catch (e: IOException) {
             e.printStackTrace()
-            System.exit(-1)
+            exitProcess(-1)
         }
 
         val shaderID = GL20.glCreateShader(type)
@@ -136,7 +137,7 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
         if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
             println(GL20.glGetShaderInfoLog(shaderID, 500))
             System.err.println("Could not compile shader!")
-            System.exit(-1)
+            exitProcess(-1)
         }
         return shaderID
     }

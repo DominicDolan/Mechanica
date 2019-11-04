@@ -1,7 +1,6 @@
 package util.colors
 
 import util.extensions.degrees
-import util.extensions.isHigher
 import util.units.Angle
 import kotlin.math.max
 import kotlin.math.min
@@ -17,31 +16,31 @@ inline class HexColor(private val hex: Long): Color {
         get() = hex2Blue(hex)
     override val hue: Angle
         get() {
-            var X = 0.0
-            var Y = 0.0
-            var C = 0.0
+            var x = 0.0
+            var y = 0.0
+            var c = 0.0
             val max = max(max(g , b), r)
             val min = min(min(g , b), r)
 
             when {
                 r == max -> {
-                    X = g
-                    Y = b
+                    x = g
+                    y = b
                 }
                 g == max -> {
-                    C = 2.0
-                    X = g
-                    Y = b
+                    c = 2.0
+                    x = g
+                    y = b
                 }
                 b == max -> {
-                    C = 4.0
-                    X = r
-                    Y = g
+                    c = 4.0
+                    x = r
+                    y = g
                 }
             }
             return if (max -min == 0.0) {
                 0.degrees
-            } else ((C + (X -Y)/(max - min))*60).degrees
+            } else ((c + (x -y)/(max - min))*60).degrees
         }
 
     override fun toLong() = hex

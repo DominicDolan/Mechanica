@@ -1,3 +1,4 @@
+@file:Suppress("unused") // There will be many functions here that go unused most of the time
 package util.extensions
 
 fun Number.isHigher(other: Number): Boolean {

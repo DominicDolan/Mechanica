@@ -4,7 +4,6 @@ import compatibility.VectorConverter
 import loader.loadTriangulatedModel
 import models.Model
 import util.extensions.*
-import util.units.Vector
 
 class SolidPolygon(override val path: List<VectorConverter>) : Polygon {
     private var modelInstance: Model? = null
