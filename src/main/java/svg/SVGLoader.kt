@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element
 import util.extensions.flipVertically
 import util.extensions.scale
 import util.extensions.toOrigin
+import util.extensions.vec
+import util.units.Vector
 import java.lang.NumberFormatException
 import kotlin.collections.ArrayList
 
@@ -129,9 +131,9 @@ fun parseSingleValueSequence(text: String): List<Double> {
 // This needs to be updated according to this:
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
 fun loadPolygonCoordinatesOld(element: Element): List<VectorConverter> {
-    var count = 0
-    var mode = 0
-    var closed = false
+    var count: Int
+    var mode: Int
+    var closed: Boolean
     val pathStr = element
             .attr("d")
             .also { println(it); count = it.length; println("Count before M: $count") }
@@ -197,19 +199,20 @@ fun loadSVGDocument(fileName: String): Document {
     return Jsoup.parse(file)
 }
 
-fun getWidthAndHeight(element: Element): Vec2 {
+fun getWidthAndHeight(element: Element): Vector {
     return element.getVector("width", "height")
 }
 
-fun Element.getVector(xAttr: String, yAttr: String): Vec2 {
+private val regexMatchNumber = Regex("^-?[0-9]\\d*(\\.\\d+)?$")
+fun Element.getVector(xAttr: String, yAttr: String): Vector {
     val xStr = this.attr(xAttr)
     val yStr = this.attr(yAttr)
 
     val x = try {
-        Regex("\\d+").find(xStr)?.value?.toFloat() ?: 0f
+        regexMatchNumber.find(xStr)?.value?.toFloat() ?: 0f
     } catch (e: NumberFormatException) { 0f }
     val y = try {
-        Regex("\\d+").find(yStr)?.value?.toFloat() ?: 0f
+        regexMatchNumber.find(yStr)?.value?.toFloat() ?: 0f
     } catch (e: NumberFormatException) { 0f }
-    return Vec2(x, -y)
+    return vec(x, -y)
 }

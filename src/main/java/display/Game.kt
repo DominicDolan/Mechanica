@@ -20,6 +20,7 @@ import state.LoadState
 import state.State
 import util.FrameQueue
 import util.Timer
+import util.Updateable
 
 /**
  * Created by domin on 25/10/2017.
@@ -74,7 +75,19 @@ object Game {
 //        }
 
     fun setCurrentState(setter: () -> State) {
-        (loop?: createGameLoop()).setCurrentState(setter)
+        getGameLoopInstance().setCurrentState(setter)
+    }
+
+    internal fun addItemToUpdate(updateable: Updateable) {
+        getGameLoopInstance().updateableManager.addUpdateable(updateable)
+    }
+
+    internal fun stopItemUpdating(updateable: Updateable) {
+        getGameLoopInstance().updateableManager.removeUpdateable(updateable)
+    }
+
+    internal fun addItemToUpdateForCurrentState(updateable: Updateable) {
+        getGameLoopInstance().updateableManager.addCurrentStateUpdateable(updateable)
     }
 
     // The window handle
@@ -115,7 +128,7 @@ object Game {
     }
 
 
-    fun update(loop: GameLoop = createGameLoop()) {
+    fun update() {
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -127,6 +140,8 @@ object Game {
 
         // Just mentioning the Timer object will initialize it here
         Timer
+
+        val loop = getGameLoopInstance()
 
         // Run the rendering update until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -141,7 +156,7 @@ object Game {
     }
 
 
-    private fun createGameLoop(): GameLoop {
+    private fun getGameLoopInstance(): GameLoop {
         val loop = this.loop
         if (loop != null) return loop
         else {
@@ -152,8 +167,11 @@ object Game {
 
                 private val frameQueue = FrameQueue(60, 17.0/1000.0)
 
+                override val updateableManager: UpdateableManager = UpdateableManager()
+
                 override fun setCurrentState(setter: () -> State) {
                     System.gc()
+                    updateableManager.removeStateUpdateables()
                     currentState = setter()
                 }
 
@@ -180,6 +198,8 @@ object Game {
                         val del = updateDuration
                         currentState.update(del)
 
+                        updateableManager.update(del)
+
                         val average = frameQueue.average.toFloat()
                         // world.step is called twice because it tends to resolve contacts in one frame instead of two
                         // which makes it easier to deal with
@@ -196,7 +216,7 @@ object Game {
                 }
             }
 
-            return this.loop ?: createGameLoop()
+            return this.loop ?: throw IllegalStateException("Something went wrong when creating the game loop")
         }
     }
 
@@ -224,7 +244,39 @@ object Game {
         }
     }
 
-    abstract class GameLoop {
+    private class UpdateableManager {
+
+        private val updateables = ArrayList<Updateable>()
+        private val stateUpdateables = ArrayList<Updateable>()
+
+        fun update(delta: Double) {
+            for (updateable in updateables) {
+                updateable.update(delta)
+            }
+        }
+
+        fun addUpdateable(updateable: Updateable) {
+            updateables.add(updateable)
+        }
+
+        fun addCurrentStateUpdateable(updateable: Updateable) {
+            stateUpdateables.add(updateable)
+            updateables.add(updateable)
+        }
+
+        fun removeUpdateable(updateable: Updateable) {
+            updateables.remove(updateable)
+        }
+
+        fun removeStateUpdateables() {
+            updateables.removeAll(stateUpdateables)
+            stateUpdateables.clear()
+        }
+    }
+
+    private abstract class GameLoop {
+        abstract val updateableManager: UpdateableManager
+
         abstract fun setCurrentState(setter: () -> State)
 
         abstract fun update()
