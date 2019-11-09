@@ -20,14 +20,16 @@ object Res {
     val font = SpecificResource("res/fonts/", "png")
     val animations = SpecificResource("res/animations/", "")
 
-    private val location get() = this.javaClass.classLoader.getResource("")?.path?.toString() ?: ""
+    private val relativeLocation = "../../../resources/main/"
+    private val location get() = this.javaClass.getResource(relativeLocation)?.path?.toString() ?: ""
 
     operator fun get(file: String): String {
         return getResource("res/$file")
     }
 
     private fun getResource(file: String) : String {
-        val resource = this.javaClass.classLoader.getResource(file)
+        println("Location: $location")
+        val resource = this.javaClass.classLoader.getResource(relativeLocation + file)
         return if (resource == null) {
             System.err.println("Resource not found at location: $location$file")
             "$location$file"
