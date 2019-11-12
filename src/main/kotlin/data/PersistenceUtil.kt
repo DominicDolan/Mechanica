@@ -108,7 +108,7 @@ private fun String.replace(range: IntRange, function: String.(String) -> String)
 }
 
 private val directory: String get() {
-    val directory = File(Res["data"])
+    val directory = File(Res["data"].path)
     if (!directory.exists()) {
         directory.mkdir()
     }

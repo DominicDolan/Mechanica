@@ -3,13 +3,12 @@ package demo.drawer
 import display.Game
 import display.GameOptions
 import graphics.drawer.Drawer
+import loader.loadImageFromResource
 import loader.loadTexture
 import resources.Res
 import state.State
 import util.extensions.degrees
 import java.util.Enumeration
-
-
 
 fun main() {
     val options = GameOptions()
@@ -24,7 +23,7 @@ fun main() {
 }
 
 private class StartMain : State() {
-    val image = loadTexture(Res.image["colors"])
+    val image = loadImageFromResource(Res.image["colors"])
     override fun update(delta: Double) {
     }
 

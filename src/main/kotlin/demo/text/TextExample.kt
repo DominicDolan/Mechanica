@@ -3,6 +3,7 @@ package demo.text
 import display.Game
 import display.GameOptions
 import graphics.drawer.Drawer
+import loader.loadImageFromResource
 import loader.loadTexture
 import resources.Res
 import state.State
@@ -20,7 +21,7 @@ fun main() {
 
 
 private class StartText : State() {
-    val image = loadTexture(Res.image["colors"])
+    val image = loadImageFromResource(Res.image["colors"])
     override fun update(delta: Double) {
     }
 

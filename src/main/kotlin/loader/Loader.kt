@@ -15,7 +15,7 @@ import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
 import resources.Resource
-import resources.ResourceFromSource
+import resources.InternalResource
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper
 import util.units.Vector
@@ -190,7 +190,7 @@ fun loadImageFromResource(resource: Resource): Image {
 }
 
 internal fun loadInternalTexture(name: String): Image {
-    val byteBuffer = ResourceFromSource(name).buffer
+    val byteBuffer = InternalResource(name).buffer
     return loadImageFromMemory(byteBuffer, ::defaultGenerateTexture)
 }
 
@@ -308,7 +308,7 @@ fun loadTextFile(filename: String): String {
 }
 
 fun loadFont(name: String): FontType {
-    return FontType(loadTexture(Res.font["$name.png"]), Res.font["$name.fnt"])
+    return FontType(loadTexture(Res.font["$name.png"].path), Res.font["$name.fnt"].path)
 }
 
 fun loadBufferedReader(file: String): BufferedReader? {
