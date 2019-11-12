@@ -6,6 +6,7 @@ import org.joml.Vector3f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+import resources.ResourceFromSource
 
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -111,25 +112,7 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
 
 
     private fun loadShader(file: String, type: Int): Int {
-        val shaderSource = StringBuilder()
-        try {
-            val f  = ShaderProgram::class.java.protectionDomain.codeSource.location.path
-
-            val inputStream = FileInputStream("$f/shaders/$file")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            var line: String? = reader.readLine()
-            while (true) {
-                if(line == null){
-                    break
-                }
-                shaderSource.append(line).append("//\n")
-                line = reader.readLine()
-            }
-            reader.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            exitProcess(-1)
-        }
+        val shaderSource = ResourceFromSource("shaders/$file").contents
 
         val shaderID = GL20.glCreateShader(type)
         GL20.glShaderSource(shaderID, shaderSource)

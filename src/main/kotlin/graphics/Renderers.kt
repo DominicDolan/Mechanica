@@ -3,6 +3,8 @@ package graphics
 import display.Game
 import graphics.drawer.Drawer
 import graphics.framebuffer.Fbo
+import loader.loadImageFromResource
+import loader.loadInternalTexture
 import loader.loadTexture
 import loader.loadTexturedQuad
 import matrices.TransformationMatrix
@@ -11,6 +13,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import resources.Res
+import resources.ResourceFromSource
 import shaders.circle.CircleShader
 import shaders.color.ColorShader
 import shaders.font.FontShader
@@ -64,7 +67,7 @@ var colorRenderer:(Drawer.Companion)-> Unit = {
 }
 
 val circleShader = CircleShader()
-val circleModel = loadTexturedQuad(loadTexture(Res.image["oval"]), 0f, 1f, 1f, 0f)
+val circleModel = loadTexturedQuad(loadImageFromResource(ResourceFromSource("res/images/oval.png")), 0f, 1f, 1f, 0f)
 private var border = 0.05
 
 var circleRenderer:(Drawer.Companion)-> Unit = {
