@@ -3,6 +3,17 @@
  */
 package demo
 
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.GeometryFactory
+import display.Game
+import display.GameOptions
+import graphics.Polygon
+import graphics.drawer.Drawer
+import models.Model
+import state.State
+import util.triangulate.EarClipper
+import util.units.Vector
+
 class App {
     val greeting: String
         get() {
@@ -11,5 +22,21 @@ class App {
 }
 
 fun main(args: Array<String>) {
-    println(App().greeting)
+    val options = GameOptions()
+            .setResolution(1280, 720)
+            .setViewPort(height = 10.0)
+            .setStartingState { object : State() {
+                override fun update(delta: Double) {
+                    
+                }
+
+                override fun render(draw: Drawer) {
+                    draw.green.rectangle(0, 0, 2.0, 2.0)
+                }
+
+            } }
+
+    Game.start(options)
+    Game.update()
+    Game.destroy()
 }

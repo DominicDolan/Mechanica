@@ -11,10 +11,11 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glGenerateMipmap
-import org.lwjgl.stb.STBImage.stbi_image_free
-import org.lwjgl.stb.STBImage.stbi_load_from_memory
+import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
+import resources.Resource
+import resources.ResourceFromSource
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper
 import util.units.Vector
@@ -26,6 +27,9 @@ import java.nio.ShortBuffer
 import java.nio.channels.FileChannel
 import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
+import java.io.File
+import kotlin.collections.HashMap
+
 
 /**
  * Created by domin on 26/10/2017.
@@ -181,27 +185,48 @@ private fun hashCoordinates(x: Double, y: Double): String {
     return "$x:$y"
 }
 
+fun loadImageFromResource(resource: Resource): Image {
+    return loadImageFromMemory(resource.buffer, ::defaultGenerateTexture)
+}
+
+internal fun loadInternalTexture(name: String): Image {
+    val byteBuffer = ResourceFromSource(name).buffer
+    return loadImageFromMemory(byteBuffer, ::defaultGenerateTexture)
+}
 
 fun loadTexture(name: String): Image{
+    val byteBuffer = ioResourceToByteBuffer(name, 1024)
+    return loadImageFromMemory(byteBuffer, ::defaultGenerateTexture)
+}
 
-//    val fileName = "res/" + name + (if (name.endsWith(".png")) "" else ".png")
+private fun loadImageFromMemory(buffer: ByteBuffer, generateTexture: (ImageDetails) -> Unit): Image {
     val width = getBuffer<Int>(1) as IntBuffer
     val height = getBuffer<Int>(1) as IntBuffer
     val components = getBuffer<Int>(1) as IntBuffer
 
-    val data = stbi_load_from_memory(ioResourceToByteBuffer(name, 1024), width, height, components, 4)
+    val data = stbi_load_from_memory(buffer, width, height, components, 4)
     val id = glGenTextures()
-    glBindTexture(GL_TEXTURE_2D, id)
+    val imageDetails = ImageDetails(data, id, width.get(), height.get(), components.get())
+
+    generateTexture(imageDetails)
+
+    if (data != null) {
+        stbi_image_free(data)
+    }
+
+    return Image(id)
+}
+
+private fun defaultGenerateTexture(details: ImageDetails) {
+    glBindTexture(GL_TEXTURE_2D, details.id)
     glGenerateMipmap(GL_TEXTURE_2D)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(), height.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
-    if (data != null) {
-        stbi_image_free(data)
-    }
-    return Image(id)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, details.width, details.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, details.data)
 }
+
+private data class ImageDetails(val data: ByteBuffer?, val id: Int, val width: Int, val height: Int, val components: Int)
 
 fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadTexture(it.absolutePath) }.toList()
 
@@ -218,6 +243,7 @@ fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
         fc.close()
         fis.close()
     } else {
+        System.err.println("Something went wrong")
         buffer = BufferUtils.createByteBuffer(bufferSize)
     }
 //    else {
@@ -237,6 +263,29 @@ fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
 //            }
 //        }
 //    }
+    return buffer
+}
+
+fun ioResourceToByteBuffer(resource: InputStream, bufferSize: Int): ByteBuffer {
+    val bytes = resource.readAllBytes()
+    val buffer = BufferUtils.createByteBuffer(bytes.size)
+    buffer.put(bytes)
+    buffer.flip()
+    return buffer
+}
+
+fun ioResourceToByteBuffer(file: File, bufferSize: Int): ByteBuffer {
+    val buffer: ByteBuffer
+    if (file.isFile) {
+        val fis = FileInputStream(file)
+        val fc = fis.channel
+        buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size())
+        fc.close()
+        fis.close()
+    } else {
+        System.err.println("Didn't work correctly")
+        buffer = BufferUtils.createByteBuffer(bufferSize)
+    }
     return buffer
 }
 
