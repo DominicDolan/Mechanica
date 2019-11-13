@@ -5,6 +5,8 @@ import display.GameOptions
 import graphics.drawer.Drawer
 import state.State
 import util.colors.rgba
+import util.extensions.plus
+import util.extensions.radians
 
 fun main() {
     val options = GameOptions()
@@ -20,82 +22,92 @@ fun main() {
 
 private class UITest : State() {
     val ui: StartUI
-
+    var angle = 0.radians
     init {
         ui = StartUI(-6.0, -4.0, 12.0, 8.0)
     }
 
     override fun update(delta: Double) {
-
+        angle += 0.2.radians
     }
 
     override fun render(draw: Drawer) {
+
         ui(draw) {
-            button(draw) {
+            button {
                 this.color = rgba(0.0, 1.0, 0.0, 0.5)
-                this.x = parent.x + 1.0
-                this.width = parent.width - 2.0
-                button(draw) {
+                this.x = parent.x + 3.0
+                this.width = parent.width - 6.0
+                button {
                     this.color = rgba(0.0, 0.0, 1.0, 0.5)
-                    this.x = parent.x + 1.0
-                    this.width = parent.width - 2.0
+                    this.x = parent.x + 2.0
+                    this.width = parent.width - 4.0
                 }
             }
+        }
+
+        draw.rotated(angle).rectangle(-8.0, 4.0, 1.0, 1.0)
+    }
+}
+
+class StartUI(val x: Double, val y: Double, val width: Double, val height: Double) {
+    val element = Element()
+
+    init {
+        element.x = x
+        element.width = width
+
+        element.parent.width = width
+        element.parent.x = x
+    }
+
+    operator fun invoke(draw: Drawer, block: Element.() -> Unit) {
+        block(element)
+        draw.color(rgba(0.5,0.5,0.5, 1.0)).rectangle(x, y, width, height)
+        render(draw, element)
+    }
+
+    private fun render(draw: Drawer, element: Element) {
+        element.childCounter = -1
+        for (child in element.children) {
+            draw.color(child.color).rectangle(child.x, y, child.width, height)
+        }
+        for (child in element.children) {
+            render(draw, child)
         }
     }
 }
 
 class Layout {
-    var x: Double = 0.0
-    var y: Double = 0.0
-    var width: Double = 0.0
-    var height: Double = 0.0
+    var x = 0.0
+    var width = 0.0
 }
 
-abstract class UIElement(private val startUI: StartUI) {
-    val layout = Layout()
-    val parent: Layout = Layout()
-    var x: Double = 0.0
-    var y: Double = 0.0
-    var width: Double = 0.0
-    var height: Double = 0.0
+class Element {
+    val children = ArrayList<Element>()
+    var childCounter = -1
+    val parent = Layout()
+    var x = 0.0
+    var width = 0.0
+    var color = rgba(1.0, 0.0, 0.0, 1.0)
 
-    operator fun invoke(draw: Drawer, block: StartUI.() -> Unit) {
-        startUI.parent.x = startUI.x
-        startUI.parent.y = startUI.y
-        startUI.parent.width = startUI.width
-        startUI.parent.height = startUI.height
-        block(startUI)
-        draw.color(startUI.color).rectangle(startUI.x, startUI.y, startUI.width, startUI.height)
+    fun childExistsAt(index: Int): Boolean {
+        return children.size > index
     }
 }
 
-class StartUI(var x: Double, var y: Double, var width: Double, var height: Double){
-    val layout = Layout()
-    val parent: Layout = Layout()
-    val button = ButtonUI(this)
-    var color = rgba(1.0, 0.0, 0.0, 0.5)
-
-    init {
-        layout.x = x
-        layout.y = y
-        layout.width = width
-        layout.height = height
+fun Element.button(block: Element.() -> Unit) {
+    this.childCounter++
+    val newElement = if (childExistsAt(this.childCounter)) {
+        this.children.get(this.childCounter)
+    } else {
+        val e = Element()
+        this.children.add(e)
+        e
     }
 
-    private fun resetLayout() {
-        x = layout.x
-        y = layout.y
-        width = layout.width
-        height = layout.height
-    }
-
-    operator fun invoke(draw: Drawer, block: StartUI.() -> Unit) {
-        resetLayout()
-        block(this)
-    }
-}
-
-class ButtonUI(startUI: StartUI) : UIElement(startUI) {
+    newElement.parent.x = this.x
+    newElement.parent.width = this.width
+    block(newElement)
 
 }
