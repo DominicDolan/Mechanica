@@ -16,6 +16,7 @@ import shaders.color.ColorShader
 import shaders.font.FontShader
 import shaders.framebuffer.FXAAShader
 import shaders.texture.TextureShader
+import java.util.*
 
 /**
  * Created by domin on 27/10/2017.
@@ -51,6 +52,7 @@ var colorRenderer:(Drawer.Companion)-> Unit = {
     colorShader.loadTransformationMatrix(transformationMatrix.create())
     colorShader.setUniform4fv(colorShader.color, colorArray)
 
+    enableAlphaBlending()
     if (it.model.drawType == GL_TRIANGLES) {
         glDrawElements(GL_TRIANGLES, it.model.vertexCount,
                 GL_UNSIGNED_SHORT, 0)
