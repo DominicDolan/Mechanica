@@ -57,7 +57,9 @@ object Game {
         set(value) {view?.positionX = value}
     var viewY: Double
         get() = view?.positionY?: 0.0
-        set(value) {view?.positionY = value}
+        set(value) {
+            view?.positionY = value
+        }
 
     val viewMatrix: ViewMatrix
         get() = view?.viewMatrix?: ViewMatrix()
@@ -165,14 +167,28 @@ object Game {
                 var endOfLoop = Timer.now - 0.1
                 var updateDuration = startOfLoop - endOfLoop
 
+                private var setStateOnNextFrame = true
+                private var setter = { emptyState() }
+
                 private val frameQueue = FrameQueue(60, 17.0/1000.0)
 
                 override val updateableManager: UpdateableManager = UpdateableManager()
 
                 override fun setCurrentState(setter: () -> State) {
-                    System.gc()
+                    val setStateNow = setStateOnNextFrame
+                    setStateOnNextFrame = true
+                    this.setter = setter
+
+                    if (setStateNow) {
+                        setCurrentState()
+                    }
+                }
+
+                private fun setCurrentState() {
                     updateableManager.removeStateUpdateables()
                     currentState = setter()
+                    setStateOnNextFrame = false
+                    System.gc()
                 }
 
                 private lateinit var currentState: State
@@ -211,6 +227,10 @@ object Game {
                             BodyRenderer.update(painter)
                             world.drawDebugData()
                             DebugDrawer.render(painter)
+                        }
+
+                        if (setStateOnNextFrame) {
+                            setCurrentState()
                         }
                     }
                 }

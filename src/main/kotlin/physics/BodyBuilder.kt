@@ -20,6 +20,8 @@ class BodyBuilder<T : Shape>(private val shape: T) {
     private var bodyType = BodyType.DYNAMIC
     private var userData: Int? = null
     private var vertices: Array<Vec2>? = null
+    private var maskBits = 0xFFFF
+    private var categoryBits = 0x0001
 
     fun setPosition(position: Vec2): BodyBuilder<T> {
         this.position = position
@@ -56,6 +58,17 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         return this
     }
 
+    fun setShape(setter: T.() -> Unit): BodyBuilder<T> {
+        setter(shape)
+        return this
+    }
+
+    fun setCollisionFilter(maskBits: Int = 0xFFFF, categoryBits: Int = 0x0001): BodyBuilder<T> {
+        this.maskBits = maskBits
+        this.categoryBits = categoryBits
+        return this
+    }
+
     fun build(): Body {
         val bodyDef = BodyDef()
         val fixtureDef = FixtureDef()
@@ -68,6 +81,8 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         fixtureDef.shape = shape
         fixtureDef.density = density
         fixtureDef.friction = friction
+        fixtureDef.filter.categoryBits = categoryBits
+        fixtureDef.filter.maskBits = maskBits
 
         val vertices = this.vertices
         if (vertices != null && shape is EdgeShape) {
@@ -78,7 +93,6 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         } else {
             body.createFixture(fixtureDef)
         }
-
 
         if (userData != null) body.userData = userData
 

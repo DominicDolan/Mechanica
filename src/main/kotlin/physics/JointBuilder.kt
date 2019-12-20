@@ -5,6 +5,9 @@ import display.Game
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.joints.*
+import util.extensions.degrees
+import util.units.Angle
+import util.units.Vector
 
 //https://www.iforce2d.net/b2dtut/joints-overview
 
@@ -15,7 +18,9 @@ fun Body.attachRevoluteJoint(
         anchorB: Vec2 = Vec2(),
         collision: Boolean = false,
         motorTorque: Double? = null,
-        motorRadsPerSec: Double? = null // Radians per second
+        motorRadsPerSec: Double? = null, // Radians per second
+        referenceAngle: Angle = 0.degrees,
+        limits: AngleLimits? = null
         ): JointProperties<RevoluteJointDef> {
 
     val def = RevoluteJointDef()
@@ -32,8 +37,18 @@ fun Body.attachRevoluteJoint(
         def.motorSpeed = (motorRadsPerSec?: 0.0).toFloat()
     }
 
+    def.referenceAngle = referenceAngle.toRadians().asDouble().toFloat()
+
+    if (limits != null) {
+        def.enableLimit = true
+        def.lowerAngle = limits.lower.toRadians().asDouble().toFloat()
+        def.upperAngle = limits.upper.toRadians().asDouble().toFloat()
+    }
+
     return JointProperties(def)
 }
+
+data class AngleLimits(val lower: Angle, val upper: Angle)
 
 //https://www.iforce2d.net/b2dtut/joints-prismatic
 fun Body.attachPrismaticJoint(
