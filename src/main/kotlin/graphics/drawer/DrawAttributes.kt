@@ -63,9 +63,9 @@ object Rotated : Drawer() {
         return this
     }
 
-    fun about(pivotX: Double, pivotY: Double): Drawer {
-        Drawer.pivotX = pivotX
-        Drawer.pivotY = pivotY
+    fun about(pivotX: Number, pivotY: Number): Drawer {
+        Drawer.pivotX = pivotX.toDouble()
+        Drawer.pivotY = pivotY.toDouble()
         isPivotSet = true
         return this
     }

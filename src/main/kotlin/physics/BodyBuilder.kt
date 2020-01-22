@@ -63,7 +63,7 @@ class BodyBuilder<T : Shape>(private val shape: T) {
         return this
     }
 
-    fun setCollisionFilter(maskBits: Int = 0xFFFF, categoryBits: Int = 0x0001): BodyBuilder<T> {
+    fun setCollisionFilter(maskBits: Int = 0x0001, categoryBits: Int = 0xFFFF): BodyBuilder<T> {
         this.maskBits = maskBits
         this.categoryBits = categoryBits
         return this
