@@ -93,6 +93,15 @@ fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0):
     return rgba(f(0,h,s,l), f(8,h,s,l), f(4,h,s,l), alpha)
 }
 
+fun FloatArray.toColor(): Color {
+    fun getComponent(i: Int) = if (this.size > i) this[i].toDouble() else 0.0
+    val r = getComponent(0)
+    val g = getComponent(1)
+    val b = getComponent(2)
+    val a = getComponent(3)
+    return rgba(r,g,b,a)
+}
+
 operator fun Color.component1() = r
 operator fun Color.component2() = g
 operator fun Color.component3() = b

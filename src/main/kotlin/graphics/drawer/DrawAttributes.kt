@@ -5,6 +5,7 @@ import graphics.Image
 import graphics.colorArray
 import util.colors.Color
 import util.colors.hex
+import util.colors.toColor
 import util.units.Angle
 
 
@@ -72,6 +73,8 @@ object Rotated : Drawer() {
 }
 
 object ColorDrawer : Drawer() {
+    fun get() = colorArray.toColor()
+
     operator fun invoke(hex: Color): ColorDrawer {
         colorArray[0] = hex.r.toFloat()
         colorArray[1] = hex.g.toFloat()
