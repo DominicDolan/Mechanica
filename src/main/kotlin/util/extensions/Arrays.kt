@@ -3,6 +3,7 @@
 package util.extensions
 
 import org.jbox2d.common.Vec2
+import util.units.Vector
 
 /**
  * Created by domin on 02/11/2017.
@@ -16,6 +17,22 @@ fun <T> Array<T>.set(setter: (Int) -> T) {
         this[i] = setter(i)
     }
 }
+
+
+fun Array<Vector>.containsPoint(point: Vector): Boolean {
+    val len = this.size
+    var result = false
+
+    for (i in 0 until len){
+        val j = (i + len - 1)%len
+        if ((this[i].y > point.y) != (this[j].y > point.y) &&
+                (point.x < (this[j].x - this[i].x) * (point.y - this[i].y) / (this[j].y-this[i].y) + this[i].x)) {
+            result = !result
+        }
+    }
+    return result
+}
+
 
 inline operator fun <reified T> Array<T>.get(range: IntRange): Array<T>{
     return range.map { this[it] }.toTypedArray()
