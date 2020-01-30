@@ -2,7 +2,9 @@
 
 package util.colors
 
+import util.extensions.degrees
 import util.units.Angle
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -78,17 +80,70 @@ fun hex2Blue(hex: Long) = (hex shr 8 and 0xFF)/255.0
 fun hex2Green(hex: Long) = (hex shr 16 and 0xFF)/255.0
 fun hex2Red(hex: Long) = (hex shr 24 and 0xFF)/255.0
 
+fun hex2Hue(hex: Long): Angle {
+    val r = hex2Red(hex)
+    val g = hex2Green(hex)
+    val b = hex2Blue(hex)
+    return rgb2Hue(r,g,b)
+}
+
+fun rgb2Hue(r: Double, g: Double, b: Double): Angle {
+    var x = 0.0
+    var y = 0.0
+    var c = 0.0
+    val max = max(max(g , b), r)
+    val min = min(min(g , b), r)
+
+    when {
+        r == max -> {
+            x = g
+            y = b
+        }
+        g == max -> {
+            c = 2.0
+            x = b
+            y = r
+        }
+        b == max -> {
+            c = 4.0
+            x = r
+            y = g
+        }
+    }
+    return if (max -min == 0.0) {
+        0.degrees
+    } else ((c + (x -y)/(max - min))*60).degrees
+}
+
+fun rgb2Saturation(r: Double, g: Double, b: Double): Double {
+    if ((r == 0.0 && g == 0.0 && b == 0.0)
+            || (r == 1.0 && g == 1.0 && b == 1.0))
+        return 0.0
+
+    val max = max(max(g , b), r)
+    val min = min(min(g , b), r)
+
+    return (max - min)/(1- abs(max + min -1))
+
+}
+
+fun rgb2Lightness(r: Double, g: Double, b: Double): Double {
+    val max = max(max(g , b), r)
+    val min = min(min(g , b), r)
+
+    return (max + min)/2.0
+}
+
 fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0): Color {
-    fun f(n: Int, h: Double, l: Double, s: Double): Double {
+    fun f(n: Int, h: Double, s: Double, l: Double): Double {
         val a = s* min(l, 1.0-l)
         val k = (n + h/30.0)%12
-        println("k: $k")
-        return (l - a* max(min(min(k-3.0, 9.0-k), 1.0),-1.0)).also { println(it) }
+        return (l - a* max(min(min(k-3.0, 9.0-k), 1.0),-1.0))
     }
 
     val h = hue.toDegrees().asDouble()
-    val s = saturation/100.0
-    val l = lightness/100.0
+    val s = saturation
+    val l = lightness
 
     return rgba(f(0,h,s,l), f(8,h,s,l), f(4,h,s,l), alpha)
 }
