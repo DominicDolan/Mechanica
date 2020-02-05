@@ -14,4 +14,14 @@ abstract class ControlsMap {
     protected fun mapToKeys(vararg keys: Keys): Key {
         return Key(map, *keys)
     }
+
+    companion object {
+        fun getKeyEnum(keyId: Int): Keys? {
+            for (value in Keys.values()) {
+                if (keyId == value.id)
+                    return value
+            }
+            return null
+        }
+    }
 }
