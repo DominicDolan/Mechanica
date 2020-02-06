@@ -14,7 +14,7 @@ import org.lwjgl.system.MemoryUtil
 /**
  * Created by domin on 28/10/2017.
  */
-class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = false, borderless: Boolean = false, var refreshRate: Int = GLFW_DONT_CARE) {
+class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = false, borderless: Boolean = false, var refreshRate: Int = GLFW_DONT_CARE, title: String = "Hello, world!") {
 
     val ratio: Double get() =  width.toDouble()/height.toDouble()
 
@@ -49,7 +49,7 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
             refreshRate = vidMode.refreshRate()
         }
         // Create the window
-        window = glfwCreateWindow(width, height, "Hello World!", if (fullscreen) monitor else MemoryUtil.NULL, MemoryUtil.NULL)
+        window = glfwCreateWindow(width, height, title, if (fullscreen) monitor else MemoryUtil.NULL, MemoryUtil.NULL)
 
         if (window == MemoryUtil.NULL)
             throw RuntimeException("Failed to create the GLFW window")

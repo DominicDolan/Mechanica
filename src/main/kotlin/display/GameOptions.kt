@@ -21,6 +21,9 @@ class GameOptions {
         private set
     internal var controlsMap: ControlsMap = object : ControlsMap() { }
 
+    internal var title: String = "Hello, World"
+        private set
+
     private var viewWidth: Double = 0.0
     private var viewHeight: Double = 0.0
     private var viewPositionX: Double = 0.0
@@ -93,6 +96,11 @@ class GameOptions {
 
     fun setControlMapping(controlsMap: ControlsMap): GameOptions {
         this.controlsMap = controlsMap
+        return this
+    }
+
+    fun setTitle(title: String): GameOptions {
+        this.title = title
         return this
     }
 

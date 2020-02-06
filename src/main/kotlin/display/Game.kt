@@ -106,7 +106,7 @@ object Game {
 
     fun start(options: GameOptions) {
         with(options) {
-            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless)
+            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
             view = getView()
             Game.saveData = this.saveData
             loadData()
