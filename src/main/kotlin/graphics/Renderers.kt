@@ -142,3 +142,10 @@ var backRenderer = {
 
     disableVertexArrays()
 }
+
+fun cleanUp() {
+    textureShader.cleanUp()
+    colorShader.cleanUp()
+    circleShader.cleanUp()
+    fontShader.cleanUp()
+}

@@ -1,0 +1,24 @@
+package shader.glvars
+
+import org.joml.Matrix4f
+import org.lwjgl.BufferUtils
+import java.nio.FloatBuffer
+
+class GLMatrix4f(
+        matrix: Matrix4f,
+        override val name: String,
+        override val firstType: String,
+        override val secondType: String
+) : GLVar<FloatBuffer>() {
+    override var value: FloatBuffer = BufferUtils.createFloatBuffer(16)
+
+    init {
+        set(matrix)
+    }
+
+    fun set(matrix: Matrix4f) {
+        value.clear()
+        matrix.get(value)
+    }
+
+}
