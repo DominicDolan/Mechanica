@@ -5,10 +5,10 @@ import util.units.Vector
 class GLVector2f(
         x: Number, y: Number,
         override val name: String,
-        override val firstType: String,
-        override val secondType: String
+        override val qualifier: String
 ) : GLVar<FloatArray>() {
     override var value: FloatArray = floatArrayOf(x.toFloat(), y.toFloat())
+    override val type: String = "vec2"
 
     fun set(x: Number, y: Number) {
         value[0] = x.toFloat()

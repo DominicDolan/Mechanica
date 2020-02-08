@@ -7,10 +7,10 @@ import java.nio.FloatBuffer
 class GLMatrix4f(
         matrix: Matrix4f,
         override val name: String,
-        override val firstType: String,
-        override val secondType: String
+        override val qualifier: String
 ) : GLVar<FloatBuffer>() {
     override var value: FloatBuffer = BufferUtils.createFloatBuffer(16)
+    override val type: String = "mat4"
 
     init {
         set(matrix)

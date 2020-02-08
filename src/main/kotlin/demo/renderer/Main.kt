@@ -11,6 +11,7 @@ import loader.loadTexturedQuad
 import org.lwjgl.opengl.GL11
 import resources.Res
 import shader.Shader
+import shader.script.Declarations
 import shader.script.ShaderScript
 import state.State
 import util.colors.hex
@@ -35,16 +36,13 @@ private class StartMain : State() {
     private val red = rgba(1.0, 0.0, 0.0, 1.0)
 
     private val vertex = object : ShaderScript() {
-        val position = varIn.vec3()
-        val textureCoords = varIn.vec2()
-
         //language=GLSL
         override val main: String =
                 """
                 out vec2 pass_textureCoords;
                 void main(void) {
-                    gl_Position = vec4($position.xyz, 1.0);
-	                pass_textureCoords = $textureCoords;
+                    gl_Position = vec4(position.xyz, 1.0);
+	                pass_textureCoords = textureCoords;
                 }
                 """
 
@@ -68,12 +66,19 @@ private class StartMain : State() {
 
     }
 
-    private val shader = Shader(vertex, fragment).apply {
-        drawProcedure = {
+    private val shader: Shader
+
+    init {
+        shader = Shader(vertex, fragment)
+        shader.drawProcedure = {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, it.texture.id)
             GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount,
                     GL11.GL_UNSIGNED_SHORT, 0)
         }
+        Declarations.addGlobal {
+            val newVar = uniform.mat4()
+        }
+        println(vertex.script)
     }
 
     override fun update(delta: Double) {
