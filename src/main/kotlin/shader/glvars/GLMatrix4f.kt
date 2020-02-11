@@ -5,7 +5,7 @@ import org.lwjgl.BufferUtils
 import java.nio.FloatBuffer
 
 class GLMatrix4f(
-        matrix: Matrix4f,
+        var matrix: Matrix4f,
         override val name: String,
         override val qualifier: String
 ) : GLVar<FloatBuffer>() {
@@ -19,6 +19,7 @@ class GLMatrix4f(
     fun set(matrix: Matrix4f) {
         value.clear()
         matrix.get(value)
+        this.matrix = matrix
     }
 
 }

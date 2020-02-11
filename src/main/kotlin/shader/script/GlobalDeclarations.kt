@@ -1,5 +1,7 @@
 package shader.script
 
+import shader.AttributePointer
+
 class GlobalDeclarations : Declarations("globalVar") {
     public override val uniform: Qualifier
         get() = super.uniform
@@ -9,4 +11,7 @@ class GlobalDeclarations : Declarations("globalVar") {
         get() = super.varOut
     public override val varConst: Qualifier
         get() = super.varConst
+    public override fun attribute(pointer: AttributePointer): Qualifier {
+        return super.attribute(pointer)
+    }
 }

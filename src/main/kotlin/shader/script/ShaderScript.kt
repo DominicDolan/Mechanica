@@ -1,7 +1,8 @@
 package shader.script
 
+import display.Game
 import org.lwjgl.opengl.GL20
-import java.lang.StringBuilder
+import shader.glvars.GLMatrix4f
 import java.nio.FloatBuffer
 
 abstract class ShaderScript : Declarations("autoVal") {
@@ -12,10 +13,11 @@ abstract class ShaderScript : Declarations("autoVal") {
     abstract val main: String
 
     private fun generateScript(): String {
-        val sb = StringBuilder(header)
+        val sb = java.lang.StringBuilder(header)
         sb.appendln(globalDeclarations)
-        sb.appendln(super.declarations)
+        sb.appendln(declarations)
         sb.appendln(main.trimIndent())
+        globalMethodDeclarations(sb)
 
         return sb.toString()
     }
@@ -29,7 +31,22 @@ abstract class ShaderScript : Declarations("autoVal") {
         }
     }
 
+
     internal fun loadUniforms() {
+        loadGlobalUniforms()
+        loadLocalUniforms()
+    }
+
+    private fun loadGlobalUniforms() {
+        for (v in Declarations.iterator) {
+            if (v.qualifier == "uniform") {
+                v.location = GL20.glGetUniformLocation(programId, v.name)
+                loadUniform(v.location, v.value)
+            }
+        }
+    }
+
+    private fun loadLocalUniforms() {
         for (v in iterator) {
             if (v.qualifier == "uniform") {
                 loadUniform(v.location, v.value)

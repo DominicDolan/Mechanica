@@ -7,10 +7,10 @@ import util.colors.*
 import util.units.Vector
 
 abstract class Qualifier(private val variables: ScriptVariables) {
-    protected abstract val name: String
+    protected abstract val qualifierName: String
 
     fun <T> type(type: String, name: String, initialValue: T): GLVar<T> {
-        val qualifier = this.name
+        val qualifier = this.qualifierName
 
         val v = object : GLVar<T>() {
             override var value: T = initialValue
@@ -27,9 +27,9 @@ abstract class Qualifier(private val variables: ScriptVariables) {
         return type(type, variableName, initialValue)
     }
 
-    fun vec4(): GLVector4f {
-        val variableName = variables.getNextName()
-        val qualifier = name
+    fun vec4(name: String? = null): GLVector4f {
+        val variableName = name ?: variables.getNextName()
+        val qualifier = qualifierName
 
         val v = GLVector4f(0f, 0f, 0f, 0f, variableName, qualifier)
         variables.addVariable(v)
@@ -42,16 +42,16 @@ abstract class Qualifier(private val variables: ScriptVariables) {
 
     fun float(f: Float): GLFloat {
         val variableName = variables.getNextName()
-        val qualifier = name
+        val qualifier = qualifierName
 
         val v =  GLFloat(f, variableName, qualifier)
         variables.addVariable(v)
         return v
     }
 
-    fun vec3(): GLVector3f {
-        val variableName = variables.getNextName()
-        val qualifier = name
+    fun vec3(name: String? = null): GLVector3f {
+        val variableName = name ?: variables.getNextName()
+        val qualifier = qualifierName
 
         val v =  GLVector3f(0f, 0f, 0f, variableName, qualifier)
         variables.addVariable(v)
@@ -61,9 +61,9 @@ abstract class Qualifier(private val variables: ScriptVariables) {
 
     fun vec3(x: Double, y: Double, z: Double): GLVector3f = vec3().apply { set(x, y, z) }
 
-    fun vec2(): GLVector2f {
-        val variableName = variables.getNextName()
-        val qualifier = name
+    fun vec2(name: String? = null): GLVector2f {
+        val variableName = name ?: variables.getNextName()
+        val qualifier = qualifierName
 
         val v =  GLVector2f(0f, 0f, variableName, qualifier)
         variables.addVariable(v)
@@ -74,9 +74,9 @@ abstract class Qualifier(private val variables: ScriptVariables) {
 
     fun vec2(vector: Vector): GLVector2f = vec2().apply { set(vector) }
 
-    fun mat4(): GLMatrix4f {
-        val variableName = variables.getNextName()
-        val qualifier = name
+    fun mat4(name: String? = null): GLMatrix4f {
+        val variableName = name ?: variables.getNextName()
+        val qualifier = qualifierName
         val matrix = Matrix4f()
 
         val v =  GLMatrix4f(matrix, variableName, qualifier)
