@@ -1,4 +1,4 @@
-package shader.glvars
+package gl.glvars
 
 import util.colors.Color
 

@@ -1,4 +1,4 @@
-package shader.glvars
+package gl.glvars
 
 abstract class GLVar<T> {
     abstract var value: T

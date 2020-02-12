@@ -1,6 +1,6 @@
-package shader.script
+package gl.script
 
-import shader.glvars.GLVar
+import gl.glvars.GLVar
 
 class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
     private val variables = ArrayList<GLVar<*>>()

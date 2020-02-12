@@ -1,4 +1,4 @@
-package shader.glvars
+package gl.glvars
 
 class GLVector3f(
         x: Number, y: Number, z: Number,

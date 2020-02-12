@@ -1,9 +1,9 @@
-package shader.script
+package gl.script
 
-import demo.renderer.positionAttribute
-import demo.renderer.textCoordsAttribute
-import shader.AttributePointer
-import shader.glvars.GLVar
+import gl.AttributePointer
+import gl.glvars.GLVar
+import gl.positionAttribute
+import gl.textCoordsAttribute
 
 abstract class Declarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
@@ -45,14 +45,14 @@ abstract class Declarations(variableName: String = "autoVal") {
         }
 
         fun function(function: String) {
-            globalMethods.add(function)
+            globalMethods.add(function.trimIndent())
         }
 
         val position = globals.attribute(positionAttribute).vec3("position")
         val textureCoords = globals.attribute(textCoordsAttribute).vec2("textureCoords")
 
         val projection = globals.uniform.mat4("projection")
-        val transformation = globals.uniform.mat4("model")
+        val transformation = globals.uniform.mat4("transformation")
         val view = globals.uniform.mat4("view")
 
         fun addGlobal(adder: GlobalDeclarations.() -> Unit) {

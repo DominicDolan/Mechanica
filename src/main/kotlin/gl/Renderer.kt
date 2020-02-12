@@ -1,21 +1,21 @@
-package shader
+package gl
 
 import display.Game
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import shader.script.ShaderScript
+import gl.script.ShaderScript
+import gl.shader.Shader
 
-abstract class Renderer(private val shader: Shader) {
+abstract class Renderer {
+
+    protected abstract val shader: Shader
 
     private var _projection: Matrix4f? = null
             get() = if (field == null) projection else field
 
     private var _view: Matrix4f? = null
         get() = if (field == null) view else field
-
-    constructor(vertexShader: ShaderScript, fragmentShader: ShaderScript)
-            : this(Shader(vertexShader, fragmentShader))
 
     fun render(vbo: VBO, transformation: Matrix4f) {
         val projection = _projection ?: Matrix4f()
@@ -29,7 +29,6 @@ abstract class Renderer(private val shader: Shader) {
 
         shader.load()
 
-        enableAlphaBlending()
         vbo.bind()
         draw(vbo)
 
@@ -48,14 +47,5 @@ abstract class Renderer(private val shader: Shader) {
             view = Game.viewMatrix.create()
         }
 
-        private fun enableAlphaBlending() {
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        }
-
-        val defaultDrawProcedure: (VBO) -> Unit = {
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)
-
-        }
     }
 }

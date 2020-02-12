@@ -1,8 +1,8 @@
-package shader
+package gl.shader
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import shader.script.ShaderScript
+import gl.script.ShaderScript
 import kotlin.system.exitProcess
 
 class ShaderLoader(vertex: ShaderScript, fragment: ShaderScript) {

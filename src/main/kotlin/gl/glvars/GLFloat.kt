@@ -1,4 +1,4 @@
-package shader.glvars
+package gl.glvars
 
 class GLFloat(
         override var value: Float,

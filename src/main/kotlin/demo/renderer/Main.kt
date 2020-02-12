@@ -2,25 +2,20 @@ package demo.renderer
 
 import display.Game
 import display.GameOptions
+import gl.*
 import graphics.Image
 import graphics.drawer.Drawer
 import input.Cursor
-import loader.*
 import matrices.TransformationMatrix
 import models.Model
-import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.opengl.GL30.glGenVertexArrays
-import resources.Res
-import shader.AttributePointer
-import shader.Renderer
-import shader.Shader
-import shader.VBO
-import shader.script.Declarations
-import shader.script.ShaderScript
+import gl.shader.Shader
+import gl.script.ShaderScript
+import gl.startFrame
+import graphics.drawer.DrawerImpl
 import state.State
 import util.colors.hex
 import util.colors.hsl
@@ -28,11 +23,7 @@ import util.colors.rgba
 import util.extensions.degrees
 import util.extensions.vec
 import util.units.Vector
-import java.nio.FloatBuffer
 
-
-val positionAttribute = AttributePointer.create(0, 3)
-val textCoordsAttribute = AttributePointer.create(1, 2)
 
 fun main() {
     val options = GameOptions()
@@ -82,19 +73,18 @@ private class StartMain : State() {
 
     private val renderer: Renderer
     private val vbo: VBO
-    private val vao: Int
     private val transformationMatrix = TransformationMatrix()
+    val draw = DrawerImpl()
     init {
-        vao = glGenVertexArrays()
-        glBindVertexArray(vao)
+        startGame()
         transformationMatrix.setScale(1.0, 1.0,1.0)
         val vertices = loadQuad(0.5f, 1f, 1f, 0.5f)
 
         vbo = VBO.create(vertices, positionAttribute)
 
-        val shader = Shader(vertex, fragment)
+        renderer = object : Renderer() {
+            override val shader: Shader = Shader(vertex, fragment)
 
-        renderer = object : Renderer(shader) {
             override fun draw(vbo: VBO) {
                 GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vbo.vertexCount)
             }
@@ -104,24 +94,24 @@ private class StartMain : State() {
     }
 
     override fun update(delta: Double) {
-        Renderer.startFrame()
+
     }
 
     override fun render(draw: Drawer) {
 
-        glClear(GL_COLOR_BUFFER_BIT)
-        GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
+        startFrame()
 
         val blend = (((Cursor.viewX / Game.viewWidth) + 0.5)*360).degrees
-
-        val adjusted = hsl(blend, red.saturation, red.lightness)
-        fragment.color.set(adjusted)
-
-        val scaleX = ((Cursor.viewX*2.0 / Game.viewWidth))
-        val scaleY = ((Cursor.viewY*2.0 / Game.viewHeight))
-        transformationMatrix.setScale(scaleX, scaleY, 1.0)
-
-        renderer.render(vbo, transformationMatrix.create())
+//
+//        val adjusted = hsl(blend, red.saturation, red.lightness)
+//        fragment.color.set(adjusted)
+//
+//        val scaleX = ((Cursor.viewX*2.0 / Game.viewWidth))
+//        val scaleY = ((Cursor.viewY*2.0 / Game.viewHeight))
+//        transformationMatrix.setScale(scaleX, scaleY, 1.0)
+//
+//        renderer.render(vbo, transformationMatrix.create())
+        this.draw.rotated(30.degrees).centered.red.rectangle(0, 0, 1.0, 1.0)
 
     }
 

@@ -1,6 +1,6 @@
-package shader.script
+package gl.script
 
-import shader.AttributePointer
+import gl.AttributePointer
 
 class GlobalDeclarations : Declarations("globalVar") {
     public override val uniform: Qualifier

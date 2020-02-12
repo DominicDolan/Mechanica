@@ -1,4 +1,4 @@
-package shader
+package gl
 
 import loader.toBuffer
 import org.lwjgl.opengl.GL20

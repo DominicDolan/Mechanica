@@ -1,6 +1,6 @@
-package shader.script
+package gl.script
 
-import shader.glvars.*
+import gl.glvars.*
 
 import org.joml.Matrix4f
 import util.colors.*

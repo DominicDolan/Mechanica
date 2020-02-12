@@ -1,10 +1,10 @@
-package shader
+package gl.shader
 
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
-import shader.script.Declarations
-import shader.script.ShaderScript
+import gl.script.Declarations
+import gl.script.ShaderScript
 
 class Shader(private val vertex: ShaderScript, private val fragment: ShaderScript) {
     private var _loader: ShaderLoader? = null
