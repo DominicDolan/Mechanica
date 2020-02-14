@@ -138,7 +138,7 @@ private class StartMain : State() {
 
 //        shader.render(drawable, transformation.create())
 
-        this.draw.red.centered.image(image, 0, 0, 2.0, 2.0)
+        this.draw.red.text("Hello", 1, 0, 0)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {

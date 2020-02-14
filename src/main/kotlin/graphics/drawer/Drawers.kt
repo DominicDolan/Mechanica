@@ -1,19 +1,28 @@
 package graphics.drawer
 
+import display.Game
+import font.FontType
+import font.GUIText
 import gl.*
 import gl.renderer.CircleRenderer
+import gl.renderer.FontRenderer
 import gl.renderer.ImageRenderer
 import gl.renderer.Renderer
 import graphics.*
+import loader.loadFont
 import matrices.TransformationMatrix
 import util.colors.Color
 import util.colors.hex
 import util.colors.rgba2Hex
 import util.colors.toColor
+import util.extensions.component1
+import util.extensions.component2
 import util.extensions.degrees
 import util.extensions.vec
 import util.units.Angle
 import util.units.Vector
+import kotlin.math.atan2
+import kotlin.math.hypot
 
 interface BaseDrawer {
     fun rectangle(x: Number, y: Number, width: Number, height: Number)
@@ -125,11 +134,12 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     private var layout: Layouts = Layouts.NORMAL
     private var frame: Frames = Frames.WORLD
 
+    private var layoutWasSet: Boolean = false
+    private var frameWasSet: Boolean = false
+
     private var wasRotated: Boolean = false
     private var wasPivoted: Boolean = false
     private var angle: Angle = 0.degrees
-    private var layoutWasSet: Boolean = false
-    private var frameWasSet: Boolean = false
 
     private var hasStroke: Boolean = false
 
@@ -147,10 +157,11 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     private val colorRenderer = ColorRenderer()
     private val imageRenderer = ImageRenderer()
     private val circleRenderer = CircleRenderer()
+    private val fontRenderer = FontRenderer()
 
     private var renderer: Renderer = colorRenderer
 
-    var colorArray: FloatArray = floatArrayOf(1f,1f,1f,1f)
+    private var colorArray: FloatArray = floatArrayOf(1f,1f,1f,1f)
 
     private fun draw(x: Double, y: Double, width: Double, height: Double) {
         var outX = x
@@ -214,7 +225,13 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun text(text: String, fontSize: Number, x: Number, y: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (!frameWasSet) {
+            frame = Frames.UI
+        }
+        fontRenderer.guiText.set(text, fontSize.toFloat(), fontRenderer.font, x.toFloat(), y.toFloat(), fontRenderer.guiText.maxLineSize, fontRenderer.guiText.isCentered)
+
+        renderer = fontRenderer
+        draw(0.0, 0.0, 1.0, 1.0)
     }
 
     override fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
@@ -228,11 +245,32 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun path(path: List<Vector>, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        for (i in 0..path.size-2) {
+            drawLineForPath(path[i], path[i+1], x, y, scaleWidth, scaleHeight)
+        }
     }
 
     override fun line(x1: Number, y1: Number, x2: Number, y2: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val triangleWidth = x2.toDouble() - x1.toDouble()
+        val triangleHeight = y2.toDouble() - y1.toDouble()
+        transformation.setScale(hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
+
+        transformation.setTranslate(x1.toDouble(), y1.toDouble() - strokeWidth/2.0, 0.0)
+        transformation.setPivot(0.0, strokeWidth / 2.0)
+        transformation.setRotate(0.0, 0.0, Math.toDegrees(atan2(triangleHeight, triangleWidth)))
+
+        colorRenderer.render(drawable, transformation.create())
+        reset()
+    }
+
+    private fun drawLineForPath(p1: Vector, p2: Vector, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0) {
+        val (x1, y1) = p1
+        val (x2, y2) = p2
+        line(
+                x1 * scaleWidth.toDouble() + x.toDouble(),
+                y1 * scaleHeight.toDouble() + y.toDouble(),
+                x2 * scaleWidth.toDouble() + x.toDouble(),
+                y2 * scaleHeight.toDouble() + y.toDouble())
     }
 
     override val normal: BaseDrawer
