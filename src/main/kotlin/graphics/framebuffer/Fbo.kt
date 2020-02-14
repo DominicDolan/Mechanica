@@ -46,7 +46,7 @@ class Fbo (private val width: Int, private val height: Int, depthBufferType: Int
 
     init {
         createFrameBuffer()
-        createTextureAttachment()
+//        createTextureAttachment()
         //		if (type == DEPTH_RENDER_BUFFER) {
 //        			createDepthBufferAttachment();
 //        createMultisampledColorAttachment()

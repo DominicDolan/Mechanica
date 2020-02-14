@@ -1,9 +1,9 @@
 package graphics.drawer
 
-import gl.Renderer
-import gl.VBO
-import gl.loadUnitSquare
-import gl.positionAttribute
+import gl.*
+import gl.renderer.CircleRenderer
+import gl.renderer.ImageRenderer
+import gl.renderer.Renderer
 import graphics.*
 import matrices.TransformationMatrix
 import util.colors.Color
@@ -120,7 +120,7 @@ interface StrokeDrawer : BaseDrawer {
     operator fun invoke(stroke: Double): BaseDrawer
 }
 
-class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
+internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
 
     private var layout: Layouts = Layouts.NORMAL
     private var frame: Frames = Frames.WORLD
@@ -128,6 +128,8 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     private var wasRotated: Boolean = false
     private var wasPivoted: Boolean = false
     private var angle: Angle = 0.degrees
+    private var layoutWasSet: Boolean = false
+    private var frameWasSet: Boolean = false
 
     private var hasStroke: Boolean = false
 
@@ -139,7 +141,12 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     private val transformation = TransformationMatrix()
 
     private val vbo = VBO.create(loadUnitSquare(), positionAttribute)
+    private val texVbo = VBO.create(loadUnitSquare(), texCoordsAttribute)
+    private val drawable = Drawable(vbo, texVbo)
+
     private val colorRenderer = ColorRenderer()
+    private val imageRenderer = ImageRenderer()
+    private val circleRenderer = CircleRenderer()
 
     private var renderer: Renderer = colorRenderer
 
@@ -168,7 +175,7 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
         transformation.setScale(width, height, 1.0)
         transformation.setScale(width, height, 1.0)
 
-        renderer.render(vbo, transformation.create())
+        renderer.render(drawable, transformation.create())
         reset()
     }
 
@@ -179,6 +186,9 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
         wasRotated = false
         wasPivoted = false
         angle = 0.degrees
+
+        layoutWasSet = false
+        frameWasSet = false
 
         hasStroke = false
 
@@ -196,7 +206,11 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun ellipse(x: Number, y: Number, width: Number, height: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        renderer = circleRenderer
+        if (!layoutWasSet) {
+            layout = Layouts.CENTERED
+        }
+        draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
     }
 
     override fun text(text: String, fontSize: Number, x: Number, y: Number) {
@@ -204,7 +218,9 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        drawable.image = image
+        renderer = imageRenderer
+        draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
     }
 
     override fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
@@ -267,6 +283,7 @@ class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
         colorArray[3] = color.a.toFloat()
 
         colorRenderer.color = color
+        circleRenderer.color = color
         return this
     }
 

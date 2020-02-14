@@ -9,20 +9,24 @@ import input.Cursor
 import matrices.TransformationMatrix
 import models.Model
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL20.*
-import org.lwjgl.opengl.GL30.glBindVertexArray
-import org.lwjgl.opengl.GL30.glGenVertexArrays
-import gl.shader.Shader
 import gl.script.ShaderScript
+import gl.shader.ShaderImpl
 import gl.startFrame
 import graphics.drawer.DrawerImpl
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
+import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.GL30
+import org.lwjgl.stb.STBImage
+import resources.Res
+import resources.Resource
 import state.State
 import util.colors.hex
-import util.colors.hsl
 import util.colors.rgba
 import util.extensions.degrees
 import util.extensions.vec
 import util.units.Vector
+import java.nio.ByteBuffer
 
 
 fun main() {
@@ -47,9 +51,11 @@ private class StartMain : State() {
         //language=GLSL
         override val main: String =
                 """
-                    
+                out vec2 tc;
+                layout (binding=0) uniform sampler2D samp;
                 void main(void) {
-                    gl_Position = model*vec4(position, 1.0);
+                    gl_Position = matrices(vec4(position, 1.0));
+                    tc = textureCoords;
                 }
                 """
 
@@ -61,34 +67,53 @@ private class StartMain : State() {
         //language=GLSL
         override val main: String = """
             
-                in vec2 pass_textureCoords;
+                in vec2 tc;
                 out vec4 out_Color;
+                layout (binding=0) uniform sampler2D samp;
                                 
                 void main(void) {
-                    out_Color = $color;
+                    out_Color = texture(samp, tc);
                 }
             """
 
     }
 
-    private val renderer: Renderer
+//    private val renderer: Renderer
     private val vbo: VBO
-    private val transformationMatrix = TransformationMatrix()
+    private val texVbo: VBO
+    val shader: ShaderImpl
+    private val transformation = TransformationMatrix()
     val draw = DrawerImpl()
+    val drawable: Drawable
+    val image: Image
+
     init {
         startGame()
-        transformationMatrix.setScale(1.0, 1.0,1.0)
-        val vertices = loadQuad(0.5f, 1f, 1f, 0.5f)
+        shader = ShaderImpl(vertex, fragment)
+        transformation.setScale(1.0, 1.0,1.0)
+
+        val vertices = loadQuad(0f, 1f, 1f, 0f)
+        val texVerts = loadQuad(0f, 1.0f, 1.0f, 0f)
 
         vbo = VBO.create(vertices, positionAttribute)
+        texVbo = VBO.create(texVerts, texCoordsAttribute)
+        image = createTexture(Res.image["colors"])
 
-        renderer = object : Renderer() {
-            override val shader: Shader = Shader(vertex, fragment)
+        drawable = Drawable(vbo, texVbo)
+        drawable.image = image
 
-            override fun draw(vbo: VBO) {
-                GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vbo.vertexCount)
-            }
-        }
+
+//
+//        renderer = object : Renderer() {
+//            override val shader: Shader = Shader(vertex, fragment)
+//
+//            override fun draw(drawable: Drawable) {
+//                texVbo.bind()
+//                GL13.glActiveTexture(GL_TEXTURE0)
+//                GL11.glBindTexture(GL11.GL_TEXTURE_2D, drawable.image.id)
+//                GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, drawable.vertexCount)
+//            }
+//        }
 
         println(vertex.script)
     }
@@ -108,11 +133,12 @@ private class StartMain : State() {
 //
 //        val scaleX = ((Cursor.viewX*2.0 / Game.viewWidth))
 //        val scaleY = ((Cursor.viewY*2.0 / Game.viewHeight))
-//        transformationMatrix.setScale(scaleX, scaleY, 1.0)
-//
-//        renderer.render(vbo, transformationMatrix.create())
-        this.draw.rotated(30.degrees).centered.red.rectangle(0, 0, 1.0, 1.0)
+        transformation.setScale(4.0, 4.0, 1.0)
+        transformation.setTranslate(0.0, -4.0, 0.0)
 
+//        shader.render(drawable, transformation.create())
+
+        this.draw.red.centered.image(image, 0, 0, 2.0, 2.0)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
@@ -125,4 +151,35 @@ private class StartMain : State() {
                 vec(right, bottom))
 
     }
+
+    fun loadImageFromMemory(buffer: ByteBuffer): Image {
+        val width = BufferUtils.createIntBuffer(1)
+        val height = BufferUtils.createIntBuffer(1)
+        val components = BufferUtils.createIntBuffer(1)
+
+        val data = STBImage.stbi_load_from_memory(buffer, width, height, components, 4)
+        val id = GL11.glGenTextures()
+        val imageDetails = ImageDetails(data, id, width.get(), height.get(), components.get())
+
+        loadersVersion(imageDetails)
+
+        if (data != null) {
+            STBImage.stbi_image_free(data)
+        }
+
+        return Image(id)
+    }
+
+    fun loadersVersion(details: ImageDetails) {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, details.id)
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR)
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR)
+
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, details.width, details.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, details.data)
+    }
+
+    private data class ImageDetails(val data: ByteBuffer?, val id: Int, val width: Int, val height: Int, val components: Int)
+
 }

@@ -219,10 +219,10 @@ private fun loadImageFromMemory(buffer: ByteBuffer, generateTexture: (ImageDetai
 
 private fun defaultGenerateTexture(details: ImageDetails) {
     glBindTexture(GL_TEXTURE_2D, details.id)
-    glGenerateMipmap(GL_TEXTURE_2D)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+//    glGenerateMipmap(GL_TEXTURE_2D)
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, details.width, details.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, details.data)
 }
 

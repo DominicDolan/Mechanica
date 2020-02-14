@@ -3,7 +3,7 @@ package gl.script
 import gl.AttributePointer
 import gl.glvars.GLVar
 import gl.positionAttribute
-import gl.textCoordsAttribute
+import gl.texCoordsAttribute
 
 abstract class Declarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
@@ -49,7 +49,7 @@ abstract class Declarations(variableName: String = "autoVal") {
         }
 
         val position = globals.attribute(positionAttribute).vec3("position")
-        val textureCoords = globals.attribute(textCoordsAttribute).vec2("textureCoords")
+        val textureCoords = globals.attribute(texCoordsAttribute).vec2("textureCoords")
 
         val projection = globals.uniform.mat4("projection")
         val transformation = globals.uniform.mat4("transformation")

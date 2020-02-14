@@ -1,27 +1,19 @@
 package gl.shader
 
-import org.joml.Matrix4f
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
+import display.Game
+import gl.Drawable
 import gl.script.Declarations
 import gl.script.ShaderScript
+import org.joml.Matrix4f
+import org.lwjgl.opengl.GL20
 
-class Shader(private val vertex: ShaderScript, private val fragment: ShaderScript) {
-    private var _loader: ShaderLoader? = null
-    private val loader: ShaderLoader
-        get() {
-            val l = this._loader
-            val loader = l ?: ShaderLoader(vertex, fragment)
-            this._loader = loader
-            return loader
-        }
+interface Shader {
+    val vertex: ShaderScript
+    val fragment: ShaderScript
     val id: Int
-        get() = loader.id
-
-    private var activeVBOs = 0
 
     fun load() {
-        GL20.glUseProgram(loader.id)
+        GL20.glUseProgram(id)
         loadUniforms()
     }
 
@@ -30,34 +22,25 @@ class Shader(private val vertex: ShaderScript, private val fragment: ShaderScrip
         fragment.loadUniforms()
     }
 
-    private fun prepareVertexArrays(vaoID: Int, vboCount: Int) {
-        GL30.glBindVertexArray(vaoID)
-        activeVBOs = vboCount
-        for (i in 0 until vboCount) {
-            GL20.glEnableVertexAttribArray(i)
-        }
-    }
+    fun render(drawable: Drawable, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
+        val projMatrix = projection ?: Game.projectionMatrix.create()
+        val viewMatrix = view ?: Game.viewMatrix.create()
 
-    private fun disableVertexArrays() {
-        for (i in 0 until activeVBOs) {
-            GL20.glDisableVertexAttribArray(i)
-        }
-        activeVBOs = 0
+        GL20.glUseProgram(id)
 
-        GL30.glBindVertexArray(0)
+        Declarations.transformation.set(transformation)
+        Declarations.projection.set(projMatrix)
+        Declarations.view.set(viewMatrix)
+
+        load()
+
+        drawable.bind()
+        drawable.draw(drawable)
     }
 
     companion object {
-        fun loadTransformationMatrix(matrix: Matrix4f) {
-            Declarations.transformation.set(matrix)
-        }
-
-        fun loadProjectionMatrix(matrix: Matrix4f) {
-            Declarations.projection.set(matrix)
-        }
-
-        fun loadViewMatrix(matrix: Matrix4f) {
-            Declarations.view.set(matrix)
+        operator fun invoke(vertex: ShaderScript, fragment: ShaderScript): Shader {
+            return ShaderImpl(vertex, fragment)
         }
     }
 }
