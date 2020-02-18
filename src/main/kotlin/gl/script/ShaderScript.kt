@@ -4,7 +4,10 @@ import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
 
 abstract class ShaderScript : Declarations("autoVal") {
-    val script: String by lazy { generateScript() }
+    val script: String by lazy { println("Creating script")
+        val script = generateScript()
+        println(script)
+        script}
 
     private var programId: Int = 0
 
@@ -25,6 +28,10 @@ abstract class ShaderScript : Declarations("autoVal") {
         for (v in iterator) {
             if (v.qualifier == "uniform") {
                 v.location = GL20.glGetUniformLocation(programId, v.name)
+                if (v.location == -1) {
+                    System.err.println("Unable to find uniform variable with name: ${v.name} in script")
+                    System.err.println("Script:\n$script")
+                }
             }
         }
     }

@@ -12,14 +12,14 @@ import org.lwjgl.opengl.GL11
 import gl.script.ShaderScript
 import gl.shader.ShaderImpl
 import gl.startFrame
+import gl.vbo.AttributeBuffer
+import gl.vbo.VBO
 import graphics.drawer.DrawerImpl
+import input.Keyboard
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
-import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
 import resources.Res
-import resources.Resource
 import state.State
 import util.colors.hex
 import util.colors.rgba
@@ -86,7 +86,8 @@ private class StartMain : State() {
     val draw = DrawerImpl()
     val drawable: Drawable
     val image: Image
-
+    var timer = 0.0
+    var score = 0
     init {
         startGame()
         shader = ShaderImpl(vertex, fragment)
@@ -119,7 +120,13 @@ private class StartMain : State() {
     }
 
     override fun update(delta: Double) {
-
+        timer += delta
+        if (Keyboard.MB1.hasBeenPressed) {
+            score++
+        }
+        if (Keyboard.MB2.hasBeenPressed) {
+            score--
+        }
     }
 
     override fun render(draw: Drawer) {
@@ -138,7 +145,7 @@ private class StartMain : State() {
 
 //        shader.render(drawable, transformation.create())
 
-        this.draw.red.text("Hello", 1, 0, 0)
+        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {

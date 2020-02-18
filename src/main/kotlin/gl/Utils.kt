@@ -1,7 +1,7 @@
 package gl
 
-import display.Game
 import gl.script.Declarations
+import gl.vbo.AttributeBuffer
 import graphics.Image
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
@@ -36,7 +36,7 @@ internal fun startFrame() {
 
 fun loadUnitSquare() = loadQuad(0f, 1f, 1f, 0f)
 
-val defaultDrawProcedure: (VBO) -> Unit = {
+val defaultDrawProcedure: (AttributeBuffer) -> Unit = {
     GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)
 
 }
@@ -87,6 +87,6 @@ private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int
     }
     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
-    GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels);
+    GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
 
 }

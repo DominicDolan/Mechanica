@@ -30,7 +30,12 @@ public class TextMeshDynamicCreator {
 
     public TextBufferData createTextMesh(GUIText text) {
         metaData = text.getMetaFile();
-        bufferData.set(Objects.requireNonNull(text.getCharArrayString()).length);
+        int characterCount = Objects.requireNonNull(text.getCharArrayString()).length;
+        int spaces = 0;
+        for (char c : text.getCharArrayString()) {
+            if (c == ' ') spaces++;
+        }
+        bufferData.set(characterCount - spaces);
         createQuadVertices(text, updateStructure(text));
         bufferData.flip();
         return bufferData;

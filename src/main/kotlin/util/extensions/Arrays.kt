@@ -2,8 +2,10 @@
 
 package util.extensions
 
+import loader.toBuffer
 import org.jbox2d.common.Vec2
 import util.units.Vector
+import java.nio.FloatBuffer
 
 /**
  * Created by domin on 02/11/2017.
@@ -33,6 +35,18 @@ fun Array<Vector>.containsPoint(point: Vector): Boolean {
     return result
 }
 
+fun Array<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
+    val floats = FloatArray(this.size*coordinateSize)
+    for (i in this.indices) {
+        val floatsIndex = i*coordinateSize
+        floats[floatsIndex] = this[i].x.toFloat()
+        floats[floatsIndex+1] = this[i].y.toFloat()
+        for (j in 2 until coordinateSize) {
+            floats[floatsIndex + j] = 1f
+        }
+    }
+    return floats.toBuffer()
+}
 
 inline operator fun <reified T> Array<T>.get(range: IntRange): Array<T>{
     return range.map { this[it] }.toTypedArray()

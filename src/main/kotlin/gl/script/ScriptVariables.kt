@@ -17,7 +17,7 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
             return sb.toString()
         }
     fun getNextName(): String {
-        return "$placeHolder${variables.size}"
+        return "$placeHolder${variableIncrement++}"
     }
 
     fun addVariable(v: GLVar<*>) {
@@ -36,4 +36,7 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
         return variables.iterator()
     }
 
+    companion object {
+        private var variableIncrement = 0
+    }
 }

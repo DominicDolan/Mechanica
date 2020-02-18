@@ -67,7 +67,6 @@ class GUIText
      * @return the font size of the text (a font size of 1 is normal).
      */
     var fontSize: Float = 0.toFloat()
-        private set
 
     //	private int vertexCount;
     var vertexBuffer: Buffer? = null

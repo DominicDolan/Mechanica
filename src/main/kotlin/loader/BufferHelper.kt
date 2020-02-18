@@ -119,3 +119,9 @@ fun FloatArray.toBuffer(): FloatBuffer {
     buffers.add(buffer)
     return buffer
 }
+
+fun emptyFloatBuffer(size: Int): FloatBuffer {
+    val buffer = memAllocFloat(size)
+    buffers.add(buffer)
+    return buffer
+}

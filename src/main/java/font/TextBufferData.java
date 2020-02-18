@@ -26,14 +26,6 @@ public class TextBufferData {
     }
 
     void putVertices(float[] characterVertices){
-//        for (int i = 0; i < 11; i+=2) {
-//            translatedPoints[i] = characterVertices[i] + positionX;
-//        }
-//
-//        for (int i = 1; i < 12; i+=2) {
-//            translatedPoints[i] = characterVertices[i] + positionY;
-//        }
-
         vertices.put(characterVertices);
     }
 

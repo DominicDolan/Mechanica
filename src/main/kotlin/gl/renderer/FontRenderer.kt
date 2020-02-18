@@ -2,14 +2,16 @@ package gl.renderer
 
 import font.FontType
 import font.GUIText
-import gl.Drawable
-import gl.createTexture
+import font.TextMeshDynamicCreator
+import gl.*
 import gl.script.ShaderScript
 import gl.shader.Shader
-import graphics.Image
+import gl.vbo.AttributeBuffer
+import gl.vbo.MutableVBO
+import gl.vbo.VBO
 import loader.loadFont
 import org.joml.Matrix4f
-import resources.InternalResource
+import resources.Res
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
@@ -23,9 +25,10 @@ class FontRenderer : Renderer {
                 """
                 out vec2 tc;
                 layout (binding=0) uniform sampler2D fontAtlas;
+                layout (location=2) in vec2 textPositions;
 
                 void main(void) {
-                    gl_Position = matrices(vec4(position.xy + $translation, 0.0, 1.0));
+                    gl_Position = matrices(vec4(textPositions + $translation, 1.0, 1.0));
                     tc = textureCoords;
                 }
                 """
@@ -56,10 +59,14 @@ class FontRenderer : Renderer {
 
     private val shader: Shader = Shader(vertex, fragment)
 
+    private val drawable: Drawable
+    private val textPositionAttribute = AttributePointer.create(2, 2)
+    private val meshCreator = TextMeshDynamicCreator()
+    private val guiText: GUIText
+    private val font: FontType = loadFont("arial")
 
-    val font: FontType = loadFont("arial")
-    val guiText = GUIText("", 10f, font, 0f, 0f, 5f)
-
+    private val positionVBO: MutableVBO
+    private val textureVBO: MutableVBO
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -67,9 +74,43 @@ class FontRenderer : Renderer {
             fragment.color.set(value)
         }
 
+    var text: String
+        get() = guiText.textString ?: ""
+        set(value) {
+            set(text = value)
+            updateMesh()
+        }
+
+    fun set(text: String = guiText.textString ?: "",
+            fontSize: Float = guiText.fontSize,
+            font: FontType = guiText.font ?: this.font,
+            x: Float = guiText.positionX,
+            y: Float = guiText.positionY,
+            maxLineLength: Float = guiText.maxLineSize,
+            centered: Boolean = guiText.isCentered) {
+        guiText.set(text, fontSize, font, x, y, maxLineLength, centered)
+        updateMesh()
+    }
+
+    init {
+        guiText = GUIText("",
+                1f, font, 0f, 0f, 500f)
+
+        positionVBO = VBO.createMutable(6*200, textPositionAttribute)
+        textureVBO = VBO.createMutable(6*200, texCoordsAttribute)
+        updateMesh()
+
+        drawable = Drawable(positionVBO, textureVBO)
+        drawable.image = createTexture(Res.font["arial.png"])
+    }
+
     override fun render(drawable: Drawable, transformation: Matrix4f) {
-        vertex.translation.set(guiText.positionX, guiText.positionY)
-        drawable.image = Image(guiText.model.texture.id)
-        shader.render(drawable, transformation)
+        shader.render(this.drawable, transformation)
+    }
+
+    private fun updateMesh() {
+        val data = meshCreator.createTextMesh(guiText)
+        positionVBO.updateBuffer(data.vertices, data.vertexCount)
+        textureVBO.updateBuffer(data.textureCoords, data.vertexCount)
     }
 }

@@ -1,15 +1,13 @@
 package graphics.drawer
 
-import display.Game
-import font.FontType
-import font.GUIText
 import gl.*
 import gl.renderer.CircleRenderer
 import gl.renderer.FontRenderer
 import gl.renderer.ImageRenderer
 import gl.renderer.Renderer
+import gl.vbo.AttributeBuffer
+import gl.vbo.VBO
 import graphics.*
-import loader.loadFont
 import matrices.TransformationMatrix
 import util.colors.Color
 import util.colors.hex
@@ -18,7 +16,6 @@ import util.colors.toColor
 import util.extensions.component1
 import util.extensions.component2
 import util.extensions.degrees
-import util.extensions.vec
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
@@ -213,6 +210,7 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
+        renderer = colorRenderer
         draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
     }
 
@@ -225,11 +223,11 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun text(text: String, fontSize: Number, x: Number, y: Number) {
-        if (!frameWasSet) {
-            frame = Frames.UI
-        }
-        fontRenderer.guiText.set(text, fontSize.toFloat(), fontRenderer.font, x.toFloat(), y.toFloat(), fontRenderer.guiText.maxLineSize, fontRenderer.guiText.isCentered)
-
+//        if (!frameWasSet) {
+//            frame = Frames.UI
+//        }
+//        fontRenderer.guiText.set(text, fontSize.toFloat(), fontRenderer.font, x.toFloat(), y.toFloat(), fontRenderer.guiText.maxLineSize, fontRenderer.guiText.isCentered)
+        fontRenderer.set(text, fontSize.toFloat(), x = x.toFloat(), y = y.toFloat())
         renderer = fontRenderer
         draw(0.0, 0.0, 1.0, 1.0)
     }
@@ -322,6 +320,7 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
 
         colorRenderer.color = color
         circleRenderer.color = color
+        fontRenderer.color = color
         return this
     }
 
