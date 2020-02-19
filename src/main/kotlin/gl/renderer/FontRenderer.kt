@@ -6,7 +6,9 @@ import font.TextMeshDynamicCreator
 import gl.*
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.vbo.AttributeBuffer
+import gl.utils.createTexture
+import gl.utils.texCoordsAttribute
+import gl.vbo.AttributePointer
 import gl.vbo.MutableVBO
 import gl.vbo.VBO
 import loader.loadFont

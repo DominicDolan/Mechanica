@@ -5,12 +5,12 @@ import animation.FrameAnimation
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
 import font.FontType
+import gl.utils.IndexedVertices
 import graphics.Image
 import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL30.glGenerateMipmap
 import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
@@ -45,6 +45,16 @@ fun loadModel(positions: FloatArray, indices: ShortArray): Model {
     unbindVAO()
 
     return Model(vaoID, indices.size, drawType = GL_TRIANGLES)
+}
+
+fun loadModel(positions: FloatBuffer, indices: ShortBuffer): Model {
+    val vaoID = createVAO()
+    val size = indices.remaining()
+    bindIndicesBuffer(indices)
+    storeDataInAttributeList(0, positions)
+    unbindVAO()
+
+    return Model(vaoID, size, drawType = GL_TRIANGLES)
 }
 
 
@@ -115,6 +125,13 @@ fun loadUnitQuad(): Model {
 fun loadTriangulatedModel(positions: List<Vector>) = loadTriangulatedModel(positions.toFloatArray())
 
 fun loadTriangulatedModel(positions: FloatArray): Model {
+    val buffers = loadTriangulatedArrays(positions)
+    return loadModel(buffers.vertices, buffers.indices)
+}
+
+fun loadTriangulatedArrays(positions: List<Vector>) = loadTriangulatedArrays(positions.toFloatArray())
+
+fun loadTriangulatedArrays(positions: FloatArray): IndexedVertices {
     val coords = ArrayList<Coordinate>()
     val coordsArray = arrayOfNulls<Coordinate>(positions.size / 3 + 1)
     run {
@@ -174,7 +191,7 @@ fun loadTriangulatedModel(positions: FloatArray): Model {
         indices[i] = indicesList[i]
     }
 
-    return loadModel(newPositions, indices)
+    return IndexedVertices(newPositions, indices)
 }
 
 private fun hashCoordinates(coordinate: Coordinate): String {
@@ -366,6 +383,16 @@ private fun storeDataInAttributeList(attributeNumber: Int, data: FloatArray, coo
     vbos.add(vboID)
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
     GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data.toBuffer(), GL15.GL_STATIC_DRAW)
+    freeMemory()
+    GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, false, 0, 0)
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+}
+
+private fun storeDataInAttributeList(attributeNumber: Int, data: FloatBuffer, coordinateSize: Int = 3 ) {
+    val vboID = GL15.glGenBuffers()
+    vbos.add(vboID)
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW)
     freeMemory()
     GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL_FLOAT, false, 0, 0)
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)

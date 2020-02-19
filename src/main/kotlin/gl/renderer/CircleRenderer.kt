@@ -1,7 +1,7 @@
 package gl.renderer
 
 import gl.Drawable
-import gl.createTexture
+import gl.utils.createTexture
 import gl.script.ShaderScript
 import gl.shader.Shader
 import graphics.Image

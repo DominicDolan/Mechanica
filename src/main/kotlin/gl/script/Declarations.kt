@@ -1,9 +1,9 @@
 package gl.script
 
-import gl.AttributePointer
+import gl.vbo.AttributePointer
 import gl.glvars.GLVar
-import gl.positionAttribute
-import gl.texCoordsAttribute
+import gl.utils.positionAttribute
+import gl.utils.texCoordsAttribute
 
 abstract class Declarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)

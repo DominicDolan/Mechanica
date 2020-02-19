@@ -125,3 +125,25 @@ fun emptyFloatBuffer(size: Int): FloatBuffer {
     buffers.add(buffer)
     return buffer
 }
+
+fun emptyShortBuffer(size: Int): FloatBuffer {
+    val buffer = memAllocFloat(size)
+    buffers.add(buffer)
+    return buffer
+}
+
+fun ShortBuffer.contentsToString(): String {
+    val sb = StringBuilder()
+    while (this.hasRemaining()) {
+        sb.append(this.get()).append(", ")
+    }
+    return sb.toString()
+}
+
+fun FloatBuffer.contentsToString(): String {
+    val sb = StringBuilder()
+    while (this.hasRemaining()) {
+        sb.append(this.get()).append(", ")
+    }
+    return sb.toString()
+}

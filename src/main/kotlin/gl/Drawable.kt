@@ -7,8 +7,14 @@ import org.lwjgl.opengl.GL11
 class Drawable(private vararg val vbos: VBO,
                draw: ((Drawable) -> Unit)? = null) : Iterable<VBO> {
     var image = Image(-1)
-    val vertexCount
-        get() = vbos[0].vertexCount
+    val vertexCount: Int
+        get() {
+            var max = 0
+            for (vbo in vbos) {
+                if (vbo.vertexCount > max) max = vbo.vertexCount
+            }
+            return max
+        }
     val draw = draw?: {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, it.image.id)
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)

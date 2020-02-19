@@ -1,25 +1,25 @@
 package gl.vbo
 
+import loader.emptyShortBuffer
 import org.lwjgl.opengl.GL20
-import java.nio.FloatBuffer
+import java.nio.ShortBuffer
 
-class MutableVBO(override val id: Int, vertexCount: Int, private val attributePointer: AttributePointer) : VBO {
+class MutableIndexVBO(override val id: Int, vertexCount: Int) : VBO {
     private val maxVertices = vertexCount
     override var vertexCount = vertexCount
         private set
+    private val buffer = emptyShortBuffer(vertexCount)
 
     override fun bind() {
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, id)
-        attributePointer.enable()
     }
 
-    fun updateBuffer(floats: FloatBuffer, vertexCount: Int) {
+    fun updateBuffer(indices: ShortBuffer, vertexCount: Int) {
         if (vertexCount > maxVertices) {
             System.err.println("Warning: the number of vertices being set ($vertexCount) is larger than the size of the buffer ($maxVertices)")
         }
         this.vertexCount = vertexCount
-        GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, id)
-        GL20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, floats.duplicate())
+        GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, id)
+        GL20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.duplicate())
     }
-
 }

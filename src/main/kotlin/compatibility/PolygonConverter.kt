@@ -9,8 +9,10 @@ import loader.loadTriangulatedModel
 import models.Model
 import org.jbox2d.common.Vec2
 import svg.SVGPolygon
+import util.extensions.toFloatBuffer
 import util.extensions.vec
 import util.units.Vector
+import java.nio.FloatBuffer
 import java.util.*
 
 /**
@@ -96,10 +98,5 @@ class PolygonConverter(floatArray: FloatArray) {
     fun toGeometry() = geometry?: createGeometry(floatArray)
     fun toModel() = model?: createModel(floatArray)
     fun toFloatArray() = floatArray
-    fun toPolygon() = object : Polygon {
-        override val path: List<Vector>
-            get() = toVecArray().map { vec(it) }
-        override val model: Model
-            get() = toModel()
-    }
+    fun toPolygon() = Polygon.create(toVecArray().map { vec(it) })
 }

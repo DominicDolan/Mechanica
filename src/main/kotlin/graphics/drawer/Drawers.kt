@@ -1,11 +1,11 @@
 package graphics.drawer
 
 import gl.*
-import gl.renderer.CircleRenderer
-import gl.renderer.FontRenderer
-import gl.renderer.ImageRenderer
+import gl.renderer.*
 import gl.renderer.Renderer
-import gl.vbo.AttributeBuffer
+import gl.utils.loadUnitSquare
+import gl.utils.positionAttribute
+import gl.utils.texCoordsAttribute
 import gl.vbo.VBO
 import graphics.*
 import matrices.TransformationMatrix
@@ -155,6 +155,7 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     private val imageRenderer = ImageRenderer()
     private val circleRenderer = CircleRenderer()
     private val fontRenderer = FontRenderer()
+//    private val polygonRenderer = PolygonRenderer()
 
     private var renderer: Renderer = colorRenderer
 
@@ -239,7 +240,9 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
     }
 
     override fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//        polygonRenderer.polygon = polygon
+//        renderer = polygonRenderer
+        draw(0.0, 0.0, 1.0, 1.0)
     }
 
     override fun path(path: List<Vector>, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
@@ -321,6 +324,7 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
         colorRenderer.color = color
         circleRenderer.color = color
         fontRenderer.color = color
+//        polygonRenderer.color = color
         return this
     }
 

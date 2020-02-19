@@ -1,5 +1,6 @@
-package gl
+package gl.utils
 
+import gl.vbo.AttributePointer
 import gl.script.Declarations
 import gl.vbo.AttributeBuffer
 import graphics.Image

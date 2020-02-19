@@ -1,10 +1,6 @@
 package gl.vbo
 
-import gl.AttributePointer
 import org.lwjgl.opengl.GL20
-import util.extensions.toFloatBuffer
-import util.units.Vector
-import java.nio.FloatBuffer
 
 class AttributeBuffer internal constructor(
         override val id: Int,

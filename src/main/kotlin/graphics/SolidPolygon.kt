@@ -1,6 +1,8 @@
 package graphics
 
 import compatibility.VectorConverter
+import gl.utils.IndexedVertices
+import loader.loadTriangulatedArrays
 import loader.loadTriangulatedModel
 import models.Model
 import util.extensions.*
@@ -13,6 +15,7 @@ class SolidPolygon(override val path: List<VectorConverter>) : Polygon {
             this.modelInstance = model
             return model
         }
+    override val indexedVertices: IndexedVertices = loadTriangulatedArrays(path)
 
     fun adjust(
             toOrigin: Boolean,

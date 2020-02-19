@@ -4,10 +4,7 @@ import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
 
 abstract class ShaderScript : Declarations("autoVal") {
-    val script: String by lazy { println("Creating script")
-        val script = generateScript()
-        println(script)
-        script}
+    val script: String by lazy { generateScript()}
 
     private var programId: Int = 0
 

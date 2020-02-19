@@ -1,6 +1,6 @@
 package gl.script
 
-import gl.AttributePointer
+import gl.vbo.AttributePointer
 
 class GlobalDeclarations : Declarations("globalVar") {
     public override val uniform: Qualifier

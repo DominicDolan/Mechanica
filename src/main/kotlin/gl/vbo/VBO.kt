@@ -1,13 +1,13 @@
 package gl.vbo
 
-import gl.AttributePointer
+import loader.contentsToString
 import loader.emptyFloatBuffer
-import loader.toBuffer
+import loader.emptyShortBuffer
 import org.lwjgl.opengl.GL20
-import org.lwjgl.system.MemoryUtil
 import util.extensions.toFloatBuffer
 import util.units.Vector
 import java.nio.FloatBuffer
+import java.nio.ShortBuffer
 
 interface VBO {
     val id: Int
@@ -26,6 +26,22 @@ interface VBO {
         fun create(vertices: Array<Vector>, attributePointer: AttributePointer): VBO {
             val floats = vertices.toFloatBuffer(attributePointer.coordinateSize)
             return genBuffer(floats, vertices.size, attributePointer)
+        }
+
+        fun createIndicesBuffer(indices: ShortBuffer): VBO {
+            val size = indices.remaining()
+            val id = GL20.glGenBuffers()
+            GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, id)
+            GL20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, indices, GL20.GL_STATIC_DRAW)
+            return IndexVBO(id, size)
+        }
+
+        fun createMutableIndicesBuffer(vertexCount: Int): MutableIndexVBO {
+            val buffer = emptyShortBuffer(vertexCount)
+            val id = GL20.glGenBuffers()
+            GL20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, id)
+            GL20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, buffer, GL20.GL_STATIC_DRAW)
+            return MutableIndexVBO(id, vertexCount)
         }
 
         fun createMutable(vertexCount: Int, attributePointer: AttributePointer) : MutableVBO {

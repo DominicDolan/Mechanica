@@ -3,6 +3,7 @@ package demo.renderer
 import display.Game
 import display.GameOptions
 import gl.*
+import gl.renderer.PolygonRenderer
 import graphics.Image
 import graphics.drawer.Drawer
 import input.Cursor
@@ -11,11 +12,16 @@ import models.Model
 import org.lwjgl.opengl.GL11
 import gl.script.ShaderScript
 import gl.shader.ShaderImpl
-import gl.startFrame
-import gl.vbo.AttributeBuffer
+import gl.utils.*
+import gl.utils.startFrame
+import gl.utils.startGame
 import gl.vbo.VBO
+import graphics.Polygon
 import graphics.drawer.DrawerImpl
 import input.Keyboard
+import loader.contentsToString
+import loader.loadModel
+import loader.toBuffer
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
@@ -51,11 +57,8 @@ private class StartMain : State() {
         //language=GLSL
         override val main: String =
                 """
-                out vec2 tc;
-                layout (binding=0) uniform sampler2D samp;
                 void main(void) {
                     gl_Position = matrices(vec4(position, 1.0));
-                    tc = textureCoords;
                 }
                 """
 
@@ -67,56 +70,64 @@ private class StartMain : State() {
         //language=GLSL
         override val main: String = """
             
-                in vec2 tc;
                 out vec4 out_Color;
-                layout (binding=0) uniform sampler2D samp;
                                 
                 void main(void) {
-                    out_Color = texture(samp, tc);
+                    out_Color = $color;
                 }
             """
 
     }
 
 //    private val renderer: Renderer
-    private val vbo: VBO
-    private val texVbo: VBO
-    val shader: ShaderImpl
+//    private val vbo: VBO
+//    private val texVbo: VBO
+//    val shader: ShaderImpl
     private val transformation = TransformationMatrix()
     val draw = DrawerImpl()
-    val drawable: Drawable
-    val image: Image
+//    val drawable: Drawable
+//    val image: Image
     var timer = 0.0
     var score = 0
+    val polygonRenderer: PolygonRenderer
+
+//    val polygon: Polygon
+
     init {
         startGame()
-        shader = ShaderImpl(vertex, fragment)
+        polygonRenderer = PolygonRenderer()
+//        shader = ShaderImpl(vertex, fragment)
         transformation.setScale(1.0, 1.0,1.0)
 
-        val vertices = loadQuad(0f, 1f, 1f, 0f)
-        val texVerts = loadQuad(0f, 1.0f, 1.0f, 0f)
+//        val vertices = loadQuad(0f, 1f, 1f, 0f)
+//        val texVerts = loadQuad(0f, 1.0f, 1.0f, 0f)
 
-        vbo = VBO.create(vertices, positionAttribute)
-        texVbo = VBO.create(texVerts, texCoordsAttribute)
-        image = createTexture(Res.image["colors"])
-
-        drawable = Drawable(vbo, texVbo)
-        drawable.image = image
-
-
+//        vbo = VBO.create(vertices, positionAttribute)
+//        texVbo = VBO.create(texVerts, texCoordsAttribute)
+//        image = createTexture(Res.image["colors"])
 //
-//        renderer = object : Renderer() {
-//            override val shader: Shader = Shader(vertex, fragment)
-//
-//            override fun draw(drawable: Drawable) {
-//                texVbo.bind()
-//                GL13.glActiveTexture(GL_TEXTURE0)
-//                GL11.glBindTexture(GL11.GL_TEXTURE_2D, drawable.image.id)
-//                GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, drawable.vertexCount)
-//            }
-//        }
+//        drawable = createIndexedDrawable(0f, 1f, 1f, 0f)
 
-        println(vertex.script)
+
+        val square = listOf(
+                vec(0, 0),
+                vec(0, 1),
+                vec(1, 1),
+                vec(1, 0)
+        )
+
+        val random = listOf(
+                vec(0, 0),
+                vec(0, 0.4),
+                vec(1, 0.5),
+                vec(4, 2),
+                vec(3.5, -1),
+                vec(3, -1.5),
+                vec(1, -1)
+        )
+
+//        polygon = Polygon.create(square)
+
     }
 
     override fun update(delta: Double) {
@@ -143,9 +154,10 @@ private class StartMain : State() {
         transformation.setScale(4.0, 4.0, 1.0)
         transformation.setTranslate(0.0, -4.0, 0.0)
 
+        polygonRenderer.render(transformation.create())
 //        shader.render(drawable, transformation.create())
-
-        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
+//        this.draw.blue.polygon(polygon)
+//        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
@@ -157,6 +169,25 @@ private class StartMain : State() {
                 vec(right, top),
                 vec(right, bottom))
 
+    }
+
+    fun createIndexedDrawable(left: Float, top: Float, right: Float, bottom: Float): Drawable {
+        val vertices = createIndexedQuad(left, top, right, bottom)
+
+        val vertexVBO = VBO.create(vertices.vertices.toBuffer(), positionAttribute)
+        val indices = VBO.createIndicesBuffer(vertices.indices.toBuffer())
+
+        return Drawable(vertexVBO, indices) {
+            GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
+        }
+    }
+
+    fun createIndexedQuad(left: Float, top: Float, right: Float, bottom: Float): IndexedVertices {
+        val vertices = floatArrayOf(left, top, 0.0f, left, bottom, 0.0f, right, bottom, 0.0f, right, top, 0.0f)
+
+        val indices = shortArrayOf(0, 1, 2, 0, 2, 3)
+
+        return IndexedVertices(vertices, indices)
     }
 
     fun loadImageFromMemory(buffer: ByteBuffer): Image {
