@@ -3,15 +3,15 @@ package gl.renderer
 import font.FontType
 import font.GUIText
 import font.TextMeshDynamicCreator
-import gl.*
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.utils.createTexture
+import gl.utils.loadImage
 import gl.utils.texCoordsAttribute
 import gl.vbo.AttributePointer
 import gl.vbo.MutableVBO
 import gl.vbo.VBO
 import loader.loadFont
+import models.Model
 import org.joml.Matrix4f
 import resources.Res
 import util.colors.Color
@@ -61,7 +61,7 @@ class FontRenderer : Renderer {
 
     private val shader: Shader = Shader(vertex, fragment)
 
-    private val drawable: Drawable
+    private val model: Model
     private val textPositionAttribute = AttributePointer.create(2, 2)
     private val meshCreator = TextMeshDynamicCreator()
     private val guiText: GUIText
@@ -91,6 +91,7 @@ class FontRenderer : Renderer {
             maxLineLength: Float = guiText.maxLineSize,
             centered: Boolean = guiText.isCentered) {
         guiText.set(text, fontSize, font, x, y, maxLineLength, centered)
+        vertex.translation.set(x, y)
         updateMesh()
     }
 
@@ -102,12 +103,12 @@ class FontRenderer : Renderer {
         textureVBO = VBO.createMutable(6*200, texCoordsAttribute)
         updateMesh()
 
-        drawable = Drawable(positionVBO, textureVBO)
-        drawable.image = createTexture(Res.font["arial.png"])
+        model = Model(positionVBO, textureVBO)
+        model.image = loadImage(Res.font["arial.png"])
     }
 
-    override fun render(drawable: Drawable, transformation: Matrix4f) {
-        shader.render(this.drawable, transformation)
+    override fun render(model: Model, transformation: Matrix4f) {
+        shader.render(this.model, transformation)
     }
 
     private fun updateMesh() {

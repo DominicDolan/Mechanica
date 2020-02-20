@@ -47,7 +47,6 @@ class GUIText
  maxLineLength: Float,
  centered: Boolean = false) {
 
-    var model: Model
     /**
      * @return The string of text.
      */
@@ -108,12 +107,6 @@ class GUIText
         this.metaFile = font.metaFile
         this.maxLineSize = maxLineLength
         this.isCentered = centered
-
-        val data = dynamicCreator.createTextMesh(this)
-        model = Model(loader.loadTextureModel(data.vertices, data.textureCoords, data.vertexCount, font.textureAtlas))
-//        set(loader.loadTextureModel(data.vertices, data.textureCoords, data.vertexCount, font.textureAtlas))
-        //        setMeshInfo(data.vertices, data.textureCoords, data.vertexCount);
-        // preLoad text
     }
 
     fun set(text: String, fontSize: Float, font: FontType, x: Float, y: Float, maxLineLength: Float,
@@ -138,9 +131,7 @@ class GUIText
     }
 
     fun set() {
-        val data = dynamicCreator.createTextMesh(this)
-        model = Model(loader.loadTextureModel(data.vertices, data.textureCoords, data.vertexCount, font!!.textureAtlas))
-//        set(loader.loadTextureModel(data.vertices, data.textureCoords, data.vertexCount, font!!.textureAtlas))
+
     }
 
     /**
@@ -149,20 +140,6 @@ class GUIText
     fun remove() {
         // remove text
     }
-
-    /**
-     * Set the Buffers and vertex count for this text.
-     *
-     * @param verticesCount
-     * - the total number of polygons in all of the quads.
-     */
-    fun setMeshInfo(vertices: Buffer, textureCoords: Buffer, verticesCount: Int) {
-        vertexBuffer = vertices
-        textureBuffer = textureCoords
-        model.vertexCount = verticesCount
-//        setVertexCount(verticesCount)
-    }
-
 
     fun setText(text: String) {
         this.textString = text

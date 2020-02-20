@@ -1,6 +1,6 @@
 package state
 
-import graphics.drawer.Drawer
+import drawer.Drawer
 
 /**
  * Created by domin on 22 Mar 2017.

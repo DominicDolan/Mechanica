@@ -1,7 +1,7 @@
 package gl.shader
 
 import display.Game
-import gl.Drawable
+import models.Model
 import gl.script.Declarations
 import gl.script.ShaderScript
 import org.joml.Matrix4f
@@ -22,7 +22,7 @@ interface Shader {
         fragment.loadUniforms()
     }
 
-    fun render(drawable: Drawable, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
+    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
         val projMatrix = projection ?: Game.projectionMatrix.create()
         val viewMatrix = view ?: Game.viewMatrix.create()
 
@@ -34,8 +34,8 @@ interface Shader {
 
         load()
 
-        drawable.bind()
-        drawable.draw(drawable)
+        model.bind()
+        model.draw(model)
     }
 
     companion object {

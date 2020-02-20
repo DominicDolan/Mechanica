@@ -1,7 +1,7 @@
 package gl.renderer
 
-import gl.Drawable
-import gl.utils.createTexture
+import models.Model
+import gl.utils.loadImage
 import gl.script.ShaderScript
 import gl.shader.Shader
 import graphics.Image
@@ -61,7 +61,7 @@ class CircleRenderer : Renderer {
 
     private val shader: Shader = Shader(vertex, fragment)
 
-    private val oval: Image = createTexture(InternalResource("res/images/oval.png"))
+    private val oval: Image = loadImage(InternalResource("res/images/oval.png"))
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -69,8 +69,8 @@ class CircleRenderer : Renderer {
             fragment.color.set(value)
         }
 
-    override fun render(drawable: Drawable, transformation: Matrix4f) {
-        drawable.image = oval
-        shader.render(drawable, transformation)
+    override fun render(model: Model, transformation: Matrix4f) {
+        model.image = oval
+        shader.render(model, transformation)
     }
 }

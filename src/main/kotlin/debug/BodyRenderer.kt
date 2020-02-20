@@ -5,7 +5,7 @@ import org.jbox2d.callbacks.DebugDraw
 import org.jbox2d.common.Color3f
 import org.jbox2d.common.Transform
 import org.jbox2d.common.Vec2
-import graphics.drawer.Drawer
+import drawer.Drawer
 import util.extensions.toVec
 
 object BodyRenderer : DebugDraw(null) {

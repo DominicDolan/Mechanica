@@ -1,6 +1,6 @@
 package state
 
-import graphics.drawer.Drawer
+import drawer.Drawer
 
 object EmptyLoadState : LoadState() {
     override fun preLoad() {}

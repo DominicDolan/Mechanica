@@ -2,7 +2,7 @@ package demo.text
 
 import display.Game
 import display.GameOptions
-import graphics.drawer.Drawer
+import drawer.Drawer
 import loader.loadImageFromResource
 import loader.loadTexture
 import resources.Res

@@ -2,7 +2,7 @@ package demo.ui
 
 import display.Game
 import display.GameOptions
-import graphics.drawer.Drawer
+import drawer.Drawer
 import state.State
 import util.extensions.plus
 import util.extensions.radians

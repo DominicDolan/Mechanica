@@ -2,30 +2,23 @@ package demo.renderer
 
 import display.Game
 import display.GameOptions
-import gl.*
-import gl.renderer.PolygonRenderer
-import graphics.Image
-import graphics.drawer.Drawer
-import input.Cursor
-import matrices.TransformationMatrix
+import drawer.Drawer
 import models.Model
-import org.lwjgl.opengl.GL11
 import gl.script.ShaderScript
-import gl.shader.ShaderImpl
-import gl.utils.*
+import gl.utils.IndexedVertices
+import gl.utils.positionAttribute
 import gl.utils.startFrame
-import gl.utils.startGame
 import gl.vbo.VBO
+import graphics.Image
 import graphics.Polygon
-import graphics.drawer.DrawerImpl
+import input.Cursor
 import input.Keyboard
-import loader.contentsToString
-import loader.loadModel
 import loader.toBuffer
+import matrices.TransformationMatrix
 import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
-import resources.Res
 import state.State
 import util.colors.hex
 import util.colors.rgba
@@ -49,7 +42,6 @@ fun main() {
 }
 
 private class StartMain : State() {
-    private val quad: Model = Model(-1, 0, Image(-1))
     //= loadTexturedQuad(loadImageFromResource(Res.image["colors"]), 0f, 0.5f, 0.5f, 0f)
     private val red = rgba(1.0, 0.0, 0.0, 1.0)
 
@@ -84,7 +76,6 @@ private class StartMain : State() {
 //    private val texVbo: VBO
 //    val shader: ShaderImpl
     private val transformation = TransformationMatrix()
-    val draw = DrawerImpl()
 //    val drawable: Drawable
 //    val image: Image
     var timer = 0.0
@@ -92,7 +83,6 @@ private class StartMain : State() {
     val polygon: Polygon
 
     init {
-        startGame()
 //        shader = ShaderImpl(vertex, fragment)
         transformation.setScale(1.0, 1.0,1.0)
 
@@ -153,7 +143,7 @@ private class StartMain : State() {
 
 //        polygonRenderer.render(transformation.create())
 //        shader.render(drawable, transformation.create())
-        this.draw.blue.polygon(polygon)
+        draw.blue.polygon(polygon)
 //        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
     }
 
@@ -168,13 +158,13 @@ private class StartMain : State() {
 
     }
 
-    fun createIndexedDrawable(left: Float, top: Float, right: Float, bottom: Float): Drawable {
+    fun createIndexedDrawable(left: Float, top: Float, right: Float, bottom: Float): Model {
         val vertices = createIndexedQuad(left, top, right, bottom)
 
         val vertexVBO = VBO.create(vertices.vertices.toBuffer(), positionAttribute)
         val indices = VBO.createIndicesBuffer(vertices.indices.toBuffer())
 
-        return Drawable(vertexVBO, indices) {
+        return Model(vertexVBO, indices) {
             GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
         }
     }

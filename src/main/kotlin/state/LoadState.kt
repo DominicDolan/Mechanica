@@ -1,7 +1,7 @@
 package state
 
 import display.Game
-import graphics.drawer.Drawer
+import drawer.Drawer
 
 /**
  * Created by domin on 4 Aug 2017.

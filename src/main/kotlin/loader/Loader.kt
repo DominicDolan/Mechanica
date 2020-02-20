@@ -38,97 +38,6 @@ import kotlin.collections.HashMap
 private val vaos = ArrayList<Int>()
 private val vbos = ArrayList<Int>()
 
-fun loadModel(positions: FloatArray, indices: ShortArray): Model {
-    val vaoID = createVAO()
-    bindIndicesBuffer(indices.toBuffer())
-    storeDataInAttributeList(0, positions)
-    unbindVAO()
-
-    return Model(vaoID, indices.size, drawType = GL_TRIANGLES)
-}
-
-fun loadModel(positions: FloatBuffer, indices: ShortBuffer): Model {
-    val vaoID = createVAO()
-    val size = indices.remaining()
-    bindIndicesBuffer(indices)
-    storeDataInAttributeList(0, positions)
-    unbindVAO()
-
-    return Model(vaoID, size, drawType = GL_TRIANGLES)
-}
-
-
-fun loadModel(positions: FloatArray, indices: ShortArray, textureCoords: FloatArray, texture: Image): Model {
-    val vaoID = createVAO()
-    bindIndicesBuffer(indices.toBuffer())
-    storeDataInAttributeList(0, positions)
-    storeDataInAttributeList(1, textureCoords, 2)
-    unbindVAO()
-
-    return Model(vaoID, indices.size, texture, drawType = GL_TRIANGLES)
-}
-
-fun loadTextureModel(positions: FloatBuffer, textureCoords: FloatBuffer, vertexCount: Int, texture: Image): Model {
-    val vaoID = createVAO()
-    storeDataInAttributeList(0, 2, positions)
-    storeDataInAttributeList(1, 2, textureCoords)
-    unbindVAO()
-
-    val model = Model(vaoID, vertexCount, texture)
-    model.drawType = GL_TRIANGLES
-    return model
-}
-
-fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Model {
-    val vertices = floatArrayOf(left, top, 0.0f, left, bottom, 0.0f, right, bottom, 0.0f, right, top, 0.0f)
-
-    val indices = shortArrayOf(0, 1, 2, 0, 2, 3) // The order of vertexrendering.
-
-//    val textureCoords = floatArrayOf(0f, 0f, //V0
-//            0f, 1f, //V1
-//            1f, 1f, //V2
-//            1f, 0f  //V3
-//    )
-
-    return loadModel(vertices, indices)
-}
-
-
-fun loadTexturedQuad(texture: Image, left: Float, top: Float, right: Float, bottom: Float): Model {
-    val vertices = floatArrayOf(left, top, 0.0f, left, bottom, 0.0f, right, bottom, 0.0f, right, top, 0.0f)
-
-    val indices = shortArrayOf(0, 1, 2, 0, 2, 3) // The order of vertexrendering.
-
-    val textureCoords = floatArrayOf(0f, 0f, //V0
-            0f, 1f, //V1
-            1f, 1f, //V2
-            1f, 0f  //V3
-    )
-
-    return loadModel(vertices, indices, textureCoords, texture)
-}
-
-fun loadUnitQuad(): Model {
-    val vertices = floatArrayOf(0f, 1f, 0.0f, 0f, 0f, 0.0f, 1f, 0f, 0.0f, 1f, 1f, 0.0f)
-
-    val indices = shortArrayOf(0, 1, 2, 0, 2, 3) // The order of vertexrendering.
-
-    val textureCoords = floatArrayOf(0f, 0f, //V0
-            0f, 1f, //V1
-            1f, 1f, //V2
-            1f, 0f  //V3
-    )
-
-    return loadModel(vertices, indices, textureCoords, Image(0))
-}
-
-fun loadTriangulatedModel(positions: List<Vector>) = loadTriangulatedModel(positions.toFloatArray())
-
-fun loadTriangulatedModel(positions: FloatArray): Model {
-    val buffers = loadTriangulatedArrays(positions)
-    return loadModel(buffers.vertices, buffers.indices)
-}
-
 fun loadTriangulatedArrays(positions: List<Vector>) = loadTriangulatedArrays(positions.toFloatArray())
 
 fun loadTriangulatedArrays(positions: FloatArray): IndexedVertices {
@@ -283,7 +192,7 @@ fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
     return buffer
 }
 
-fun ioResourceToByteBuffer(resource: InputStream, bufferSize: Int): ByteBuffer {
+fun ioResourceToByteBuffer(resource: InputStream): ByteBuffer {
     val bytes = resource.readAllBytes()
     val buffer = BufferUtils.createByteBuffer(bytes.size)
     buffer.put(bytes)
@@ -345,20 +254,6 @@ private fun resizeBuffer(buffer: ByteBuffer, newCapacity: Int): ByteBuffer {
     newBuffer.put(buffer)
     return newBuffer
 }
-
-
-private fun createVAO(): Int {
-    val vaoID = GL30.glGenVertexArrays()
-    vaos.add(vaoID)
-    GL30.glBindVertexArray(vaoID)
-    return vaoID
-}
-
-
-private fun unbindVAO() {
-    GL30.glBindVertexArray(0)
-}
-
 
 private fun bindIndicesBuffer(indices: ShortArray) {
     val vboID = GL15.glGenBuffers()

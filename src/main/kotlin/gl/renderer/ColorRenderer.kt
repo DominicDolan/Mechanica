@@ -1,12 +1,9 @@
-package graphics.drawer
+package gl.renderer
 
-import gl.Drawable
-import gl.renderer.Renderer
+import models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.shader.ShaderImpl
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
@@ -46,7 +43,7 @@ internal class ColorRenderer: Renderer {
             fragment.color.set(value)
         }
 
-    override fun render(drawable: Drawable, transformation: Matrix4f) {
-        shader.render(drawable, transformation)
+    override fun render(model: Model, transformation: Matrix4f) {
+        shader.render(model, transformation)
     }
 }

@@ -5,6 +5,7 @@ import gl.script.Declarations
 import gl.vbo.AttributeBuffer
 import graphics.Image
 import org.lwjgl.BufferUtils
+import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.*
 import org.lwjgl.stb.STBImage
 import resources.Resource
@@ -61,7 +62,7 @@ private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Arra
 }
 
 
-fun createTexture(resource: Resource): Image {
+fun loadImage(resource: Resource): Image {
     val widthBuffer = BufferUtils.createIntBuffer(1)
     val heightBuffer = BufferUtils.createIntBuffer(1)
     val componentsBuffer = BufferUtils.createIntBuffer(1)

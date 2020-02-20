@@ -1,10 +1,9 @@
 package gl.renderer
 
-import gl.Drawable
+import models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
 import org.joml.Matrix4f
-import util.colors.hex
 
 class ImageRenderer : Renderer {
     private val vertex = object : ShaderScript() {
@@ -23,9 +22,6 @@ class ImageRenderer : Renderer {
     }
 
     private val fragment = object : ShaderScript() {
-
-        val color = uniform.vec4(hex(0xFF00FFFF))
-
         //language=GLSL
         override val main: String = """
                 in vec2 tc;
@@ -41,7 +37,7 @@ class ImageRenderer : Renderer {
 
     private val shader: Shader = Shader(vertex, fragment)
 
-    override fun render(drawable: Drawable, transformation: Matrix4f) {
-        shader.render(drawable, transformation)
+    override fun render(model: Model, transformation: Matrix4f) {
+        shader.render(model, transformation)
     }
 }

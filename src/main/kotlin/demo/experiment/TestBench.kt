@@ -3,7 +3,7 @@ package demo.experiment
 
 import display.Game
 import display.GameOptions
-import graphics.drawer.Drawer
+import drawer.Drawer
 import state.State
 
 fun main() {

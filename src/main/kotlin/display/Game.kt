@@ -4,15 +4,16 @@ import data.loadData
 import data.saveData
 import debug.BodyRenderer
 import debug.DebugDrawer
-import graphics.backRenderer
-import graphics.drawer.Drawer
+import drawer.Drawer
+import drawer.DrawerImpl
+import gl.utils.startFrame
+import gl.utils.startGame
 import input.ControlsMap
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL11.glClearColor
 import physics.ContactEvents
 import state.EmptyLoadState
 import state.EmptyState
@@ -118,10 +119,10 @@ object Game {
                 BodyRenderer.init()
             }
 
+            startGame()
             val state = startingState ?: { EmptyState }
             val loadState = this.loadState ?: EmptyLoadState
             loadState.startingState = state
-
             setCurrentState {
                 loadState.preLoad()
                 loadState
@@ -136,9 +137,6 @@ object Game {
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
-
-        // Set the clear color
-        glClearColor(1.0f, 0.5f, 0.0f, 0.0f)
 
         // Just mentioning the Timer object will initialize it here
         Timer
@@ -206,10 +204,10 @@ object Game {
 
                     val painter = painter
                     if (ready && painter == null){
-                        Game.painter = Drawer()
+                        Game.painter = DrawerImpl()
                     }
                     if (ready && painter != null) {
-                        backRenderer()
+                        startFrame()
 
                         val del = updateDuration
                         currentState.update(del)
@@ -301,8 +299,4 @@ object Game {
 
         abstract fun update()
     }
-
-
-
-
 }

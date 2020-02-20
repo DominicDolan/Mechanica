@@ -2,7 +2,7 @@ package demo.color
 
 import display.Game
 import display.GameOptions
-import graphics.drawer.Drawer
+import drawer.Drawer
 import input.Cursor
 import input.Keyboard
 import state.State

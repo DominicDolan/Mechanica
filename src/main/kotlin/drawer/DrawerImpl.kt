@@ -1,16 +1,16 @@
-package graphics.drawer
+package drawer
 
-import gl.*
+import models.Model
 import gl.renderer.*
-import gl.renderer.Renderer
+import gl.renderer.ColorRenderer
 import gl.utils.loadUnitSquare
 import gl.utils.positionAttribute
 import gl.utils.texCoordsAttribute
 import gl.vbo.VBO
-import graphics.*
+import graphics.Image
+import graphics.Polygon
 import matrices.TransformationMatrix
 import util.colors.Color
-import util.colors.hex
 import util.colors.rgba2Hex
 import util.colors.toColor
 import util.extensions.component1
@@ -21,112 +21,8 @@ import util.units.Vector
 import kotlin.math.atan2
 import kotlin.math.hypot
 
-interface BaseDrawer {
-    fun rectangle(x: Number, y: Number, width: Number, height: Number)
 
-    fun circle(x: Number, y: Number, radius: Number) {
-        val diameter = 2.0*radius.toDouble()
-        ellipse(x, y, diameter, diameter)
-    }
-
-    fun circle(position: Vector, radius: Number) = circle(position.x, position.y, radius)
-
-    fun ellipse(x: Number, y: Number, width: Number, height: Number)
-
-    fun text(text: String, fontSize: Number, x: Number, y: Number)
-
-    fun image(image: Image, x: Number, y: Number, width: Number, height: Number)
-
-    fun polygon(polygon: Polygon, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0)
-
-    fun path(path: List<Vector>, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0)
-
-    fun line(x1: Number, y1: Number, x2: Number, y2: Number)
-
-    fun line(p1: Vector, p2: Vector) = line(p1.x, p1.y, p2.x, p2.y)
-
-    val normal: BaseDrawer
-    val centered: BaseDrawer
-
-//    @Suppress("LeakingThis") // Leaking this is okay because no processing is being done on 'this' inside the constructor
-//    val positional: Positional = Positional(this)
-//        get() {
-//            Drawer.isLayoutSet = true
-//            return field
-//        }
-
-    val color: ColorDrawer2
-
-    val black: BaseDrawer
-        get() {
-            color(hex(0x000000FF))
-            return this
-        }
-    val white: BaseDrawer
-        get() {
-            color(hex(0xFFFFFFFF))
-            return this
-        }
-    val red: BaseDrawer
-        get() {
-            color(hex(0xFF0000FF))
-            return this
-        }
-    val green: BaseDrawer
-        get() {
-            color(hex(0x00FF00FF))
-            return this
-        }
-    val blue: BaseDrawer
-        get() {
-            color(hex(0x0000FFFF))
-            return this
-        }
-    val magenta: BaseDrawer
-        get() {
-            color(hex(0xFF00FFFF))
-            return this
-        }
-    val cyan: BaseDrawer
-        get() {
-            color(hex(0x00FFFFFF))
-            return this
-        }
-    val yellow: BaseDrawer
-        get() {
-            color(hex(0xFFFF00FF))
-            return this
-        }
-
-    val stroke: StrokeDrawer
-
-    val rotated: RotatedDrawer
-
-    val ui: BaseDrawer
-    val world: BaseDrawer
-
-}
-
-interface ColorDrawer2 : BaseDrawer, Color {
-    fun get(): Color
-
-    operator fun invoke(color: Color): BaseDrawer
-
-    operator fun invoke(hex: Long): BaseDrawer = invoke(hex(hex))
-
-}
-
-interface RotatedDrawer : BaseDrawer {
-    operator fun invoke(angle: Angle): RotatedDrawer
-
-    fun about(pivotX: Number, pivotY: Number): BaseDrawer
-}
-
-interface StrokeDrawer : BaseDrawer {
-    operator fun invoke(stroke: Double): BaseDrawer
-}
-
-internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
+internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     private var layout: Layouts = Layouts.NORMAL
     private var frame: Frames = Frames.WORLD
@@ -149,7 +45,7 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
 
     private val vbo = VBO.create(loadUnitSquare(), positionAttribute)
     private val texVbo = VBO.create(loadUnitSquare(), texCoordsAttribute)
-    private val drawable = Drawable(vbo, texVbo)
+    private val drawable = Model(vbo, texVbo)
 
     private val colorRenderer = ColorRenderer()
     private val imageRenderer = ImageRenderer()
@@ -274,18 +170,18 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
                 y2 * scaleHeight.toDouble() + y.toDouble())
     }
 
-    override val normal: BaseDrawer
+    override val normal: Drawer
         get() {
             layout = Layouts.NORMAL
             return this
         }
-    override val centered: BaseDrawer
+    override val centered: Drawer
         get() {
             layout = Layouts.CENTERED
             return this
         }
 
-    override val color: ColorDrawer2
+    override val color: ColorDrawer
         get() {
             return this
         }
@@ -302,20 +198,20 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
             return this
         }
 
-    override val ui: BaseDrawer
+    override val ui: Drawer
         get() {
             frame = Frames.UI
             return this
         }
-    override val world: BaseDrawer
+    override val world: Drawer
         get() {
             frame = Frames.WORLD
             return this
         }
 
-    override fun get() = graphics.colorArray.toColor()
+    override fun get() = colorArray.toColor()
 
-    override fun invoke(color: Color): BaseDrawer {
+    override fun invoke(color: Color): Drawer {
         colorArray[0] = color.r.toFloat()
         colorArray[1] = color.g.toFloat()
         colorArray[2] = color.b.toFloat()
@@ -334,14 +230,14 @@ internal class DrawerImpl : ColorDrawer2, RotatedDrawer, StrokeDrawer {
         return this
     }
 
-    override fun about(pivotX: Number, pivotY: Number): BaseDrawer {
+    override fun about(pivotX: Number, pivotY: Number): Drawer {
         wasPivoted = true
         this.pivotX = pivotX.toDouble()
         this.pivotY = pivotY.toDouble()
         return this
     }
 
-    override fun invoke(stroke: Double): BaseDrawer {
+    override fun invoke(stroke: Double): Drawer {
         hasStroke = true
         strokeWidth = stroke
         return this

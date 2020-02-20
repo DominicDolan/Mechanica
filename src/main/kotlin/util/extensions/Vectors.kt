@@ -1,7 +1,6 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package util.extensions
 
-import compatibility.VectorConverter
 import graphics.Polygon
 import org.jbox2d.common.Vec2
 import util.units.Angle
@@ -90,7 +89,7 @@ fun List<Vector>.centroid(): Vector {
         yAverage = (yAverage*i + vec.y)/(i+1)
     }
 
-    return VectorConverter(xAverage, yAverage)
+    return vec(xAverage, yAverage)
 }
 
 fun Polygon.centroid(): Vector = this.path.centroid()
@@ -104,7 +103,7 @@ fun List<Vector>.toFloatArray(): FloatArray{
     return floatArray
 }
 
-fun List<VectorConverter>.normalizeX(width: Double): List<VectorConverter> {
+fun List<Vector>.normalizeX(width: Double): List<Vector> {
     val currentHeight = this.xRange()
     val factor = width/currentHeight
     this.scale(factor)
@@ -112,64 +111,57 @@ fun List<VectorConverter>.normalizeX(width: Double): List<VectorConverter> {
 }
 
 
-fun List<VectorConverter>.normalizeY(height: Double): List<VectorConverter> {
+fun List<Vector>.normalizeY(height: Double): List<Vector> {
     val currentHeight = this.yRange()
     val factor = height/currentHeight
     this.scale(factor)
     return this
 }
 
-fun List<VectorConverter>.flipVertically(): List<VectorConverter> {
-    this.forEach {
-        it.y = -it.y
+fun List<Vector>.flipVertically(): List<Vector> {
+    return this.map {
+        vec(it.x, -it.y)
     }
-    return this
 }
 
-fun List<VectorConverter>.toOrigin(): List<VectorConverter> {
-    val minX = (this.minBy { it.x } ?: VectorConverter(0.0, 0.0)).x
-    val minY = (this.minBy { it.y } ?: VectorConverter(0.0, 0.0)).y
-    this.forEach {
-        it.x = it.x - minX
-        it.y = it.y - minY
+fun List<Vector>.toOrigin(): List<Vector> {
+    val minX = (this.minBy { it.x } ?: vec(0.0, 0.0)).x
+    val minY = (this.minBy { it.y } ?: vec(0.0, 0.0)).y
+    return this.map {
+        vec(it.x - minX,it.y - minY)
     }
-    return this
 }
 
-fun List<VectorConverter>.xRange(): Double {
-    val max = this.maxBy { it.x } ?: VectorConverter(0.0, 0.0)
-    val min = this.minBy { it.x } ?: VectorConverter(0.0, 0.0)
+fun List<Vector>.xRange(): Double {
+    val max = this.maxBy { it.x } ?: vec(0.0, 0.0)
+    val min = this.minBy { it.x } ?: vec(0.0, 0.0)
     return max.x - min.x
 }
 
-fun List<VectorConverter>.yRange(): Double {
-    val max = this.maxBy { it.y } ?: VectorConverter(0.0, 0.0)
-    val min = this.minBy { it.y } ?: VectorConverter(0.0, 0.0)
+fun List<Vector>.yRange(): Double {
+    val max = this.maxBy { it.y } ?: vec(0.0, 0.0)
+    val min = this.minBy { it.y } ?: vec(0.0, 0.0)
     return max.y - min.y
 }
 
-fun List<VectorConverter>.scale(factor: Double): List<VectorConverter> {
-    this.forEach {
-        it.x = it.x*factor
-        it.y = it.y*factor
+fun List<Vector>.scale(factor: Double): List<Vector> {
+    return this.map {
+        vec(it.x*factor, it.y*factor)
     }
-    return this
 }
 
 
-fun List<VectorConverter>.scaleX(factor: Double): List<VectorConverter> {
-    this.forEach {
-        it.x = it.x*factor
+fun List<Vector>.scaleX(factor: Double): List<Vector> {
+    return this.map {
+        vec(it.x*factor, it.y)
     }
-    return this
 }
 
 
-fun List<VectorConverter>.scaleY(factor: Double): List<VectorConverter> {
-    this.forEach {
-        it.y = it.y*factor
+fun List<Vector>.scaleY(factor: Double): List<Vector> {
+    return this.map {
+        vec(it.x, it.y*factor)
     }
-    return this
 }
 
 fun List<Vector>.calculateLength(): Double {

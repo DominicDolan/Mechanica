@@ -1,7 +1,6 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package svg
 
-import compatibility.VectorConverter
 import display.Game
 import loader.loadTextFile
 import org.jbox2d.common.Vec2
@@ -12,12 +11,13 @@ import util.extensions.flipVertically
 import util.extensions.scale
 import util.extensions.toOrigin
 import util.extensions.vec
+import util.units.MutableVector
 import util.units.Vector
 import java.lang.NumberFormatException
 import kotlin.collections.ArrayList
 
 
-fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<VectorConverter> {
+fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<Vector> {
     val doc = loadSVGDocument(fileName)
     val element = if (pathId == null) {
         doc.getElementsByTag("path")[0]
@@ -30,14 +30,14 @@ fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): Li
     return path
 }
 
-fun loadPolygonCoordinates(element: Element): List<VectorConverter> {
+fun loadPolygonCoordinates(element: Element): List<Vector> {
     val sequenceList = element
             .attr("d")
             .replace(Regex("\\s\\s+"), " ")
             .split(Regex("(?=[a-zA-Z])"))
             .filter { it.isNotBlank() }
 
-    fun ArrayList<VectorConverter>.addFromString(sequence: String, otherValue: ((Double) -> VectorConverter) = {throw IllegalArgumentException("Error reading svg path: $sequence")}) {
+    fun ArrayList<Vector>.addFromString(sequence: String, otherValue: ((Double) -> Vector) = {throw IllegalArgumentException("Error reading svg path: $sequence")}) {
         val initialChar = sequence[0]
         val isAbsolute = initialChar.isLetter() && initialChar.isUpperCase()
 
@@ -47,13 +47,13 @@ fun loadPolygonCoordinates(element: Element): List<VectorConverter> {
         if (isAbsolute) {
             this.addAll(values)
         } else {
-            val firstCoordinate = if (this.isNotEmpty()) this.last() else VectorConverter(0.0, 0.0)
+            val firstCoordinate = if (this.isNotEmpty()) this.last() else vec(0.0, 0.0)
             val absoluteValues = values.relativeToAbsolute(firstCoordinate)
             this.addAll(absoluteValues)
         }
     }
 
-    val coordinateList = ArrayList<VectorConverter>()
+    val coordinateList = ArrayList<Vector>()
     for (sequence in sequenceList) {
         try {
             when (sequence.first()) {
@@ -61,20 +61,20 @@ fun loadPolygonCoordinates(element: Element): List<VectorConverter> {
                     coordinateList.addFromString(sequence)
                 }
                 'z', 'Z' -> {
-                    coordinateList.add(VectorConverter(coordinateList.first()))
+                    coordinateList.add(coordinateList.first())
                 }
                 'H', 'h' -> {
                     if (coordinateList.isNotEmpty() && sequence.first() != 'h') {
-                        coordinateList.addFromString(sequence) { VectorConverter(it, coordinateList.last().y) }
+                        coordinateList.addFromString(sequence) { vec(it, coordinateList.last().y) }
                     } else {
-                        coordinateList.addFromString(sequence) { VectorConverter(it, 0.0) }
+                        coordinateList.addFromString(sequence) { vec(it, 0.0) }
                     }
                 }
                 'V', 'v' -> {
                     if (coordinateList.isNotEmpty() && sequence.first() != 'v') {
-                        coordinateList.addFromString(sequence) { VectorConverter(coordinateList.last().x, it) }
+                        coordinateList.addFromString(sequence) { vec(coordinateList.last().x, it) }
                     } else {
-                        coordinateList.addFromString(sequence) { VectorConverter(0.0, it) }
+                        coordinateList.addFromString(sequence) { vec(0.0, it) }
                     }
                 }
                 'C', 'c', 'S', 's', 'Q', 'q', 'T', 't', 'A', 'a' -> throw IllegalArgumentException("Reading an SVG does not support curves. Path: $sequence")
@@ -91,34 +91,34 @@ fun loadPolygonCoordinates(element: Element): List<VectorConverter> {
     return coordinateList.flipVertically()
 }
 
-private fun List<VectorConverter>.relativeToAbsolute(initial: VectorConverter): List<VectorConverter> {
-    val absoluteList = ArrayList<VectorConverter>()
+private fun List<Vector>.relativeToAbsolute(initial: Vector): List<Vector> {
+    val absoluteList = ArrayList<Vector>()
     var previous = initial
     for (vector in this) {
-        val new = VectorConverter(previous.x + vector.x, previous.y + vector.y)
+        val new = vec(previous.x + vector.x, previous.y + vector.y)
         absoluteList.add(new)
         previous = new
     }
     return absoluteList
 }
 
-fun parseCoordinateSequence(text: String, otherValue: ((Double) -> VectorConverter)): List<VectorConverter> {
+fun parseCoordinateSequence(text: String, otherValue: ((Double) -> Vector)): List<Vector> {
     val individualText = text.trim().split(" ")
     return individualText.map {
         if (it.contains(",")) {
             val xy = it.split(",")
-            VectorConverter(xy[0].toDouble(), xy[1].toDouble())
+            vec(xy[0].toDouble(), xy[1].toDouble())
         } else {
             otherValue(it.trim().toDouble())
         }
     }
 }
 
-fun parseSingleValueCoordinate(text: String): List<VectorConverter> {
+fun parseSingleValueCoordinate(text: String): List<Vector> {
     val individualText = text.trim().split(" ")
     return individualText.map {
         val xy = it.split(",")
-        VectorConverter(xy[0].toDouble(), xy[1].toDouble())
+        vec(xy[0].toDouble(), xy[1].toDouble())
     }
 }
 
@@ -130,7 +130,7 @@ fun parseSingleValueSequence(text: String): List<Double> {
 
 // This needs to be updated according to this:
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-fun loadPolygonCoordinatesOld(element: Element): List<VectorConverter> {
+fun loadPolygonCoordinatesOld(element: Element): List<Vector> {
     var count: Int
     var mode: Int
     var closed: Boolean
@@ -153,18 +153,18 @@ fun loadPolygonCoordinatesOld(element: Element): List<VectorConverter> {
         val size = points.size/2
         val xValues = Array(size) { points[it*2] }
         val yValues = Array(size) { points[it*2+1] }
-        val vertices = Array(size) { VectorConverter(xValues[it].toDouble(), yValues[it].toDouble())}
+        val vertices = Array(size) { vec(xValues[it].toDouble(), yValues[it].toDouble())}
         vertices
     }
-    val returnList = ArrayList<VectorConverter>()
+    val returnList = ArrayList<Vector>()
     for (array in listOfArrayOfVerts) {
         when (mode) {
             1 -> {
-                val vTotal = VectorConverter(0.0, 0.0)
+                val vTotal = MutableVector(0.0, 0.0)
                 array.forEach { v ->
                         vTotal.x += v.x
                         vTotal.y += v.y
-                        returnList.add(VectorConverter(vTotal.x, vTotal.y))
+                        returnList.add(vec(vTotal.x, vTotal.y))
                 }
             }
             2 -> {
@@ -176,7 +176,7 @@ fun loadPolygonCoordinatesOld(element: Element): List<VectorConverter> {
         val first = returnList[0]
         val last = returnList.last()
         if (first != last) {
-            returnList.add(VectorConverter(returnList[0].x, returnList[0].y))
+            returnList.add(vec(returnList[0].x, returnList[0].y))
         }
     }
 

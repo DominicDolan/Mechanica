@@ -1,8 +1,8 @@
 package gl.renderer
 
-import gl.Drawable
+import models.Model
 import org.joml.Matrix4f
 
 internal interface Renderer {
-    fun render(drawable: Drawable, transformation: Matrix4f)
+    fun render(model: Model, transformation: Matrix4f)
 }

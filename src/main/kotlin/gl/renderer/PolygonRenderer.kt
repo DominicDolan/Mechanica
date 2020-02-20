@@ -1,13 +1,12 @@
 package gl.renderer
 
-import gl.Drawable
+import models.Model
 import gl.utils.positionAttribute
 import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.IndexedVertices
 import gl.vbo.VBO
 import graphics.Polygon
-import loader.toBuffer
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import util.colors.Color
@@ -61,7 +60,7 @@ class PolygonRenderer : Renderer {
     private val positionVBO = VBO.createMutable(100, positionAttribute)
     private val indices = VBO.createMutableIndicesBuffer(200)
 
-    private val drawable: Drawable= Drawable(positionVBO, indices) {
+    private val model: Model = Model(positionVBO, indices) {
         GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
     }
 
@@ -75,8 +74,8 @@ class PolygonRenderer : Renderer {
         updateBuffers(polygon.indexedVertices)
     }
 
-    override fun render(drawable: Drawable, transformation: Matrix4f) {
-        shader.render(this.drawable, transformation)
+    override fun render(model: Model, transformation: Matrix4f) {
+        shader.render(this.model, transformation)
     }
 
     private fun updateBuffers(vertices: IndexedVertices) {
