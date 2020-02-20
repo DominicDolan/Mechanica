@@ -112,7 +112,7 @@ class FontRenderer : Renderer {
 
     private fun updateMesh() {
         val data = meshCreator.createTextMesh(guiText)
-        positionVBO.updateBuffer(data.vertices, data.vertexCount)
-        textureVBO.updateBuffer(data.textureCoords, data.vertexCount)
+        positionVBO.updateBuffer(data.vertices)
+        textureVBO.updateBuffer(data.textureCoords)
     }
 }

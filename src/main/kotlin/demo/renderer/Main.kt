@@ -89,13 +89,10 @@ private class StartMain : State() {
 //    val image: Image
     var timer = 0.0
     var score = 0
-    val polygonRenderer: PolygonRenderer
-
-//    val polygon: Polygon
+    val polygon: Polygon
 
     init {
         startGame()
-        polygonRenderer = PolygonRenderer()
 //        shader = ShaderImpl(vertex, fragment)
         transformation.setScale(1.0, 1.0,1.0)
 
@@ -126,7 +123,7 @@ private class StartMain : State() {
                 vec(1, -1)
         )
 
-//        polygon = Polygon.create(square)
+        polygon = Polygon.create(random)
 
     }
 
@@ -154,9 +151,9 @@ private class StartMain : State() {
         transformation.setScale(4.0, 4.0, 1.0)
         transformation.setTranslate(0.0, -4.0, 0.0)
 
-        polygonRenderer.render(transformation.create())
+//        polygonRenderer.render(transformation.create())
 //        shader.render(drawable, transformation.create())
-//        this.draw.blue.polygon(polygon)
+        this.draw.blue.polygon(polygon)
 //        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
     }
 

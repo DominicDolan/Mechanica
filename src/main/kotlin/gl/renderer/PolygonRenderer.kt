@@ -4,6 +4,7 @@ import gl.Drawable
 import gl.utils.positionAttribute
 import gl.script.ShaderScript
 import gl.shader.Shader
+import gl.utils.IndexedVertices
 import gl.vbo.VBO
 import graphics.Polygon
 import loader.toBuffer
@@ -14,7 +15,7 @@ import util.colors.hex
 import util.colors.toColor
 import util.extensions.vec
 
-class PolygonRenderer {
+class PolygonRenderer : Renderer {
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -53,12 +54,12 @@ class PolygonRenderer {
 
     var polygon: Polygon = Polygon.create(shape)
         set(value) {
-//            updateBuffers(value.indexedVertices)
+            updateBuffers(value.indexedVertices)
             field = value
         }
 
-    private val positionVBO = VBO.create(polygon.indexedVertices.vertices.toBuffer(), positionAttribute)
-    private val indices = VBO.createIndicesBuffer(polygon.indexedVertices.indices.toBuffer())
+    private val positionVBO = VBO.createMutable(100, positionAttribute)
+    private val indices = VBO.createMutableIndicesBuffer(200)
 
     private val drawable: Drawable= Drawable(positionVBO, indices) {
         GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
@@ -70,17 +71,19 @@ class PolygonRenderer {
             fragment.color.set(value)
         }
 
+    init {
+        updateBuffers(polygon.indexedVertices)
+    }
 
-    fun render(transformation: Matrix4f) {
+    override fun render(drawable: Drawable, transformation: Matrix4f) {
         shader.render(this.drawable, transformation)
     }
 
-//    private fun updateBuffers(vertices: IndexedVertices) {
-//        val v = vertices.vertices
-//        val i = vertices.indices
-//
-//        positionVBO.updateBuffer(v.toBuffer(), v.size/3)
-//
-//        indices.updateBuffer(i.toBuffer(), i.size)
-//    }
+    private fun updateBuffers(vertices: IndexedVertices) {
+        val v = vertices.vertices
+        val i = vertices.indices
+
+        positionVBO.updateBuffer(v)
+        indices.updateBuffer(i)
+    }
 }
