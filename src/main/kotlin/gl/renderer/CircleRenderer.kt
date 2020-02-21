@@ -1,5 +1,6 @@
 package gl.renderer
 
+import display.Game
 import models.Model
 import gl.utils.loadImage
 import gl.script.ShaderScript
@@ -12,6 +13,8 @@ import util.colors.hex
 import util.colors.toColor
 
 class CircleRenderer : Renderer {
+    override var view: Matrix4f = Game.viewMatrix.create()
+
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -71,6 +74,6 @@ class CircleRenderer : Renderer {
 
     override fun render(model: Model, transformation: Matrix4f) {
         model.image = oval
-        shader.render(model, transformation)
+        shader.render(model, transformation, projection, view)
     }
 }

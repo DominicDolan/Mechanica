@@ -2,7 +2,7 @@ package drawer
 
 import util.units.Angle
 
-interface RotatedDrawer {
+interface RotatedDrawer : Drawer {
 
     operator fun invoke(angle: Angle): RotatedDrawer
 

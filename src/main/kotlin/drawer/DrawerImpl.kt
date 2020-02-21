@@ -1,8 +1,10 @@
 package drawer
 
+import display.Game
 import models.Model
 import gl.renderer.*
 import gl.renderer.ColorRenderer
+import gl.script.Declarations
 import gl.utils.loadUnitSquare
 import gl.utils.positionAttribute
 import gl.utils.texCoordsAttribute
@@ -66,6 +68,15 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
             outY = y - height/2.0
         }
 
+        renderer.view = when (frame) {
+            Frames.UI -> {
+                Game.uiViewMatrix.create()
+            }
+            Frames.WORLD -> {
+                Game.viewMatrix.create()
+            }
+        }
+
         if (!wasRotated) {
             transformation.setTranslate(outX, outY, 0.0)
         } else {
@@ -120,10 +131,9 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     }
 
     override fun text(text: String, fontSize: Number, x: Number, y: Number) {
-//        if (!frameWasSet) {
-//            frame = Frames.UI
-//        }
-//        fontRenderer.guiText.set(text, fontSize.toFloat(), fontRenderer.font, x.toFloat(), y.toFloat(), fontRenderer.guiText.maxLineSize, fontRenderer.guiText.isCentered)
+        if (!frameWasSet) {
+            frame = Frames.UI
+        }
         fontRenderer.set(text, fontSize.toFloat(), x = x.toFloat(), y = y.toFloat())
         renderer = fontRenderer
         draw(0.0, 0.0, 1.0, 1.0)

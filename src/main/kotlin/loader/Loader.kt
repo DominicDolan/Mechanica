@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
 import font.FontType
 import gl.utils.IndexedVertices
+import gl.utils.loadImage
 import graphics.Image
 import models.Model
 import org.lwjgl.BufferUtils
@@ -111,38 +112,6 @@ private fun hashCoordinates(x: Double, y: Double): String {
     return "$x:$y"
 }
 
-fun loadImageFromResource(resource: Resource): Image {
-    return loadImageFromMemory(resource.buffer, ::defaultGenerateTexture)
-}
-
-internal fun loadInternalTexture(name: String): Image {
-    val byteBuffer = InternalResource(name).buffer
-    return loadImageFromMemory(byteBuffer, ::defaultGenerateTexture)
-}
-
-fun loadTexture(name: String): Image{
-    val byteBuffer = ioResourceToByteBuffer(name, 1024)
-    return loadImageFromMemory(byteBuffer, ::defaultGenerateTexture)
-}
-
-private fun loadImageFromMemory(buffer: ByteBuffer, generateTexture: (ImageDetails) -> Unit): Image {
-    val width = getBuffer<Int>(1) as IntBuffer
-    val height = getBuffer<Int>(1) as IntBuffer
-    val components = getBuffer<Int>(1) as IntBuffer
-
-    val data = stbi_load_from_memory(buffer, width, height, components, 4)
-    val id = glGenTextures()
-    val imageDetails = ImageDetails(data, id, width.get(), height.get(), components.get())
-
-    generateTexture(imageDetails)
-
-    if (data != null) {
-        stbi_image_free(data)
-    }
-
-    return Image(id)
-}
-
 private fun defaultGenerateTexture(details: ImageDetails) {
     glBindTexture(GL_TEXTURE_2D, details.id)
 //    glGenerateMipmap(GL_TEXTURE_2D)
@@ -154,7 +123,7 @@ private fun defaultGenerateTexture(details: ImageDetails) {
 
 private data class ImageDetails(val data: ByteBuffer?, val id: Int, val width: Int, val height: Int, val components: Int)
 
-fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadTexture(it.absolutePath) }.toList()
+fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadImage(it.absolutePath) }.toList()
 
 fun loadAnimation(directory: String, frameRate: Double = 24.0) = FrameAnimation(loadTextureDirectory(directory), frameRate)
 
@@ -234,7 +203,7 @@ fun loadTextFile(filename: String): String {
 }
 
 fun loadFont(name: String): FontType {
-    return FontType(loadTexture(Res.font["$name.png"].path), Res.font["$name.fnt"].path)
+    return FontType(loadImage(Res.font["$name.png"]), Res.font["$name.fnt"].path)
 }
 
 fun loadBufferedReader(file: String): BufferedReader? {

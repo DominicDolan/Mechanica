@@ -24,4 +24,8 @@ object Res {
         return StandardResource("res/$file")
     }
 
+    fun byAbsolute(file: String): Resource {
+        return StandardResource(file)
+    }
+
 }

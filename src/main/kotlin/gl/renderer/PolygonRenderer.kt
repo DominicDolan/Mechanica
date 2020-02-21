@@ -1,5 +1,6 @@
 package gl.renderer
 
+import display.Game
 import models.Model
 import gl.utils.positionAttribute
 import gl.script.ShaderScript
@@ -15,6 +16,8 @@ import util.colors.toColor
 import util.extensions.vec
 
 class PolygonRenderer : Renderer {
+    override var view: Matrix4f = Game.viewMatrix.create()
+
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -75,7 +78,7 @@ class PolygonRenderer : Renderer {
     }
 
     override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(this.model, transformation)
+        shader.render(this.model, transformation, projection, view)
     }
 
     private fun updateBuffers(vertices: IndexedVertices) {

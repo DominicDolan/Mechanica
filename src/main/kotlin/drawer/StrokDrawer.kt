@@ -1,5 +1,5 @@
 package drawer
 
-interface StrokeDrawer {
+interface StrokeDrawer : Drawer {
     operator fun invoke(stroke: Double): Drawer
 }

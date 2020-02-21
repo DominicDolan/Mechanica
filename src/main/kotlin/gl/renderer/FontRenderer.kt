@@ -1,5 +1,6 @@
 package gl.renderer
 
+import display.Game
 import font.FontType
 import font.GUIText
 import font.TextMeshDynamicCreator
@@ -19,6 +20,8 @@ import util.colors.hex
 import util.colors.toColor
 
 class FontRenderer : Renderer {
+    override var view: Matrix4f = Game.viewMatrix.create()
+
     private val vertex = object : ShaderScript() {
         val translation = uniform.vec2(0.0, 0.0)
 
@@ -108,7 +111,7 @@ class FontRenderer : Renderer {
     }
 
     override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(this.model, transformation)
+        shader.render(this.model, transformation, projection, view)
     }
 
     private fun updateMesh() {

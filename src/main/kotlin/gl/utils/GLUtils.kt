@@ -5,9 +5,9 @@ import gl.script.Declarations
 import gl.vbo.AttributeBuffer
 import graphics.Image
 import org.lwjgl.BufferUtils
-import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.*
 import org.lwjgl.stb.STBImage
+import resources.Res
 import resources.Resource
 import util.extensions.vec
 import util.units.Vector
@@ -61,6 +61,8 @@ private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Arra
 
 }
 
+
+fun loadImage(path: String) = loadImage(Res.byAbsolute(path))
 
 fun loadImage(resource: Resource): Image {
     val widthBuffer = BufferUtils.createIntBuffer(1)

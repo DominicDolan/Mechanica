@@ -3,8 +3,7 @@ package demo.text
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import loader.loadImageFromResource
-import loader.loadTexture
+import gl.utils.loadImage
 import resources.Res
 import state.State
 
@@ -21,7 +20,7 @@ fun main() {
 
 
 private class StartText : State() {
-    val image = loadImageFromResource(Res.image["colors"])
+    val image = loadImage(Res.image["colors"])
     override fun update(delta: Double) {
     }
 

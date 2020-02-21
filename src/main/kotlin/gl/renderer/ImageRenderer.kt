@@ -1,11 +1,14 @@
 package gl.renderer
 
+import display.Game
 import models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
 import org.joml.Matrix4f
 
 class ImageRenderer : Renderer {
+    override var view: Matrix4f = Game.viewMatrix.create()
+
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -38,6 +41,6 @@ class ImageRenderer : Renderer {
     private val shader: Shader = Shader(vertex, fragment)
 
     override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(model, transformation)
+        shader.render(model, transformation, projection, view)
     }
 }

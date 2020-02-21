@@ -24,9 +24,14 @@ class StandardResource(private val file: String) : Resource {
                     else null
 
             return if (resourceURL == null || resourceURL.path == null) {
-                val errorMessage = "Resource not found at location: $possibleLocation$file"
-                if (Game.debug) throw MissingResourceException(errorMessage, possibleLocation, file)
-                System.err.println("$errorMessage, attempting to continue anyway")
+                val fileCheck = File(file)
+                if (fileCheck.exists()) {
+                    return fileCheck.absolutePath
+                }
+
+                val resourceErrorMessage = "Resource not found at location: $possibleLocation$file or at location ${fileCheck.absolutePath}"
+                if (Game.debug) throw MissingResourceException(resourceErrorMessage, possibleLocation, file)
+                System.err.println("$resourceErrorMessage, attempting to continue anyway")
 
                 "$possibleLocation$file"
             } else {
