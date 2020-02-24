@@ -143,27 +143,16 @@ private class StartMain : State() {
 
     override fun render(draw: Drawer) {
 
-        startFrame()
-
         val cursorFraction = ((Cursor.viewX / Game.viewWidth) + 0.5)
         val blend = (cursorFraction*360).degrees
-//
-//        val adjusted = hsl(blend, red.saturation, red.lightness)
-//        fragment.color.set(adjusted)
-//
-//        val scaleX = ((Cursor.viewX*2.0 / Game.viewWidth))
-//        val scaleY = ((Cursor.viewY*2.0 / Game.viewHeight))
-        transformation.setScale(4.0, 4.0, 1.0)
-        transformation.setTranslate(0.0, -4.0, 0.0)
 
-//        polygonRenderer.render(transformation.create())
-//        shader.render(drawable, transformation.create())
         draw.stroke(0.1).blue.polygon(polygon, scaleWidth = cursorFraction*3.0)
         draw.centered.rotated(blend).about(0, 1).image(image, 0, 0, 1, 1)
-        draw.image(image, -0.5, -0.5, 1, 1)
-        draw.red.circle(0, 0, 0.1)
+        draw.normal.image(image, -0.5, -0.5, 1, 1)
+        draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
-//        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
+        draw.red.rectangle(0, -1, 4, 1)
+        draw.blue.text("HELLO, WORLD", 1.0, 0, 0)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {

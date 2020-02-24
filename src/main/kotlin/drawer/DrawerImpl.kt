@@ -77,17 +77,14 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
             }
         }
 
-        if (!wasRotated) {
-            transformation.setTranslate(outX, outY, 0.0)
-        } else {
+        if (wasRotated) {
             if (!wasPivoted) {
-                transformation.setPivot(width / 2.0, height / 2.0)
-            } else {
-                transformation.setPivot(pivotX, pivotY)
+                pivotX = width/2.0
+                pivotY = height/2.0
             }
-            transformation.setTranslate(outX, outY, 0.0)
-            transformation.setRotate(0.0, 0.0, angle.toDegrees().asDouble())
+            rotate(angle.toDegrees().asDouble(), pivotX, pivotY)
         }
+        transformation.setTranslate(outX, outY, 0.0)
         transformation.setScale(width, height, 1.0)
 
         renderer.render(drawable, transformation.get())
@@ -113,6 +110,11 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         transformation.rewind()
 
+    }
+
+    private fun rotate(degrees: Double, pivotX: Double, pivotY: Double) {
+        transformation.setPivot(pivotX, pivotY)
+        transformation.setRotate(0.0, 0.0, degrees)
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
@@ -170,10 +172,9 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
         val triangleWidth = x2.toDouble() - x1.toDouble()
         val triangleHeight = y2.toDouble() - y1.toDouble()
 
-        this.angle = atan2(triangleHeight, triangleWidth).radians
-        about(0, strokeWidth/2.0)
-        wasRotated = true
-
+        val angle = Math.toDegrees(atan2(triangleHeight, triangleWidth))
+        rotate(angle, 0.0, strokeWidth/2.0)
+        wasRotated = false
         renderer = colorRenderer
         draw(x1.toDouble(), y1.toDouble(), hypot(triangleWidth, triangleHeight), strokeWidth)
     }
@@ -192,11 +193,13 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     override val normal: Drawer
         get() {
+            layoutWasSet = true
             layout = Layouts.NORMAL
             return this
         }
     override val centered: Drawer
         get() {
+            layoutWasSet = true
             layout = Layouts.CENTERED
             return this
         }
@@ -260,6 +263,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     override fun invoke(stroke: Double): Drawer {
         strokeWasSet = true
         strokeWidth = stroke
+        circleRenderer.strokeWidth = stroke.toFloat()
         return this
     }
 

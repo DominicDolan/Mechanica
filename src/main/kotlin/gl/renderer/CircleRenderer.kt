@@ -71,6 +71,11 @@ class CircleRenderer : Renderer {
         set(value) {
             fragment.color.set(value)
         }
+    var strokeWidth: Float
+        get() = fragment.strokeWidth.value
+        set(value) {
+            fragment.strokeWidth.value = value
+        }
 
     override fun render(model: Model, transformation: Matrix4f) {
         model.image = oval
