@@ -23,8 +23,8 @@ interface Shader {
     }
 
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
-        val projMatrix = projection ?: Game.projectionMatrix.create()
-        val viewMatrix = view ?: Game.viewMatrix.create()
+        val projMatrix = projection ?: Game.projectionMatrix.get()
+        val viewMatrix = view ?: Game.viewMatrix.get()
 
         GL20.glUseProgram(id)
 

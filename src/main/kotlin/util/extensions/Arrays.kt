@@ -42,7 +42,7 @@ fun Array<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
         floats[floatsIndex] = this[i].x.toFloat()
         floats[floatsIndex+1] = this[i].y.toFloat()
         for (j in 2 until coordinateSize) {
-            floats[floatsIndex + j] = 1f
+            floats[floatsIndex + j] = 0f
         }
     }
     return floats.toBuffer()

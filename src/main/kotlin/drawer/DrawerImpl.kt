@@ -4,7 +4,7 @@ import display.Game
 import models.Model
 import gl.renderer.*
 import gl.renderer.ColorRenderer
-import gl.script.Declarations
+import gl.utils.loadTextureUnitSquare
 import gl.utils.loadUnitSquare
 import gl.utils.positionAttribute
 import gl.utils.texCoordsAttribute
@@ -18,6 +18,7 @@ import util.colors.toColor
 import util.extensions.component1
 import util.extensions.component2
 import util.extensions.degrees
+import util.extensions.radians
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
@@ -31,12 +32,11 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     private var layoutWasSet: Boolean = false
     private var frameWasSet: Boolean = false
+    private var strokeWasSet: Boolean = false
 
     private var wasRotated: Boolean = false
     private var wasPivoted: Boolean = false
     private var angle: Angle = 0.degrees
-
-    private var hasStroke: Boolean = false
 
     private var pivotX: Double = 0.0
     private var pivotY: Double = 0.0
@@ -46,7 +46,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     private val transformation = TransformationMatrix()
 
     private val vbo = VBO.create(loadUnitSquare(), positionAttribute)
-    private val texVbo = VBO.create(loadUnitSquare(), texCoordsAttribute)
+    private val texVbo = VBO.create(loadTextureUnitSquare(), texCoordsAttribute)
     private val drawable = Model(vbo, texVbo)
 
     private val colorRenderer = ColorRenderer()
@@ -70,10 +70,10 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         renderer.view = when (frame) {
             Frames.UI -> {
-                Game.uiViewMatrix.create()
+                Game.uiViewMatrix.get()
             }
             Frames.WORLD -> {
-                Game.viewMatrix.create()
+                Game.viewMatrix.get()
             }
         }
 
@@ -89,9 +89,8 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
             transformation.setRotate(0.0, 0.0, angle.toDegrees().asDouble())
         }
         transformation.setScale(width, height, 1.0)
-        transformation.setScale(width, height, 1.0)
 
-        renderer.render(drawable, transformation.create())
+        renderer.render(drawable, transformation.get())
         reset()
     }
 
@@ -105,8 +104,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         layoutWasSet = false
         frameWasSet = false
-
-        hasStroke = false
+        strokeWasSet = false
 
         pivotX = 0.0
         pivotY = 0.0
@@ -140,6 +138,9 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     }
 
     override fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
+        if (!layoutWasSet) {
+            layout = Layouts.CENTERED
+        }
         drawable.image = image
         renderer = imageRenderer
         draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
@@ -147,37 +148,46 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     override fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
         polygonRenderer.polygon = polygon
-        renderer = polygonRenderer
-        draw(0.0, 0.0, 1.0, 1.0)
+        if (strokeWasSet) {
+            renderer = colorRenderer
+            val p = polygon.path
+            path(p, x, y, scaleWidth, scaleHeight)
+            drawLineForPath(p[p.size-1], p[0], x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
+        } else {
+            renderer = polygonRenderer
+            layout = Layouts.NORMAL
+            draw(x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
+        }
     }
 
     override fun path(path: List<Vector>, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
         for (i in 0..path.size-2) {
-            drawLineForPath(path[i], path[i+1], x, y, scaleWidth, scaleHeight)
+            drawLineForPath(path[i], path[i+1], x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
         }
     }
 
     override fun line(x1: Number, y1: Number, x2: Number, y2: Number) {
         val triangleWidth = x2.toDouble() - x1.toDouble()
         val triangleHeight = y2.toDouble() - y1.toDouble()
-        transformation.setScale(hypot(triangleWidth, triangleHeight), strokeWidth, 1.0)
 
-        transformation.setTranslate(x1.toDouble(), y1.toDouble() - strokeWidth/2.0, 0.0)
-        transformation.setPivot(0.0, strokeWidth / 2.0)
-        transformation.setRotate(0.0, 0.0, Math.toDegrees(atan2(triangleHeight, triangleWidth)))
+        this.angle = atan2(triangleHeight, triangleWidth).radians
+        about(0, strokeWidth/2.0)
+        wasRotated = true
 
-        colorRenderer.render(drawable, transformation.create())
-        reset()
+        renderer = colorRenderer
+        draw(x1.toDouble(), y1.toDouble(), hypot(triangleWidth, triangleHeight), strokeWidth)
     }
 
-    private fun drawLineForPath(p1: Vector, p2: Vector, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0) {
+    private fun drawLineForPath(p1: Vector, p2: Vector, x: Double = 0.0, y: Double = 0.0, scaleWidth: Double = 1.0, scaleHeight: Double = 1.0) {
         val (x1, y1) = p1
         val (x2, y2) = p2
+        val stroke = strokeWidth
         line(
-                x1 * scaleWidth.toDouble() + x.toDouble(),
-                y1 * scaleHeight.toDouble() + y.toDouble(),
-                x2 * scaleWidth.toDouble() + x.toDouble(),
-                y2 * scaleHeight.toDouble() + y.toDouble())
+                x1 * scaleWidth + x,
+                y1 * scaleHeight + y,
+                x2 * scaleWidth + x,
+                y2 * scaleHeight + y)
+        strokeWidth = stroke
     }
 
     override val normal: Drawer
@@ -198,7 +208,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     override val stroke: StrokeDrawer
         get() {
-            hasStroke = true
+            strokeWasSet = true
             return this
         }
 
@@ -248,7 +258,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     }
 
     override fun invoke(stroke: Double): Drawer {
-        hasStroke = true
+        strokeWasSet = true
         strokeWidth = stroke
         return this
     }

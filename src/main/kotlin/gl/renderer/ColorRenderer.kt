@@ -10,7 +10,7 @@ import util.colors.hex
 import util.colors.toColor
 
 internal class ColorRenderer: Renderer {
-    override var view: Matrix4f = Game.viewMatrix.create()
+    override var view: Matrix4f = Game.viewMatrix.get()
 
     private val vertex = object : ShaderScript() {
         //language=GLSL

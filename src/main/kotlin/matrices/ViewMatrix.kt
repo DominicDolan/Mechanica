@@ -40,7 +40,7 @@ class ViewMatrix {
         scheduleCreation = true
     }
 
-    fun create(): Matrix4f {
+    fun get(): Matrix4f {
         if (scheduleCreation) {
             matrix.identity()
             matrix.translate(translation)
@@ -55,7 +55,7 @@ class ViewMatrix {
         return matrix
     }
 
-    fun createWithProjection(projectionMatrix: ProjectionMatrix): Matrix4f {
+    fun getWithProjection(projectionMatrix: ProjectionMatrix): Matrix4f {
         if (scheduleCreation || projectionMatrix.scheduleCreation || scheduleProjectionAndView) {
             matrix.identity()
             matrix.translate(translation)
@@ -64,7 +64,7 @@ class ViewMatrix {
             matrix.rotate(Math.toRadians(ry.toDouble()).toFloat(), yAxis)
             matrix.rotate(Math.toRadians(rz.toDouble()).toFloat(), zAxis)
 
-            matrixWithProjection = projectionMatrix.create().mul(matrix)
+            matrixWithProjection = projectionMatrix.get().mul(matrix)
         }
         scheduleProjectionAndView = false
         scheduleCreation = false

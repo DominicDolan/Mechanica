@@ -6,6 +6,7 @@ import drawer.Drawer
 import models.Model
 import gl.script.ShaderScript
 import gl.utils.IndexedVertices
+import gl.utils.loadImage
 import gl.utils.positionAttribute
 import gl.utils.startFrame
 import gl.vbo.VBO
@@ -19,6 +20,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
+import resources.Res
 import state.State
 import util.colors.hex
 import util.colors.rgba
@@ -30,7 +32,7 @@ import java.nio.ByteBuffer
 
 fun main() {
     val options = GameOptions()
-            .setResolution(1280, 720)
+            .setResolution(1920, 1080)
 //            .setFullscreen(true, true)
             .setDebugMode(true)
             .setViewPort(height = 10.0)
@@ -77,7 +79,7 @@ private class StartMain : State() {
 //    val shader: ShaderImpl
     private val transformation = TransformationMatrix()
 //    val drawable: Drawable
-//    val image: Image
+    val image: Image
     var timer = 0.0
     var score = 0
     val polygon: Polygon
@@ -91,7 +93,7 @@ private class StartMain : State() {
 
 //        vbo = VBO.create(vertices, positionAttribute)
 //        texVbo = VBO.create(texVerts, texCoordsAttribute)
-//        image = createTexture(Res.image["colors"])
+        image = loadImage(Res.image["colors"])
 //
 //        drawable = createIndexedDrawable(0f, 1f, 1f, 0f)
 
@@ -125,13 +127,26 @@ private class StartMain : State() {
         if (Keyboard.MB2.hasBeenPressed) {
             score--
         }
+        if (Keyboard.A.isDown) {
+            Game.viewX -= 3.0 * delta
+        }
+        if (Keyboard.D.isDown) {
+            Game.viewX += 3.0 * delta
+        }
+        if (Keyboard.W.isDown) {
+            Game.viewY += 3.0 * delta
+        }
+        if (Keyboard.S.isDown) {
+            Game.viewY -= 3.0 * delta
+        }
     }
 
     override fun render(draw: Drawer) {
 
         startFrame()
 
-        val blend = (((Cursor.viewX / Game.viewWidth) + 0.5)*360).degrees
+        val cursorFraction = ((Cursor.viewX / Game.viewWidth) + 0.5)
+        val blend = (cursorFraction*360).degrees
 //
 //        val adjusted = hsl(blend, red.saturation, red.lightness)
 //        fragment.color.set(adjusted)
@@ -143,7 +158,11 @@ private class StartMain : State() {
 
 //        polygonRenderer.render(transformation.create())
 //        shader.render(drawable, transformation.create())
-        draw.blue.polygon(polygon)
+        draw.stroke(0.1).blue.polygon(polygon, scaleWidth = cursorFraction*3.0)
+        draw.centered.rotated(blend).about(0, 1).image(image, 0, 0, 1, 1)
+        draw.image(image, -0.5, -0.5, 1, 1)
+        draw.red.circle(0, 0, 0.1)
+        draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
 //        this.draw.red.text("Score: $score", 1f + (score.toFloat()/10f), 0, 0)
     }
 

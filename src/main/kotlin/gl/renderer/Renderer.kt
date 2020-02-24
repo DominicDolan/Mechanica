@@ -6,10 +6,10 @@ import org.joml.Matrix4f
 
 internal interface Renderer {
     var projection: Matrix4f
-        get() = Game.projectionMatrix.create()
+        get() = Game.projectionMatrix.get()
         set(value) {}
     var view: Matrix4f
-        get() = Game.viewMatrix.create()
+        get() = Game.viewMatrix.get()
         set(value) {}
 
     fun render(model: Model, transformation: Matrix4f)

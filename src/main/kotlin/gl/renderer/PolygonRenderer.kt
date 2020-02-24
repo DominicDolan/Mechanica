@@ -16,7 +16,7 @@ import util.colors.toColor
 import util.extensions.vec
 
 class PolygonRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.create()
+    override var view: Matrix4f = Game.viewMatrix.get()
 
     private val vertex = object : ShaderScript() {
         //language=GLSL

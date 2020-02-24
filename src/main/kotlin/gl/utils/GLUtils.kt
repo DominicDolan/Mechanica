@@ -4,6 +4,7 @@ import gl.vbo.AttributePointer
 import gl.script.Declarations
 import gl.vbo.AttributeBuffer
 import graphics.Image
+import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.stb.STBImage
@@ -38,6 +39,8 @@ internal fun startFrame() {
 
 fun loadUnitSquare() = loadQuad(0f, 1f, 1f, 0f)
 
+fun loadTextureUnitSquare() = loadTextureQuad(0f, 1f, 1f, 0f)
+
 val defaultDrawProcedure: (AttributeBuffer) -> Unit = {
     GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)
 
@@ -56,6 +59,37 @@ private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Arra
             vec(left, bottom),
             vec(right, bottom),
             vec(left, top),
+            vec(right, bottom),
+            vec(right, top))
+
+}
+
+/*
+
+val indices = shortArrayOf(0, 1, 2, 0, 2, 3) // The order of vertexrendering.
+
+vertices = floatArrayOf(
+    0f, 1f, //V0 top left
+    0f, 0f, //V1 bottom left
+    1f, 0f, //V2 bottom right
+    1f, 1f  //V3 top right
+)
+
+textureCoords = floatArrayOf(
+        0f, 0f, //V0
+        0f, 1f, //V1
+        1f, 1f, //V2
+        1f, 0f  //V3
+)
+
+*/
+
+private fun loadTextureQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+    return arrayOf(
+            vec(left, bottom),
+            vec(left, top),
+            vec(right, top),
+            vec(left, bottom),
             vec(right, top),
             vec(right, bottom))
 

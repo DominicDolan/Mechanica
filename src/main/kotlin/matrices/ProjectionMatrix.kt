@@ -36,7 +36,7 @@ class ProjectionMatrix {
         scheduleCreation = true
     }
 
-    fun create(): Matrix4f {
+    fun get(): Matrix4f {
         if (scheduleCreation) {
             val aspectRatio = Game.ratio
 

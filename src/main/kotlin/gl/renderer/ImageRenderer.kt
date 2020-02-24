@@ -7,7 +7,7 @@ import gl.shader.Shader
 import org.joml.Matrix4f
 
 class ImageRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.create()
+    override var view: Matrix4f = Game.viewMatrix.get()
 
     private val vertex = object : ShaderScript() {
         //language=GLSL

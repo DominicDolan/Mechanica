@@ -58,7 +58,7 @@ class TransformationMatrix {
         customMatrix = matrix
     }
 
-    fun create(): Matrix4f {
+    fun get(): Matrix4f {
         if (setMatrix) {
             setMatrix = false
             return customMatrix

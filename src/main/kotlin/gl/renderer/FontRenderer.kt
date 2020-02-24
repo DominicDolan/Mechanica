@@ -20,7 +20,7 @@ import util.colors.hex
 import util.colors.toColor
 
 class FontRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.create()
+    override var view: Matrix4f = Game.viewMatrix.get()
 
     private val vertex = object : ShaderScript() {
         val translation = uniform.vec2(0.0, 0.0)
