@@ -151,8 +151,7 @@ private class StartMain : State() {
         draw.normal.image(image, -0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
-        draw.red.rectangle(0, -1, 4, 1)
-        draw.blue.text("HELLO, WORLD", 1.0, 0, 0)
+        draw.red.rectangle(0, -1, 4, 4)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {

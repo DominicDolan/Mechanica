@@ -108,6 +108,8 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         strokeWidth = 0.3
 
+        imageRenderer.alpha = 1f
+
         transformation.rewind()
 
     }
