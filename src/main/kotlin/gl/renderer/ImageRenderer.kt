@@ -25,6 +25,7 @@ class ImageRenderer : Renderer {
     }
 
     private val fragment = object : ShaderScript() {
+        val alpha = uniform.float(1f)
         //language=GLSL
         override val main: String = """
                 in vec2 tc;
@@ -32,11 +33,18 @@ class ImageRenderer : Renderer {
                 layout (binding=0) uniform sampler2D samp;
                                 
                 void main(void) {
-                    color = texture(samp, tc);
+                    vec4 texColor = texture(samp, tc);
+                    color = vec4(texColor.rgb, texColor.a*$alpha);
                 }
             """
 
     }
+
+    var alpha: Float
+        get() = fragment.alpha.value
+        set(value) {
+            fragment.alpha.value = value
+        }
 
     private val shader: Shader = Shader(vertex, fragment)
 

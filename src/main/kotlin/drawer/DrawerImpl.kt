@@ -244,6 +244,7 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
         circleRenderer.color = color
         fontRenderer.color = color
         polygonRenderer.color = color
+        imageRenderer.alpha = color.a.toFloat()
         return this
     }
 
