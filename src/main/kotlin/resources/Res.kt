@@ -4,7 +4,7 @@ object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): Resource {
             val fileFixed = fixExtension(file)
-            return StandardResource("$prefix$fileFixed")
+            return Resource("$prefix$fileFixed")
         }
 
         private fun fixExtension(file: String): String {
@@ -18,14 +18,9 @@ object Res {
     val svg = SpecificResource("res/svg/", "svg")
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "png")
-    val animations = SpecificResource("res/animations/", "")
+    fun animations(directory: String) = ResourceDirectory("/res/animations/$directory")
 
     operator fun get(file: String): Resource {
-        return StandardResource("res/$file")
+        return Resource("res/$file")
     }
-
-    fun byAbsolute(file: String): Resource {
-        return StandardResource(file)
-    }
-
 }

@@ -15,6 +15,7 @@ import loader.loadFont
 import models.Model
 import org.joml.Matrix4f
 import resources.Res
+import resources.Resource
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor

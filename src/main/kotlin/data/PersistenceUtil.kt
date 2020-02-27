@@ -60,15 +60,15 @@ fun loadData(dataObj: Any) {
 
     val dataFile = File(dataObj.dataFile)
     if (!dataFile.exists()) {
-        dataFile.createNewFile()
+//        dataFile.createNewFile()
     }
 
-    File(dataObj.dataFile).forEachLine {
-        val params = it.split(",")
-        val name = params[0]
-        val v = Variable(name, params[1], params[2], setters[name], getters[name])
-        v.set()
-    }
+//    File(dataObj.dataFile).forEachLine {
+//        val params = it.split(",")
+//        val name = params[0]
+//        val v = Variable(name, params[1], params[2], setters[name], getters[name])
+//        v.set()
+//    }
 
 }
 

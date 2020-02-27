@@ -12,11 +12,23 @@ val lwjglNatives = "natives-windows"
 group = "com.dubulduke"
 version = "0.1"
 
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
+    }
+}
+
 plugins {
     // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
     java
     // Apply the application plugin to add support for building a CLI application.
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+
     application
 }
 
@@ -78,7 +90,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = "demo.AppKt"
+    mainClassName = "demo.resource.MainKt"
 }
 
 java {

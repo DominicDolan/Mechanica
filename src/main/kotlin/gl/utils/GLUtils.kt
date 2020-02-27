@@ -95,9 +95,6 @@ private fun loadTextureQuad(left: Float, top: Float, right: Float, bottom: Float
 
 }
 
-
-fun loadImage(path: String) = loadImage(Res.byAbsolute(path))
-
 fun loadImage(resource: Resource): Image {
     val widthBuffer = BufferUtils.createIntBuffer(1)
     val heightBuffer = BufferUtils.createIntBuffer(1)

@@ -17,6 +17,7 @@ import org.lwjgl.system.MemoryUtil.*
 import resources.Res
 import resources.Resource
 import resources.InternalResource
+import resources.ResourceDirectory
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper
 import util.units.Vector
@@ -123,9 +124,10 @@ private fun defaultGenerateTexture(details: ImageDetails) {
 
 private data class ImageDetails(val data: ByteBuffer?, val id: Int, val width: Int, val height: Int, val components: Int)
 
-fun loadTextureDirectory(directory: String) = File(directory).walk().filter { it.isFile }.map { loadImage(it.absolutePath) }.toList()
+fun loadTextureDirectory(directory: String) = ResourceDirectory(directory).map { loadImage(it) }.toList()
+fun loadTextureDirectory(directory: ResourceDirectory) = directory.map { loadImage(it) }.toList()
 
-fun loadAnimation(directory: String, frameRate: Double = 24.0) = FrameAnimation(loadTextureDirectory(directory), frameRate)
+fun loadAnimation(directory: ResourceDirectory, frameRate: Double = 24.0) = FrameAnimation(loadTextureDirectory(directory), frameRate)
 
 @Throws(IOException::class)
 fun ioResourceToByteBuffer(resource: String, bufferSize: Int): ByteBuffer {
@@ -203,7 +205,7 @@ fun loadTextFile(filename: String): String {
 }
 
 fun loadFont(name: String): FontType {
-    return FontType(loadImage(Res.font["$name.png"]), Res.font["$name.fnt"].path)
+    return FontType(loadImage(Res.font["$name.png"]), Res.font["$name.fnt"])
 }
 
 fun loadBufferedReader(file: String): BufferedReader? {

@@ -2,6 +2,7 @@ package font
 
 import graphics.Image
 import loader.loadBufferedReader
+import resources.Resource
 
 /**
  * Represents a font. It holds the font's texture atlas as well as having the
@@ -20,6 +21,6 @@ class FontType
  * - the font file containing information about each character in
  * the texture atlas.
  */
-(val textureAtlas: Image, fontFile: String) {
-    val metaFile: MetaFile = MetaFile(loadBufferedReader(fontFile))
+(val textureAtlas: Image, fontFile: Resource) {
+    val metaFile: MetaFile = MetaFile(fontFile)
 }

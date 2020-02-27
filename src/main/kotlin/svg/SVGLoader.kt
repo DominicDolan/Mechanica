@@ -2,11 +2,10 @@
 package svg
 
 import display.Game
-import loader.loadTextFile
-import org.jbox2d.common.Vec2
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import resources.Resource
 import util.extensions.flipVertically
 import util.extensions.scale
 import util.extensions.toOrigin
@@ -17,18 +16,18 @@ import java.lang.NumberFormatException
 import kotlin.collections.ArrayList
 
 
-fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<Vector> {
-    val doc = loadSVGDocument(fileName)
-    val element = if (pathId == null) {
-        doc.getElementsByTag("path")[0]
-    } else {
-        doc.getElementById(pathId)
-    }
-    val path = loadPolygonCoordinates(element)
-    path.toOrigin()
-    path.scale(1.0/100.0)
-    return path
-}
+//fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<Vector> {
+//    val doc = loadSVGDocument(fileName)
+//    val element = if (pathId == null) {
+//        doc.getElementsByTag("path")[0]
+//    } else {
+//        doc.getElementById(pathId)
+//    }
+//    val path = loadPolygonCoordinates(element)
+//    path.toOrigin()
+//    path.scale(1.0/100.0)
+//    return path
+//}
 
 fun loadPolygonCoordinates(element: Element): List<Vector> {
     val sequenceList = element
@@ -183,19 +182,19 @@ fun loadPolygonCoordinatesOld(element: Element): List<Vector> {
     return returnList.flipVertically()
 }
 
-fun loadSVGPolygon(fileName: String, pathId: String? = null): SVGPolygon {
-    val doc = loadSVGDocument(fileName)
-    val element = if (pathId == null) {
-        doc.getElementsByTag("path")[0]
-    } else {
-        doc.getElementById(pathId)
-    }
+//fun loadSVGPolygon(fileName: String, pathId: String? = null): SVGPolygon {
+//    val doc = loadSVGDocument(fileName)
+//    val element = if (pathId == null) {
+//        doc.getElementsByTag("path")[0]
+//    } else {
+//        doc.getElementById(pathId)
+//    }
+//
+//    return SVGPolygon(element)
+//}
 
-    return SVGPolygon(element)
-}
-
-fun loadSVGDocument(fileName: String): Document {
-    val file = loadTextFile(fileName)
+fun loadSVGDocument(resource: Resource): Document {
+    val file = resource.contents
     return Jsoup.parse(file)
 }
 
