@@ -1,10 +1,10 @@
 package demo.resource
 
+import display.Game
 import drawer.Drawer
 import resources.Res
 import resources.Resource
 import resources.ResourceDirectory
-import resources.StandardResource
 import state.State
 import java.io.*
 import java.lang.Exception
@@ -12,17 +12,34 @@ import java.net.URL
 import java.nio.file.Paths
 
 fun main() {
-    val file = "res/text/mechanica.txt"
-    val resource = Resource(file)
 
-    val directory = "/res/text"
-    val dir = ResourceDirectory(directory)
 
-    for (r in dir) {
-        println(r.contents)
+}
+
+private class ResourceGetter {
+    fun get() : URL {
+        return ResourceGetter::class.java.getResource("ResourceGetter.class")
     }
+    fun get(clazz: Class<*>) : URL {
+        val stack = Exception().stackTrace
+        println(stack.last().className)
+        println(Class.forName(stack.last().className).simpleName)
+        val className = clazz.simpleName
+        println("Name: $className")
+        return clazz.getResource("$className.class")
+    }
+}
 
+fun isJar(): Boolean {
+    return ResourceGetter().get().protocol == "jar"
+}
 
+fun isJar(clazz: Class<*>): Boolean {
+    return ResourceGetter().get(clazz).protocol == "jar"
+}
+
+fun testLocation() {
+    println(File(".").absolutePath)
 }
 
 private fun isPathAbsolute(file: String): Boolean {

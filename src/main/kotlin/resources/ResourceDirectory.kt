@@ -1,6 +1,5 @@
 package resources
 
-import java.io.File
 import java.net.URI
 import java.nio.file.*
 import java.util.stream.Stream

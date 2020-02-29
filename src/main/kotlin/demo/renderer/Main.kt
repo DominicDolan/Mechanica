@@ -3,12 +3,10 @@ package demo.renderer
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import models.Model
 import gl.script.ShaderScript
 import gl.utils.IndexedVertices
 import gl.utils.loadImage
 import gl.utils.positionAttribute
-import gl.utils.startFrame
 import gl.vbo.VBO
 import graphics.Image
 import graphics.Polygon
@@ -16,8 +14,13 @@ import input.Cursor
 import input.Keyboard
 import loader.toBuffer
 import matrices.TransformationMatrix
+import models.Model
 import org.lwjgl.BufferUtils
+import org.lwjgl.nanovg.NVGColor
+import org.lwjgl.nanovg.NanoVG.*
+import org.lwjgl.nanovg.NanoVGGL2.*
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
 import resources.Res
@@ -83,6 +86,7 @@ private class StartMain : State() {
     var timer = 0.0
     var score = 0
     val polygon: Polygon
+    val vg: Long
 
     init {
 //        shader = ShaderImpl(vertex, fragment)
@@ -116,7 +120,19 @@ private class StartMain : State() {
         )
 
         polygon = Polygon.create(random)
-
+        glEnable(GL_STENCIL_TEST);
+        vg = nvgCreate(NVG_ANTIALIAS or NVG_STENCIL_STROKES)
+//        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_BACK);
+//        glFrontFace(GL_CCW);
+//        glEnable(GL_BLEND);
+//        glDisable(GL_DEPTH_TEST);
+//        glDisable(GL_SCISSOR_TEST);
+//        glColorMask(true, true, true, true);
+//        glStencilMask(0xffffffff.toInt());
+//        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+//        glStencilFunc(GL_ALWAYS, 0, 0xffffffff.toInt());
     }
 
     override fun update(delta: Double) {
@@ -141,6 +157,8 @@ private class StartMain : State() {
         }
     }
 
+    val color = NVGColor.create()
+
     override fun render(draw: Drawer) {
 
         val cursorFraction = ((Cursor.viewX / Game.viewWidth) + 0.5)
@@ -151,7 +169,16 @@ private class StartMain : State() {
         draw.normal.image(image, -0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
-        draw.red.rectangle(0, -1, 4, 4)
+//        draw.red.rectangle(0, -1, 4, 4)
+
+        nvgBeginFrame(vg, 200f, 100f, 1f)
+        nvgBeginPath(vg);
+        nvgRect(vg, 10f,30f, 120f,30f);
+        nvgCircle(vg, 60f,60f, 20f);
+        nvgPathWinding(vg, NVG_HOLE);	// Mark circle as a hole.
+        nvgFillColor(vg, nvgRGBA(255.toByte(),192.toByte(),0,255.toByte(), color));
+        nvgFill(vg);
+        nvgEndFrame(vg)
     }
 
     private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {

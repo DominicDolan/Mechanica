@@ -16,7 +16,6 @@ import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
 import resources.Resource
-import resources.InternalResource
 import resources.ResourceDirectory
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper

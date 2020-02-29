@@ -22,6 +22,7 @@ import state.State
 import util.FrameQueue
 import util.Timer
 import util.Updateable
+import util.calculateIsJar
 
 /**
  * Created by domin on 25/10/2017.
@@ -34,6 +35,7 @@ object Game {
     internal var view: WorldView? = null
     internal var saveData: Any? = null
     internal var controls: ControlsMap = object : ControlsMap() { }
+    internal val isJar = calculateIsJar()
 
     private var loop: GameLoop? = null
 

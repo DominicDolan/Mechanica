@@ -1,5 +1,7 @@
 package resources
 
+import display.Game
+
 object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): Resource {
@@ -15,10 +17,20 @@ object Res {
         }
     }
 
+    class SpecificResourceDirectory(private val prefix: String) {
+        operator fun get(file: String): ResourceDirectory {
+            return ResourceDirectory("$prefix$file")
+        }
+    }
+
     val svg = SpecificResource("res/svg/", "svg")
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "png")
-    fun animations(directory: String) = ResourceDirectory("/res/animations/$directory")
+    val animations = SpecificResourceDirectory("/res/animations/")
+    fun external(path: String): Resource {
+        val prefix = "res/"
+        return ExternalResource("$prefix$path")
+    }
 
     operator fun get(file: String): Resource {
         return Resource("res/$file")

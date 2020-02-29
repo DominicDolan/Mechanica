@@ -51,6 +51,9 @@ interface Resource {
             return ResourceImpl(uri.toURL())
         }
 
+        fun external(file: String): Resource {
+            return ExternalResource(file)
+        }
 
         private fun getResourceURL(file: String): URL? {
             val systemResources = ClassLoader.getSystemResources(file)

@@ -7,6 +7,7 @@ import graphics.Image
 import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT
 import org.lwjgl.stb.STBImage
 import resources.Res
 import resources.Resource
@@ -31,9 +32,10 @@ internal fun startGame() {
 }
 
 internal fun startFrame() {
-    GL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
     GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
 
+    GL11.glEnable(GL11.GL_STENCIL_TEST)
     enableAlphaBlending()
 }
 

@@ -7,7 +7,7 @@ import gl.script.ShaderScript
 import gl.shader.Shader
 import graphics.Image
 import org.joml.Matrix4f
-import resources.InternalResource
+import resources.Resource
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
@@ -64,7 +64,7 @@ class CircleRenderer : Renderer {
 
     private val shader: Shader = Shader(vertex, fragment)
 
-    private val oval: Image = loadImage(InternalResource("res/images/oval.png"))
+    private val oval: Image = loadImage(Resource("res/images/oval.png"))
 
     var color: Color
         get() = fragment.color.value.toColor()

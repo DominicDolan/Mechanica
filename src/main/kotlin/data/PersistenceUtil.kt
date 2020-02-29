@@ -108,11 +108,11 @@ private fun String.replace(range: IntRange, function: String.(String) -> String)
 }
 
 private val directory: String get() {
-    val directory = File(Res["data"].path)
-    if (!directory.exists()) {
-        directory.mkdir()
-    }
-    return directory.absolutePath
+//    val directory = File(Res["data"].path)
+//    if (!directory.exists()) {
+//        directory.mkdir()
+//    }
+    return ""//directory.absolutePath
 }
 
 private val Any.methods get() = this::class.java.methods
