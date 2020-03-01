@@ -27,9 +27,10 @@ object Res {
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "png")
     val animations = SpecificResourceDirectory("/res/animations/")
-    fun external(path: String): Resource {
+
+    fun external(path: String, createIfAbsent: Boolean = false): ExternalResource {
         val prefix = "res/"
-        return ExternalResource("$prefix$path")
+        return ExternalResource("$prefix$path", createIfAbsent)
     }
 
     operator fun get(file: String): Resource {

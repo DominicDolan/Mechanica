@@ -28,16 +28,9 @@ fun saveData(dataObj: Any) {
     }
     val content = contentBuilder.toString()
 
-    val file = File(dataObj.dataFile)
-    try {
-        val fw = FileWriter(file.absoluteFile)
-        val bw = BufferedWriter(fw)
-        bw.write(content)
-        bw.close()
-    } catch (e: IOException) {
-        e.printStackTrace()
-        exitProcess(-1)
-    }
+    val file = Res.external(dataObj.dataFile, true)
+    file.write(content)
+
 }
 
 fun loadData(dataObj: Any) {
@@ -58,17 +51,15 @@ fun loadData(dataObj: Any) {
     val setters = getSetters(dataObj)
     val getters = getGetters(dataObj)
 
-    val dataFile = File(dataObj.dataFile)
-    if (!dataFile.exists()) {
-//        dataFile.createNewFile()
-    }
+    val dataFile = Res.external(dataObj.dataFile, true)
 
-//    File(dataObj.dataFile).forEachLine {
-//        val params = it.split(",")
-//        val name = params[0]
-//        val v = Variable(name, params[1], params[2], setters[name], getters[name])
-//        v.set()
-//    }
+
+    dataFile.lines.forEach {
+        val params = it.split(",")
+        val name = params[0]
+        val v = Variable(name, params[1], params[2], setters[name], getters[name])
+        v.set()
+    }
 
 }
 
@@ -107,13 +98,7 @@ private fun String.replace(range: IntRange, function: String.(String) -> String)
     return removed.function(rangeString)
 }
 
-private val directory: String get() {
-//    val directory = File(Res["data"].path)
-//    if (!directory.exists()) {
-//        directory.mkdir()
-//    }
-    return ""//directory.absolutePath
-}
+private const val directory: String = "data"
 
 private val Any.methods get() = this::class.java.methods
 

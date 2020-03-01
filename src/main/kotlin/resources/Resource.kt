@@ -10,19 +10,24 @@ import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.file.Paths
 import java.util.*
+import kotlin.streams.toList
 
 interface Resource {
     val path: String
     val stream: InputStream
+    val lines: List<String>
+        get() {
+            val reader = BufferedReader(InputStreamReader(stream))
+            val lines = reader.lines().toList()
+            reader.close()
+            return lines
+        }
     val contents: String
         get() {
             val sb = StringBuilder()
-            val reader = BufferedReader(InputStreamReader(stream))
-            reader.lines().forEach {
+            lines.forEach {
                 sb.appendln(it)
             }
-            reader.close()
-
             return sb.toString()
         }
     val buffer: ByteBuffer
