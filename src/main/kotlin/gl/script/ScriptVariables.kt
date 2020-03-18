@@ -4,6 +4,7 @@ import gl.glvars.GLVar
 
 class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
     private val variables = ArrayList<GLVar<*>>()
+    private val functions = ArrayList<String>()
 
     val scriptHead: String
         get() = "#version 400 core\n\n$declarations"

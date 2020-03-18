@@ -4,12 +4,10 @@ import gl.vbo.AttributePointer
 import gl.script.Declarations
 import gl.vbo.AttributeBuffer
 import graphics.Image
-import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT
 import org.lwjgl.stb.STBImage
-import resources.Res
 import resources.Resource
 import util.extensions.vec
 import util.units.Vector
@@ -39,7 +37,7 @@ internal fun startFrame() {
     enableAlphaBlending()
 }
 
-fun loadUnitSquare() = loadQuad(0f, 1f, 1f, 0f)
+fun createUnitSquareArray() = createQuadArray(0f, 1f, 1f, 0f)
 
 fun loadTextureUnitSquare() = loadTextureQuad(0f, 1f, 1f, 0f)
 
@@ -55,7 +53,7 @@ private fun enableAlphaBlending() {
 }
 
 
-private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+private fun createQuadArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
     return arrayOf(
             vec(left, top),
             vec(left, bottom),

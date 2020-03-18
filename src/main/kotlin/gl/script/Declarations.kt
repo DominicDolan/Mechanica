@@ -19,6 +19,9 @@ abstract class Declarations(variableName: String = "autoVal") {
     protected open val varConst: Qualifier = qualifier("const")
     protected open fun attribute(pointer: AttributePointer) = qualifier("layout (location=${pointer.index}) in")
 
+    protected val position by lazy { attribute(positionAttribute).vec3("position") }
+    protected val textureCoords by lazy { attribute(texCoordsAttribute).vec2("textureCoords") }
+
     fun qualifier(name: String) = object : Qualifier(variables) {
         override val qualifierName: String
             get() = name
@@ -47,9 +50,6 @@ abstract class Declarations(variableName: String = "autoVal") {
         fun function(function: String) {
             globalMethods.add(function.trimIndent())
         }
-
-        val position = globals.attribute(positionAttribute).vec3("position")
-        val textureCoords = globals.attribute(texCoordsAttribute).vec2("textureCoords")
 
         val projection = globals.uniform.mat4("projection")
         val transformation = globals.uniform.mat4("transformation")

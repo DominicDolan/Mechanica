@@ -10,6 +10,9 @@ import org.lwjgl.opengl.GL20
 interface Shader {
     val vertex: ShaderScript
     val fragment: ShaderScript
+    val tessellation: ShaderScript?
+    val geometry: ShaderScript?
+
     val id: Int
 
     fun load() {
@@ -20,6 +23,8 @@ interface Shader {
     fun loadUniforms() {
         vertex.loadUniforms()
         fragment.loadUniforms()
+        tessellation?.loadUniforms()
+        geometry?.loadUniforms()
     }
 
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
@@ -39,8 +44,12 @@ interface Shader {
     }
 
     companion object {
-        operator fun invoke(vertex: ShaderScript, fragment: ShaderScript): Shader {
-            return ShaderImpl(vertex, fragment)
+        operator fun invoke(
+                vertex: ShaderScript,
+                fragment: ShaderScript,
+                tessellation: ShaderScript? = null,
+                geometry: ShaderScript? = null): Shader {
+            return ShaderImpl(vertex, fragment, tessellation, geometry)
         }
     }
 }

@@ -55,6 +55,9 @@ class ExternalResource(filePath: String, createIfAbsent: Boolean = false) : Reso
     private fun getFile(filePath: String, createIfAbsent: Boolean): File {
         val file = File(filePath)
         if (createIfAbsent && !file.exists()) {
+            if (!file.parentFile.exists()) {
+                file.parentFile.mkdirs()
+            }
             file.createNewFile()
         }
         return file

@@ -199,7 +199,7 @@ private class StartMain : State() {
         val indices = VBO.createIndicesBuffer(vertices.indices.toBuffer())
 
         return Model(vertexVBO, indices) {
-            GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
+            GL11.glDrawElements(GL11.GL_TRIANGLES, it.maxVertices, GL11.GL_UNSIGNED_SHORT, 0)
         }
     }
 

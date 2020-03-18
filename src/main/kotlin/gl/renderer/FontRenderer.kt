@@ -35,7 +35,7 @@ class FontRenderer : Renderer {
 
                 void main(void) {
                     gl_Position = matrices(vec4(textPositions + $translation, 1.0, 1.0));
-                    tc = textureCoords;
+                    tc = $textureCoords;
                 }
                 """
 

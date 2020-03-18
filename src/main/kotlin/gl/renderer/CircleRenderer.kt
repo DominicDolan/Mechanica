@@ -23,8 +23,8 @@ class CircleRenderer : Renderer {
                 layout (binding=0) uniform sampler2D circleAtlas;
 
                 void main(void) {
-                    gl_Position = matrices(vec4(position, 1.0));
-                    tc = textureCoords;
+                    gl_Position = matrices(vec4($position, 1.0));
+                    tc = $textureCoords;
                 }
                 """
 

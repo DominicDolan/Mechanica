@@ -141,7 +141,7 @@ fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0):
         return (l - a* max(min(min(k-3.0, 9.0-k), 1.0),-1.0))
     }
 
-    val h = hue.toDegrees().asDouble()
+    val h = (hue.toDegrees().asDouble() + 360.0)%360.0
     val s = saturation
     val l = lightness
 

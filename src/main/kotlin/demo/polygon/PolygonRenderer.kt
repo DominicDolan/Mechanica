@@ -1,23 +1,21 @@
-package gl.renderer
+package demo.polygon
 
-import display.Game
-import models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
+import models.Model
 import org.joml.Matrix4f
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
 
-internal class ColorRenderer: Renderer {
-    override var view: Matrix4f = Game.viewMatrix.get()
+class PolygonRenderer {
 
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
                 """
                 void main(void) {
-                    gl_Position = matrices(vec4($position, 1.0));
+                    gl_Position = matrices(vec4(position, 1.0));
                 }
                 """
 
@@ -25,28 +23,30 @@ internal class ColorRenderer: Renderer {
 
     private val fragment = object : ShaderScript() {
 
-        val color = uniform.vec4(hex(0xFF00FFFF))
+//        val color = uniform.vec4(hex(0xFF00FFFF))
 
         //language=GLSL
         override val main: String = """
                 out vec4 out_Color;
                                 
                 void main(void) {
-                    out_Color = $color;
+                    out_Color = vec4(gl_FragCoord.xy, 1.0, 1.0);
                 }
             """
 
     }
 
-    private val shader: Shader = Shader(vertex, fragment)
+    private val shader = Shader(vertex, fragment)
 
-    var color: Color
-        get() = fragment.color.value.toColor()
-        set(value) {
-            fragment.color.set(value)
-        }
+//    var color: Color
+//        get() = fragment.color.value.toColor()
+//        set(value) {
+//            fragment.color.set(value)
+//        }
 
-    override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(model, transformation, projection, view)
+    private val transformation = Matrix4f()
+
+    fun render(model: Model) {
+        shader.render(model, transformation)
     }
 }

@@ -1,16 +1,15 @@
-package gl.renderer
+package demo.paths
 
-import display.Game
-import models.Model
+import gl.renderer.Renderer
 import gl.script.ShaderScript
 import gl.shader.Shader
+import models.Model
 import org.joml.Matrix4f
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
 
-internal class ColorRenderer: Renderer {
-    override var view: Matrix4f = Game.viewMatrix.get()
+class CurveRenderer : Renderer {
 
     private val vertex = object : ShaderScript() {
         //language=GLSL
@@ -38,7 +37,7 @@ internal class ColorRenderer: Renderer {
 
     }
 
-    private val shader: Shader = Shader(vertex, fragment)
+    private val shader = Shader(vertex, fragment)
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -46,7 +45,13 @@ internal class ColorRenderer: Renderer {
             fragment.color.set(value)
         }
 
-    override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(model, transformation, projection, view)
+    init {
+
     }
+
+    override fun render(model: Model, transformation: Matrix4f) {
+        shader.render(model, transformation)
+    }
+
+
 }

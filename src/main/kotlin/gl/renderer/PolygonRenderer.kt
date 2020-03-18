@@ -23,7 +23,7 @@ class PolygonRenderer : Renderer {
         override val main: String =
                 """
                 void main(void) {
-                    gl_Position = matrices(vec4(position, 1.0));
+                    gl_Position = matrices(vec4($position, 1.0));
                 }
                 """
 
@@ -64,7 +64,7 @@ class PolygonRenderer : Renderer {
     private val indices = VBO.createMutableIndicesBuffer(200)
 
     private val model: Model = Model(positionVBO, indices) {
-        GL11.glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
+        GL11.glDrawElements(GL11.GL_TRIANGLES, it.maxVertices, GL11.GL_UNSIGNED_SHORT, 0)
     }
 
     var color: Color

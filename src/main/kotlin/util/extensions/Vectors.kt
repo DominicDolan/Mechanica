@@ -94,6 +94,11 @@ fun List<Vector>.centroid(): Vector {
 
 fun Polygon.centroid(): Vector = this.path.centroid()
 
+
+fun Vector.distanceTo(other: Vector): Float {
+    return (this - other).r.toFloat()
+}
+
 fun List<Vector>.toFloatArray(): FloatArray{
     val floatArray = FloatArray(this.size*3) {0f}
     this.forEachIndexed { i, v ->
