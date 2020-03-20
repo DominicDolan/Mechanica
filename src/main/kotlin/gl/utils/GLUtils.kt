@@ -6,6 +6,7 @@ import gl.vbo.AttributeBuffer
 import graphics.Image
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11.GL_RGBA
 import org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT
 import org.lwjgl.stb.STBImage
 import resources.Resource
@@ -41,11 +42,38 @@ fun createUnitSquareArray() = createQuadArray(0f, 1f, 1f, 0f)
 
 fun loadTextureUnitSquare() = loadTextureQuad(0f, 1f, 1f, 0f)
 
-val defaultDrawProcedure: (AttributeBuffer) -> Unit = {
-    GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)
-
+/**
+ *  Creates an array of shorts of size numberOfQuads*6 to be used with a series of quadrilaterals
+ *
+ *  For the first quad, the array will have indices in the form of:
+ *
+ *      0, 1, 2,
+ *      2, 1, 3
+ *  For the second set it will be:
+ *
+ *      4, 5, 6,
+ *      6, 5, 7
+ *  i.e. the first set + 4
+ *  and so on
+ *
+ *  @param numberOfQuads the number of quadrilaterals to be represented by the index array
+ *  @return The short array filled with the indices data for the required number of quads
+ *
+ *
+ */
+fun createIndicesArrayForQuads(numberOfQuads: Int): ShortArray {
+    val array = ShortArray(numberOfQuads*6)
+    val first = shortArrayOf(
+            0, 1, 2, //First triangle
+            2, 1, 3  //Second Triangle
+    )
+    for (i in 0 until numberOfQuads) {
+        for (j in first.indices) {
+            array[i*6 + j] = (first[j] + i*4).toShort()
+        }
+    }
+    return array
 }
-
 
 private fun enableAlphaBlending() {
     GL11.glEnable(GL11.GL_BLEND)
@@ -100,25 +128,32 @@ fun loadImage(resource: Resource): Image {
     val heightBuffer = BufferUtils.createIntBuffer(1)
     val componentsBuffer = BufferUtils.createIntBuffer(1)
 
-    val image = GL11.glGenTextures()
-    GL11.glBindTexture(GL11.GL_TEXTURE_2D, image)
-
     val data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
     val width = widthBuffer.get()
     val height = heightBuffer.get()
 
+    var image = Image(0)
     if (data != null) {
-        setMipmapping(data, width, height, 4)
-
+        image = loadImage(data, width, height)
         STBImage.stbi_image_free(data)
     }
+
+    return image
+}
+
+fun loadImage(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, format: Int = GL_RGBA): Image {
+
+    val image = GL11.glGenTextures()
+    GL11.glBindTexture(GL11.GL_TEXTURE_2D, image)
+
+    setMipmapping(buffer, width, height, levels, format)
 
     return Image(image)
 }
 
-private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int) {
+private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int, format: Int) {
     for (i in 0..levels) {
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data)
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, data)
     }
     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)

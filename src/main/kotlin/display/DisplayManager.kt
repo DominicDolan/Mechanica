@@ -1,5 +1,6 @@
 package display
 
+import demo.text.Font
 import input.KeyboardHandler
 import input.MouseHandler
 import org.lwjgl.glfw.Callbacks

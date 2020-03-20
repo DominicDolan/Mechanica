@@ -21,7 +21,7 @@ import util.colors.hex
 import util.colors.toColor
 import util.units.Vector
 
-class PathRenderer {
+class PathRenderer : Renderer {
 
     private val vertex = object : ShaderScript() {
 
@@ -207,7 +207,7 @@ class PathRenderer {
         model.image = oval
     }
 
-    fun render(model: Model, transformation: Matrix4f) {
+    override fun render(model: Model, transformation: Matrix4f) {
         fillFloats(path)
         this.model.vertexCount = path.size
 

@@ -132,5 +132,34 @@ enum class Keys(val id: Int) {
     RCTRL(GLFW_KEY_RIGHT_CONTROL),
     RALT(GLFW_KEY_RIGHT_ALT),
     RIGHT_SUPER(GLFW_KEY_RIGHT_SUPER),
-    MENU(GLFW_KEY_MENU)
+    MENU(GLFW_KEY_MENU),
+
+    SCROLL_UP(1000),
+    SCROLL_DOWN(1000);
+
+    companion object {
+        fun uniqueId(): Int {
+            val keys = values().map { it.id }.toTypedArray()
+            var minimum = UNKNOWN.id
+            var maximum = UNKNOWN.id
+            for (i in keys) {
+                if (i > maximum) {
+                    maximum = i
+                }
+                if (i < minimum) {
+                    minimum = i
+                }
+            }
+
+            var id: Int? = null
+            for (i in minimum..maximum) {
+                if (!keys.contains(i)) {
+                    id = i
+                    break
+                }
+            }
+
+            return id ?: maximum + 1
+        }
+    }
 }

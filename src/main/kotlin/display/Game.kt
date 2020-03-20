@@ -31,7 +31,6 @@ object Game {
     internal var debug: Boolean = false
     var ready = false
 
-    internal var displayManager: DisplayManager? = null
     internal var view: WorldView? = null
     internal var saveData: Any? = null
     internal var controls: ControlsMap = object : ControlsMap() { }
@@ -42,11 +41,11 @@ object Game {
     private var painter: Drawer? = null
 
     val height: Int
-        get() = displayManager?.height?: 0
+        get() = Display.height
     val width: Int
-        get() = displayManager?.width?: 0
+        get() = Display.width
     val ratio: Double
-        get() = displayManager?.ratio?: 1.0
+        get() = Display.ratio
 
     var viewHeight: Double
         get() = view?.height?: 0.0
@@ -73,12 +72,6 @@ object Game {
 
     var world: World = World(Vec2(0f, -9.8f))
 
-//    var currentState: State
-//        get() = (loop?: createGameLoop()).currentState
-//        private set(value) {
-//            (loop?: createGameLoop()).currentState = value
-//        }
-
     fun setCurrentState(setter: () -> State) {
         getGameLoopInstance().setCurrentState(setter)
     }
@@ -95,10 +88,6 @@ object Game {
         getGameLoopInstance().updateableManager.addCurrentStateUpdateable(updateable)
     }
 
-    // The window handle
-    private val window: Long
-        get() = displayManager?.window?: 0
-
     private fun emptyState(): State {
         return object : State(){
             override fun update(delta: Double) {}
@@ -109,7 +98,8 @@ object Game {
 
     fun start(options: GameOptions) {
         with(options) {
-            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
+            Display.init(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
+//            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
             view = getView()
             Game.saveData = this.saveData
             loadData()
@@ -147,9 +137,9 @@ object Game {
 
         // Run the rendering update until the user has attempted to close
         // the window or has pressed the ESCAPE key.
-        while (!glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose(Display.window)) {
             loop.update()
-            glfwSwapBuffers(window) // swap the color loader.getBuffers
+            glfwSwapBuffers(Display.window) // swap the color loader.getBuffers
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
@@ -243,11 +233,11 @@ object Game {
 
     fun destroy(){
         saveData()
-        displayManager?.destroy()
+        Display.destroy()
     }
 
     fun close() {
-        glfwSetWindowShouldClose(window, true) // We will detect this in the rendering update
+        glfwSetWindowShouldClose(Display.window, true) // We will detect this in the rendering update
     }
 
     fun saveData() {

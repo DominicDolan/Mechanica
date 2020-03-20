@@ -14,24 +14,30 @@ class MutableVBO(override val id: Int, vertexCount: Int, private val attributePo
         attributePointer.enable()
     }
 
-    fun updateBuffer(floats: FloatBuffer) {
-        val vertexCount = floats.remaining()/attributePointer.coordinateSize
+    fun updateBuffer(floats: FloatBuffer, offset: Long = 0) {
+        val cs = attributePointer.coordinateSize
+        val vertexCount = floats.remaining()/cs
         if (vertexCount > maxVertices) {
             increaseSize()
         }
         this.vertexCount = vertexCount
+        val byteOffset = offset*cs*4
+
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, id)
-        GL20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, floats)
+        GL20.glBufferSubData(GL20.GL_ARRAY_BUFFER, byteOffset, floats)
     }
 
-    fun updateBuffer(floats: FloatArray) {
-        val vertexCount = floats.size/attributePointer.coordinateSize
+    fun updateBuffer(floats: FloatArray, offset: Long = 0) {
+        val cs = attributePointer.coordinateSize
+        val vertexCount = floats.size/cs
         if (vertexCount > maxVertices) {
             increaseSize()
         }
         this.vertexCount = vertexCount
+        val byteOffset = offset*cs*4
+
         GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, id)
-        GL20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, floats)
+        GL20.glBufferSubData(GL20.GL_ARRAY_BUFFER, byteOffset, floats)
     }
 
     private fun increaseSize() {
