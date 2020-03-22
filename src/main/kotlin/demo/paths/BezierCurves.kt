@@ -3,8 +3,9 @@ package demo.paths
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import gl.utils.positionAttribute
+import gl.vbo.AttributeArray
 import gl.vbo.VBO
+import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import input.Keyboard
 import models.Model
@@ -33,7 +34,7 @@ private class StartBezier : State() {
 
     private val maxVertices = 1000
     private val minLineLength = 0.1
-    private val vbo = VBO.createMutable(maxVertices, positionAttribute)
+    private val vbo = AttributeArray(maxVertices, VBOPointer.position)
 
     private val model = Model(vbo) {
         GL20.glLineWidth(3.0f)
@@ -42,7 +43,7 @@ private class StartBezier : State() {
         GL12.glDrawArrays(GL11.GL_LINE_STRIP, 0, index)
     }
 
-    private val constructionLines = VBO.createMutable(3, positionAttribute)
+    private val constructionLines = AttributeArray(maxVertices, VBOPointer.position)
     private val constructionFloats = FloatArray(9)
     private val constructionModel = Model(constructionLines) {
         GL20.glLineWidth(3.0f)
@@ -130,7 +131,7 @@ private class StartBezier : State() {
             index++
         }
 
-        vbo.updateBuffer(floats)
+        vbo.update(floats)
     }
 
     private fun updateConstructionLines() {
@@ -140,7 +141,7 @@ private class StartBezier : State() {
         constructionFloats[4] = bezierPoint.y.toFloat()
         constructionFloats[6] = p2.x.toFloat()
         constructionFloats[7] = p2.y.toFloat()
-        constructionLines.updateBuffer(constructionFloats)
+        constructionLines.update(constructionFloats)
     }
 }
 

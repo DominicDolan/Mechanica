@@ -1,9 +1,8 @@
 package gl.script
 
-import gl.vbo.AttributePointer
+import gl.vbo.pointer.AttributePointer
 import gl.glvars.GLVar
-import gl.utils.positionAttribute
-import gl.utils.texCoordsAttribute
+import gl.vbo.pointer.VBOPointer
 
 abstract class Declarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
@@ -19,8 +18,8 @@ abstract class Declarations(variableName: String = "autoVal") {
     protected open val varConst: Qualifier = qualifier("const")
     protected open fun attribute(pointer: AttributePointer) = qualifier("layout (location=${pointer.index}) in")
 
-    protected val position by lazy { attribute(positionAttribute).vec3("position") }
-    protected val textureCoords by lazy { attribute(texCoordsAttribute).vec2("textureCoords") }
+    protected val position by lazy { attribute(VBOPointer.position).vec3("position") }
+    protected val textureCoords by lazy { attribute(VBOPointer.texCoords).vec2("textureCoords") }
 
     fun qualifier(name: String) = object : Qualifier(variables) {
         override val qualifierName: String

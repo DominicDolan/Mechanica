@@ -14,6 +14,8 @@ import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.system.APIUtil
+import org.lwjgl.system.Configuration
 import physics.ContactEvents
 import state.EmptyLoadState
 import state.EmptyState
@@ -109,6 +111,9 @@ object Game {
             Game.debug = debug
             if (debug) {
                 BodyRenderer.init()
+                Configuration.DEBUG.set(true)
+                Configuration.DEBUG_MEMORY_ALLOCATOR.set(true)
+                Configuration.DEBUG_STACK.set(true)
             }
 
             startGame()

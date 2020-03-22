@@ -5,8 +5,9 @@ import display.GameOptions
 import drawer.Drawer
 import gl.utils.createUnitSquareArray
 import gl.utils.loadImage
-import gl.utils.positionAttribute
+import gl.vbo.AttributeArray
 import gl.vbo.VBO
+import gl.vbo.pointer.VBOPointer
 import models.Model
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
@@ -15,6 +16,8 @@ import org.lwjgl.opengl.GL20
 import resources.Res
 import state.State
 import util.extensions.degrees
+import util.extensions.toFloatArray
+import util.extensions.toFloatBuffer
 
 fun main() {
     val options = GameOptions()
@@ -31,7 +34,7 @@ fun main() {
 private class StartMain : State() {
     val renderer = PolygonRenderer()
 
-    private val vbo = VBO.create(createUnitSquareArray(), positionAttribute)
+    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
 
     private val model = Model(vbo) /*{
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)

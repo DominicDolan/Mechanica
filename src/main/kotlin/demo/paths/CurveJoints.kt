@@ -3,8 +3,9 @@ package demo.paths
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import gl.utils.positionAttribute
+import gl.vbo.AttributeArray
 import gl.vbo.VBO
+import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import input.Keyboard
 import models.Model
@@ -34,7 +35,7 @@ private class StartMain : State() {
     val renderer = CurveRenderer()
 
     private val maxVertices = 10000
-    private val vbo = VBO.createMutable(maxVertices, positionAttribute)
+    private val vbo = AttributeArray(maxVertices, VBOPointer.position)
     private val floats = FloatArray((maxVertices)*3)
     private var index = 0
     private var width = 20f
@@ -43,20 +44,20 @@ private class StartMain : State() {
         glLineWidth(width)
         glPointSize(if (width < 10f) width else 10f)
 
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // all fragments should pass the stencil test
-        glStencilMask(0xFF); // enable writing to the stencil buffer
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE)
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF) // all fragments should pass the stencil test
+        glStencilMask(0xFF) // enable writing to the stencil buffer
 
         glDrawArrays(GL_POINTS, 0, index)
 
         glDrawArrays(GL_LINE_STRIP, 0, index)
 
-        glStencilFunc(GL_ALWAYS, 0, 0xFF); // passes when stencil is 0
+        glStencilFunc(GL_ALWAYS, 0, 0xFF) // passes when stencil is 0
     }
     private val transformation = Matrix4f()
 
     init {
-        vbo.updateBuffer(floats)
+        vbo.update(floats)
         glEnable(GL_STENCIL_TEST)
         val array = FloatArray(2)
         GL11.glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, array)
@@ -80,7 +81,7 @@ private class StartMain : State() {
                     index++
                 }
 
-                vbo.updateBuffer(floats)
+                vbo.update(floats)
             }
         }
 

@@ -6,13 +6,13 @@ import drawer.Drawer
 import gl.script.ShaderScript
 import gl.utils.IndexedVertices
 import gl.utils.loadImage
-import gl.utils.positionAttribute
-import gl.vbo.VBO
+import gl.vbo.AttributeArray
+import gl.vbo.ElementIndexArray
+import gl.vbo.pointer.VBOPointer
 import graphics.Image
 import graphics.Polygon
 import input.Cursor
 import input.Keyboard
-import loader.toBuffer
 import matrices.TransformationMatrix
 import models.Model
 import org.lwjgl.BufferUtils
@@ -47,67 +47,17 @@ fun main() {
 }
 
 private class StartMain : State() {
-    //= loadTexturedQuad(loadImageFromResource(Res.image["colors"]), 0f, 0.5f, 0.5f, 0f)
-    private val red = rgba(1.0, 0.0, 0.0, 1.0)
-
-    private val vertex = object : ShaderScript() {
-        //language=GLSL
-        override val main: String =
-                """
-                void main(void) {
-                    gl_Position = matrices(vec4(position, 1.0));
-                }
-                """
-
-    }
-
-    private val fragment = object : ShaderScript() {
-
-        val color = uniform.vec4(hex(0xFF00FFFF))
-        //language=GLSL
-        override val main: String = """
-            
-                out vec4 out_Color;
-                                
-                void main(void) {
-                    out_Color = $color;
-                }
-            """
-
-    }
-
-//    private val renderer: Renderer
-//    private val vbo: VBO
-//    private val texVbo: VBO
-//    val shader: ShaderImpl
     private val transformation = TransformationMatrix()
-//    val drawable: Drawable
+
     val image: Image
     var timer = 0.0
     var score = 0
     val polygon: Polygon
-    val vg: Long
 
     init {
-//        shader = ShaderImpl(vertex, fragment)
         transformation.setScale(1.0, 1.0,1.0)
 
-//        val vertices = loadQuad(0f, 1f, 1f, 0f)
-//        val texVerts = loadQuad(0f, 1.0f, 1.0f, 0f)
-
-//        vbo = VBO.create(vertices, positionAttribute)
-//        texVbo = VBO.create(texVerts, texCoordsAttribute)
         image = loadImage(Res.image["colors"])
-//
-//        drawable = createIndexedDrawable(0f, 1f, 1f, 0f)
-
-
-        val square = listOf(
-                vec(0, 0),
-                vec(0, 1),
-                vec(1, 1),
-                vec(1, 0)
-        )
 
         val random = listOf(
                 vec(0, 0),
@@ -120,19 +70,7 @@ private class StartMain : State() {
         )
 
         polygon = Polygon.create(random)
-        glEnable(GL_STENCIL_TEST);
-        vg = nvgCreate(NVG_ANTIALIAS or NVG_STENCIL_STROKES)
-//        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_BACK);
-//        glFrontFace(GL_CCW);
-//        glEnable(GL_BLEND);
-//        glDisable(GL_DEPTH_TEST);
-//        glDisable(GL_SCISSOR_TEST);
-//        glColorMask(true, true, true, true);
-//        glStencilMask(0xffffffff.toInt());
-//        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-//        glStencilFunc(GL_ALWAYS, 0, 0xffffffff.toInt());
+        glEnable(GL_STENCIL_TEST)
     }
 
     override fun update(delta: Double) {
@@ -169,74 +107,6 @@ private class StartMain : State() {
         draw.normal.image(image, -0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
-//        draw.red.rectangle(0, -1, 4, 4)
-
-        nvgBeginFrame(vg, 200f, 100f, 1f)
-        nvgBeginPath(vg);
-        nvgRect(vg, 10f,30f, 120f,30f);
-        nvgCircle(vg, 60f,60f, 20f);
-        nvgPathWinding(vg, NVG_HOLE);	// Mark circle as a hole.
-        nvgFillColor(vg, nvgRGBA(255.toByte(),192.toByte(),0,255.toByte(), color));
-        nvgFill(vg);
-        nvgEndFrame(vg)
-    }
-
-    private fun loadQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
-        return arrayOf(
-                vec(left, top),
-                vec(left, bottom),
-                vec(right, bottom),
-                vec(left, top),
-                vec(right, top),
-                vec(right, bottom))
-
-    }
-
-    fun createIndexedDrawable(left: Float, top: Float, right: Float, bottom: Float): Model {
-        val vertices = createIndexedQuad(left, top, right, bottom)
-
-        val vertexVBO = VBO.create(vertices.vertices.toBuffer(), positionAttribute)
-        val indices = VBO.createIndicesBuffer(vertices.indices.toBuffer())
-
-        return Model(vertexVBO, indices) {
-            GL11.glDrawElements(GL11.GL_TRIANGLES, it.maxVertices, GL11.GL_UNSIGNED_SHORT, 0)
-        }
-    }
-
-    fun createIndexedQuad(left: Float, top: Float, right: Float, bottom: Float): IndexedVertices {
-        val vertices = floatArrayOf(left, top, 0.0f, left, bottom, 0.0f, right, bottom, 0.0f, right, top, 0.0f)
-
-        val indices = shortArrayOf(0, 1, 2, 0, 2, 3)
-
-        return IndexedVertices(vertices, indices)
-    }
-
-    fun loadImageFromMemory(buffer: ByteBuffer): Image {
-        val width = BufferUtils.createIntBuffer(1)
-        val height = BufferUtils.createIntBuffer(1)
-        val components = BufferUtils.createIntBuffer(1)
-
-        val data = STBImage.stbi_load_from_memory(buffer, width, height, components, 4)
-        val id = GL11.glGenTextures()
-        val imageDetails = ImageDetails(data, id, width.get(), height.get(), components.get())
-
-        loadersVersion(imageDetails)
-
-        if (data != null) {
-            STBImage.stbi_image_free(data)
-        }
-
-        return Image(id)
-    }
-
-    fun loadersVersion(details: ImageDetails) {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, details.id)
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR)
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR)
-
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, details.width, details.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, details.data)
     }
 
     private data class ImageDetails(val data: ByteBuffer?, val id: Int, val width: Int, val height: Int, val components: Int)

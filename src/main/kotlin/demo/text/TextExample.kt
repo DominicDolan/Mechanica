@@ -12,10 +12,13 @@ import org.joml.Matrix4f
 import resources.Res
 import state.State
 import util.colors.hex
+import util.extensions.vec
+import util.units.MutableVector
 
 fun main() {
     val options = GameOptions()
             .setResolution(1280, 720)
+            .setDebugMode(true)
 //            .setFullscreen(true, true)
             .setViewPort(height = 10.0)
             .setStartingState { StartText() }
@@ -32,34 +35,42 @@ private class StartText : State() {
 
     val model = Model()
     val transformation = Matrix4f()
-
     init {
-        renderer.text = "N&D=<3"
-
+        renderer.text = "Ve//{ygj@^')ggggggggggggggggggggggggggggggggg\nHelloggggggggggggggggggggggggggggggggggggg\nMotogggggggg4ggggggggggggggggggggggggg\nPlaygggggggggggggggggggggggggggggggggggggggggggggggggggggggggg, play"
+        println(renderer.text.length)
+        println(renderer.text.indexOf('4'))
     }
 
+    var position = MutableVector(0.0,0.0)
     override fun update(delta: Double) {
-        if (Keyboard.S.hasBeenPressed) {
-            Game.viewHeight *= 1.1
-        }
-        if (Keyboard.W.hasBeenPressed) {
-            Game.viewHeight /= 1.1
-        }
-
         if (Mouse.SCROLL_DOWN.hasBeenPressed) {
-            println("Scroll down: ${Mouse.SCROLL_DOWN.distance}")
+            Game.viewHeight *= 1.0 + Mouse.SCROLL_DOWN.distance/10.0
         }
         if (Mouse.SCROLL_UP.hasBeenPressed) {
-            println("Scroll up: ${Mouse.SCROLL_UP.distance}")
+            Game.viewHeight /= 1.0 + Mouse.SCROLL_UP.distance/10.0
         }
+        if (Keyboard.W()) {
+            position.y += 1.0*delta
+        }
+        if (Keyboard.S()) {
+            position.y -= 1.0*delta
+        }
+        if (Keyboard.A()) {
+            position.x -= 1.0*delta
+        }
+        if (Keyboard.D()) {
+            position.x += 1.0*delta
+        }
+
     }
 
     override fun render(draw: Drawer) {
         draw.centered.color(hex(0xC0C0C0FF)).rectangle(0, 0, Game.viewWidth, Game.viewHeight)
-        draw.centered.red.rectangle(0, 0, 1, 1)
-        transformation.translate(-10f, 0f, 0f)
+        draw.red.rectangle(position.x, position.y, 5, 1)
+        draw.blue.rectangle(position.x, position.y - 1f, 5, 1)
+        draw.red.rectangle(position.x, position.y - 2f, 5, 1)
+        draw.blue.rectangle(position.x, position.y - 3f, 5, 1)
         renderer.render(model, transformation)
-        transformation.identity()
     }
 
 }

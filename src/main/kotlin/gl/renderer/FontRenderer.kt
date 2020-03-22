@@ -7,15 +7,13 @@ import font.TextMeshDynamicCreator
 import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.loadImage
-import gl.utils.texCoordsAttribute
-import gl.vbo.AttributePointer
-import gl.vbo.MutableVBO
-import gl.vbo.VBO
+import gl.vbo.AttributeArray
+import gl.vbo.pointer.AttributePointer
+import gl.vbo.pointer.VBOPointer
 import loader.loadFont
 import models.Model
 import org.joml.Matrix4f
 import resources.Res
-import resources.Resource
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
@@ -71,8 +69,8 @@ class FontRenderer : Renderer {
     private val guiText: GUIText
     private val font: FontType = loadFont("arial")
 
-    private val positionVBO: MutableVBO
-    private val textureVBO: MutableVBO
+    private val positionVBO: AttributeArray
+    private val textureVBO: AttributeArray
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -103,8 +101,8 @@ class FontRenderer : Renderer {
         guiText = GUIText("",
                 1f, font, 0f, 0f, 500f)
 
-        positionVBO = VBO.createMutable(6*200, textPositionAttribute)
-        textureVBO = VBO.createMutable(6*200, texCoordsAttribute)
+        positionVBO = AttributeArray(6*200, textPositionAttribute)
+        textureVBO = AttributeArray(6*200, VBOPointer.texCoords)
         updateMesh()
 
         model = Model(positionVBO, textureVBO)
@@ -116,8 +114,8 @@ class FontRenderer : Renderer {
     }
 
     private fun updateMesh() {
-        val data = meshCreator.createTextMesh(guiText)
-        positionVBO.updateBuffer(data.vertices)
-        textureVBO.updateBuffer(data.textureCoords)
+//        val data = meshCreator.createTextMesh(guiText)
+//        positionVBO.update(data.vertices.array())
+//        textureVBO.update(data.textureCoords.array())
     }
 }

@@ -4,8 +4,8 @@ import gl.vbo.VBO
 import graphics.Image
 import org.lwjgl.opengl.GL11
 
-open class Model(protected vararg val vbos: VBO,
-            draw: ((Model) -> Unit)? = null) : Iterable<VBO> {
+open class Model(protected vararg val vbos: VBO<*>,
+            draw: ((Model) -> Unit)? = null) : Iterable<VBO<*>> {
     var image = Image(-1)
     val maxVertices: Int
         get() {

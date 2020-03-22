@@ -1,8 +1,6 @@
 package gl.utils
 
-import gl.vbo.AttributePointer
 import gl.script.Declarations
-import gl.vbo.AttributeBuffer
 import graphics.Image
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
@@ -14,9 +12,6 @@ import util.extensions.vec
 import util.units.Vector
 import java.nio.ByteBuffer
 
-
-val positionAttribute = AttributePointer.create(0, 3)
-val texCoordsAttribute = AttributePointer.create(1, 2)
 
 internal fun startGame() {
     val vao = GL30.glGenVertexArrays()

@@ -2,11 +2,12 @@ package gl.renderer
 
 import display.Game
 import models.Model
-import gl.utils.positionAttribute
 import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.IndexedVertices
-import gl.vbo.VBO
+import gl.vbo.AttributeArray
+import gl.vbo.ElementIndexArray
+import gl.vbo.pointer.VBOPointer
 import graphics.Polygon
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
@@ -60,8 +61,8 @@ class PolygonRenderer : Renderer {
             field = value
         }
 
-    private val positionVBO = VBO.createMutable(100, positionAttribute)
-    private val indices = VBO.createMutableIndicesBuffer(200)
+    private val positionVBO = AttributeArray(100, VBOPointer.position)
+    private val indices = ElementIndexArray(200)
 
     private val model: Model = Model(positionVBO, indices) {
         GL11.glDrawElements(GL11.GL_TRIANGLES, it.maxVertices, GL11.GL_UNSIGNED_SHORT, 0)
@@ -85,7 +86,7 @@ class PolygonRenderer : Renderer {
         val v = vertices.vertices
         val i = vertices.indices
 
-        positionVBO.updateBuffer(v)
-        indices.updateBuffer(i)
+        positionVBO.update(v)
+        indices.update(i)
     }
 }

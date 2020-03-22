@@ -3,22 +3,19 @@ package gl.renderer
 import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.loadImage
-import gl.utils.positionAttribute
-import gl.vbo.MutableVBO
-import gl.vbo.VBO
-import util.extensions.fill
+import gl.vbo.AttributeArray
+import gl.vbo.pointer.VBOPointer
 import graphics.Image
-import matrices.TransformationMatrix
 import models.Model
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
 import resources.Resource
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
+import util.extensions.fill
 import util.units.Vector
 
 class PathRenderer : Renderer {
@@ -173,7 +170,7 @@ class PathRenderer : Renderer {
 
     private var floats: FloatArray
 
-    private val vbo: MutableVBO
+    private val vbo: AttributeArray
     private val model: Model
 
     private var isCircle = false
@@ -189,7 +186,7 @@ class PathRenderer : Renderer {
     init {
         val initialVertices = 300
         floats = FloatArray(initialVertices*3)
-        vbo = VBO.createMutable(initialVertices, positionAttribute)
+        vbo = AttributeArray(initialVertices, VBOPointer.position)
         model = Model(vbo) {
             GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
             GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
@@ -223,7 +220,7 @@ class PathRenderer : Renderer {
             floats = FloatArray(floats.size*2)
         }
         floats.fill(path)
-        vbo.updateBuffer(floats)
+        vbo.update(floats)
     }
 
 

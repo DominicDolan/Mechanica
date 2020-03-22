@@ -3,11 +3,10 @@ package demo.paths
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import gl.utils.positionAttribute
-import gl.vbo.AttributePointer
-import gl.vbo.MutableVBO
-import gl.vbo.VBO
-import loader.toBuffer
+import gl.vbo.*
+import gl.vbo.pointer.AttributePointer
+import gl.vbo.ElementIndexArray
+import gl.vbo.pointer.VBOPointer
 import models.Model
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
@@ -34,8 +33,8 @@ private class MiterJoints : State() {
     val renderer = MiterRenderer()
 
     private val maxVertices = 100
-    private val vbo: MutableVBO
-    private val indicesVBO: VBO
+    private val vbo: AttributeArray
+    private val indicesVBO: ElementIndexArray
     private var index = 0
     private var width = 20f
     private val model: Model
@@ -48,21 +47,13 @@ private class MiterJoints : State() {
 
     init {
 
-
-        val square = arrayOf(
-            vec(0f, 0f),
-            vec(1f, 0f),
-            vec(0f, 1f),
-            vec(1f, 1f)
-        )
-
         val indices = ShortArray((maxVertices/4)*6)
         val firstSquareIndices = shortArrayOf(
                 0, 1, 2, 1, 3, 2
         )
 
-        vbo = VBO.createMutable(maxVertices, positionAttribute)
-        val angleVbo = VBO.createMutable(maxVertices, angleAttribute)
+        vbo = AttributeArray(maxVertices, VBOPointer.position)
+        val angleVbo = AttributeArray(maxVertices, angleAttribute)
 
         for (i in indices.indices step 6) {
             for (j in firstSquareIndices.indices) {
@@ -70,7 +61,7 @@ private class MiterJoints : State() {
             }
         }
 
-        indicesVBO = VBO.createIndicesBuffer(indices.toBuffer())
+        indicesVBO = ElementIndexArray(indices)
 
         model = Model(vbo, indicesVBO, angleVbo){
             glDrawElements(GL_TRIANGLES, it.maxVertices, GL_UNSIGNED_SHORT, 0)
@@ -89,8 +80,8 @@ private class MiterJoints : State() {
         }
         println(sb1.toString())
         println(sb2.toString())
-        vbo.updateBuffer(this.floats)
-        angleVbo.updateBuffer(slopes)
+        vbo.update(this.floats)
+        angleVbo.update(slopes)
     }
 
     fun updateFloatsToPath() {
@@ -103,15 +94,7 @@ private class MiterJoints : State() {
             floats.setVertex(p*2 + 1, current)
 
             val m1 = (current.y - previous.y)/(current.x - previous.x)
-            println(m1)
-            val m2 = if (p + 2 < path.size) {
-                val next = path[p+2]
-                (next.y - current.y)/(next.x - current.x)
-            } else {
-                m1
-            }
 
-            val m3 = (m1*m2 - sqrt((1+m1*m1)*(1+m2*m2)) - 1)/(m1 + m2)
             slopes.setAngle(p*2, m1.toFloat())
             slopes.setAngle(p*2 + 1, m1.toFloat())
         }

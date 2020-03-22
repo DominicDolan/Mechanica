@@ -6,9 +6,9 @@ import gl.renderer.*
 import gl.renderer.ColorRenderer
 import gl.utils.loadTextureUnitSquare
 import gl.utils.createUnitSquareArray
-import gl.utils.positionAttribute
-import gl.utils.texCoordsAttribute
+import gl.vbo.AttributeArray
 import gl.vbo.VBO
+import gl.vbo.pointer.VBOPointer
 import graphics.Image
 import graphics.Polygon
 import matrices.TransformationMatrix
@@ -18,6 +18,7 @@ import util.colors.toColor
 import util.extensions.component1
 import util.extensions.component2
 import util.extensions.degrees
+import util.extensions.toFloatArray
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
@@ -44,8 +45,8 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     private val transformation = TransformationMatrix()
 
-    private val vbo = VBO.create(createUnitSquareArray(), positionAttribute)
-    private val texVbo = VBO.create(loadTextureUnitSquare(), texCoordsAttribute)
+    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
+    private val texVbo = AttributeArray(loadTextureUnitSquare().toFloatArray(2), VBOPointer.texCoords)
     private val drawable = Model(vbo, texVbo)
 
     private val colorRenderer = ColorRenderer()

@@ -36,6 +36,10 @@ fun Array<Vector>.containsPoint(point: Vector): Boolean {
 }
 
 fun Array<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
+    return this.toFloatArray(coordinateSize).toBuffer()
+}
+
+fun Array<Vector>.toFloatArray(coordinateSize: Int): FloatArray {
     val floats = FloatArray(this.size*coordinateSize)
     for (i in this.indices) {
         val floatsIndex = i*coordinateSize
@@ -45,7 +49,7 @@ fun Array<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
             floats[floatsIndex + j] = 0f
         }
     }
-    return floats.toBuffer()
+    return floats
 }
 
 fun List<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
