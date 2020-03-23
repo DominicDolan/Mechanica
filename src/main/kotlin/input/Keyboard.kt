@@ -4,6 +4,10 @@ package input
 object Keyboard {
     private val map = HashMap<Int, ArrayList<Key>>()
 
+    val pressed: Iterable<Key> = PressedKeys(map)
+
+    val ANY = KeyboardKey()
+
     val A = KeyboardKey(Keys.A)
     val B = KeyboardKey(Keys.B)
     val C = KeyboardKey(Keys.C)
@@ -112,6 +116,22 @@ object Keyboard {
             return keys
         }
         return arrayListOf(Key(map, keyId))
+    }
+
+    internal fun addPressed(key: Int) {
+        val pressed = (pressed as PressedKeys)
+        val pressedCount = pressed.size
+        get(key).forEach { it.isDown = true }
+        pressed.add(key)
+        ANY.isDown = pressed.size > pressedCount
+    }
+
+    internal fun removePressed(key: Int) {
+        val pressed = (pressed as PressedKeys)
+        val pressedCount = pressed.size
+        get(key).forEach { it.isDown = false }
+        pressed.remove(key)
+        ANY.isDown = pressed.size >= pressedCount
     }
 
     class KeyboardKey(vararg keys: Keys): Key(map, *keys)

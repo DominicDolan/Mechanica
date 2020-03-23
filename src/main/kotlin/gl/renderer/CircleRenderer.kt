@@ -1,7 +1,7 @@
 package gl.renderer
 
 import display.Game
-import models.Model
+import gl.models.Model
 import gl.utils.loadImage
 import gl.script.ShaderScript
 import gl.shader.Shader
@@ -12,10 +12,9 @@ import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
 
-class CircleRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.get()
+class CircleRenderer : Renderer() {
 
-    private val vertex = object : ShaderScript() {
+    override val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -30,7 +29,7 @@ class CircleRenderer : Renderer {
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val _fragment = object : ShaderScript() {
 
         val color = uniform.vec4(hex(0xFF00FFFF))
         val strokeWidth = uniform.float(1.0f)
@@ -62,19 +61,19 @@ class CircleRenderer : Renderer {
 
     }
 
-    private val shader: Shader = Shader(vertex, fragment)
+    override val fragment = _fragment
 
     private val oval: Image = loadImage(Resource("res/images/oval.png"))
 
-    var color: Color
-        get() = fragment.color.value.toColor()
+    override var color: Color
+        get() = _fragment.color.value.toColor()
         set(value) {
-            fragment.color.set(value)
+            _fragment.color.set(value)
         }
     var strokeWidth: Float
-        get() = fragment.strokeWidth.value
+        get() = _fragment.strokeWidth.value
         set(value) {
-            fragment.strokeWidth.value = value
+            _fragment.strokeWidth.value = value
         }
 
     override fun render(model: Model, transformation: Matrix4f) {

@@ -2,7 +2,6 @@ package graphics
 
 import gl.utils.IndexedVertices
 import loader.loadTriangulatedArrays
-import models.Model
 import util.extensions.*
 import util.units.Vector
 

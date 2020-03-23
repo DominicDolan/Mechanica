@@ -6,7 +6,7 @@ import drawer.Drawer
 import gl.renderer.PathRenderer
 import input.Cursor
 import input.Keyboard
-import models.Model
+import gl.models.Model
 import org.joml.Matrix4f
 import state.State
 import util.colors.rgba

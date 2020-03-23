@@ -1,15 +1,14 @@
 package gl.renderer
 
 import display.Game
-import models.Model
+import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
 import org.joml.Matrix4f
 
-class ImageRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.get()
+class ImageRenderer : Renderer() {
 
-    private val vertex = object : ShaderScript() {
+    override val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -24,7 +23,7 @@ class ImageRenderer : Renderer {
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val _fragment = object : ShaderScript() {
         val alpha = uniform.float(1f)
         //language=GLSL
         override val main: String = """
@@ -39,14 +38,13 @@ class ImageRenderer : Renderer {
             """
 
     }
+    override val fragment = _fragment
 
     var alpha: Float
-        get() = fragment.alpha.value
+        get() = _fragment.alpha.value
         set(value) {
-            fragment.alpha.value = value
+            _fragment.alpha.value = value
         }
-
-    private val shader: Shader = Shader(vertex, fragment)
 
     override fun render(model: Model, transformation: Matrix4f) {
         shader.render(model, transformation, projection, view)

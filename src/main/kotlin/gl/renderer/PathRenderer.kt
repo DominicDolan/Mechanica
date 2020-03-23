@@ -6,7 +6,7 @@ import gl.utils.loadImage
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
-import models.Model
+import gl.models.Model
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
@@ -18,9 +18,9 @@ import util.colors.toColor
 import util.extensions.fill
 import util.units.Vector
 
-class PathRenderer : Renderer {
+class PathRenderer : Renderer() {
 
-    private val vertex = object : ShaderScript() {
+    override val vertex = object : ShaderScript() {
 
         //language=GLSL
         override val main: String =
@@ -114,7 +114,7 @@ class PathRenderer : Renderer {
     }
 
 
-    private val fragment = object : ShaderScript() {
+    private val _fragment = object : ShaderScript() {
 
         val color = uniform.vec4(hex(0xFF00FF88))
         val mode = uniform.float(0f)
@@ -146,6 +146,7 @@ class PathRenderer : Renderer {
                 }
             """
     }
+    override val fragment = _fragment
 
 
     private val lineShader = Shader(vertex, fragment, geometry = lineGeometry)
@@ -153,10 +154,10 @@ class PathRenderer : Renderer {
 
     private val oval: Image = loadImage(Resource("res/images/oval.png"))
 
-    var color: Color
-        get() = fragment.color.value.toColor()
+    override var color: Color
+        get() = _fragment.color.value.toColor()
         set(value) {
-            fragment.color.set(value)
+            _fragment.color.set(value)
         }
 
     var stroke: Float
@@ -171,14 +172,14 @@ class PathRenderer : Renderer {
     private var floats: FloatArray
 
     private val vbo: AttributeArray
-    private val model: Model
+    override val model: Model
 
     private var isCircle = false
         set(value) {
             if (value) {
-                fragment.mode.value = 1f
+                _fragment.mode.value = 1f
             } else {
-                fragment.mode.value = 0f
+                _fragment.mode.value = 0f
             }
             field = value
         }

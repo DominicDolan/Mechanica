@@ -4,18 +4,13 @@ package loader
 import animation.FrameAnimation
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.GeometryFactory
-import font.FontType
 import gl.utils.IndexedVertices
 import gl.utils.loadImage
-import graphics.Image
-import models.Model
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.stb.STBImage.*
 import org.lwjgl.system.MemoryUtil.*
 import resources.Res
-import resources.Resource
 import resources.ResourceDirectory
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper
@@ -201,10 +196,6 @@ fun loadTextFile(filename: String): String {
     }
 
     return text.toString()
-}
-
-fun loadFont(name: String): FontType {
-    return FontType(loadImage(Res.font["$name.png"]), Res.font["$name.fnt"])
 }
 
 fun loadBufferedReader(file: String): BufferedReader? {

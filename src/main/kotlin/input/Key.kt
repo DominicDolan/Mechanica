@@ -1,7 +1,7 @@
 package input
 
 open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
-    private val label = ControlsMap.getKeyEnum(key[0])?.name ?: "N/A"
+    private val label = getLabel(key)
 
     internal var isDown: Boolean = false
         set(value) {
@@ -61,6 +61,12 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
             map,
             *(keys.map { it.id }).toIntArray()
     )
+
+    private fun getLabel(keys: IntArray): String {
+        return if (keys.isNotEmpty()) {
+            ControlsMap.getKeyEnum(keys[0])?.name ?: "N/A"
+        } else "N/A"
+    }
 
     override fun toString(): String {
         return label

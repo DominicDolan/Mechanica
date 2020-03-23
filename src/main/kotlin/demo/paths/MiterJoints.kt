@@ -7,13 +7,12 @@ import gl.vbo.*
 import gl.vbo.pointer.AttributePointer
 import gl.vbo.ElementIndexArray
 import gl.vbo.pointer.VBOPointer
-import models.Model
+import gl.models.Model
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import state.State
 import util.extensions.vec
 import util.units.Vector
-import kotlin.math.sqrt
 
 fun main() {
     val options = GameOptions()
@@ -63,7 +62,7 @@ private class MiterJoints : State() {
 
         indicesVBO = ElementIndexArray(indices)
 
-        model = Model(vbo, indicesVBO, angleVbo){
+        model = Model(vbo, indicesVBO, angleVbo) {
             glDrawElements(GL_TRIANGLES, it.maxVertices, GL_UNSIGNED_SHORT, 0)
         }
         path.add(vec(0, 0))

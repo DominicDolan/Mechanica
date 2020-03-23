@@ -4,11 +4,9 @@ package svg
 import gl.utils.IndexedVertices
 import graphics.Polygon
 import graphics.SolidPolygon
-import models.Model
 import org.jsoup.nodes.Element
 import util.extensions.calculateLength
 import util.units.Vector
-import java.nio.FloatBuffer
 
 class SVGPolygon(element: Element) : SVGElement(element), Polygon {
     private val polygon: SolidPolygon = SolidPolygon(loadPolygonCoordinates(element))

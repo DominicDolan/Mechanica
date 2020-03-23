@@ -2,11 +2,8 @@ package demo.polygon
 
 import gl.script.ShaderScript
 import gl.shader.Shader
-import models.Model
+import gl.models.Model
 import org.joml.Matrix4f
-import util.colors.Color
-import util.colors.hex
-import util.colors.toColor
 
 class PolygonRenderer {
 

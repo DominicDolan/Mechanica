@@ -4,20 +4,11 @@ import display.Game
 import display.GameOptions
 import drawer.Drawer
 import gl.utils.createUnitSquareArray
-import gl.utils.loadImage
 import gl.vbo.AttributeArray
-import gl.vbo.VBO
 import gl.vbo.pointer.VBOPointer
-import models.Model
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL12
-import org.lwjgl.opengl.GL20
-import resources.Res
+import gl.models.Model
 import state.State
-import util.extensions.degrees
 import util.extensions.toFloatArray
-import util.extensions.toFloatBuffer
 
 fun main() {
     val options = GameOptions()

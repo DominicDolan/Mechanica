@@ -1,4 +1,4 @@
-package demo.text
+package font
 
 import gl.utils.loadImage
 import graphics.Image
@@ -10,7 +10,6 @@ import org.lwjgl.stb.STBTTFontinfo
 import org.lwjgl.stb.STBTruetype
 import org.lwjgl.system.MemoryStack
 import resources.Resource
-import util.units.MutableVector
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -95,7 +94,7 @@ class Font(resource: Resource) {
                 if (check < 0) {
                     error = -0.3f*(1f + (check.toFloat())/ charRange.count().toFloat())
                 } else if (check > 0) {
-                    error = 0.8f*(1f - check.toFloat()/atlasHeight.toFloat())
+                    error = 0.8f*(1f - check.toFloat()/ atlasHeight.toFloat())
                 }
 
                 checkedFontHeight *= (1f + error)
@@ -121,10 +120,6 @@ class Font(resource: Resource) {
 
             return xFromFontInfo/xFromBakedData
         }
-    }
-
-    fun locationOf(index: Int) {
-
     }
 
     inner class CharacterCoordinates {

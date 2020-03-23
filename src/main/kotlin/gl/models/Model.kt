@@ -1,4 +1,4 @@
-package models
+package gl.models
 
 import gl.vbo.VBO
 import graphics.Image

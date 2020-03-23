@@ -1,17 +1,15 @@
-package demo.text
+package gl.models
 
+import font.Font
 import gl.utils.createIndicesArrayForQuads
 import gl.vbo.AttributeArray
 import gl.vbo.ElementIndexArray
 import gl.vbo.pointer.VBOPointer
-import input.Cursor
-import models.Model
 import org.lwjgl.opengl.GL11
 import org.lwjgl.stb.STBTTAlignedQuad
 import org.lwjgl.system.MemoryStack
 import util.extensions.restrain
 import kotlin.math.abs
-import kotlin.math.min
 
 class TextModel(private val font: Font) : Model(
         AttributeArray(100*4, VBOPointer.position),
@@ -29,7 +27,7 @@ class TextModel(private val font: Font) : Model(
 
     private var characterPositions = DoubleArray(100)
     private var newLineLocations = IntArray(100) { -1 }
-    var newLineCount = 0
+    var lineCount = 0
 
     var text: String = ""
         set(value) {
@@ -40,7 +38,7 @@ class TextModel(private val font: Font) : Model(
     private fun setVBOs(text: String) {
         characterPositions.fill(0.0)
         newLineLocations.fill(-1)
-        newLineCount = text.count { '\n' == it }
+        lineCount = text.count { '\n' == it }
         checkArraySizes(text)
 
         MemoryStack.stackPush().use { stack ->
@@ -95,17 +93,21 @@ class TextModel(private val font: Font) : Model(
         return line
     }
 
-    fun getCharacterPosition(x: Double, line: Int): Double {
-        val restrainedLine = line.restrain(0, newLineCount)
+    fun getClosestCharacterPosition(x: Double, line: Int): Double {
+        val index = getCharacterIndex(x, line)
+        return characterPositions[index]
+    }
+
+    fun getCharacterIndex(x: Double, line: Int): Int {
+        val restrainedLine = line.restrain(0, lineCount)
 
         val start = if (restrainedLine == 0) 0 else newLineLocations[restrainedLine-1]
         val end = newLineLocations[restrainedLine] - 1
 
         val search = characterPositions.binarySearch(x, start, end)
-        val index = if (search == 0) 0
-                    else abs(search) - 1
 
-        return characterPositions[index]
+        return  if (search == 0) 0
+                else abs(search) - 1
     }
 
     fun getCharacterPosition(index: Int) = characterPositions[index]

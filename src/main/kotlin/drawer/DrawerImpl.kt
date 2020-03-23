@@ -1,13 +1,12 @@
 package drawer
 
 import display.Game
-import models.Model
+import gl.models.Model
 import gl.renderer.*
 import gl.renderer.ColorRenderer
 import gl.utils.loadTextureUnitSquare
 import gl.utils.createUnitSquareArray
 import gl.vbo.AttributeArray
-import gl.vbo.VBO
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
 import graphics.Polygon
@@ -15,10 +14,7 @@ import matrices.TransformationMatrix
 import util.colors.Color
 import util.colors.rgba2Hex
 import util.colors.toColor
-import util.extensions.component1
-import util.extensions.component2
-import util.extensions.degrees
-import util.extensions.toFloatArray
+import util.extensions.*
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
@@ -136,7 +132,9 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
         if (!frameWasSet) {
             frame = Frames.UI
         }
-        fontRenderer.set(text, fontSize.toFloat(), x = x.toFloat(), y = y.toFloat())
+        fontRenderer.text = text
+        fontRenderer.fontSize = fontSize.toDouble()
+        fontRenderer.position = vec(x, y)
         renderer = fontRenderer
         draw(0.0, 0.0, 1.0, 1.0)
     }

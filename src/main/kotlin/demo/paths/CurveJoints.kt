@@ -4,11 +4,10 @@ import display.Game
 import display.GameOptions
 import drawer.Drawer
 import gl.vbo.AttributeArray
-import gl.vbo.VBO
 import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import input.Keyboard
-import models.Model
+import gl.models.Model
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20.*

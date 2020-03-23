@@ -1,7 +1,7 @@
 package gl.shader
 
 import display.Game
-import models.Model
+import gl.models.Model
 import gl.script.Declarations
 import gl.script.ShaderScript
 import org.joml.Matrix4f

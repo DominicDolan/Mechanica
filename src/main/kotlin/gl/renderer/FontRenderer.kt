@@ -1,121 +1,213 @@
 package gl.renderer
 
-import display.Game
-import font.FontType
-import font.GUIText
-import font.TextMeshDynamicCreator
+import font.Font
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.utils.loadImage
-import gl.vbo.AttributeArray
-import gl.vbo.pointer.AttributePointer
-import gl.vbo.pointer.VBOPointer
-import loader.loadFont
-import models.Model
+import gl.models.Model
+import gl.models.TextModel
 import org.joml.Matrix4f
 import resources.Res
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
+import util.extensions.restrain
+import util.extensions.vec
+import util.units.MutableVector
+import util.units.Vector
+import kotlin.math.ceil
+import kotlin.math.max
 
-class FontRenderer : Renderer {
-    override var view: Matrix4f = Game.viewMatrix.get()
 
-    private val vertex = object : ShaderScript() {
-        val translation = uniform.vec2(0.0, 0.0)
+class FontRenderer : Renderer() {
 
+    override val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
                 """
                 out vec2 tc;
-                layout (binding=0) uniform sampler2D fontAtlas;
-                layout (location=2) in vec2 textPositions;
-
+                layout (binding=0) uniform sampler2D samp;
+                
                 void main(void) {
-                    gl_Position = matrices(vec4(textPositions + $translation, 1.0, 1.0));
+                    gl_Position = matrices(vec4($position, 1.0));
                     tc = $textureCoords;
                 }
                 """
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val _fragment = object : ShaderScript() {
 
-        val color = uniform.vec4(hex(0xFF00FFFF))
+        val color = uniform.vec4(hex(0x504050FF))
 
         //language=GLSL
         override val main: String = """
-                out vec4 color;
                 in vec2 tc;
-                layout (binding=0) uniform sampler2D fontAtlas;   
+                layout (binding=0) uniform sampler2D samp;
+                out vec4 out_Color;
                                 
-                const float edge = 0.5;
-                const float border_fraction = 0.2;
-
                 void main(void) {
-                    float distance = 1.0 - texture(fontAtlas, tc).a;
-                    float alpha = (1.0 - smoothstep(edge, edge + border_fraction*edge, distance))*$color.a;
-                    color = vec4($color.rgb, alpha);
+                    vec4 texColor = texture(samp, tc);
+                    out_Color = vec4($color.rgb, texColor.a*$color.a);
                 }
             """
 
     }
+    override val fragment = _fragment
 
-    private val shader: Shader = Shader(vertex, fragment)
+    private val fontMap = HashMap<Font, TextModel>()
 
-    private val model: Model
-    private val textPositionAttribute = AttributePointer.create(2, 2)
-    private val meshCreator = TextMeshDynamicCreator()
-    private val guiText: GUIText
-    private val font: FontType = loadFont("arial")
+    override val model: TextModel
+        get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
 
-    private val positionVBO: AttributeArray
-    private val textureVBO: AttributeArray
+    private val characterOutput = CharacterOutputImpl()
 
-    var color: Color
-        get() = fragment.color.value.toColor()
+    override var color: Color
+        get() = _fragment.color.value.toColor()
         set(value) {
-            fragment.color.set(value)
+            _fragment.color.set(value)
         }
 
-    var text: String
-        get() = guiText.textString ?: ""
+    var text: String = ""
         set(value) {
-            set(text = value)
-            updateMesh()
+            model.text = value
+            field = value
         }
 
-    fun set(text: String = guiText.textString ?: "",
-            fontSize: Float = guiText.fontSize,
-            font: FontType = guiText.font ?: this.font,
-            x: Float = guiText.positionX,
-            y: Float = guiText.positionY,
-            maxLineLength: Float = guiText.maxLineSize,
-            centered: Boolean = guiText.isCentered) {
-        guiText.set(text, fontSize, font, x, y, maxLineLength, centered)
-        vertex.translation.set(x, y)
-        updateMesh()
-    }
+    var font: Font = Font(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(it) }
+        set(value) {
+            val newModel = TextModel(value)
+            newModel.text = text
+            field = value
+        }
 
-    init {
-        guiText = GUIText("",
-                1f, font, 0f, 0f, 500f)
+    var fontSize: Double = 1.0
+        set(value) {
+            field = value
+            transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
+        }
 
-        positionVBO = AttributeArray(6*200, textPositionAttribute)
-        textureVBO = AttributeArray(6*200, VBOPointer.texCoords)
-        updateMesh()
-
-        model = Model(positionVBO, textureVBO)
-        model.image = loadImage(Res.font["arial.png"])
-    }
+    var position: Vector = MutableVector(0.0, 0.0)
+        set(value) {
+            transformation.translate(value.x.toFloat(), value.y.toFloat(), 0f)
+            (field as MutableVector).set(value)
+        }
 
     override fun render(model: Model, transformation: Matrix4f) {
-        shader.render(this.model, transformation, projection, view)
+        this.model.text = text
+        shader.render(this.model, this.transformation)
+        transformation.identity()
     }
 
-    private fun updateMesh() {
-//        val data = meshCreator.createTextMesh(guiText)
-//        positionVBO.update(data.vertices.array())
-//        textureVBO.update(data.textureCoords.array())
+    fun from(index: Int): CharacterOutput {
+        characterOutput.inputIndex = index
+        return characterOutput
     }
+
+    fun from(location: Vector): CharacterOutput {
+        characterOutput.inputPosition = location
+        return characterOutput
+    }
+
+    fun from(x: Double, y: Double): CharacterOutput {
+        characterOutput.x = x
+        characterOutput.y = y
+        return characterOutput
+    }
+
+    private inner class CharacterOutputImpl : CharacterOutput() {
+
+        private val INPUT_INDEX = 0
+        private val INPUT_POSITION = 1
+
+        private var inputType = 0
+
+        var inputIndex = 0
+            set(value) {
+                inputType = INPUT_INDEX
+                field = value
+            }
+
+        var x: Double
+            get() = inputPosition.x
+            set(value) {
+                inputType = INPUT_POSITION
+                (inputPosition as MutableVector).x = value
+            }
+        var y: Double
+            get() = inputPosition.y
+            set(value) {
+                inputType = INPUT_POSITION
+                (inputPosition as MutableVector).y = value
+            }
+
+        var inputPosition: Vector = MutableVector(0.0, 0.0)
+            set(value) {
+                inputType = INPUT_POSITION
+                (field as MutableVector).set(value)
+            }
+
+        override fun getPosition(): Vector {
+            return when (inputType) {
+                INPUT_INDEX -> {
+                    getCharacterPosition(inputIndex)
+                }
+                INPUT_POSITION -> {
+                    getClosestCharacterPosition(inputPosition.x, inputPosition.y)
+                }
+                else -> vec(0.0, 0.0)
+            }
+        }
+
+        override fun getIndex(): Int {
+            return when (inputType) {
+                INPUT_INDEX -> {
+                    inputIndex
+                }
+                INPUT_POSITION -> {
+                    getCharacterIndex(inputPosition)
+                }
+                else -> inputIndex
+            }
+        }
+
+        fun getCharacterPosition(index: Int): Vector {
+            val safeIndex = max(0, index)
+            val x = model.getCharacterPosition(safeIndex)*fontSize + this@FontRenderer.position.x
+            val y = -model.getLine(safeIndex)*fontSize + this@FontRenderer.position.y
+            return vec(x, y)
+        }
+
+        fun getCharacterIndex(x: Double, y: Double): Int {
+            val textPosition = this@FontRenderer.position
+            val adjustedY = (y - textPosition.y)/fontSize
+            val adjustedX = (x - textPosition.x)/fontSize
+
+            val restrained = (-adjustedY).restrain(0.0, model.lineCount.toDouble())
+            val line = ceil(restrained).toInt()
+
+            return model.getCharacterIndex(adjustedX, line)
+        }
+
+        fun getClosestCharacterPosition(x: Double, y: Double): Vector {
+            val textPosition = this@FontRenderer.position
+            val adjustedY = (y - textPosition.y)/fontSize
+            val adjustedX = (x - textPosition.x)/fontSize
+
+            val line = (-adjustedY).restrain(0.0, model.lineCount.toDouble())
+            val ceil = ceil(line)
+
+            val xOut = model.getClosestCharacterPosition(adjustedX, ceil.toInt())*fontSize + textPosition.x
+            val yOut = -ceil*fontSize + textPosition.y
+            return vec(xOut, yOut)
+        }
+
+        fun getCharacterIndex(coordinates: Vector) = getCharacterIndex(coordinates.x, coordinates.y)
+    }
+
+    abstract class CharacterOutput {
+        abstract fun getPosition(): Vector
+        abstract fun getIndex(): Int
+    }
+
+
 }
