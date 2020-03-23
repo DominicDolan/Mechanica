@@ -4,6 +4,7 @@ import display.Game
 import display.GameOptions
 import drawer.Drawer
 import gl.utils.loadImage
+import input.Cursor
 import input.Keyboard
 import input.Keys
 import input.Mouse
@@ -12,8 +13,10 @@ import org.joml.Matrix4f
 import resources.Res
 import state.State
 import util.colors.hex
+import util.extensions.restrain
 import util.extensions.vec
 import util.units.MutableVector
+import kotlin.math.*
 
 fun main() {
     val options = GameOptions()
@@ -36,9 +39,12 @@ private class StartText : State() {
     val model = Model()
     val transformation = Matrix4f()
     init {
-        renderer.text = "Ve//{ygj@^')ggggggggggggggggggggggggggggggggg\nHelloggggggggggggggggggggggggggggggggggggg\nMotogggggggg4ggggggggggggggggggggggggg\nPlaygggggggggggggggggggggggggggggggggggggggggggggggggggggggggg, play"
-        println(renderer.text.length)
-        println(renderer.text.indexOf('4'))
+        renderer.text = """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+            do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
+        """.trimIndent()
     }
 
     var position = MutableVector(0.0,0.0)
@@ -66,11 +72,22 @@ private class StartText : State() {
 
     override fun render(draw: Drawer) {
         draw.centered.color(hex(0xC0C0C0FF)).rectangle(0, 0, Game.viewWidth, Game.viewHeight)
-        draw.red.rectangle(position.x, position.y, 5, 1)
-        draw.blue.rectangle(position.x, position.y - 1f, 5, 1)
-        draw.red.rectangle(position.x, position.y - 2f, 5, 1)
-        draw.blue.rectangle(position.x, position.y - 3f, 5, 1)
+        draw.darkGrey.rectangle(position.x, position.y, 5, 1)
+        draw.lightGrey.rectangle(position.x, position.y - 1f, 5, 1)
+        draw.darkGrey.rectangle(position.x, position.y - 2f, 5, 1)
+        draw.lightGrey.rectangle(position.x, position.y - 3f, 5, 1)
         renderer.render(model, transformation)
+
+        for (i in renderer.text.indices) {
+            val pos = renderer.getCharacterPosition(i)
+            draw.blue.circle(pos, 0.05)
+        }
+
+//        val line = (-Cursor.viewY).restrain(0.0, renderer.model.newLineCount.toDouble())
+//        val ceil = ceil(line)
+//        val x = renderer.model.getCharacterPosition(Cursor.viewX - 0.3, ceil.toInt())
+//        val y = -ceil
+//        draw.blue.rectangle(x, y - 0.1, 0.07, 0.9)
     }
 
 }

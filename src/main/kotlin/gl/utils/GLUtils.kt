@@ -155,3 +155,9 @@ private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int
     GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
 
 }
+
+fun getByteSizeFromGLType(glType: Int) {
+    when(glType) {
+
+    }
+}

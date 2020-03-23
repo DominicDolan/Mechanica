@@ -7,10 +7,11 @@ class AttributePointer private constructor(
         val index: Int,
         override val coordinateSize: Int,
         override val bufferType: Int,
-        override val type: Int) : VBOPointer {
+        override val variableType: Int,
+        override val variableSize: Int) : VBOPointer {
 
     fun enable() {
-        GL20.glVertexAttribPointer(index, coordinateSize, type, false, 0, 0)
+        GL20.glVertexAttribPointer(index, coordinateSize, variableType, false, 0, 0)
         GL20.glEnableVertexAttribArray(index)
     }
 
@@ -22,10 +23,15 @@ class AttributePointer private constructor(
 
         private val indicesMap = Array<AttributePointer?>(100){ null }
 
-        fun create(index: Int, coordinateSize: Int, bufferType: Int = GL20.GL_ARRAY_BUFFER, type: Int = GL20.GL_FLOAT): AttributePointer {
+        fun create(
+                index: Int, coordinateSize: Int,
+                bufferType: Int = GL20.GL_ARRAY_BUFFER,
+                type: Int = GL20.GL_FLOAT,
+                variableSize: Int = 4): AttributePointer {
+
             val pointer = indicesMap[index]
             return if (pointer == null) {
-                val new = AttributePointer(index, coordinateSize, bufferType, type)
+                val new = AttributePointer(index, coordinateSize, bufferType, type, variableSize)
                 indicesMap[index] = new
                 new
             } else {

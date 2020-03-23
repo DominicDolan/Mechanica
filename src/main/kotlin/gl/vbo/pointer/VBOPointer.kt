@@ -5,7 +5,8 @@ import org.lwjgl.opengl.GL20
 interface VBOPointer {
     val coordinateSize: Int
     val bufferType: Int
-    val type: Int
+    val variableType: Int
+    val variableSize: Int
 
     companion object {
 
@@ -15,7 +16,8 @@ interface VBOPointer {
         val elementArrayPointer = object : VBOPointer {
             override val coordinateSize: Int = 1
             override val bufferType: Int = GL20.GL_ELEMENT_ARRAY_BUFFER
-            override val type: Int = GL20.GL_SHORT
+            override val variableType: Int = GL20.GL_SHORT
+            override val variableSize: Int = 2
 
         }
     }

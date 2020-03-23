@@ -9,6 +9,11 @@ import resources.Res
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
+import util.extensions.restrain
+import util.extensions.vec
+import util.units.MutableVector
+import util.units.Vector
+import kotlin.math.ceil
 
 
 class FontRenderer : Renderer {
@@ -49,6 +54,10 @@ class FontRenderer : Renderer {
     private val shader = Shader(vertex, fragment)
     private val fontMap = HashMap<Font, TextModel>()
 
+    val model: TextModel
+        get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
+    private val transformation = Matrix4f()
+
     var color: Color
         get() = fragment.color.value.toColor()
         set(value) {
@@ -68,12 +77,43 @@ class FontRenderer : Renderer {
             field = value
         }
 
-    private val model: TextModel
-        get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
+    var fontSize: Double = 1.0
+        set(value) {
+            field = value
+            transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
+        }
+
+    var position: Vector = MutableVector(0.0, 0.0)
+        set(value) {
+            (field as MutableVector).set(value)
+        }
+
 
     override fun render(model: Model, transformation: Matrix4f) {
         this.model.text = text
-        shader.render(this.model, transformation)
+        shader.render(this.model, this.transformation)
+        transformation.identity()
     }
+
+    fun getCharacterPosition(index: Int): Vector {
+        val x = model.getCharacterPosition(index)*fontSize + position.x
+        val y = -model.getLine(index)*fontSize + position.y
+        return vec(x, y)
+    }
+
+    fun getCharacterIndex(x: Double, y: Double): Int {
+
+        return 0
+    }
+
+    fun getClosestCharacterPosition(x: Double, y: Double): Vector {
+        val line = (-y).restrain(0.0, model.newLineCount.toDouble())
+        val ceil = ceil(line)
+        val xOut = model.getCharacterPosition(x, ceil.toInt())*fontSize + position.x
+        val yOut = -ceil*fontSize + position.y
+        return vec(xOut, yOut)
+    }
+
+    fun getCharacterIndex(coordinates: Vector) = getCharacterIndex(coordinates.x, coordinates.y)
 
 }

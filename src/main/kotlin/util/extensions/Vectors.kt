@@ -196,6 +196,8 @@ fun vec(r: Number, theta: Angle): Vector {
 
 fun vec(vec2: Vec2) = vec(vec2.x, vec2.y)
 
+fun vec(vector: Vector) = vec(vector.x, vector.y)
+
 operator fun Vector.component1() = this.x
 operator fun Vector.component2() = this.y
 

@@ -1,6 +1,9 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package util.extensions
 
+import kotlin.math.max
+import kotlin.math.min
+
 fun Number.isHigher(other: Number): Boolean {
     return this.toDouble() > other.toDouble()
 }
@@ -49,4 +52,14 @@ fun Number.isLower(other1: Number, other2: Number, other3: Number, vararg others
         }
     }
     return isLower
-} 
+}
+
+fun Double.restrain(lower: Double, higher: Double): Double {
+    val restrainLower = max(this, lower)
+    return min(restrainLower, higher)
+}
+
+fun Int.restrain(lower: Int, higher: Int): Int {
+    val restrainLower = max(this, lower)
+    return min(restrainLower, higher)
+}

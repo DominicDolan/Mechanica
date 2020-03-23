@@ -51,6 +51,21 @@ interface Drawer {
             color(hex(0xFFFFFFFF))
             return this
         }
+    val grey: Drawer
+        get() {
+            color(hex(0x808080FF))
+            return this
+        }
+    val darkGrey: Drawer
+        get() {
+            color(hex(0x696969FF))
+            return this
+        }
+    val lightGrey: Drawer
+        get() {
+            color(hex(0xD3D3D3FF))
+            return this
+        }
     val red: Drawer
         get() {
             color(hex(0xFF0000FF))

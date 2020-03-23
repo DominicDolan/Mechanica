@@ -26,9 +26,9 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
 
     fun update(array: T, from: Int = 0) {
         val cs = pointer.coordinateSize
-        val byteOffset = from*cs*4
+        val byteOffset = from*cs*pointer.variableSize
 
-        val vertexCount = getArraySize(array)
+        val vertexCount = getArraySize(array)/pointer.coordinateSize
         if (vertexCount + from > capacity) {
             increaseSize()
         }
@@ -47,7 +47,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
     private fun increaseSize() {
         capacity *= 2
         GL20.glBindBuffer(pointer.bufferType, id)
-        initBufferData(pointer.bufferType, capacity)
+        initBufferData(pointer.bufferType, capacity*pointer.coordinateSize)
     }
 
 }

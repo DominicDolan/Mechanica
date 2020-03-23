@@ -10,6 +10,7 @@ import org.lwjgl.stb.STBTTFontinfo
 import org.lwjgl.stb.STBTruetype
 import org.lwjgl.system.MemoryStack
 import resources.Resource
+import util.units.MutableVector
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -17,8 +18,8 @@ import java.nio.IntBuffer
 class Font(resource: Resource) {
     val atlas: Image
 
-    private val scale: Float
-    private val quadScale: Float
+    val scale: Float
+    val quadScale: Float
 
     val ascent: Float
     val descent: Float
@@ -122,6 +123,9 @@ class Font(resource: Resource) {
         }
     }
 
+    fun locationOf(index: Int) {
+
+    }
 
     inner class CharacterCoordinates {
 
