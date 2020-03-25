@@ -1,5 +1,7 @@
 package input
 
+import org.lwjgl.glfw.GLFW
+
 open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
     private val label = getLabel(key)
 
@@ -64,7 +66,7 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
 
     private fun getLabel(keys: IntArray): String {
         return if (keys.isNotEmpty()) {
-            ControlsMap.getKeyEnum(keys[0])?.name ?: "N/A"
+            GLFW.glfwGetKeyName(keys[0], 0) ?: "N/A"
         } else "N/A"
     }
 

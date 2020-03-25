@@ -21,14 +21,14 @@ fun main() {
 }
 
 private class StartMain : State() {
-    val image = loadImage(Res.image["colors"])
+    val image = loadImage(Res.image["testImage"])
     override fun update(delta: Double) {
     }
 
     override fun render(draw: Drawer) {
         draw.red.centered.rectangle(0, 0, 1.0, 1.0)
         draw.green.rectangle(0.0, 0.0, 1.0, 1.0)
-        draw.blue.rotated(30.degrees).about(1.0, 1.0).rectangle(-3.0, 0.0, 1.0, 1.0)
+        draw.blue.rotated(3.degrees).about(1.0, 1.0).rectangle(-4.0, 0.0, 2.0, 1.0)
         draw.magenta.text("Hello, world", 1.0, 0, -2.0)
         draw.image(image, 2, 2, 2, 1)
         draw.cyan.circle(0.0, 2.0, 0.5)

@@ -10,6 +10,7 @@ import org.lwjgl.stb.STBTTFontinfo
 import org.lwjgl.stb.STBTruetype
 import org.lwjgl.system.MemoryStack
 import resources.Resource
+import util.extensions.restrain
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -66,7 +67,7 @@ class Font(resource: Resource) {
     }
 
     fun alignedQuadAsFloats(c: Char, q: STBTTAlignedQuad, xBuffer: FloatBuffer, yBuffer: FloatBuffer, x: Float = 0f, y: Float = 0f): CharacterCoordinates {
-        return character.copyToFloats(c, q, xBuffer, yBuffer, x, y)
+            return character.copyToFloats(c, q, xBuffer, yBuffer, x, y)
     }
 
     fun getKernAdvance(c1: Char, c2: Char): Float {
@@ -129,7 +130,10 @@ class Font(resource: Resource) {
 
         fun copyToFloats(c: Char, q: STBTTAlignedQuad, xBuffer: FloatBuffer, yBuffer: FloatBuffer, x: Float = 0f, y: Float = 0f): CharacterCoordinates {
 
-            STBTruetype.stbtt_GetBakedQuad(cdata, atlasWidth, atlasHeight, c.toInt() - charRange.first, xBuffer, yBuffer, q, true)
+            val charIndex = if (c.toInt() in charRange) c.toInt()
+                            else 128
+
+            STBTruetype.stbtt_GetBakedQuad(cdata, atlasWidth, atlasHeight, charIndex - charRange.first, xBuffer, yBuffer, q, true)
 
             texCoords[0] = q.s0()
             texCoords[1] = q.t1()
@@ -156,8 +160,8 @@ class Font(resource: Resource) {
     companion object {
         private val charRange = 32..128
 
-        private val atlasWidth = 1024
-        private val atlasHeight = 1024
+        private const val atlasWidth = 1024
+        private const val atlasHeight = 1024
 
     }
 }

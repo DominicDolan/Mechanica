@@ -150,7 +150,9 @@ object Display : IDisplay {
 
         fun setCallbacks() {
             // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-            GLFW.glfwSetKeyCallback(window, KeyboardHandler())
+            GLFW.glfwSetKeyCallback(window, KeyboardHandler.KeyHandler())
+            GLFW.glfwSetCharCallback(window, KeyboardHandler.TextHandler())
+
             GLFW.glfwSetMouseButtonCallback(window, MouseHandler.ButtonHandler())
             GLFW.glfwSetCursorPosCallback(window, MouseHandler.CursorHandler())
             GLFW.glfwSetScrollCallback(window, MouseHandler.ScrollHandler())

@@ -55,7 +55,7 @@ class DisplayManager(var width: Int, var height: Int, fullscreen: Boolean = fals
             throw RuntimeException("Failed to create the GLFW window")
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, KeyboardHandler())
+        glfwSetKeyCallback(window, KeyboardHandler.KeyHandler())
         glfwSetMouseButtonCallback(window, MouseHandler.ButtonHandler())
         glfwSetCursorPosCallback(window, MouseHandler.CursorHandler())
 

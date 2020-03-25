@@ -1,10 +1,27 @@
 @file:Suppress("unused") // There will be many variables here that go unused most of the time
 package input
 
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.Iterable
+import kotlin.collections.arrayListOf
+import kotlin.collections.forEach
+
+
 object Keyboard {
     private val map = HashMap<Int, ArrayList<Key>>()
 
     val pressed: Iterable<Key> = PressedKeys(map)
+
+    private const val emptyString = ""
+    private val inputCharacterHistory = Array(1024) { emptyString }
+    var inputText = ""
+        get() {
+            val value = field
+            field = emptyString
+            return value
+        }
+        private set
 
     val ANY = KeyboardKey()
 
@@ -132,6 +149,33 @@ object Keyboard {
         get(key).forEach { it.isDown = false }
         pressed.remove(key)
         ANY.isDown = pressed.size >= pressedCount
+    }
+
+    internal fun setInputTextChar(codepoint: Int) {
+        var characters = inputCharacterHistory[codepoint]
+        if (characters == emptyString) {
+            characters = codepointToString(codepoint)
+            inputCharacterHistory[codepoint] = characters
+        }
+        inputText = characters
+    }
+
+    private fun codepointToString(cp: Int): String {
+        println(cp)
+        val sb = StringBuilder()
+        when {
+            Character.isBmpCodePoint(cp) -> {
+                sb.append(cp.toChar())
+            }
+            Character.isValidCodePoint(cp) -> {
+                sb.append(Character.highSurrogate(cp))
+                sb.append(Character.lowSurrogate(cp))
+            }
+            else -> {
+                sb.append('?')
+            }
+        }
+        return sb.toString()
     }
 
     class KeyboardKey(vararg keys: Keys): Key(map, *keys)

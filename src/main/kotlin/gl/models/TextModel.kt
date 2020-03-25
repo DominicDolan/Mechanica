@@ -58,9 +58,13 @@ class TextModel(private val font: Font) : Model(
                 if (char == '\n') {
                     x.put(0, 0f)
                 }
-                val coords = font.alignedQuadAsFloats(char, q, x, y, kern, -line*font.lineHeight)
+                var coords = font.alignedQuadAsFloats(char, q, x, y, kern, -line*font.lineHeight)
+                if (coords == null) {
+                    coords = font.alignedQuadAsFloats(128.toChar(), q, x, y, kern, -line*font.lineHeight)
+                }
+
                 characterIndex++
-                characterPositions[characterIndex] = (x[0]*font.scale*font.quadScale).toDouble()
+                characterPositions[characterIndex] = (x[0] * font.scale * font.quadScale).toDouble()
                 if (char == ' ') {
                     continue
                 } else if (char == '\n') {
@@ -70,8 +74,10 @@ class TextModel(private val font: Font) : Model(
                     x.put(0, 0f)
                     continue
                 }
-                positionAttribute.update(coords.positions, i * 4)
-                texCoordsAttribute.update(coords.texCoords, i * 4)
+                if (coords != null) {
+                    positionAttribute.update(coords.positions, i * 4)
+                    texCoordsAttribute.update(coords.texCoords, i * 4)
+                }
                 i++
             }
             newLineLocations[line] = text.length + 1

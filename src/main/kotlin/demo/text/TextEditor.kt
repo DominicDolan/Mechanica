@@ -16,6 +16,7 @@ import state.State
 import util.colors.hex
 import util.extensions.restrain
 import util.extensions.vec
+import java.lang.StringBuilder
 import kotlin.math.max
 import kotlin.math.min
 
@@ -39,7 +40,6 @@ private class StartText : State() {
 
     val model = Model()
     val transformation = Matrix4f()
-    val specialKeys = HashMap<Key, Char>()
 
     var cursor = 0
 
@@ -48,10 +48,6 @@ private class StartText : State() {
 
         renderer.position = vec(-Game.viewWidth.toFloat()/2f, Game.viewHeight.toFloat()/2f - renderer.fontSize)
 
-        specialKeys[Keyboard.SPACE] = ' '
-        specialKeys[Keyboard.PERIOD] = '.'
-        specialKeys[Keyboard.COMMA] = ','
-        specialKeys[Keyboard.ENTER] = '\n'
     }
 
     override fun update(delta: Double) {
@@ -62,14 +58,9 @@ private class StartText : State() {
             Game.viewHeight /= 1.0 + Mouse.SCROLL_UP.distance/10.0
         }
 
-        if (Keyboard.ANY.hasBeenPressed) {
-            for (key in Keyboard.pressed) {
-                val char = getChar(key)
-
-                if (char != null) {
-                    addLetter(cursor, char)
-                }
-            }
+        val inputText = Keyboard.inputText
+        if (inputText.isNotEmpty()) {
+            addLetter(cursor, inputText)
         }
 
         if (Keyboard.BACKSPACE.hasBeenPressed) {
@@ -80,6 +71,9 @@ private class StartText : State() {
         }
         if (Keyboard.DELETE.hasBeenPressed) {
             removeLetter(cursor+1)
+        }
+        if (Keyboard.ENTER.hasBeenPressed) {
+            addLetter(cursor, "\n")
         }
 
         if (Keyboard.LEFT.hasBeenPressed) {
@@ -110,7 +104,7 @@ private class StartText : State() {
         renderer.render(model, transformation)
     }
 
-    fun addLetter(index: Int, char: Char) {
+    fun addLetter(index: Int, str: String) {
         val fullText = renderer.text
         val safeIndex = index.restrain(0, fullText.length)
 
@@ -120,7 +114,7 @@ private class StartText : State() {
         val after = if (index >= fullText.length-1) ""
                     else fullText.substring(safeIndex until fullText.length)
 
-        renderer.text = before + char + after
+        renderer.text = before + str + after
         cursor++
 
     }
@@ -136,15 +130,6 @@ private class StartText : State() {
         else fullText.substring(safeIndex until fullText.length)
 
         renderer.text = before + after
-    }
-
-    private fun getChar(key: Key): Char? {
-        val str = key.toString()
-        if (str.length == 1) {
-            return if (!Keyboard.SHIFT()) str.toLowerCase()[0]
-                    else str[0]
-        }
-        return specialKeys[key]
     }
 
 }
