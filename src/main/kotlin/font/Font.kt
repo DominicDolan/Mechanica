@@ -66,12 +66,30 @@ class Font(resource: Resource) {
         atlas = loadImage(bitmap, atlasWidth, atlasHeight, 4, GL11.GL_ALPHA)
     }
 
-    fun alignedQuadAsFloats(c: Char, q: STBTTAlignedQuad, xBuffer: FloatBuffer, yBuffer: FloatBuffer, x: Float = 0f, y: Float = 0f): CharacterCoordinates {
-            return character.copyToFloats(c, q, xBuffer, yBuffer, x, y)
+    fun alignedQuadAsFloats(c: Char, coords: CharacterCoordinates): CharacterCoordinates {
+        MemoryStack.stackPush().use { stack ->
+            val kern = getKernAdvance(coords.previousChar, c)/quadScale
+            val x = stack.floats(coords.xAdvance + kern)
+            val y = stack.floats(coords.yAdvance)
+            val q = STBTTAlignedQuad.mallocStack(stack)
+
+            val unknownIndex = 128 - charRange.first
+            val charIndex = if (c.toInt() in charRange) c.toInt() - charRange.first
+                            else unknownIndex
+
+            STBTruetype.stbtt_GetBakedQuad(cdata, atlasWidth, atlasHeight, charIndex, x, y, q, true)
+
+            return character.copyToFloats(c, q, x)
+        }
+    }
+
+    fun resetCharacterCoordinates(): CharacterCoordinates {
+        character.reset()
+        return character
     }
 
     fun getKernAdvance(c1: Char, c2: Char): Float {
-        return STBTruetype.stbtt_GetCodepointKernAdvance(info, c1.toInt(), c2.toInt()).toFloat()*scale
+        return STBTruetype.stbtt_GetCodepointKernAdvance(info, c1.toInt(), c2.toInt()).toFloat()
     }
 
     private fun bakeFont(bitmap: ByteBuffer, ttf: ByteBuffer, cdata: STBTTBakedChar.Buffer): Float {
@@ -127,13 +145,11 @@ class Font(resource: Resource) {
 
         val positions = FloatArray(3*4)
         val texCoords = FloatArray(2*4)
+        var xAdvance = 0f
+        var yAdvance = 0f
+        var previousChar = ' '
 
-        fun copyToFloats(c: Char, q: STBTTAlignedQuad, xBuffer: FloatBuffer, yBuffer: FloatBuffer, x: Float = 0f, y: Float = 0f): CharacterCoordinates {
-
-            val charIndex = if (c.toInt() in charRange) c.toInt()
-                            else 128
-
-            STBTruetype.stbtt_GetBakedQuad(cdata, atlasWidth, atlasHeight, charIndex - charRange.first, xBuffer, yBuffer, q, true)
+        fun copyToFloats(c: Char, q: STBTTAlignedQuad, xBuffer: FloatBuffer): CharacterCoordinates {
 
             texCoords[0] = q.s0()
             texCoords[1] = q.t1()
@@ -144,16 +160,26 @@ class Font(resource: Resource) {
             texCoords[6] = q.s1()
             texCoords[7] = q.t0()
 
-            positions[0] = (q.x0())*scale*quadScale + x //* viewScale * Display.contentScaleX
-            positions[1] = (-q.y1())*scale*quadScale + y //* viewScale * Display.contentScaleY
-            positions[3] = (q.x1())*scale*quadScale + x //* viewScale * Display.contentScaleX
-            positions[4] = (-q.y1())*scale*quadScale + y //* viewScale * Display.contentScaleY
-            positions[6] = (q.x0())*scale*quadScale + x //* viewScale * Display.contentScaleX
-            positions[7] = (-q.y0())*scale*quadScale + y //* viewScale * Display.contentScaleY
-            positions[9] = (q.x1())*scale*quadScale + x //* viewScale * Display.contentScaleX
-            positions[10] = (-q.y0())*scale*quadScale + y //* viewScale * Display.contentScaleY
+            positions[0] = (q.x0())*scale*quadScale
+            positions[1] = (-q.y1())*scale*quadScale + yAdvance
+            positions[3] = (q.x1())*scale*quadScale
+            positions[4] = (-q.y1())*scale*quadScale + yAdvance
+            positions[6] = (q.x0())*scale*quadScale
+            positions[7] = (-q.y0())*scale*quadScale + yAdvance
+            positions[9] = (q.x1())*scale*quadScale
+            positions[10] = (-q.y0())*scale*quadScale + yAdvance
 
+            previousChar = c
+            xAdvance = xBuffer[0]
             return this
+        }
+
+        fun reset() {
+            character.xAdvance = 0f
+            character.yAdvance = 0f
+            character.positions.fill(0f)
+            character.texCoords.fill(0f)
+            character.previousChar = ' '
         }
     }
 

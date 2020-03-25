@@ -58,9 +58,8 @@ private class StartText : State() {
             Game.viewHeight /= 1.0 + Mouse.SCROLL_UP.distance/10.0
         }
 
-        val inputText = Keyboard.inputText
-        if (inputText.isNotEmpty()) {
-            addLetter(cursor, inputText)
+        if (Keyboard.textInput.hasBeenInput.isNotEmpty()) {
+            addLetter(cursor, Keyboard.textInput.inputText)
         }
 
         if (Keyboard.BACKSPACE.hasBeenPressed) {
@@ -80,7 +79,7 @@ private class StartText : State() {
             cursor = max(0, cursor-1)
         }
         if (Keyboard.RIGHT.hasBeenPressed) {
-            cursor = min(renderer.text.length-1, cursor+1)
+            cursor = min(renderer.text.length, cursor+1)
         }
         if (Keyboard.UP.hasBeenPressed) {
             val pos = renderer.from(cursor).getPosition()

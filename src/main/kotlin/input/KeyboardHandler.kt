@@ -24,7 +24,7 @@ class KeyboardHandler {
 
     class TextHandler : GLFWCharCallback() {
         override fun invoke(window: Long, codepoint: Int) {
-            Keyboard.setInputTextChar(codepoint)
+            Keyboard.textInput.setInputTextChar(codepoint)
         }
 
     }

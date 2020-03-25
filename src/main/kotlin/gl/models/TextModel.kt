@@ -6,8 +6,6 @@ import gl.vbo.AttributeArray
 import gl.vbo.ElementIndexArray
 import gl.vbo.pointer.VBOPointer
 import org.lwjgl.opengl.GL11
-import org.lwjgl.stb.STBTTAlignedQuad
-import org.lwjgl.system.MemoryStack
 import util.extensions.restrain
 import kotlin.math.abs
 
@@ -41,48 +39,41 @@ class TextModel(private val font: Font) : Model(
         lineCount = text.count { '\n' == it }
         checkArraySizes(text)
 
-        MemoryStack.stackPush().use { stack ->
-            var i = 0
+        loopCharacters(text)
+    }
 
-            val x = stack.floats(0f)
-            val y = stack.floats(0f)
-            val q = STBTTAlignedQuad.mallocStack(stack)
+    private fun loopCharacters(text: String) {
+        var i = 0
 
-            var kern = 0f
-            var line = 0
-            var characterIndex = 0
-            for (char in text) {
-                if (i != 0) {
-                    kern += font.getKernAdvance(text[i-1], char)
-                }
-                if (char == '\n') {
-                    x.put(0, 0f)
-                }
-                var coords = font.alignedQuadAsFloats(char, q, x, y, kern, -line*font.lineHeight)
-                if (coords == null) {
-                    coords = font.alignedQuadAsFloats(128.toChar(), q, x, y, kern, -line*font.lineHeight)
-                }
+        var line = 0
+        var characterIndex = 0
+        var coords = font.resetCharacterCoordinates()
+        for (char in text) {
 
-                characterIndex++
-                characterPositions[characterIndex] = (x[0] * font.scale * font.quadScale).toDouble()
-                if (char == ' ') {
-                    continue
-                } else if (char == '\n') {
-                    newLineLocations[line] = characterIndex
-                    line++
-                    kern = 0f
-                    x.put(0, 0f)
-                    continue
-                }
-                if (coords != null) {
-                    positionAttribute.update(coords.positions, i * 4)
-                    texCoordsAttribute.update(coords.texCoords, i * 4)
-                }
-                i++
+            characterIndex++
+            if (char == '\n') {
+                coords.xAdvance = 0f
+                newLineLocations[line] = characterIndex
+                line++
+                coords.xAdvance = 0f
+                coords.yAdvance = -line*font.lineHeight
+                continue
             }
-            newLineLocations[line] = text.length + 1
-            vertexCount = i*6
+
+            coords = font.alignedQuadAsFloats(char, coords)
+
+            characterPositions[characterIndex] = (coords.xAdvance * font.scale * font.quadScale).toDouble()
+            if (char == ' ') {
+                continue
+            }
+
+            positionAttribute.update(coords.positions, i * 4)
+            texCoordsAttribute.update(coords.texCoords, i * 4)
+
+            i++
         }
+        newLineLocations[line] = text.length + 1
+        vertexCount = i*6
     }
 
     fun getLine(index: Int): Int {
