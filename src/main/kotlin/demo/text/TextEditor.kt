@@ -41,21 +41,29 @@ private class StartText : State() {
     val model = Model()
     val transformation = Matrix4f()
 
+    val startPosition = vec(-Game.viewWidth.toFloat()/2f, Game.viewHeight.toFloat()/2f - renderer.fontSize)
+
     var cursor = 0
 
     init {
         renderer.text = ""
 
-        renderer.position = vec(-Game.viewWidth.toFloat()/2f, Game.viewHeight.toFloat()/2f - renderer.fontSize)
+        renderer.position = startPosition
 
     }
 
     override fun update(delta: Double) {
+        fun setViewPosition() {
+            Game.viewX = startPosition.x + Game.viewWidth/2.0
+            Game.viewY = startPosition.y + 1.0 - Game.viewHeight/2.0
+        }
         if (Mouse.SCROLL_DOWN.hasBeenPressed) {
             Game.viewHeight *= 1.0 + Mouse.SCROLL_DOWN.distance/10.0
+            setViewPosition()
         }
         if (Mouse.SCROLL_UP.hasBeenPressed) {
             Game.viewHeight /= 1.0 + Mouse.SCROLL_UP.distance/10.0
+            setViewPosition()
         }
 
         if (Keyboard.textInput.hasBeenInput.isNotEmpty()) {
@@ -97,7 +105,7 @@ private class StartText : State() {
     }
 
     override fun render(draw: Drawer) {
-        draw.centered.color(hex(0xC0C0C0FF)).rectangle(0, 0, Game.viewWidth, Game.viewHeight)
+        draw.color(hex(0xC0C0C0FF)).background()
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)
         renderer.render(model, transformation)

@@ -11,6 +11,7 @@ import gl.vbo.pointer.VBOPointer
 import graphics.Image
 import graphics.Polygon
 import matrices.TransformationMatrix
+import org.lwjgl.opengl.GL11.glClearColor
 import util.colors.Color
 import util.colors.rgba2Hex
 import util.colors.toColor
@@ -113,6 +114,10 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     private fun rotate(degrees: Double, pivotX: Double, pivotY: Double) {
         transformation.setPivot(pivotX, pivotY)
         transformation.setRotate(0.0, 0.0, degrees)
+    }
+
+    override fun background() {
+        glClearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {

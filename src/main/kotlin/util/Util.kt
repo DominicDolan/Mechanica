@@ -23,6 +23,7 @@ private fun getCallingClass(): Class<*> {
 }
 
 fun codepointToString(cp: Int): String {
+    println(cp)
     val sb = StringBuilder()
     when {
         Character.isBmpCodePoint(cp) -> {

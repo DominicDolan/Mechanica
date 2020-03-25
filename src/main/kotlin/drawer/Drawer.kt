@@ -6,6 +6,9 @@ import util.colors.hex
 import util.units.Vector
 
 interface Drawer {
+
+    fun background()
+
     fun rectangle(x: Number, y: Number, width: Number, height: Number)
 
     fun circle(x: Number, y: Number, radius: Number) {

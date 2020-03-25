@@ -181,14 +181,14 @@ fun List<Vector>.calculateLength(): Double {
     return length
 }
 
-fun vec(x: Number, y: Number): Vector {
+fun vec(x: Number, y: Number): LightweightVector {
     val xBits = java.lang.Float.floatToRawIntBits(x.toFloat())
     val yBits = java.lang.Float.floatToRawIntBits(y.toFloat())
     val xyBits = (yBits.toLong() shl 32 ushr 32) or (xBits.toLong() shl 32)
     return LightweightVector(xyBits)
 }
 
-fun vec(r: Number, theta: Angle): Vector {
+fun vec(r: Number, theta: Angle): LightweightVector {
     val x = r.toDouble()*cos(theta.toRadians().asDouble())
     val y = r.toDouble()*sin(theta.toRadians().asDouble())
     return vec(x, y)
