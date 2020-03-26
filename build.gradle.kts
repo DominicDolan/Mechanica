@@ -80,7 +80,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.11.3")
     api("com.googlecode.playn:playn-jbox2d:1.9.1")
 
-//    api("com.dubulduke.ui:KotlinMarkupLanguage:0.1")
+    api("com.dubulduke.ui:KotlinMarkupLanguage:0.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.3.50")
 

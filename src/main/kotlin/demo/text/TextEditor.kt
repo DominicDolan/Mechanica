@@ -37,12 +37,7 @@ fun main() {
 
 
 private class StartText : State() {
-    val colors = ColorsTutorial()
     val renderer = FontRenderer()
-
-    val heart = loadImage(Res.image["red-heart_2764"])
-    val rofl = loadImage(Res.image["rolling-on-the-floor-laughing_1f923"])
-    val smileHearts = loadImage(Res.image["smiling-face-with-hearts_1f970"])
 
     val model = Model()
     val transformation = Matrix4f()
@@ -110,34 +105,9 @@ private class StartText : State() {
 
     }
 
-    var showHeart = false
-    var showRofl = false
-    var showSmiles = false
-    var roflPos: Vector = vec(0, 0)
-    var smilesPos: Vector = vec(0, 0)
     override fun render(draw: Drawer) {
-//        draw.color(hex(0xC0C0C0FF)).background()
-        colors.render()
-        if (Keyboard.CTRL() && Keyboard.N1.hasBeenPressed) {
-            showHeart = true
-        }
-        if (Keyboard.CTRL() && Keyboard.N2.hasBeenPressed) {
-            showRofl = true
-            roflPos = renderer.from(renderer.text.length).getPosition()
-        }
-        if (Keyboard.CTRL() && Keyboard.N3.hasBeenPressed) {
-            showSmiles = true
-            smilesPos = renderer.from(renderer.text.length).getPosition()
-        }
-        if (showHeart) {
-            draw.centered.image(heart, 0, 0, 3, 3)
-        }
-        if (showRofl){
-            draw.normal.image(rofl, roflPos.x, roflPos.y - 0.2, 0.8, 0.8)
-        }
-        if (showSmiles) {
-            draw.normal.image(smileHearts, smilesPos.x, smilesPos.y - 0.2, 0.8, 0.8)
-        }
+        draw.color(hex(0xC0C0C0FF)).background()
+
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)
         renderer.render(model, transformation)
