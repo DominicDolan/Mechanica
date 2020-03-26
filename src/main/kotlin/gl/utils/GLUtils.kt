@@ -1,6 +1,8 @@
 package gl.utils
 
-import gl.script.Declarations
+import display.Game
+import gl.script.ShaderDeclarations
+import gl.shader.Shader
 import graphics.Image
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
@@ -18,11 +20,14 @@ internal fun startGame() {
     GL30.glBindVertexArray(vao)
 
     //language=GLSL
-    Declarations.function("""
-        vec4 matrices(vec4 position) {
-            return projection*view*transformation*position;
-        }
-    """)
+//    ShaderDeclarations.function("""
+//        vec4 matrices(vec4 position) {
+//            if(matrixType == 0f) {
+//                return pvMatrix*transformation*position;
+//            }
+//            return projection*view*transformation*position;
+//        }
+//    """)
 }
 
 internal fun startFrame() {
@@ -31,6 +36,12 @@ internal fun startFrame() {
 
     GL11.glEnable(GL11.GL_STENCIL_TEST)
     enableAlphaBlending()
+
+    val pvMatrix = Game.viewMatrix.getWithProjection(Game.projectionMatrix)
+    val pvUiMatrix = Game.uiViewMatrix.getWithProjection(Game.projectionMatrix)
+    Game.pvMatrix.set(pvMatrix)
+    Game.pvUiMatrix.set(pvUiMatrix)
+//
 }
 
 fun createUnitSquareArray() = createQuadArray(0f, 1f, 1f, 0f)
@@ -154,10 +165,4 @@ private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int
     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
     GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
 
-}
-
-fun getByteSizeFromGLType(glType: Int) {
-    when(glType) {
-
-    }
 }

@@ -13,6 +13,7 @@ import matrices.ProjectionMatrix
 import matrices.ViewMatrix
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
+import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.system.APIUtil
 import org.lwjgl.system.Configuration
@@ -71,6 +72,9 @@ object Game {
         get() = view?.uiView?: ViewMatrix()
     val projectionMatrix: ProjectionMatrix
         get() = view?.projectionMatrix?: ProjectionMatrix()
+
+    val pvMatrix = Matrix4f()
+    val pvUiMatrix = Matrix4f()
 
     var world: World = World(Vec2(0f, -9.8f))
 

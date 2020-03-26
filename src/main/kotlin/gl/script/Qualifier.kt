@@ -41,10 +41,13 @@ abstract class Qualifier(private val variables: ScriptVariables) {
     fun vec4(color: Color): GLVector4f = vec4().apply { set(color) }
 
     fun float(f: Float = 0f): GLFloat {
-        val variableName = variables.getNextName()
+        return float(variables.getNextName(), f)
+    }
+
+    fun float(name: String, f: Float = 0f): GLFloat {
         val qualifier = qualifierName
 
-        val v =  GLFloat(f, variableName, qualifier)
+        val v =  GLFloat(f, name, qualifier)
         variables.addVariable(v)
         return v
     }

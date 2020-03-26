@@ -4,7 +4,7 @@ import display.Game
 import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
 
-abstract class ShaderScript : Declarations("autoVal") {
+abstract class ShaderScript : ShaderDeclarations("autoVal") {
     val script: String by lazy { generateScript() }
 
     private var programId: Int = 0
@@ -27,12 +27,10 @@ abstract class ShaderScript : Declarations("autoVal") {
             if (v.qualifier == "uniform") {
                 v.location = GL20.glGetUniformLocation(programId, v.name)
                 if (v.location == -1) {
-                    val msg = "Unable to find uniform variable with name: ${v.name} in script\n" +
+                    if (Game.debug) {
+                        val msg = "Unable to find uniform variable with name: ${v.name} in script\n" +
                             "OpenGL removes unused variables. Try removing any variables that are not in use\n" +
                             "Script:\n$script"
-                    if (Game.debug) {
-                        throw IllegalStateException(msg)
-                    } else {
                         System.err.println(msg)
                     }
                 }
@@ -46,7 +44,7 @@ abstract class ShaderScript : Declarations("autoVal") {
     }
 
     private fun loadGlobalUniforms() {
-        for (v in Declarations.iterator) {
+        for (v in ShaderDeclarations.iterator) {
             if (v.qualifier == "uniform") {
                 v.location = GL20.glGetUniformLocation(programId, v.name)
                 loadUniform(v.location, v.value)

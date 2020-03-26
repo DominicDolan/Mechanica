@@ -116,7 +116,6 @@ class PathRenderer : Renderer() {
 
     private val _fragment = object : ShaderScript() {
 
-        val color = uniform.vec4(hex(0xFF00FF88))
         val mode = uniform.float(0f)
 
         //language=GLSL

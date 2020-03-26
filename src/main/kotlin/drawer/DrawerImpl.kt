@@ -138,10 +138,10 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
             frame = Frames.UI
         }
         fontRenderer.text = text
-        fontRenderer.fontSize = fontSize.toDouble()
-        fontRenderer.position = vec(x, y)
+//        fontRenderer.fontSize = fontSize.toDouble()
+//        fontRenderer.position = vec(x, y)
         renderer = fontRenderer
-        draw(0.0, 0.0, 1.0, 1.0)
+        draw(x.toDouble(), y.toDouble(), fontSize.toDouble(), fontSize.toDouble())
     }
 
     override fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {

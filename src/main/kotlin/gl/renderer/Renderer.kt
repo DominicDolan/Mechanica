@@ -12,9 +12,7 @@ import util.colors.toColor
 open class Renderer {
     val projection: Matrix4f
         get() = Game.projectionMatrix.get()
-    var view: Matrix4f
-        get() = Game.viewMatrix.get()
-        set(value) {}
+    var view: Matrix4f = Game.viewMatrix.get()
 
     protected open val model = Model()
     protected open val transformation: Matrix4f = Matrix4f().identity()
@@ -31,8 +29,6 @@ open class Renderer {
     }
 
     private val defaultFragment = object : ShaderScript() {
-
-        val color = uniform.vec4(hex(0xFF00FFFF))
 
         //language=GLSL
         override val main: String = """

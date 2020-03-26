@@ -3,8 +3,9 @@ package gl.script
 import gl.vbo.pointer.AttributePointer
 import gl.glvars.GLVar
 import gl.vbo.pointer.VBOPointer
+import util.colors.hex
 
-abstract class Declarations(variableName: String = "autoVal") {
+abstract class ShaderDeclarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
     protected val iterator: Iterator<GLVar<*>>
         get() = variables.iterator()
@@ -13,17 +14,20 @@ abstract class Declarations(variableName: String = "autoVal") {
         get() = variables.declarations
 
     protected open val uniform: Qualifier = qualifier("uniform")
-    protected open val varIn: Qualifier = qualifier("in")
-    protected open val varOut: Qualifier = qualifier("out")
-    protected open val varConst: Qualifier = qualifier("const")
     protected open fun attribute(pointer: AttributePointer) = qualifier("layout (location=${pointer.index}) in")
 
     protected val position by lazy { attribute(VBOPointer.position).vec3("position") }
     protected val textureCoords by lazy { attribute(VBOPointer.texCoords).vec2("textureCoords") }
 
+    val color by lazy { uniform.vec4(hex(0x000000FF)) }
+
     fun qualifier(name: String) = object : Qualifier(variables) {
         override val qualifierName: String
             get() = name
+    }
+
+    fun addOther(body: String) {
+        variables.addFunction(body)
     }
 
     companion object {
@@ -31,7 +35,7 @@ abstract class Declarations(variableName: String = "autoVal") {
         val header: String
             get() = "#version $version core\n"
 
-        private val globals = GlobalDeclarations()
+        private val globals = GlobalShaderDeclarations()
         val iterator: Iterator<GLVar<*>>
             get() = globals.iterator
 
@@ -50,11 +54,7 @@ abstract class Declarations(variableName: String = "autoVal") {
             globalMethods.add(function.trimIndent())
         }
 
-        val projection = globals.uniform.mat4("projection")
-        val transformation = globals.uniform.mat4("transformation")
-        val view = globals.uniform.mat4("view")
-
-        fun addGlobal(adder: GlobalDeclarations.() -> Unit) {
+        fun addGlobal(adder: GlobalShaderDeclarations.() -> Unit) {
             adder(globals)
         }
 

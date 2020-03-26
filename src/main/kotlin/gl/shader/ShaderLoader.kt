@@ -1,5 +1,6 @@
 package gl.shader
 
+import gl.script.ShaderDeclarations
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import gl.script.ShaderScript
@@ -10,7 +11,7 @@ class ShaderLoader(
         vertex: ShaderScript,
         fragment: ShaderScript,
         tessellation: ShaderScript?,
-        geometry: ShaderScript?) {
+        geometry: ShaderScript?): ShaderDeclarations() {
 
     val id: Int
 

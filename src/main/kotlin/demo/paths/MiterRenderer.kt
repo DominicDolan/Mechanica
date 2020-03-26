@@ -31,8 +31,6 @@ class MiterRenderer : Renderer() {
 
     private val _fragment = object : ShaderScript() {
 
-        val color = uniform.vec4(hex(0xFF00FFFF))
-
         //language=GLSL
         override val main: String = """
                 out vec4 out_Color;

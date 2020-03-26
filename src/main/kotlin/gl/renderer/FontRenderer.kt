@@ -37,8 +37,6 @@ class FontRenderer : Renderer() {
 
     private val _fragment = object : ShaderScript() {
 
-        val color = uniform.vec4(hex(0x504050FF))
-
         //language=GLSL
         override val main: String = """
                 in vec2 tc;
@@ -81,20 +79,18 @@ class FontRenderer : Renderer() {
         }
 
     var fontSize: Double = 1.0
-        set(value) {
-            field = value
-            transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
-        }
 
     var position: Vector = MutableVector(0.0, 0.0)
         set(value) {
-            transformation.translate(value.x.toFloat(), value.y.toFloat(), 0f)
             (field as MutableVector).set(value)
         }
 
-    override fun render(model: Model, transformation: Matrix4f) {
-        this.model.text = text
-        shader.render(this.model, this.transformation)
+    override fun render(model: Model, transformation: Matrix4f ) {
+        if (transformation == this.transformation) {
+            transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
+            transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
+        }
+        shader.render(this.model, transformation)
         transformation.identity()
     }
 

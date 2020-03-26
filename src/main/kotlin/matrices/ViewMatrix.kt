@@ -64,7 +64,8 @@ class ViewMatrix {
             matrix.rotate(Math.toRadians(ry.toDouble()).toFloat(), yAxis)
             matrix.rotate(Math.toRadians(rz.toDouble()).toFloat(), zAxis)
 
-            matrixWithProjection = projectionMatrix.get().mul(matrix)
+            val projMatrix = projectionMatrix.get()
+            projMatrix.invertPerspective(matrixWithProjection).invert().mul(matrix)
         }
         scheduleProjectionAndView = false
         scheduleCreation = false

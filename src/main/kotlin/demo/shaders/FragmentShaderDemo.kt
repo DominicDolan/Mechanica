@@ -1,21 +1,16 @@
-package demo.polygon
+package demo.shaders
 
 import display.Game
 import display.GameOptions
 import drawer.Drawer
-import gl.utils.createUnitSquareArray
-import gl.vbo.AttributeArray
-import gl.vbo.pointer.VBOPointer
-import gl.models.Model
 import state.State
-import util.extensions.toFloatArray
 
 fun main() {
     val options = GameOptions()
             .setResolution(1000, 1000)
 //            .setDebugMode(true)
             .setViewPort(height = 1.0)
-            .setStartingState { StartMain() }
+            .setStartingState { FragmentShaderDemo() }
 
     Game.start(options)
     Game.viewX = Game.viewWidth/2f
@@ -24,20 +19,15 @@ fun main() {
     Game.destroy()
 }
 
-private class StartMain : State() {
-    val renderer = PolygonRenderer()
 
-    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
-
-    private val model = Model(vbo)
+private class FragmentShaderDemo : State() {
+    val renderer = FragmentRenderer()
 
     override fun update(delta: Double) {
     }
 
     override fun render(draw: Drawer) {
-        renderer.render(model)
+        renderer.render()
     }
 
 }
-
-

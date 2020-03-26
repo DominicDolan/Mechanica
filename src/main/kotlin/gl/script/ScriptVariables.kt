@@ -15,6 +15,9 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
             for (v in variables) {
                 sb.append(v.declaration)
             }
+            for (f in functions) {
+                sb.append(f)
+            }
             return sb.toString()
         }
     fun getNextName(): String {
@@ -24,6 +27,10 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
     fun addVariable(v: GLVar<*>) {
         if (variables.containsName(v.name)) throw IllegalStateException("Two variables have been declared with the name: ${v.name}")
         variables.add(v)
+    }
+
+    fun addFunction(f: String) {
+        functions.add(f.trimIndent())
     }
 
     private fun ArrayList<GLVar<*>>.containsName(name: String): Boolean {

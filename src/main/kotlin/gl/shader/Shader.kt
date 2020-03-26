@@ -2,7 +2,7 @@ package gl.shader
 
 import display.Game
 import gl.models.Model
-import gl.script.Declarations
+import gl.script.ShaderDeclarations
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
@@ -27,15 +27,15 @@ interface Shader {
         geometry?.loadUniforms()
     }
 
+    fun loadMatrices(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f)
+
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
         val projMatrix = projection ?: Game.projectionMatrix.get()
         val viewMatrix = view ?: Game.viewMatrix.get()
 
-        GL20.glUseProgram(id)
+        loadMatrices(transformation, projMatrix, viewMatrix)
 
-        Declarations.transformation.set(transformation)
-        Declarations.projection.set(projMatrix)
-        Declarations.view.set(viewMatrix)
+        GL20.glUseProgram(id)
 
         load()
 
@@ -49,6 +49,7 @@ interface Shader {
                 fragment: ShaderScript,
                 tessellation: ShaderScript? = null,
                 geometry: ShaderScript? = null): Shader {
+
             return ShaderImpl(vertex, fragment, tessellation, geometry)
         }
     }

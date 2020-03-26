@@ -1,13 +1,20 @@
-package demo.polygon
+package demo.shaders
 
 import display.Game
+import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.models.Model
+import gl.utils.createUnitSquareArray
+import gl.vbo.AttributeArray
+import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import org.joml.Matrix4f
+import util.extensions.toFloatArray
 
-class PolygonRenderer {
+class FragmentRenderer {
+
+    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
+    private val model = Model(vbo)
 
     private val vertex = object : ShaderScript() {
         //language=GLSL
@@ -22,7 +29,7 @@ class PolygonRenderer {
 
     private val fragment = object : ShaderScript() {
 
-//        val color = uniform.vec4(hex(0xFF00FFFF))
+        //        val color = uniform.vec4(hex(0xFF00FFFF))
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
         val resolution = uniform.vec2(Game.width.toDouble(), Game.height.toDouble())
@@ -32,8 +39,8 @@ class PolygonRenderer {
                 out vec4 fragColor;
                                 
                 void main(void) {
-                    vec2 st = gl_FragCoord.xy/$resolution;
-                    fragColor = vec4(st.x,st.y, 0.0, 1.0);
+                    vec2 st = (gl_FragCoord.xy/$resolution - vec2(0.5, 0.5) - $mouse);
+                    fragColor = vec4(abs(st.x), abs(st.y), abs(sin($time)), 1.0);
                 }
             """
 
@@ -41,15 +48,11 @@ class PolygonRenderer {
 
     private val shader = Shader(vertex, fragment)
     private val startTime = System.currentTimeMillis()
-//    var color: Color
-//        get() = fragment.color.value.toColor()
-//        set(value) {
-//            fragment.color.set(value)
-//        }
 
-    private val transformation = Matrix4f()
+    private val transformation = Matrix4f().also { it.identity() }
 
-    fun render(model: Model) {
+
+    fun render() {
         fragment.mouse.set(Cursor.viewX, Cursor.viewY)
         fragment.time.value = (System.currentTimeMillis() - startTime).toFloat()/1000f
         shader.render(model, transformation)
