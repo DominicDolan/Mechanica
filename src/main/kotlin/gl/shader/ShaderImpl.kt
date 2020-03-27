@@ -1,7 +1,6 @@
 package gl.shader
 
 import display.Game
-import gl.script.ShaderDeclarations
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 import org.joml.Vector3f

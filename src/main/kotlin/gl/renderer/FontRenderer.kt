@@ -54,6 +54,13 @@ class FontRenderer : Renderer() {
 
     private val fontMap = HashMap<Font, TextModel>()
 
+    var font: Font = Font(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(it) }
+        set(value) {
+            val newModel = TextModel(value)
+            newModel.text = text
+            field = value
+        }
+
     override val model: TextModel
         get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
 
@@ -71,13 +78,6 @@ class FontRenderer : Renderer() {
             field = value
         }
 
-    var font: Font = Font(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(it) }
-        set(value) {
-            val newModel = TextModel(value)
-            newModel.text = text
-            field = value
-        }
-
     var fontSize: Double = 1.0
 
     var position: Vector = MutableVector(0.0, 0.0)
@@ -85,12 +85,16 @@ class FontRenderer : Renderer() {
             (field as MutableVector).set(value)
         }
 
+    init {
+        model.text = ""
+    }
+
     override fun render(model: Model, transformation: Matrix4f ) {
         if (transformation == this.transformation) {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
             transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
         }
-        shader.render(this.model, transformation)
+        shader.render(this.model, this.transformation)
         transformation.identity()
     }
 

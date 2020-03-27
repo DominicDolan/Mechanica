@@ -18,24 +18,15 @@ import java.nio.ByteBuffer
 internal fun startGame() {
     val vao = GL30.glGenVertexArrays()
     GL30.glBindVertexArray(vao)
-
-    //language=GLSL
-//    ShaderDeclarations.function("""
-//        vec4 matrices(vec4 position) {
-//            if(matrixType == 0f) {
-//                return pvMatrix*transformation*position;
-//            }
-//            return projection*view*transformation*position;
-//        }
-//    """)
+    GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
+    GL11.glEnable(GL11.GL_STENCIL_TEST)
+    enableAlphaBlending()
+    startFrame()
 }
 
 internal fun startFrame() {
     GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
-    GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
 
-    GL11.glEnable(GL11.GL_STENCIL_TEST)
-    enableAlphaBlending()
 
     val pvMatrix = Game.viewMatrix.getWithProjection(Game.projectionMatrix)
     val pvUiMatrix = Game.uiViewMatrix.getWithProjection(Game.projectionMatrix)

@@ -18,7 +18,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
     }
 
     fun bind() {
-        GL20.glBindBuffer(GL20.GL_ARRAY_BUFFER, id)
+        GL20.glBindBuffer(pointer.bufferType, id)
         if (pointer is AttributePointer) {
             pointer.enable()
         }

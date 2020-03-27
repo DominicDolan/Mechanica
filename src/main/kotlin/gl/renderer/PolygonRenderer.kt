@@ -33,7 +33,6 @@ class PolygonRenderer : Renderer() {
         GL11.glDrawElements(GL11.GL_TRIANGLES, it.maxVertices, GL11.GL_UNSIGNED_SHORT, 0)
     }
 
-
     init {
         updateBuffers(polygon.indexedVertices)
     }

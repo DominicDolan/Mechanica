@@ -38,7 +38,6 @@ class CircleRenderer : Renderer() {
 
     private val _fragment = object : ShaderScript() {
 
-        val scale = uniform.float()
         val strokeWidth = uniform.float(1.0f)
 
         //language=GLSL
@@ -52,7 +51,7 @@ class CircleRenderer : Renderer() {
                 void main(void) {
                     float innerEdge = edge - $strokeWidth;
                     vec2 st = (tc - vec2(0.5));
-                    float distance = length(st);
+                    float distance = dot(st, st)*4.0;
                     
                     float alpha = 1.0 - smoothstep(0.5 - 0.2*pixelScale, 0.5 , distance);
                                         

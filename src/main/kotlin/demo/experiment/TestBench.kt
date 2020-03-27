@@ -1,6 +1,7 @@
 @file:Suppress("unused") // Experimentation class, many functions/variables will be unused
 package demo.experiment
 
+import debug.DebugDrawer
 import display.Game
 import display.GameOptions
 import drawer.Drawer
@@ -24,6 +25,7 @@ fun main() {
 fun createGameInstance() {
     val options = GameOptions()
             .setResolution(1280, 720)
+            .setDebugMode(true)
             .setViewPort(height = 5.0)
             .setStartingState { TestState() }
 
@@ -33,6 +35,7 @@ fun createGameInstance() {
 }
 
 private class TestState : State() {
+//    val renderer = FontRenderer()
     override fun update(delta: Double) {
     }
 
@@ -59,7 +62,9 @@ private class TestState : State() {
         if (Keyboard.A.hasBeenPressed) {
             Game.viewX -= 1.0
         }
-
+//        renderer.text = "Test 2"
+//        renderer.render()
+        draw.green.text("Test", 1.0, 0.0, 0.0)
         draw.ui.red.rotated(rotation.degrees).circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, radius)
     }
 

@@ -1,6 +1,7 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package debug
 
+import display.Game
 import drawer.Drawer
 import util.extensions.plus
 import util.extensions.vec
@@ -9,12 +10,15 @@ import util.units.Vector
 
 object DebugDrawer {
     private val drawings = ArrayList<(Drawer) -> Unit>()
+    private val sb = StringBuilder()
 
     internal fun render(draw: Drawer) {
         for (drawing in drawings) {
             drawing(draw)
         }
+        draw.green.text(sb.toString(), 1.0, 0.0, 0.0)
         drawings.clear()
+        sb.clear()
     }
 
     fun drawCircle(position: Vector, radius: Double) {
@@ -31,6 +35,10 @@ object DebugDrawer {
 
     fun drawVector(position: Vector, r: Number, theta: Angle) {
         drawVector(position, vec(r, theta))
+    }
+
+    fun drawText(text: String) {
+        sb.appendln(text)
     }
 
 }
