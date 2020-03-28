@@ -27,7 +27,6 @@ internal fun startGame() {
 internal fun startFrame() {
     GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
 
-
     val pvMatrix = Game.viewMatrix.getWithProjection(Game.projectionMatrix)
     val pvUiMatrix = Game.uiViewMatrix.getWithProjection(Game.projectionMatrix)
     Game.pvMatrix.set(pvMatrix)
@@ -121,22 +120,17 @@ private fun loadTextureQuad(left: Float, top: Float, right: Float, bottom: Float
 }
 
 fun loadImage(resource: Resource): Image {
-    val widthBuffer = BufferUtils.createIntBuffer(1)
-    val heightBuffer = BufferUtils.createIntBuffer(1)
-    val componentsBuffer = BufferUtils.createIntBuffer(1)
-
-    val data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
-    val width = widthBuffer.get()
-    val height = heightBuffer.get()
+    val data = ImageData(resource)
 
     var image = Image(0)
-    if (data != null) {
-        image = loadImage(data, width, height)
-        STBImage.stbi_image_free(data)
+    if (data.data != null) {
+        image = loadImage(data.data, data.width, data.height)
     }
+    data.free()
 
     return image
 }
+
 
 fun loadImage(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, format: Int = GL_RGBA): Image {
 
@@ -156,4 +150,26 @@ private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int
     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
     GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
 
+}
+
+class ImageData(resource: Resource) {
+    val data: ByteBuffer?
+    val width: Int
+    val height: Int
+
+    init {
+        val widthBuffer = BufferUtils.createIntBuffer(1)
+        val heightBuffer = BufferUtils.createIntBuffer(1)
+        val componentsBuffer = BufferUtils.createIntBuffer(1)
+
+        data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
+        width = widthBuffer.get()
+        height = heightBuffer.get()
+    }
+
+    fun free() {
+        if (data != null) {
+            STBImage.stbi_image_free(data)
+        }
+    }
 }

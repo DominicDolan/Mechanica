@@ -44,60 +44,60 @@ interface Drawer {
 
     val color: ColorDrawer
 
-    val black: Drawer
+    val black: ColorDrawer
         get() {
             color(hex(0x000000FF))
-            return this
+            return color
         }
-    val white: Drawer
+    val white: ColorDrawer
         get() {
             color(hex(0xFFFFFFFF))
-            return this
+            return color
         }
-    val grey: Drawer
+    val grey: ColorDrawer
         get() {
             color(hex(0x808080FF))
-            return this
+            return color
         }
-    val darkGrey: Drawer
+    val darkGrey: ColorDrawer
         get() {
             color(hex(0x696969FF))
-            return this
+            return color
         }
-    val lightGrey: Drawer
+    val lightGrey: ColorDrawer
         get() {
             color(hex(0xD3D3D3FF))
-            return this
+            return color
         }
-    val red: Drawer
+    val red: ColorDrawer
         get() {
             color(hex(0xFF0000FF))
-            return this
+            return color
         }
-    val green: Drawer
+    val green: ColorDrawer
         get() {
             color(hex(0x00FF00FF))
-            return this
+            return color
         }
-    val blue: Drawer
+    val blue: ColorDrawer
         get() {
             color(hex(0x0000FFFF))
-            return this
+            return color
         }
-    val magenta: Drawer
+    val magenta: ColorDrawer
         get() {
             color(hex(0xFF00FFFF))
-            return this
+            return color
         }
-    val cyan: Drawer
+    val cyan: ColorDrawer
         get() {
             color(hex(0x00FFFFFF))
-            return this
+            return color
         }
-    val yellow: Drawer
+    val yellow: ColorDrawer
         get() {
             color(hex(0xFFFF00FF))
-            return this
+            return color
         }
 
     val stroke: StrokeDrawer

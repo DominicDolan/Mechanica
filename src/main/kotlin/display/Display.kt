@@ -124,6 +124,8 @@ object Display : IDisplay {
         }
 
         fun createWindow() {
+            println(contentScaleX)
+            println(contentScaleY)
             if (Platform.get() !== Platform.MACOSX) {
                 width = Math.round(width * contentScaleX)
                 height = Math.round(height * contentScaleY)

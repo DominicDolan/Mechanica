@@ -45,10 +45,10 @@ private class TestState : State() {
     val vec3 = Vector3f()
     override fun render(draw: Drawer) {
         if (Mouse.SCROLL_DOWN.hasBeenPressed) {
-            radius /= 1.0 + 0.1*Mouse.SCROLL_DOWN.distance
+            radius /= 1.0 + 0.05*Mouse.SCROLL_DOWN.distance
         }
         if (Mouse.SCROLL_UP.hasBeenPressed) {
-            radius *= 1.0 + 0.1*Mouse.SCROLL_DOWN.distance
+            radius *= 1.0 + 0.05*Mouse.SCROLL_DOWN.distance
         }
         if (Keyboard.LEFT.hasBeenPressed) {
             rotation -= 5.0
@@ -62,10 +62,15 @@ private class TestState : State() {
         if (Keyboard.A.hasBeenPressed) {
             Game.viewX -= 1.0
         }
-//        renderer.text = "Test 2"
-//        renderer.render()
-        draw.green.text("Test", 1.0, 0.0, 0.0)
+        DebugDrawer.drawText("Radius: $radius")
+        val pixelScale = ((Game.height.toDouble())/Game.viewHeight)
+        val pixelRadius = radius*pixelScale
+        DebugDrawer.drawText("Radius: $radius")
+        DebugDrawer.drawText("Pixel radius: $pixelRadius")
+        DebugDrawer.drawText("Game height: ${Game.viewHeight}, resolution: ${Game.height}x${Game.width}")
         draw.ui.red.rotated(rotation.degrees).circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, radius)
+        draw.ui.green.circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, 0.1)
+        draw.centered.blue.rectangle(0, 0, 1.0, 4.9)
     }
 
 

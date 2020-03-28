@@ -94,7 +94,7 @@ class FontRenderer : Renderer() {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
             transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
         }
-        shader.render(this.model, this.transformation)
+        shader.render(this.model, transformation)
         transformation.identity()
     }
 

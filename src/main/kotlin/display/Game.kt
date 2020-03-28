@@ -104,6 +104,7 @@ object Game {
 
     fun start(options: GameOptions) {
         with(options) {
+            println("$resolutionWidth x $resolutionHeight")
             Display.init(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
 //            displayManager = DisplayManager(resolutionWidth, resolutionHeight, fullscreen, borderless, title = title)
             view = getView()

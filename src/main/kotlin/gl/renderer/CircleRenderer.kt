@@ -51,7 +51,7 @@ class CircleRenderer : Renderer() {
                 void main(void) {
                     float innerEdge = edge - $strokeWidth;
                     vec2 st = (tc - vec2(0.5));
-                    float distance = dot(st, st)*4.0;
+                    float distance = dot(st, st)*2.0;
                     
                     float alpha = 1.0 - smoothstep(0.5 - 0.2*pixelScale, 0.5 , distance);
                                         

@@ -1,5 +1,6 @@
 package gl.shader
 
+import debug.DebugDrawer
 import display.Game
 import gl.script.ShaderScript
 import org.joml.Matrix4f
@@ -63,6 +64,7 @@ internal class ShaderImpl(
 
         val scale = getScale(transformation)*getScale(projection)*getScale(view)
         this.pixelScale.value = 1f/scale
+        DebugDrawer.drawText("Scale: ${1f/scale}")
 
     }
 
