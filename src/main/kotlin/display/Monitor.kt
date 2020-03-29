@@ -83,10 +83,12 @@ class Monitor private constructor(val id: Long) {
             }
 
         fun getPrimaryMonitor(): Monitor {
+            GLFWContext.initialize()
             return Monitor(glfwGetPrimaryMonitor())
         }
 
         private fun createMonitorsArray(): Array<Monitor> {
+            GLFWContext.initialize()
             val pointers = glfwGetMonitors()
             return if (pointers != null) {
                 Array(pointers.limit()) {Monitor(pointers[it])}

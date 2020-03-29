@@ -15,15 +15,6 @@ import util.units.Vector
 import java.nio.ByteBuffer
 
 
-internal fun startGame() {
-    val vao = GL30.glGenVertexArrays()
-    GL30.glBindVertexArray(vao)
-    GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
-    GL11.glEnable(GL11.GL_STENCIL_TEST)
-    enableAlphaBlending()
-    startFrame()
-}
-
 internal fun startFrame() {
     GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
 
@@ -71,7 +62,7 @@ fun createIndicesArrayForQuads(numberOfQuads: Int): ShortArray {
     return array
 }
 
-private fun enableAlphaBlending() {
+fun enableAlphaBlending() {
     GL11.glEnable(GL11.GL_BLEND)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 }

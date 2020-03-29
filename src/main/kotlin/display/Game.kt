@@ -6,8 +6,8 @@ import debug.BodyRenderer
 import debug.DebugDrawer
 import drawer.Drawer
 import drawer.DrawerImpl
+import gl.utils.GLContext
 import gl.utils.startFrame
-import gl.utils.startGame
 import input.ControlsMap
 import matrices.ProjectionMatrix
 import matrices.ViewMatrix
@@ -121,7 +121,7 @@ object Game {
                 Configuration.DEBUG_STACK.set(true)
             }
 
-            startGame()
+//            GLContext.initialize()
             val state = startingState ?: { EmptyState }
             val loadState = this.loadState ?: EmptyLoadState
             loadState.startingState = state
