@@ -1,0 +1,4 @@
+package debug
+
+class DebugConfiguration {
+}

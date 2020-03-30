@@ -2,6 +2,8 @@ package gl.shader
 
 import debug.DebugDrawer
 import display.Game
+import game.Game2
+import game.view.GameMatrices
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -48,13 +50,13 @@ internal class ShaderImpl(
 
     override fun loadMatrices(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
         matrixType.value = 1f
-        if (projection === Game.projectionMatrix.get()) {
-            if (view === Game.viewMatrix.get()) {
+        if (projection === Game2.matrices.projection.get()) {
+            if (view === Game2.matrices.view.get()) {
                 matrixType.value = 0f
-                this.pvMatrix.set(Game.pvMatrix)
-            } else if (view === Game.uiViewMatrix.get()) {
+                this.pvMatrix.set((Game2.matrices as GameMatrices).pvMatrix)
+            } else if (view === Game2.matrices.uiView.get()) {
                 matrixType.value = 0f
-                this.pvMatrix.set(Game.pvUiMatrix)
+                this.pvMatrix.set((Game2.matrices as GameMatrices).pvUiMatrix)
             }
         }
 

@@ -2,6 +2,7 @@
 package matrices
 
 import display.Game
+import game.Game2
 import org.joml.Matrix4f
 import kotlin.math.tan
 
@@ -38,7 +39,7 @@ class ProjectionMatrix {
 
     fun get(): Matrix4f {
         if (scheduleCreation) {
-            val aspectRatio = Game.ratio
+            val aspectRatio = Game2.window.aspectRatio
 
             val yScale = (1f / tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()
             val xScale = (yScale / aspectRatio).toFloat()

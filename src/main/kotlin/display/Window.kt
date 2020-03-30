@@ -1,12 +1,10 @@
 package display
 
+import game.Game2
 import gl.utils.ImageData
 import org.lwjgl.BufferUtils
+import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback
-import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI
-import org.lwjgl.glfw.GLFWImage
-import org.lwjgl.glfw.GLFWWindowSizeCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.stb.STBImage
 import org.lwjgl.stb.STBImage.stbi_load
@@ -23,7 +21,8 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         get() = resolution.width
     val height: Int
         get() = resolution.height
-
+    val aspectRatio: Double
+        get() = width.toDouble()/height.toDouble()
     var isFocused: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FOCUSED) == GLFW_TRUE
         set(value) { if (value) glfwFocusWindow(id) }
@@ -161,9 +160,14 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         pollEvents()
         val shouldClose = this.shouldClose
         if (finished) {
-            glfwDestroyWindow(id)
+            destroy()
         }
-        return shouldClose
+        return !shouldClose
+    }
+
+    fun destroy() {
+        glfwDestroyWindow(id)
+        Callbacks.glfwFreeCallbacks(id)
     }
 
     fun swapBuffers() {

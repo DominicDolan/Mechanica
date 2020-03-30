@@ -28,6 +28,10 @@ class ViewMatrix {
         scheduleCreation = true
     }
 
+    fun copy(matrix: ViewMatrix) {
+        this.matrix.set(matrix.get())
+    }
+
     fun setTranslate(x: Double, y: Double, z: Double) {
         translation.set((-x).toFloat(), (-y).toFloat(), (-z).toFloat())
         scheduleCreation = true

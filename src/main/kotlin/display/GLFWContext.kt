@@ -37,6 +37,7 @@ object GLFWContext : Version {
 
     fun terminate() {
         glfwTerminate()
+        glfwSetErrorCallback(null)?.free()
     }
 
     fun multisampling(samples: Int) {

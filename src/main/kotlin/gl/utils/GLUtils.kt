@@ -17,11 +17,11 @@ import java.nio.ByteBuffer
 
 internal fun startFrame() {
     GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
-
-    val pvMatrix = Game.viewMatrix.getWithProjection(Game.projectionMatrix)
-    val pvUiMatrix = Game.uiViewMatrix.getWithProjection(Game.projectionMatrix)
-    Game.pvMatrix.set(pvMatrix)
-    Game.pvUiMatrix.set(pvUiMatrix)
+//
+//    val pvMatrix = Game.viewMatrix.getWithProjection(Game.projectionMatrix)
+//    val pvUiMatrix = Game.uiViewMatrix.getWithProjection(Game.projectionMatrix)
+//    Game.pvMatrix.set(pvMatrix)
+//    Game.pvUiMatrix.set(pvUiMatrix)
 //
 }
 
