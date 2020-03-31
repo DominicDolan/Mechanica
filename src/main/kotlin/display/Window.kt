@@ -1,14 +1,9 @@
 package display
 
-import game.Game2
 import gl.utils.ImageData
-import org.lwjgl.BufferUtils
-import org.lwjgl.glfw.*
+import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL
-import org.lwjgl.stb.STBImage
-import org.lwjgl.stb.STBImage.stbi_load
-import org.lwjgl.system.MemoryStack
+import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.system.MemoryUtil
 import resources.Resource
 import java.nio.ByteBuffer
@@ -54,8 +49,9 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
     var isFloating: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FLOATING ) == 1
         set(value) { glfwSetWindowAttrib(id, GLFW_FLOATING, if (value) GLFW_TRUE else GLFW_FALSE ) }
-    val shouldClose: Boolean
+    var shouldClose: Boolean
         get() = glfwWindowShouldClose(id)
+        set(value) { glfwSetWindowShouldClose(id, value) }
     var vSync: Boolean = true
         set(value) {
             glfwSwapInterval(if (value) 1 else 0)
@@ -88,6 +84,8 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             }
             field = value
         }
+
+    val position: Position = Position()
 
     val resolution: Dimension by lazy {
         setResolution(DimensionImpl(0, 0, false))
@@ -233,6 +231,31 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         if (this.monitor != null) {
             val vidMode = Monitor.getPrimaryMonitor().currentVideoMode
             glfwSetWindowMonitor(id, MemoryUtil.NULL, 0, 0, vidMode.width(), vidMode.height(), 0)
+        }
+    }
+
+    inner class Position {
+        val xArray = IntArray(1)
+        val yArray = IntArray(1)
+        var x: Int
+            set(value) = set(value, y)
+            get() {
+                updatePosition()
+                return xArray[0]
+            }
+        var y: Int
+            set(value) = set(x, value)
+            get() {
+                updatePosition()
+                return yArray[0]
+            }
+
+        private fun updatePosition() {
+            glfwGetWindowPos(id, xArray, yArray)
+        }
+
+        fun set(x: Int, y: Int) {
+            glfwSetWindowPos(id, x, y)
         }
     }
 

@@ -1,6 +1,6 @@
 package gl.vbo.pointer
 
-import display.Game
+import game.Game
 import org.lwjgl.opengl.GL20
 
 class AttributePointer private constructor(
@@ -35,10 +35,8 @@ class AttributePointer private constructor(
                 indicesMap[index] = new
                 new
             } else {
-                val msg = "An attribute pointer with this index already exists, returning that one instead, Attribute: $this"
-                if (Game.debug) {
-                    throw IllegalStateException(msg)
-                } else {
+                if (Game.debug.printWarnings) {
+                    val msg = "An attribute pointer with this index already exists, returning that one instead, Attribute: $this"
                     System.err.println(msg)
                 }
                 pointer

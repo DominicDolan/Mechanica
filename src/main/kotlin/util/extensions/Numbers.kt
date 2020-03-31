@@ -1,7 +1,6 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package util.extensions
 
-import org.w3c.dom.ranges.Range
 import kotlin.math.max
 import kotlin.math.min
 

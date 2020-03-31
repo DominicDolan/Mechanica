@@ -1,27 +1,23 @@
 package demo.polygon
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
+import gl.models.Model
 import gl.utils.createUnitSquareArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
-import gl.models.Model
 import state.State
 import util.extensions.toFloatArray
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1000, 1000)
-//            .setDebugMode(true)
-            .setViewPort(height = 1.0)
-            .setStartingState { StartMain() }
+    Game.configure {
+        setViewport(height = 1.0)
+        setStartingState { StartMain() }
+    }
+    Game.view.x = Game.view.width/2f
+    Game.view.y = Game.view.height/2f
 
-    Game.start(options)
-    Game.viewX = Game.viewWidth/2f
-    Game.viewY = Game.viewHeight/2f
-    Game.update()
-    Game.destroy()
+    Game.run()
 }
 
 private class StartMain : State() {

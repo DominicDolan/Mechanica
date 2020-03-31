@@ -1,31 +1,29 @@
 package demo.paths
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
+import gl.models.Model
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import input.Keyboard
-import gl.models.Model
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.GL13
+import org.lwjgl.opengl.GL20
 import state.State
 import util.colors.rgba
 import util.extensions.*
 import util.units.Vector
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-            .setDebugMode(true)
-            .setViewPort(height = 10.0)
-            .setStartingState { StartBezier() }
-
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { StartBezier() }
+    }
+    Game.run()
 }
 
 private class StartBezier : State() {

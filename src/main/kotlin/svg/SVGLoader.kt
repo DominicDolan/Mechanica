@@ -1,19 +1,15 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package svg
 
-import display.Game
+import game.Game
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import resources.Resource
 import util.extensions.flipVertically
-import util.extensions.scale
-import util.extensions.toOrigin
 import util.extensions.vec
 import util.units.MutableVector
 import util.units.Vector
-import java.lang.NumberFormatException
-import kotlin.collections.ArrayList
 
 
 //fun loadPolygonCoordinatesAdjusted(fileName: String, pathId: String? = null): List<Vector> {
@@ -80,7 +76,7 @@ fun loadPolygonCoordinates(element: Element): List<Vector> {
                 else -> throw IllegalArgumentException("Unexpected character while reading SVG file. Path: $sequence")
             }
         } catch (e: IllegalArgumentException) {
-            if (Game.debug) {
+            if (Game.debug.failEarly) {
                 throw e
             } else {
                 System.err.println(e.localizedMessage)

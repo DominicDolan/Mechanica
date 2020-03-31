@@ -1,7 +1,8 @@
 package input
 
-import display.Game
-import org.lwjgl.glfw.GLFW.*
+import game.Game
+import org.lwjgl.glfw.GLFW.GLFW_PRESS
+import org.lwjgl.glfw.GLFW.GLFW_RELEASE
 import org.lwjgl.glfw.GLFWCharCallback
 import org.lwjgl.glfw.GLFWKeyCallback
 

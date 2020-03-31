@@ -1,9 +1,9 @@
 package gl.shader
 
 import gl.script.ShaderDeclarations
+import gl.script.ShaderScript
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import gl.script.ShaderScript
 import org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER
 import kotlin.system.exitProcess
 
@@ -32,7 +32,7 @@ class ShaderLoader(
 
         tessellationShaderID = null
         if (tessellation != null) {
-            //TODO implement tessellation
+            TODO()// implement tessellation
         }
 
         id = GL20.glCreateProgram()
@@ -44,20 +44,12 @@ class ShaderLoader(
 
         GL20.glAttachShader(id, fragmentShaderID)
 
-
-//        bindAttribute(0, "position")
-//        bindAttribute(1, "textureCoords")
-
         GL20.glLinkProgram(id)
         GL20.glValidateProgram(id)
 
         vertex.loadProgram(id)
         geometry?.loadProgram(id)
         fragment.loadProgram(id)
-    }
-
-    private fun bindAttribute(attribute: Int, variableName: String) {
-        GL20.glBindAttribLocation(id, attribute, variableName)
     }
 
     private fun loadShader(script: String, type: Int): Int {
@@ -72,7 +64,6 @@ class ShaderLoader(
         }
         return shaderID
     }
-
 
     fun cleanUp() {
         GL20.glDetachShader(id, vertexShaderID)

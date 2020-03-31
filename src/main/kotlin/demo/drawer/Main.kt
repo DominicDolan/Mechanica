@@ -1,23 +1,19 @@
 package demo.drawer
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
 import gl.utils.loadImage
 import resources.Res
 import state.State
 import util.extensions.degrees
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-            .setDebugMode(true)
-            .setViewPort(height = 10.0)
-            .setStartingState { StartMain() }
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { StartMain() }
+    }
 
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.run()
 }
 
 private class StartMain : State() {

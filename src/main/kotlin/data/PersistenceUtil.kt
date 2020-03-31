@@ -2,13 +2,11 @@ package data
 
 import resources.Res
 import java.io.File
-import java.util.ArrayList
 import java.lang.reflect.Method
-import java.io.IOException
-import java.io.BufferedWriter
-import java.io.FileWriter
-import java.lang.StringBuilder
-import kotlin.system.exitProcess
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.forEach
+import kotlin.collections.set
 
 fun saveData(dataObj: Any) {
     val getters = ArrayList<Method>()

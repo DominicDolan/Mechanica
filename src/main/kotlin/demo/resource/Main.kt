@@ -1,13 +1,11 @@
 package demo.resource
 
-import display.Game
 import drawer.Drawer
-import resources.Res
-import resources.Resource
-import resources.ResourceDirectory
 import state.State
-import java.io.*
-import java.lang.Exception
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.net.URL
 import java.nio.file.Paths
 

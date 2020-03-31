@@ -1,25 +1,22 @@
 package demo.color
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
 import input.Cursor
 import input.Keyboard
 import state.State
-import util.colors.*
+import util.colors.Color
+import util.colors.hex
+import util.colors.hsl
 import util.extensions.degrees
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-//            .setFullscreen(true, true)
-            .setDebugMode(true)
-            .setViewPort(height = 10.0)
-            .setStartingState { StartMain() }
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { StartMain() }
+    }
 
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.run()
 }
 
 
@@ -69,7 +66,7 @@ private class StartMain : State() {
 
     override fun update(delta: Double) {
         adjusted = hsl(color.hue, blend, color.lightness)
-        blend = (Cursor.viewX/Game.viewWidth) + 0.5
+        blend = (Cursor.viewX/Game.view.width) + 0.5
 
         if (Keyboard.ESC.hasBeenPressed) {
             Game.close()
@@ -78,7 +75,7 @@ private class StartMain : State() {
 
     override fun render(draw: Drawer) {
 //        var blend = color.linearBlend(blend, adjusted)
-        draw.color(adjusted).centered.rectangle(0,0, Game.width, Game.height)
+        draw.color(adjusted).centered.rectangle(0,0, Game.window.width, Game.window.height)
 
         draw.color(color).centered.rectangle(-width, 0, width, height)
         draw.color(adjusted).centered.rectangle(width, 0, width, height)

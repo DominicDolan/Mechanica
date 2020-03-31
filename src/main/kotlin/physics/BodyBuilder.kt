@@ -3,7 +3,6 @@
 package physics
 
 
-import display.Game
 import org.jbox2d.collision.shapes.EdgeShape
 import org.jbox2d.collision.shapes.Shape
 import org.jbox2d.common.Vec2
@@ -70,33 +69,34 @@ class BodyBuilder<T : Shape>(private val shape: T) {
     }
 
     fun build(): Body {
-        val bodyDef = BodyDef()
-        val fixtureDef = FixtureDef()
-
-        bodyDef.position.set(position)
-        bodyDef.type = bodyType
-        bodyDef.fixedRotation = fixedRotation
-        val body = Game.world.createBody(bodyDef)
-
-        fixtureDef.shape = shape
-        fixtureDef.density = density
-        fixtureDef.friction = friction
-        fixtureDef.filter.categoryBits = categoryBits
-        fixtureDef.filter.maskBits = maskBits
-
-        val vertices = this.vertices
-        if (vertices != null && shape is EdgeShape) {
-            for (i in 0..vertices.size - 2) {
-                shape.set(vertices[i], vertices[i + 1])
-                body.createFixture(fixtureDef)
-            }
-        } else {
-            body.createFixture(fixtureDef)
-        }
-
-        if (userData != null) body.userData = userData
-
-        return body
+        TODO()
+//        val bodyDef = BodyDef()
+//        val fixtureDef = FixtureDef()
+//
+//        bodyDef.position.set(position)
+//        bodyDef.type = bodyType
+//        bodyDef.fixedRotation = fixedRotation
+//        val body = //Game.world.createBody(bodyDef)
+//
+//        fixtureDef.shape = shape
+//        fixtureDef.density = density
+//        fixtureDef.friction = friction
+//        fixtureDef.filter.categoryBits = categoryBits
+//        fixtureDef.filter.maskBits = maskBits
+//
+//        val vertices = this.vertices
+//        if (vertices != null && shape is EdgeShape) {
+//            for (i in 0..vertices.size - 2) {
+//                shape.set(vertices[i], vertices[i + 1])
+//                body.createFixture(fixtureDef)
+//            }
+//        } else {
+//            body.createFixture(fixtureDef)
+//        }
+//
+//        if (userData != null) body.userData = userData
+//
+//        return body
     }
 
 }

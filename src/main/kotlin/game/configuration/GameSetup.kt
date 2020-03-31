@@ -3,10 +3,10 @@ package game.configuration
 import debug.DebugConfiguration
 import display.Monitor
 import display.Window
-import game.view.ResolutionConverter
 import game.configuration.ConfigurationData.Companion.emptyLoadeState
 import game.configuration.ConfigurationData.Companion.emptyState
 import game.view.GameMatrices
+import game.view.ResolutionConverter
 import game.view.View
 import input.ControlsMap
 import input.KeyboardHandler
@@ -71,8 +71,15 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
         } else if (fullscreen && resolutionWasSet) {
             Window.create(title, resolutionWidth, resolutionHeight, monitor)
         } else {
-            Window.create(title, resolutionWidth, resolutionHeight)
+            Window.create(title, resolutionWidth, resolutionHeight).also { centerWindow(it) }
         }
+    }
+
+    private fun centerWindow(window: Window) {
+        val monitor = Monitor.getPrimaryMonitor()
+        val screenWidth = monitor.currentVideoMode.width()
+        val screenHeight = monitor.currentVideoMode.height()
+        window.position.set((screenWidth - window.width)/2, (screenHeight - window.height)/2)
     }
 
     private fun setCallbacks(window: Window) {

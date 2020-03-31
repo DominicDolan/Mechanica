@@ -1,7 +1,5 @@
 package resources
 
-import display.Game
-
 object Res {
     class SpecificResource(private val prefix: String, private val extension: String) {
         operator fun get(file: String): Resource {

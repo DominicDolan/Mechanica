@@ -7,10 +7,10 @@ import com.vividsolutions.jts.geom.GeometryFactory
 import gl.utils.IndexedVertices
 import gl.utils.loadImage
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL15
+import org.lwjgl.opengl.GL20
 import org.lwjgl.system.MemoryUtil.*
-import resources.Res
 import resources.ResourceDirectory
 import util.extensions.toFloatArray
 import util.triangulate.EarClipper
@@ -21,10 +21,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
 import java.nio.channels.FileChannel
-import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
-import java.io.File
-import kotlin.collections.HashMap
 
 
 /**

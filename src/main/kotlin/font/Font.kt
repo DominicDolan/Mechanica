@@ -4,10 +4,12 @@ import gl.utils.loadImage
 import graphics.Image
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
-import org.lwjgl.stb.*
+import org.lwjgl.stb.STBTTAlignedQuad
+import org.lwjgl.stb.STBTTBakedChar
+import org.lwjgl.stb.STBTTFontinfo
+import org.lwjgl.stb.STBTruetype
 import org.lwjgl.system.MemoryStack
 import resources.Resource
-import util.extensions.restrain
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -90,12 +92,12 @@ class Font(resource: Resource) {
     }
 
     private fun bakeCustomFont(ttf: ByteBuffer, cdata: STBTTBakedChar.Buffer) {
-        //TODO: Make a way to bake the font in a way that has spacing between the characters
-        val bitmap = BufferUtils.createByteBuffer(atlasWidth * atlasHeight)
-        STBTruetype.stbtt_MakeCodepointBitmap(info, bitmap, 100, 100, atlasWidth, 0.05f, 0.05f, 68)
-        bitmap.position(100)
-        STBTruetype.stbtt_MakeCodepointBitmap(info, bitmap, 100, 100, atlasWidth, 0.05f, 0.05f, 69)
-        bitmap.position(0)
+        TODO()//: Make a way to bake the font in a way that has spacing between the characters
+//        val bitmap = BufferUtils.createByteBuffer(atlasWidth * atlasHeight)
+//        STBTruetype.stbtt_MakeCodepointBitmap(info, bitmap, 100, 100, atlasWidth, 0.05f, 0.05f, 68)
+//        bitmap.position(100)
+//        STBTruetype.stbtt_MakeCodepointBitmap(info, bitmap, 100, 100, atlasWidth, 0.05f, 0.05f, 69)
+//        bitmap.position(0)
     }
 
     private fun bakeFont(bitmap: ByteBuffer, ttf: ByteBuffer, cdata: STBTTBakedChar.Buffer): Float {

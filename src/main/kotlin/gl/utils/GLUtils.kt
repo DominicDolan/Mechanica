@@ -1,13 +1,13 @@
 package gl.utils
 
-import display.Game
-import gl.script.ShaderDeclarations
-import gl.shader.Shader
 import graphics.Image
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_RGBA
 import org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT
+import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 import org.lwjgl.stb.STBImage
 import resources.Resource
 import util.extensions.vec

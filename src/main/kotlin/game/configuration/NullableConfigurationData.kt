@@ -3,7 +3,6 @@ package game.configuration
 import debug.DebugConfiguration
 import display.Monitor
 import display.Window
-import game.configuration.ConfigurationData
 import game.view.View
 import input.ControlsMap
 import org.joml.Matrix4f

@@ -1,10 +1,8 @@
 package game.view
 
-import display.Game
-import game.Game2
 import game.configuration.GameSetup
-import matrices.ProjectionMatrix
-import matrices.ViewMatrix
+import input.Cursor
+import input.Mouse
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.tan
@@ -28,6 +26,10 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
 
     fun updateView(viewData: GameView) {
         updateView(viewData.x, viewData.y, viewData.height)
+        Cursor.worldX = Cursor.viewX + viewData.x
+        Cursor.worldY = Cursor.viewY + viewData.y
+        Mouse.worldX = Mouse.viewX + viewData.x
+        Mouse.worldY = Mouse.viewY + viewData.y
     }
 
     private fun updateView(x: Double, y: Double, height: Double) {
@@ -39,7 +41,7 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
         D is distance away. ?
         D = d/(2*tan(δ/2))
 */      val cameraZ = (height) / (2 * tan(fov / 2))
-        view.setTranslation(x.toFloat(), y.toFloat(), -cameraZ.toFloat())
+        view.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
 //        projection.scheduleCreation = true
     }
 

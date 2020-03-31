@@ -1,9 +1,8 @@
 package gl.script
 
 import gl.glvars.*
-
 import org.joml.Matrix4f
-import util.colors.*
+import util.colors.Color
 import util.units.Vector
 
 abstract class Qualifier(private val variables: ScriptVariables) {
@@ -47,8 +46,14 @@ abstract class Qualifier(private val variables: ScriptVariables) {
     fun float(name: String, f: Float = 0f): GLFloat {
         val qualifier = qualifierName
 
-        val v =  GLFloat(f, name, qualifier)
-        variables.addVariable(v)
+        var v =  GLFloat(f, name, qualifier)
+        v = try {
+            variables.addVariable(v) as GLFloat
+        } catch (ex: ClassCastException) {
+            val message = "A variable in the shader already exists with the name ${v.name} and it has a different type\n" +
+                    "The existing variables type is ${variables.addVariable(v).type} and it can't be cast to ${v.type}"
+            throw ClassCastException(message)
+        }
         return v
     }
 

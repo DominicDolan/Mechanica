@@ -2,7 +2,6 @@ package svg
 
 import java.lang.Long.parseLong
 import java.lang.Long.toHexString
-import java.lang.NumberFormatException
 import kotlin.math.roundToLong
 
 fun parseColor(hex: String, opacity: String): Long {

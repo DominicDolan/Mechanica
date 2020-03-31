@@ -1,8 +1,7 @@
 package gl.renderer
 
-import display.Game
+import game.Game
 import gl.models.Model
-import gl.script.ShaderDeclarations
 import gl.script.ShaderScript
 import gl.utils.createUnitSquareArray
 import gl.utils.loadTextureUnitSquare
@@ -12,15 +11,13 @@ import org.joml.Matrix4f
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL11
 import util.colors.Color
-import util.colors.hex
 import util.colors.toColor
 import util.extensions.toFloatArray
-import kotlin.math.sqrt
 
 class CircleRenderer : Renderer() {
 
     override val vertex = object : ShaderScript() {
-        val resolution = uniform.vec2(Game.width.toDouble(), Game.height.toDouble())
+        val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
         //language=GLSL
         override val main: String =
                 """

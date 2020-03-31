@@ -1,16 +1,16 @@
 package demo.display
 
 import drawer.Drawer
-import game.Game2
+import game.Game
 import state.State
 
 fun main() {
-    Game2.configure {
+    Game.configure {
         setViewport(height = 10.0)
         setStartingState { DisplayTestState() }
     }
 
-    Game2.run()
+    Game.run()
 }
 
 class DisplayTestState : State() {

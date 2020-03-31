@@ -2,36 +2,27 @@
 package demo.experiment
 
 import debug.DebugDrawer
-import display.Game
-import display.GameOptions
 import drawer.Drawer
-import gl.renderer.FontRenderer
-import gl.script.ShaderDeclarations
+import game.Game
 import input.Cursor
 import input.Keyboard
 import input.Mouse
-import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.joml.Vector4f
 import state.State
 import util.extensions.degrees
-import util.extensions.vec
-import kotlin.math.sqrt
 
 fun main() {
     createGameInstance()
 }
 
 fun createGameInstance() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-            .setDebugMode(true)
-            .setViewPort(height = 5.0)
-            .setStartingState { TestState() }
+    Game.configure {
+        setViewport(height = 5.0)
+        setStartingState { TestState() }
+    }
 
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.run()
 }
 
 private class TestState : State() {
@@ -57,20 +48,20 @@ private class TestState : State() {
             rotation += 5.0
         }
         if (Keyboard.D.hasBeenPressed) {
-            Game.viewX += 1.0
+            Game.view.x += 1.0
         }
         if (Keyboard.A.hasBeenPressed) {
-            Game.viewX -= 1.0
+            Game.view.x -= 1.0
         }
         DebugDrawer.drawText("Radius: $radius")
-        val pixelScale = ((Game.height.toDouble())/Game.viewHeight)
+        val pixelScale = ((Game.window.height.toDouble())/Game.view.height)
         val pixelRadius = radius*pixelScale
         DebugDrawer.drawText("Radius: $radius")
         DebugDrawer.drawText("Pixel radius: $pixelRadius")
-        DebugDrawer.drawText("Game height: ${Game.viewHeight}, resolution: ${Game.height}x${Game.width}")
+        DebugDrawer.drawText("Game height: ${Game.view.height}, resolution: ${Game.window.height}x${Game.window.width}")
+        draw.centered.blue.rectangle(0, 0, 1.0, 4.9)
         draw.ui.red.rotated(rotation.degrees).circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, radius)
         draw.ui.green.circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, 0.1)
-        draw.centered.blue.rectangle(0, 0, 1.0, 4.9)
     }
 
 

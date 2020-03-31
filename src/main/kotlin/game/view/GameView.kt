@@ -1,6 +1,6 @@
 package game.view
 
-import game.Game2
+import game.Game
 import game.configuration.GameSetup
 import util.units.MutableVector
 import util.units.Vector
@@ -47,7 +47,7 @@ class GameView(data: GameSetup): View {
         private set
         get() {
             return if (lockRatio) {
-                Game2.window.aspectRatio
+                Game.window.aspectRatio
             } else field
         }
     var lockRatio = true
@@ -61,5 +61,5 @@ class GameView(data: GameSetup): View {
         }
 
     private val gameMatrices: GameMatrices
-        get() = Game2.matrices as GameMatrices
+        get() = Game.matrices as GameMatrices
 }

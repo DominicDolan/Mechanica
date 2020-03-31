@@ -1,12 +1,11 @@
 package demo.paths
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
+import gl.models.Model
 import gl.renderer.PathRenderer
 import input.Cursor
 import input.Keyboard
-import gl.models.Model
 import org.joml.Matrix4f
 import state.State
 import util.colors.rgba
@@ -15,14 +14,11 @@ import util.extensions.vec
 import util.units.Vector
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-            .setViewPort(height = 10.0)
-            .setStartingState { DrawingExample() }
-
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { DrawingExample() }
+    }
+    Game.run()
 }
 
 private class DrawingExample : State() {

@@ -1,6 +1,6 @@
 package resources
 
-import display.Game
+import util.calculateIsJar
 import java.io.*
 import java.net.URI
 import java.nio.file.Paths
@@ -42,8 +42,9 @@ class ExternalResource(filePath: String, createIfAbsent: Boolean = false) : Reso
     }
 
     init {
-        fileForJar = if (Game.isJar) getFile(filePath, createIfAbsent) else null
-        resource = if (!Game.isJar) getResource(filePath, createIfAbsent) else null
+        val isJar = calculateIsJar()
+        fileForJar = if (isJar) getFile(filePath, createIfAbsent) else null
+        resource = if (!isJar) getResource(filePath, createIfAbsent) else null
 
         absoluteFile = when {
             fileForJar != null -> fileForJar

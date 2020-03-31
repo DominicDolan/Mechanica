@@ -1,22 +1,17 @@
 package demo.ui
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
 import state.State
 import util.extensions.plus
 import util.extensions.radians
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-//            .setDebugMode(true)
-            .setViewPort(height = 10.0)
-            .setStartingState { UITest() }
-
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { UITest() }
+    }
+    Game.run()
 }
 
 private class UITest : State() {

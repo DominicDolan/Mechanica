@@ -1,8 +1,5 @@
 package game.view
 
-import util.units.MutableVector
-import util.units.Vector
-
 class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
                           var viewWidth: Double? = null, var viewHeight: Double? = null) {
 

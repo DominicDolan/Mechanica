@@ -1,8 +1,7 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package matrices
 
-import display.Game
-import game.Game2
+import game.Game
 import org.joml.Matrix4f
 import kotlin.math.tan
 
@@ -39,7 +38,7 @@ class ProjectionMatrix {
 
     fun get(): Matrix4f {
         if (scheduleCreation) {
-            val aspectRatio = Game2.window.aspectRatio
+            val aspectRatio = Game.window.aspectRatio
 
             val yScale = (1f / tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()
             val xScale = (yScale / aspectRatio).toFloat()

@@ -11,16 +11,19 @@ import game.view.GameMatrices
 import game.view.GameView
 import game.view.Matrices
 import gl.utils.GLContext
-import org.lwjgl.opengl.GL11
 import state.State
 import util.Timer
 
-object Game2 {
+object Game {
     private val configuration = GameConfigurationImpl()
     private val data by lazy { configuration.data }
 
     val view: GameView by lazy { GameView(data) }
     val window: Window by lazy { data.window }
+
+    internal val controls by lazy { data.controlsMap }
+
+    val debug by lazy { data.debugConfig }
 
     val matrices: Matrices by lazy { GameMatrices(data, view) }
     private val gameMatrices: GameMatrices
@@ -29,6 +32,7 @@ object Game2 {
     private val stateManager = StateManager()
 
     private var hasStarted = false
+    private var hasFinished = false
 
     fun configure(setup: GameConfiguration.() -> Unit) {
         setup(configuration)
@@ -50,7 +54,7 @@ object Game2 {
 
     fun run(update: () -> Unit = { }) {
         start()
-        while (true) {
+        while (!hasFinished) {
             GLContext.startFrame()
 
             gameMatrices.updateMatrices()
@@ -60,15 +64,20 @@ object Game2 {
             update()
 
             if (!window.update()) {
-                finish()
+                terminate()
                 return
             }
         }
     }
 
 
-    fun finish() {
+    fun close() {
+        window.shouldClose = true
+    }
+
+    fun terminate() {
         savePersistenceData()
+        hasFinished = true
         GLFWContext.terminate()
     }
 

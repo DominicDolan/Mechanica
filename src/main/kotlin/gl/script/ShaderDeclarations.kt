@@ -1,7 +1,7 @@
 package gl.script
 
-import gl.vbo.pointer.AttributePointer
 import gl.glvars.GLVar
+import gl.vbo.pointer.AttributePointer
 import gl.vbo.pointer.VBOPointer
 import util.colors.hex
 

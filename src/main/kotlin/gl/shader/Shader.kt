@@ -45,7 +45,6 @@ interface Shader {
                 fragment: ShaderScript,
                 tessellation: ShaderScript? = null,
                 geometry: ShaderScript? = null): Shader {
-
             return ShaderImpl(vertex, fragment, tessellation, geometry)
         }
     }

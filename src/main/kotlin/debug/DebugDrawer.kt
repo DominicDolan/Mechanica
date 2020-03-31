@@ -1,8 +1,8 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package debug
 
-import display.Game
 import drawer.Drawer
+import game.Game
 import util.extensions.plus
 import util.extensions.vec
 import util.units.Angle
@@ -16,7 +16,7 @@ object DebugDrawer {
         for (drawing in drawings) {
             drawing(draw)
         }
-        draw.ui.green.alpha(0.5).text(sb.toString(), 0.2, -Game.viewWidth/2.0, Game.viewHeight/2.0 - 0.2)
+        draw.ui.green.alpha(0.5).text(sb.toString(), 0.2, -Game.view.width/2.0, Game.view.height/2.0 - 0.2)
         drawings.clear()
         sb.clear()
     }

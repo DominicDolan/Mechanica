@@ -1,19 +1,18 @@
 package gl.renderer
 
+import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.loadImage
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
-import gl.models.Model
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
 import resources.Resource
 import util.colors.Color
-import util.colors.hex
 import util.colors.toColor
 import util.extensions.fill
 import util.units.Vector
@@ -120,7 +119,7 @@ class PathRenderer : Renderer() {
 
         //language=GLSL
         override val main: String = """
-                out vec4 color;
+                out vec4 fragColor;
                 in GS_OUT
                 {
                     vec2 v_TexCoord;
@@ -133,14 +132,16 @@ class PathRenderer : Renderer() {
 
                 void main(void) {
                     if ($mode == 0.0) {
-                        color = $color;
+                        fragColor = $color;
                     } else {
-                        float distance = 1.0 - texture(circleAtlas, fs_in.v_TexCoord).a;
-                        float alpha = (1.0 - smoothstep(edge, edge + border, distance))*$color.a;
+                        vec2 st = (fs_in.v_TexCoord - vec2(0.5));
+                        float distance = dot(st, st)*2.0;
+                        
+                        float alpha = 1.0 - step(0.5 , distance);
                         if (alpha < 0.9*$color.a) {
                             discard; 
-                        }
-                        color = vec4($color.rgb, alpha);
+                        }         
+                        fragColor = vec4($color.rgb, alpha*$color.a);
                     }
                 }
             """
@@ -150,8 +151,6 @@ class PathRenderer : Renderer() {
 
     private val lineShader = Shader(vertex, fragment, geometry = lineGeometry)
     private val circleShader = Shader(vertex, fragment, geometry = circleGeometry)
-
-    private val oval: Image = loadImage(Resource("res/images/oval.png"))
 
     override var color: Color
         get() = _fragment.color.value.toColor()
@@ -201,7 +200,6 @@ class PathRenderer : Renderer() {
 
             GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
         }
-        model.image = oval
     }
 
     override fun render(model: Model, transformation: Matrix4f) {

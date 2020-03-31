@@ -1,9 +1,7 @@
 package demo.text
 
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11
 import org.lwjgl.stb.STBImageWrite
-import org.lwjgl.stb.STBTTBakedChar
 import org.lwjgl.stb.STBTTFontinfo
 import org.lwjgl.stb.STBTruetype
 import org.lwjgl.system.MemoryStack
@@ -64,9 +62,6 @@ private class TextToPngDemo(fontName: String) {
         val scale = STBTruetype.stbtt_ScaleForPixelHeight(info, fontHeight.toFloat())
 
         val ascent = (ascent*scale).toInt()
-        val descent = (descent*scale).toInt()
-        val lineGap = (lineGap*scale).toInt()
-
 
         var x = 0
         for (c in text.indices){
@@ -80,9 +75,9 @@ private class TextToPngDemo(fontName: String) {
                 val ax = axBuffer[0]
                 val lsb = lsbBuffer[0]
 
-                val x1 = stack.mallocInt(1);
+                val x1 = stack.mallocInt(1)
                 val x2 = stack.mallocInt(1)
-                val y1 = stack.mallocInt(1);
+                val y1 = stack.mallocInt(1)
                 val y2 = stack.mallocInt(1)
 
                 STBTruetype.stbtt_GetCodepointBitmapBox(info, character, scale, scale, x1, y1, x2, y2)

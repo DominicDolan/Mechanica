@@ -1,7 +1,7 @@
 package util
 
-abstract class GameBoolean : Updateable {
-    override fun update(delta: Double) {
+abstract class GameBoolean {
+    fun update(delta: Double) {
         isTrue = condition()
     }
 

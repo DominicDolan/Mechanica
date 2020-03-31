@@ -4,9 +4,6 @@ package input
 import util.codepointToString
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.Iterable
-import kotlin.collections.arrayListOf
-import kotlin.collections.forEach
 
 
 object Keyboard {

@@ -1,12 +1,10 @@
 package drawer
 
-import display.Game
-import game.Game2
+import game.Game
 import gl.models.Model
 import gl.renderer.*
-import gl.renderer.ColorRenderer
-import gl.utils.loadTextureUnitSquare
 import gl.utils.createUnitSquareArray
+import gl.utils.loadTextureUnitSquare
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
@@ -16,7 +14,10 @@ import org.lwjgl.opengl.GL11.glClearColor
 import util.colors.Color
 import util.colors.rgba2Hex
 import util.colors.toColor
-import util.extensions.*
+import util.extensions.component1
+import util.extensions.component2
+import util.extensions.degrees
+import util.extensions.toFloatArray
 import util.units.Angle
 import util.units.Vector
 import kotlin.math.atan2
@@ -68,10 +69,10 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         renderer.view = when (frame) {
             Frames.UI -> {
-                Game2.matrices.uiView
+                Game.matrices.uiView
             }
             Frames.WORLD -> {
-                Game2.matrices.view
+                Game.matrices.view
             }
         }
 

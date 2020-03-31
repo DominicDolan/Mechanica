@@ -1,14 +1,12 @@
 package gl.renderer
 
 import font.Font
-import gl.script.ShaderScript
-import gl.shader.Shader
 import gl.models.Model
 import gl.models.TextModel
+import gl.script.ShaderScript
 import org.joml.Matrix4f
 import resources.Res
 import util.colors.Color
-import util.colors.hex
 import util.colors.toColor
 import util.extensions.restrain
 import util.extensions.vec

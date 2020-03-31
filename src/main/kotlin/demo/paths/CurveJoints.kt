@@ -1,13 +1,12 @@
 package demo.paths
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
+import game.Game
+import gl.models.Model
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import input.Keyboard
-import gl.models.Model
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20.*
@@ -19,15 +18,11 @@ import util.extensions.vec
 import util.units.Vector
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-            .setDebugMode(true)
-            .setViewPort(height = 10.0)
-            .setStartingState { StartMain() }
-
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { StartMain() }
+    }
+    Game.run()
 }
 
 private class StartMain : State() {
@@ -68,7 +63,7 @@ private class StartMain : State() {
     }
 
     override fun render(draw: Drawer) {
-        val yRatio: Float = (Cursor.viewY/Game.viewHeight).toFloat()
+        val yRatio: Float = (Cursor.viewY/Game.view.height).toFloat()
         if (Keyboard.MB1.isDown) {
             val cursor = vec(Cursor.viewX, Cursor.viewY)
             val minLineLength = 0.05

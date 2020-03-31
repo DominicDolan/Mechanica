@@ -1,11 +1,11 @@
 package debug
 
-import display.Game
+import drawer.Drawer
+import game.Game
 import org.jbox2d.callbacks.DebugDraw
 import org.jbox2d.common.Color3f
 import org.jbox2d.common.Transform
 import org.jbox2d.common.Vec2
-import drawer.Drawer
 import util.extensions.toVec
 
 object BodyRenderer : DebugDraw(null) {
@@ -14,8 +14,8 @@ object BodyRenderer : DebugDraw(null) {
     private const val debugColor: Long = 0x00FF4070
 
     fun init() {
-        if (Game.debug) {
-            Game.world.setDebugDraw(BodyRenderer)
+        if (Game.debug.constructionDraws) {
+//            Game.world.setDebugDraw(BodyRenderer)
             BodyRenderer.flags = e_shapeBit
         }
     }

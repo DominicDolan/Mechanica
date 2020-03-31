@@ -1,9 +1,6 @@
 package util.colors
 
-import util.extensions.degrees
 import util.units.Angle
-import kotlin.math.max
-import kotlin.math.min
 
 inline class HexColor(private val hex: Long): Color {
     override val a: Double

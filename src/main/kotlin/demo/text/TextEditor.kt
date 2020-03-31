@@ -1,38 +1,27 @@
 package demo.text
 
-import display.Game
-import display.GameOptions
 import drawer.Drawer
-import gl.utils.loadImage
-import input.Cursor
-import input.Key
-import input.Keyboard
-import input.Mouse
+import game.Game
 import gl.models.Model
 import gl.renderer.FontRenderer
+import input.Cursor
+import input.Keyboard
+import input.Mouse
 import org.joml.Matrix4f
-import resources.Res
 import state.State
 import util.colors.hex
 import util.extensions.restrain
 import util.extensions.vec
-import util.units.Vector
-import java.lang.StringBuilder
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
 fun main() {
-    val options = GameOptions()
-            .setResolution(1280, 720)
-//            .setDebugMode(true)
-//            .setFullscreen(true, true)
-            .setViewPort(height = 10.0)
-            .setStartingState { StartText() }
+    Game.configure {
+        setViewport(height = 10.0)
+        setStartingState { StartText() }
+    }
 
-    Game.start(options)
-    Game.update()
-    Game.destroy()
+    Game.run()
 }
 
 
@@ -42,7 +31,7 @@ private class StartText : State() {
     val model = Model()
     val transformation = Matrix4f()
 
-    val startPosition = vec(-Game.viewWidth.toFloat()/2f, Game.viewHeight.toFloat()/2f - renderer.fontSize)
+    val startPosition = vec(-Game.view.width.toFloat()/2f, Game.view.height.toFloat()/2f - renderer.fontSize)
 
     var cursor = 0
 
@@ -55,15 +44,15 @@ private class StartText : State() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            Game.viewX = startPosition.x + Game.viewWidth/2.0
-            Game.viewY = startPosition.y + 1.0 - Game.viewHeight/2.0
+            Game.view.x = startPosition.x + Game.view.width/2.0
+            Game.view.y = startPosition.y + 1.0 - Game.view.height/2.0
         }
         if (Mouse.SCROLL_DOWN.hasBeenPressed) {
-            Game.viewHeight *= 1.0 + Mouse.SCROLL_DOWN.distance/10.0
+            Game.view.height *= 1.0 + Mouse.SCROLL_DOWN.distance/10.0
             setViewPosition()
         }
         if (Mouse.SCROLL_UP.hasBeenPressed) {
-            Game.viewHeight /= 1.0 + Mouse.SCROLL_UP.distance/10.0
+            Game.view.height /= 1.0 + Mouse.SCROLL_UP.distance/10.0
             setViewPosition()
         }
 
@@ -92,11 +81,11 @@ private class StartText : State() {
         }
         if (Keyboard.UP.hasBeenPressed) {
             val pos = renderer.from(cursor).getPosition()
-            cursor = renderer.from(vec(pos.x, pos.y + 1.0)).getIndex()
+            cursor = renderer.from(vec(pos.x - 0.15, pos.y + 1.0)).getIndex()
         }
         if (Keyboard.DOWN.hasBeenPressed) {
             val pos = renderer.from(cursor).getPosition()
-            cursor = renderer.from(vec(pos.x, pos.y - 1.0)).getIndex()
+            cursor = renderer.from(vec(pos.x - 0.15, pos.y - 1.0)).getIndex()
         }
 
         if (Mouse.MB1.hasBeenPressed) {

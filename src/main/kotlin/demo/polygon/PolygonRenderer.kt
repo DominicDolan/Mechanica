@@ -1,9 +1,9 @@
 package demo.polygon
 
-import display.Game
+import game.Game
+import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.models.Model
 import input.Cursor
 import org.joml.Matrix4f
 
@@ -25,7 +25,7 @@ class PolygonRenderer {
 //        val color = uniform.vec4(hex(0xFF00FFFF))
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
-        val resolution = uniform.vec2(Game.width.toDouble(), Game.height.toDouble())
+        val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
 
         //language=GLSL
         override val main: String = """

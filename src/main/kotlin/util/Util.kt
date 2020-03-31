@@ -1,7 +1,5 @@
 package util
 
-import java.lang.Exception
-
 fun calculateIsJar(): Boolean {
     val callingClass = getCallingClass()
     val simpleName = callingClass.simpleName
