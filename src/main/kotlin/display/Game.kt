@@ -124,7 +124,9 @@ object Game {
 //            GLContext.initialize()
             val state = startingState ?: { EmptyState }
             val loadState = this.loadState ?: EmptyLoadState
-            loadState.startingState = state
+            loadState.onFinish ={
+                setCurrentState(state)
+            }
             setCurrentState {
                 loadState.preLoad()
                 loadState

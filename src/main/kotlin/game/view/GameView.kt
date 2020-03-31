@@ -5,9 +5,9 @@ import game.configuration.GameSetup
 import util.units.MutableVector
 import util.units.Vector
 
-class GameView(data: GameSetup) {
+class GameView(data: GameSetup): View {
     private var _width: Double = data.viewWidth
-    var width: Double
+    override var width: Double
         get() = _width
         set(value) {
             _width = value
@@ -20,7 +20,7 @@ class GameView(data: GameSetup) {
         }
 
     private var _height: Double = data.viewHeight
-    var height: Double
+    override var height: Double
         get() = _height
         set(value) {
             _height = value
@@ -32,18 +32,18 @@ class GameView(data: GameSetup) {
             gameMatrices.updateView(this)
         }
 
-    var x: Double = data.viewX
+    override var x: Double = data.viewX
         set(value) {
             field = value
             gameMatrices.updateView(this)
         }
-    var y: Double = data.viewY
+    override var y: Double = data.viewY
         set(value) {
             field = value
             gameMatrices.updateView(this)
         }
 
-    var ratio: Double = height/width
+    override var ratio: Double = height/width
         private set
         get() {
             return if (lockRatio) {
@@ -52,16 +52,7 @@ class GameView(data: GameSetup) {
         }
     var lockRatio = true
 
-    val bottom: Double
-        get() = y
-    val top: Double
-        get() = y + height
-    val left: Double
-        get() = x
-    val right: Double
-        get() = x + width
-
-    val center: Vector = MutableVector(x + width/2.0, y + height/2.0)
+    override val center: Vector = MutableVector(x + width/2.0, y + height/2.0)
         get() {
             val vector = field as MutableVector
             vector.x = x + width/2.0

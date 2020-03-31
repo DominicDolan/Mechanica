@@ -1,6 +1,7 @@
 package gl.renderer
 
 import display.Game
+import game.Game2
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
@@ -10,9 +11,8 @@ import util.colors.hex
 import util.colors.toColor
 
 open class Renderer {
-    val projection: Matrix4f
-        get() = Game.projectionMatrix.get()
-    var view: Matrix4f = Game.viewMatrix.get()
+    var projection: Matrix4f = Game2.matrices.projection
+    var view: Matrix4f = Game2.matrices.view
 
     protected open val model = Model()
     protected open val transformation: Matrix4f = Matrix4f().identity()

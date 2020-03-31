@@ -22,7 +22,7 @@ object Game2 {
     val view: GameView by lazy { GameView(data) }
     val window: Window by lazy { data.window }
 
-    val matrices: Matrices by lazy { GameMatrices(data) }
+    val matrices: Matrices by lazy { GameMatrices(data, view) }
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
@@ -32,22 +32,24 @@ object Game2 {
 
     fun configure(setup: GameConfiguration.() -> Unit) {
         setup(configuration)
-        if (!hasStarted) start()
+        if (configuration.initaliize) start()
     }
 
     fun start() {
-        hasStarted = true
+        if (!hasStarted) {
+            hasStarted = true
 
-        GLContext.initialize(window)
-        window.addRefreshCallback { refreshView(it) }
+            GLContext.initialize(window)
+            window.addRefreshCallback { refreshView(it) }
 
-        Timer
-        loadPersistenceData()
-        setStartingState(data)
+            Timer
+            loadPersistenceData()
+            setStartingState(data)
+        }
     }
 
     fun run(update: () -> Unit = { }) {
-        if (!hasStarted) start()
+        start()
         while (true) {
             GLContext.startFrame()
 
@@ -77,7 +79,9 @@ object Game2 {
     private fun setStartingState(data: GameSetup) {
         val state = data.startingState
         val loadState = data.loadState()
-        loadState.startingState = state
+        loadState.onFinish = {
+            setCurrentState { state() }
+        }
         setCurrentState {
             loadState.preLoad()
             loadState

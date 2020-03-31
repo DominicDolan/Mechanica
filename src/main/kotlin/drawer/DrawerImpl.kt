@@ -1,6 +1,7 @@
 package drawer
 
 import display.Game
+import game.Game2
 import gl.models.Model
 import gl.renderer.*
 import gl.renderer.ColorRenderer
@@ -67,10 +68,10 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
         renderer.view = when (frame) {
             Frames.UI -> {
-                Game.uiViewMatrix.get()
+                Game2.matrices.uiView
             }
             Frames.WORLD -> {
-                Game.viewMatrix.get()
+                Game2.matrices.view
             }
         }
 

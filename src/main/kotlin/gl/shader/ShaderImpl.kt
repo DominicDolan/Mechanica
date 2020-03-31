@@ -48,17 +48,15 @@ internal class ShaderImpl(
         """)
     }
 
-    override fun loadMatrices(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
-        matrixType.value = 1f
-        if (projection === Game2.matrices.projection.get()) {
-            if (view === Game2.matrices.view.get()) {
-                matrixType.value = 0f
-                this.pvMatrix.set((Game2.matrices as GameMatrices).pvMatrix)
-            } else if (view === Game2.matrices.uiView.get()) {
-                matrixType.value = 0f
-                this.pvMatrix.set((Game2.matrices as GameMatrices).pvUiMatrix)
-            }
-        }
+    override fun loadMatrices(transformation: Matrix4f, projection: Matrix4f?, view: Matrix4f?) {
+        loadMatrixUniforms(transformation,
+                projection ?: Game2.matrices.projection,
+                view ?: Game2.matrices.view
+        )
+    }
+
+    private fun loadMatrixUniforms(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
+        setGameMatrices(projection, view)
 
         this.transformation.set(transformation)
         this.projection.set(projection)
@@ -67,7 +65,20 @@ internal class ShaderImpl(
         val scale = getScale(transformation)*getScale(projection)*getScale(view)
         this.pixelScale.value = 1f/scale
         DebugDrawer.drawText("Scale: ${1f/scale}")
+    }
 
+    private fun setGameMatrices(projection: Matrix4f, view: Matrix4f) {
+
+        matrixType.value = 1f
+        if (projection === Game2.matrices.projection) {
+            if (view === Game2.matrices.view) {
+                matrixType.value = 0f
+                this.pvMatrix.set((Game2.matrices as GameMatrices).pvMatrix)
+            } else if (view === Game2.matrices.uiView) {
+                matrixType.value = 0f
+                this.pvMatrix.set((Game2.matrices as GameMatrices).pvUiMatrix)
+            }
+        }
     }
 
     private fun getScale(mat: Matrix4f): Float {

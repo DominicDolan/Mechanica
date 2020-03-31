@@ -1,6 +1,5 @@
 package state
 
-import display.Game
 import drawer.Drawer
 
 /**
@@ -14,7 +13,6 @@ abstract class LoadState : State() {
     private var currentWait = 0.0
     private var startLoading = false
     private var finishedLoading = false
-    var startingState: () -> State = { EmptyState }
 
     override fun update(delta: Double) {
         currentWait += delta
@@ -38,7 +36,5 @@ abstract class LoadState : State() {
 
     abstract fun load()
 
-    private fun onFinish(){
-        Game.setCurrentState(startingState)
-    }
+    internal var onFinish: () -> Unit = { }
 }

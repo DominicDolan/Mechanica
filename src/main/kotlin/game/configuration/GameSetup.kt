@@ -6,7 +6,13 @@ import display.Window
 import game.view.ResolutionConverter
 import game.configuration.ConfigurationData.Companion.emptyLoadeState
 import game.configuration.ConfigurationData.Companion.emptyState
+import game.view.GameMatrices
+import game.view.View
 import input.ControlsMap
+import input.KeyboardHandler
+import input.MouseHandler
+import org.joml.Matrix4f
+import org.lwjgl.glfw.GLFW
 import state.LoadState
 import state.State
 
@@ -27,6 +33,8 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val loadState: (() -> LoadState) = data.loadState ?: { emptyLoadeState() }
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }
     override val debugConfiguration: (DebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
+    override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
+            = data.projectionMatrixConfiguration ?: GameMatrices.Companion::defaultProjectionMatrix
 
     val ratio: Double
 
@@ -45,25 +53,37 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
 
         ratio = resolutionHeight.toDouble()/resolutionWidth.toDouble()
 
-        window = if (fullscreen && !resolutionWasSet) {
+        window = setWindow(resolutionWasSet)
+        setCallbacks(window)
+
+        resolutionConverter = ResolutionConverter(resolutionWidth, resolutionHeight, data.viewWidth, data.viewHeight)
+
+        viewWidth = resolutionConverter.viewWidthOut
+        viewHeight = resolutionConverter.viewHeightOut
+
+        windowConfiguration(window)
+        debugConfiguration(debugConfig)
+    }
+
+    private fun setWindow(resolutionWasSet: Boolean): Window {
+        return if (fullscreen && !resolutionWasSet) {
             Window.create(title, monitor)
         } else if (fullscreen && resolutionWasSet) {
             Window.create(title, resolutionWidth, resolutionHeight, monitor)
         } else {
             Window.create(title, resolutionWidth, resolutionHeight)
         }
+    }
 
-        resolutionConverter = ResolutionConverter(resolutionWidth, resolutionHeight)
+    private fun setCallbacks(window: Window) {
+        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        GLFW.glfwSetKeyCallback(window.id, KeyboardHandler.KeyHandler())
+        GLFW.glfwSetCharCallback(window.id, KeyboardHandler.TextHandler())
 
-        resolutionConverter.viewWidth = data.viewWidth
-        resolutionConverter.viewHeight = data.viewHeight
+        GLFW.glfwSetMouseButtonCallback(window.id, MouseHandler.ButtonHandler())
+        GLFW.glfwSetCursorPosCallback(window.id, MouseHandler.CursorHandler())
+        GLFW.glfwSetScrollCallback(window.id, MouseHandler.ScrollHandler())
 
-        resolutionConverter.calculate()
-        viewWidth = resolutionConverter.viewWidthOut
-        viewHeight = resolutionConverter.viewHeightOut
-
-        windowConfiguration(window)
-        debugConfiguration(debugConfig)
     }
 
     private fun setResolution(resolutionWasSet: Boolean, data: NullableConfigurationData): Pair<Int, Int> {

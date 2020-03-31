@@ -3,9 +3,9 @@ package game.view
 import util.units.MutableVector
 import util.units.Vector
 
-class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int) {
-    var viewWidth: Double? = null
-    var viewHeight: Double? = null
+class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
+                          var viewWidth: Double? = null, var viewHeight: Double? = null) {
+
 
     var viewWidthOut: Double = 1.0
         private set
@@ -13,6 +13,10 @@ class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int) {
         private set
 
     val ratio get() = resolutionHeight.toDouble()/resolutionWidth.toDouble()
+
+    init {
+        calculate()
+    }
 
     fun calculate() {
         val viewWidth = this.viewWidth

@@ -4,7 +4,9 @@ import debug.DebugConfiguration
 import display.Monitor
 import display.Window
 import drawer.Drawer
+import game.view.View
 import input.ControlsMap
+import org.joml.Matrix4f
 import state.LoadState
 import state.State
 
@@ -24,6 +26,7 @@ interface ConfigurationData {
     val loadState: (() -> LoadState)?
     val windowConfiguration: (Window.() -> Unit)?
     val debugConfiguration: (DebugConfiguration.() -> Unit)?
+    val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)?
 
     companion object {
         fun emptyState(): State {
@@ -37,7 +40,7 @@ interface ConfigurationData {
             return object : LoadState(){
                 override fun preLoad() {}
                 override fun renderLoadScreen(g: Drawer) {}
-                override fun load() {}
+                override fun load() { }
             }
         }
     }
