@@ -9,10 +9,12 @@ import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import input.Mouse
 import org.joml.Matrix4f
+import org.joml.Vector3f
 import util.colors.Color
 import util.colors.toColor
 import util.extensions.toFloatArray
 import util.extensions.vec
+import util.units.MutableVector
 import util.units.Vector
 
 class RectangleRenderer {
@@ -36,31 +38,28 @@ class RectangleRenderer {
 
     private val defaultFragment = object : ShaderScript() {
 
-        val mouse = uniform.vec2(0.0, 0.0)
+        val size = uniform.vec2(1.0, 1.0)
+        val radius = uniform.float(0.0f)
         //language=GLSL
         override val main: String = """
                 out vec4 fragColor;
                 in vec2 pos;       
                 void main(void) {
                     vec2 st = pos - vec2(0.5);
-                    st*=2.0;
-                    float shade = length(st);
-                    float mystery = 1.0 - max($mouse.x, 0.1*pixelScale);
-                    float smoothStart = 0.5 - 0.1*pixelScale;
-                    float smoothEnd = 0.5;
-                    vec2 absolute = st-mystery;
-                
-                    float offsetXScale = 0.5;
-                    float offsetX = offsetXScale*(1.0-mystery);
-                
-                //                    mystery = $mouse.x;
-                    float mystery2 = 1.0/(1.0 - mystery);
-                
-                    float mysteryY = mystery;
-                    float mystery2Y = 1.0/(1.0 - mysteryY+offsetX/offsetXScale);
-                
-                    vec2 rounded = vec2(max((st.x - mystery - offsetX)*(mystery2), 0.0), max((st.y - mysteryY)*(mystery2Y), 0.0));
-                    float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, length( rounded));
+                    
+                    float height = $size.y;
+                    float width = $size.x;
+                    float radius = $radius;
+                    st = vec2(st.x*width, st.y*height);
+                    
+                    vec2 relative = abs(st) - vec2(0.5*width - radius, 0.5*height - radius);
+                    float distance = length(max(relative, 0.0));
+                    
+                    float smoothStart = max(radius - 0.06*pixelScale, 0.0);
+                    float smoothEnd = max(radius, 0.06*pixelScale);
+                    
+                    float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, distance);
+                    
                     fragColor = vec4($color.rgb, alpha);
                 }
             """
@@ -76,16 +75,16 @@ class RectangleRenderer {
         set(value) {
             defaultFragment.color.set(value)
         }
-    var mouse: Vector
-        get() = vec(defaultFragment.mouse.value[0], defaultFragment.mouse.value[1])
+    var radius: Float
+        get() = defaultFragment.radius.value
         set(value) {
-            defaultFragment.mouse.set(value)
+            defaultFragment.radius.value = value
         }
 
+    private val vec3 = Vector3f()
     fun render(model: Model = this.model, transformation: Matrix4f = this.transformation) {
-//        transformation.translate(-1f, 0f, 0f)
-//        transformation.scale(2f, 1f, 1f)
-        defaultFragment.mouse.set(Mouse.viewX/Game.view.width + 0.5, Mouse.viewY/ Game.view.height + 0.5)
+        transformation.getScale(vec3)
+        defaultFragment.size.set(vec3.x, vec3.y)
         shader.render(model, transformation)
         transformation.identity()
     }
