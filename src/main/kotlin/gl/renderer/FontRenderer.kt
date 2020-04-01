@@ -37,7 +37,7 @@ class FontRenderer : Renderer() {
 
         //language=GLSL
         override val main: String = """
-                in vec2 tc;
+                sample in vec2 tc;
                 layout (binding=0) uniform sampler2D samp;
                 out vec4 out_Color;
                                 

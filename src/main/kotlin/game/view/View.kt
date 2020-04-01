@@ -9,13 +9,13 @@ interface View {
     val y: Double
 
     val bottom: Double
-        get() = y
+        get() = y - height/2.0
     val top: Double
-        get() = y + height
+        get() = y + height/2.0
     val left: Double
-        get() = x
+        get() = x - width/2.0
     val right: Double
-        get() = x + width
+        get() = x + width/2.0
 
     val center: Vector
 

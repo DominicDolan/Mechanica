@@ -49,7 +49,7 @@ internal class ShaderImpl(
 
         val scale = getScale(transformation)*getScale(projection)*getScale(view)
         this.pixelScale.value = 1f/scale
-        DebugDrawer.drawText("Scale: ${1f/scale}")
+//        println("Scale: ${1f/scale}")
     }
 
     private fun setGameMatrices(projection: Matrix4f, view: Matrix4f) {
