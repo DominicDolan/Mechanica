@@ -25,9 +25,11 @@ internal fun startFrame() {
 //
 }
 
-fun createUnitSquareArray() = createQuadArray(0f, 1f, 1f, 0f)
+fun createUnitSquareVecArray() = createQuadVecArray(0f, 1f, 1f, 0f)
+fun createUnitSquareFloatArray() = createQuadFloatArray(0f, 1f, 1f, 0f)
 
-fun loadTextureUnitSquare() = loadTextureQuad(0f, 1f, 1f, 0f)
+fun createTextureUnitSquareVecArray() = createTextureQuadVecArray(0f, 1f, 1f, 0f)
+fun createTextureUnitSquareFloatArray() = createTextureQuadFloatArray(0f, 1f, 1f, 0f)
 
 /**
  *  Creates an array of shorts of size numberOfQuads*6 to be used with a series of quadrilaterals
@@ -68,7 +70,7 @@ fun enableAlphaBlending() {
 }
 
 
-private fun createQuadArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+private fun createQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
     return arrayOf(
             vec(left, top),
             vec(left, bottom),
@@ -76,6 +78,17 @@ private fun createQuadArray(left: Float, top: Float, right: Float, bottom: Float
             vec(left, top),
             vec(right, bottom),
             vec(right, top))
+
+}
+
+fun createQuadFloatArray(left: Float, top: Float, right: Float, bottom: Float): FloatArray {
+    return floatArrayOf(
+            left, top, 0f,
+            left, bottom, 0f,
+            right, bottom, 0f,
+            left, top, 0f,
+            right, bottom, 0f,
+            right, top, 0f)
 
 }
 
@@ -99,7 +112,7 @@ textureCoords = floatArrayOf(
 
 */
 
-private fun loadTextureQuad(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+private fun createTextureQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
     return arrayOf(
             vec(left, bottom),
             vec(left, top),
@@ -107,6 +120,17 @@ private fun loadTextureQuad(left: Float, top: Float, right: Float, bottom: Float
             vec(left, bottom),
             vec(right, top),
             vec(right, bottom))
+
+}
+
+private fun createTextureQuadFloatArray(left: Float, top: Float, right: Float, bottom: Float): FloatArray {
+    return floatArrayOf(
+            left, bottom, 0f,
+            left, top, 0f,
+            right, top, 0f,
+            left, bottom, 0f,
+            right, top, 0f,
+            right, bottom, 0f)
 
 }
 

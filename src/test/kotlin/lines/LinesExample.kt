@@ -1,0 +1,97 @@
+package lines
+
+import debug.DebugDrawer
+import drawer.Drawer
+import game.Game
+import geometry.LineSegment
+import gl.renderer.PathRenderer
+import input.Keyboard
+import input.Mouse
+import state.State
+import util.colors.Color
+import util.colors.hex
+import util.extensions.minus
+import util.extensions.theta
+import util.extensions.vec
+import util.units.Vector
+import kotlin.math.atan
+
+class LinesExample : State() {
+    private val stroke = 0.05f
+
+    private val renderer = PathRenderer()
+    private val l1 = LineSegment(vec(0.0, 0.0), vec(1.0, 0.0))
+    private val l2 = LineSegment(vec(0.0, 1.0), vec(1.0, 1.0))
+
+    private val l1Color = hex(0xFFFF00FF)
+    private val l2Color = hex(0x00FFFFFF)
+
+    private val pathHolder = ArrayList<Vector>()
+
+    init {
+        renderer.stroke = stroke
+        pathHolder.add(l1.p1)
+        pathHolder.add(l1.p2)
+        renderer.path = pathHolder
+
+    }
+
+    override fun update(delta: Double) {
+        fun setPoint(point: LineSegment.LinePoint) {
+            point.x = Mouse.viewX
+            point.y = Mouse.viewY
+        }
+
+        if (Mouse.MB1()) {
+            if (Keyboard.SHIFT()) {
+                setPoint(l2.p1)
+            } else {
+                setPoint(l1.p1)
+            }
+        }
+        if (Mouse.MB2()) {
+            if (Keyboard.SHIFT()) {
+                setPoint(l2.p2)
+            } else {
+                setPoint(l1.p2)
+            }
+        }
+    }
+
+    override fun render(draw: Drawer) {
+        val v = Game.view
+
+        draw.darkGrey.centered.rectangle(0, 0, v.width, stroke)
+        draw.darkGrey.centered.rectangle(0, 0, stroke, v.height)
+
+        drawIntercepts(draw, l1, l1Color)
+        drawIntercepts(draw, l2, l2Color)
+
+        renderLine(l1, l1Color)
+        renderLine(l2, l2Color)
+
+        DebugDrawer.drawText("Line1: $l1")
+        DebugDrawer.drawText("Line2: $l2")
+        if (l1.segmentIntersect(l2)) {
+            draw.magenta
+        } else draw.red
+
+        draw.circle(l1.intersect(l2), 0.1)
+    }
+
+    private fun drawIntercepts(draw:  Drawer, line: LineSegment, color: Color) {
+        draw.centered.color(color).circle(0, line.b, 0.1)
+        draw.centered.color(color).circle(line.c, 0, 0.1)
+    }
+
+    private fun renderLine(line: LineSegment, color: Color) {
+        setPath(line)
+        renderer.color = color
+        renderer.render()
+    }
+
+    private fun setPath(line: LineSegment) {
+        pathHolder[0] = line.p1
+        pathHolder[1] = line.p2
+    }
+}

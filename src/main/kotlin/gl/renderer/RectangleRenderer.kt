@@ -1,25 +1,20 @@
-package demo.color
+package gl.renderer
 
-import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.utils.createUnitSquareArray
+import gl.utils.createUnitSquareVecArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
-import input.Mouse
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import util.colors.Color
 import util.colors.toColor
 import util.extensions.toFloatArray
-import util.extensions.vec
-import util.units.MutableVector
-import util.units.Vector
 
 class RectangleRenderer {
 
-    private val positions = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
+    private val positions = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
     val model = Model(positions)
     val transformation: Matrix4f = Matrix4f().identity()
 
@@ -49,14 +44,17 @@ class RectangleRenderer {
                     
                     float height = $size.y;
                     float width = $size.x;
-                    float radius = $radius;
+                    
                     st = vec2(st.x*width, st.y*height);
                     
+                    float smoothStroke = 0.06*pixelScale;
+                    float radius = max($radius, smoothStroke);
+
                     vec2 relative = abs(st) - vec2(0.5*width - radius, 0.5*height - radius);
                     float distance = length(max(relative, 0.0));
                     
-                    float smoothStart = max(radius - 0.06*pixelScale, 0.0);
-                    float smoothEnd = max(radius, 0.06*pixelScale);
+                    float smoothStart = radius - smoothStroke;
+                    float smoothEnd = radius;
                     
                     float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, distance);
                     

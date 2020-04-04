@@ -1,10 +1,11 @@
 package drawer
 
 import game.Game
+import gl.models.ImageModel
 import gl.models.Model
 import gl.renderer.*
-import gl.utils.createUnitSquareArray
-import gl.utils.loadTextureUnitSquare
+import gl.utils.createUnitSquareVecArray
+import gl.utils.createTextureUnitSquareVecArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
@@ -44,11 +45,11 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     private val transformation = TransformationMatrix()
 
-    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
-    private val texVbo = AttributeArray(loadTextureUnitSquare().toFloatArray(2), VBOPointer.texCoords)
-    private val drawable = Model(vbo, texVbo)
+    private val vbo = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
+    private val texVbo = AttributeArray(createTextureUnitSquareVecArray().toFloatArray(2), VBOPointer.texCoords)
+    private val drawable = ImageModel(Image(-1), vbo, texVbo)
 
-    private val colorRenderer = ColorRenderer()
+    private val colorRenderer = Renderer()
     private val imageRenderer = ImageRenderer()
     private val circleRenderer = CircleRenderer()
     private val fontRenderer = FontRenderer()

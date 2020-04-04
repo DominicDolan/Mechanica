@@ -13,15 +13,7 @@ import util.extensions.distanceTo
 import util.extensions.vec
 import util.units.Vector
 
-fun main() {
-    Game.configure {
-        setViewport(height = 10.0)
-        setStartingState { DrawingExample() }
-    }
-    Game.run()
-}
-
-private class DrawingExample : State() {
+class DrawingExample : State() {
     val renderer = PathRenderer()
 
     private val model = Model()
@@ -41,7 +33,7 @@ private class DrawingExample : State() {
     }
 
     override fun update(delta: Double) {
-        if (Keyboard.MB1.hasBeenReleased) {
+        if (!Keyboard.SHIFT() && Keyboard.MB1.hasBeenReleased) {
             paths.add(ArrayList())
             strokes.add(strokes.last())
         }

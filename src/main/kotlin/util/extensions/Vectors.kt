@@ -8,6 +8,7 @@ import util.units.LightweightVector
 import util.units.Vector
 import kotlin.math.*
 
+
 /**
  * Created by domin on 02/11/2017.
  */
@@ -226,3 +227,7 @@ infix fun Vector.equals(other: Vector) = this.x.toFloat() == other.x.toFloat() &
 fun Vector.normalize() = vec(1.0, this.theta)
 
 fun Vector.toVec2() = Vec2(this.x.toFloat(), this.y.toFloat())
+
+fun Vector.dot(other: Vector) = this.x*other.x + this.y*other.y
+
+fun Vector.cross(other: Vector) = (this.x * other.y - this.y * other.x)

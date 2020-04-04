@@ -2,6 +2,7 @@ package gl.script
 
 import game.Game
 import org.lwjgl.opengl.GL20
+import util.scriptWithLineNumbers
 import java.nio.FloatBuffer
 
 abstract class ShaderScript : ShaderDeclarations("autoVal") {
@@ -26,12 +27,12 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
         this.programId = programId
         for (v in iterator) {
             if (v.qualifier == "uniform") {
-                v.location = GL20.glGetUniformLocation(programId, v.name)
+                v.location = GL20.glGetUniformLocation(programId, v.locationName)
                 if (v.location == -1) {
                     if (Game.debug.printWarnings) {
                         val msg = "Unable to find uniform variable with name: ${v.name} in script\n" +
                             "OpenGL removes unused variables. Try removing any variables that are not in use\n" +
-                            "Script:\n$script"
+                            "Script:\n${scriptWithLineNumbers(script)}"
                         System.err.println(msg)
                     }
                 }
@@ -75,6 +76,7 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
             2 -> GL20.glUniform2f(location, array[0], array[1])
             3 -> GL20.glUniform3f(location, array[0], array[1], array[2])
             4 -> GL20.glUniform4f(location, array[0], array[1], array[2], array[3])
+            else -> GL20.glUniform1fv(location, array)
         }
     }
 

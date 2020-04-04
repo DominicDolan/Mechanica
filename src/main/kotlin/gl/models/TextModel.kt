@@ -19,9 +19,9 @@ class TextModel(private val font: Font) : Model(
         }
 ) {
     private val positionAttribute: AttributeArray
-        get() = vbos[0] as AttributeArray
+        get() = inputs[0] as AttributeArray
     private val texCoordsAttribute: AttributeArray
-        get() = vbos[1] as AttributeArray
+        get() = inputs[1] as AttributeArray
 
     private var characterPositions = DoubleArray(100)
     private var newLineLocations = IntArray(100) { -1 }

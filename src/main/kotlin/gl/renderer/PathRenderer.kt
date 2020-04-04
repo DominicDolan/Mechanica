@@ -3,13 +3,16 @@ package gl.renderer
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
+import gl.utils.enableAlphaBlending
 import gl.utils.loadImage
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import graphics.Image
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL14
 import org.lwjgl.opengl.GL20
 import resources.Resource
 import util.colors.Color
@@ -25,7 +28,6 @@ class PathRenderer : Renderer() {
         override val main: String =
                 """
                 out vec2 tc;
-                layout (binding=0) uniform sampler2D circleAtlas;
 
                 void main(void) {
                     gl_Position = vec4($position, 1.0);
@@ -124,9 +126,7 @@ class PathRenderer : Renderer() {
                 {
                     vec2 v_TexCoord;
                 } fs_in;
-                
-                layout (binding=0) uniform sampler2D circleAtlas;   
-                
+                                
                 const float border = 0.01;
                 const float edge = 0.99;
 
@@ -190,12 +190,12 @@ class PathRenderer : Renderer() {
             GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
             GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
             GL20.glStencilMask(0xFF)
-
             if (!isCircle) {
                 glDrawArrays(GL_LINE_STRIP, 0, it.vertexCount)
+                glDisable(GL_POLYGON_SMOOTH)
             } else {
-                glBindTexture(GL_TEXTURE_2D, it.image.id)
                 glDrawArrays(GL_POINTS, 0, it.vertexCount)
+                enableAlphaBlending()
             }
 
             GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)

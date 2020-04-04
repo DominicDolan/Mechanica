@@ -2,6 +2,7 @@ package game
 
 import data.loadData
 import data.saveData
+import debug.DebugDrawer
 import display.GLFWContext
 import display.Window
 import game.configuration.GameConfiguration

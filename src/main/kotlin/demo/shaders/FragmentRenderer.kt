@@ -4,7 +4,7 @@ import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.utils.createUnitSquareArray
+import gl.utils.createUnitSquareVecArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import input.Cursor
@@ -13,7 +13,7 @@ import util.extensions.toFloatArray
 
 class FragmentRenderer {
 
-    private val vbo = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
+    private val vbo = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
     private val model = Model(vbo)
 
     private val vertex = object : ShaderScript() {

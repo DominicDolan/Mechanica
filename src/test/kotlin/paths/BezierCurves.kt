@@ -3,6 +3,7 @@ package demo.paths
 import drawer.Drawer
 import game.Game
 import gl.models.Model
+import gl.renderer.Renderer
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import input.Cursor
@@ -18,16 +19,8 @@ import util.colors.rgba
 import util.extensions.*
 import util.units.Vector
 
-fun main() {
-    Game.configure {
-        setViewport(height = 10.0)
-        setStartingState { StartBezier() }
-    }
-    Game.run()
-}
-
-private class StartBezier : State() {
-    val renderer = CurveRenderer()
+class BezierCurves : State() {
+    private val renderer = Renderer()
 
     private val maxVertices = 1000
     private val minLineLength = 0.1

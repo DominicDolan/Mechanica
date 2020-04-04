@@ -3,8 +3,8 @@ package gl.renderer
 import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
-import gl.utils.createUnitSquareArray
-import gl.utils.loadTextureUnitSquare
+import gl.utils.createUnitSquareVecArray
+import gl.utils.createTextureUnitSquareVecArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
 import org.joml.Matrix4f
@@ -60,8 +60,8 @@ class CircleRenderer : Renderer() {
 
     override val fragment: ShaderScript = _fragment
 
-    private val positionBuffer = AttributeArray(createUnitSquareArray().toFloatArray(3), VBOPointer.position)
-    private val textureBuffer = AttributeArray(loadTextureUnitSquare().toFloatArray(2), VBOPointer.texCoords)
+    private val positionBuffer = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
+    private val textureBuffer = AttributeArray(createTextureUnitSquareVecArray().toFloatArray(2), VBOPointer.texCoords)
 
     var vec4 = Vector4f()
     override val model: Model = Model(positionBuffer, textureBuffer) {

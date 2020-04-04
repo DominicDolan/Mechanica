@@ -1,5 +1,6 @@
 package game
 
+import debug.DebugDrawer
 import drawer.Drawer
 import drawer.DrawerImpl
 import game.configuration.ConfigurationData
@@ -14,8 +15,8 @@ internal class StateManager {
 
     private val drawer: Drawer by lazy { DrawerImpl() }
 
-    var startOfLoop = Timer.now
-    var updateDuration = 0.1
+    private var startOfLoop = Timer.now
+    private var updateDuration = 0.1
 
     fun updateState() {
         updateDuration = Timer.now - startOfLoop
@@ -29,6 +30,7 @@ internal class StateManager {
         currentState.update(updateDuration)
         currentState.render(drawer)
 
+        DebugDrawer.render(drawer)
     }
 
     fun setCurrentState(setter: () -> State) {

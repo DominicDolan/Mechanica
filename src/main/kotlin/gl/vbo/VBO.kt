@@ -1,11 +1,14 @@
 package gl.vbo
 
+import gl.utils.createQuadFloatArray
+import gl.utils.createTextureUnitSquareFloatArray
+import gl.utils.createUnitSquareFloatArray
 import gl.vbo.pointer.AttributePointer
 import gl.vbo.pointer.VBOPointer
 import org.lwjgl.opengl.GL20
 
 @Suppress("LeakingThis") // The State of the VBO is set before any leaking occurs
-abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPointer) {
+abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPointer): Bindable {
     private var capacity: Int
     val id: Int = GL20.glGenBuffers()
     var vertexCount: Int
@@ -17,7 +20,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
         initBufferData(pointer.bufferType, array)
     }
 
-    fun bind() {
+    override fun bind() {
         GL20.glBindBuffer(pointer.bufferType, id)
         if (pointer is AttributePointer) {
             pointer.enable()
@@ -48,6 +51,16 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
         capacity *= 2
         GL20.glBindBuffer(pointer.bufferType, id)
         initBufferData(pointer.bufferType, capacity*pointer.coordinateSize)
+    }
+
+    companion object {
+        fun createUnitSquarePositionAttribute(): AttributeArray {
+            return AttributeArray(createUnitSquareFloatArray(), VBOPointer.position)
+        }
+
+        fun createUnitSquareTextureAttribute(): AttributeArray {
+            return AttributeArray(createTextureUnitSquareFloatArray(), VBOPointer.texCoords)
+        }
     }
 
 }

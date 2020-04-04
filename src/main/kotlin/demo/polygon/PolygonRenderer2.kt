@@ -1,18 +1,21 @@
 package demo.polygon
 
-import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.vbo.VBO
+import gl.vbo.AttributeArray
+import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import org.joml.Matrix4f
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL40.*
 import util.extensions.toFloatArray
 import util.extensions.vec
 import util.units.Vector
 
-class PolygonRenderer {
+class PolygonRenderer2 {
     private val model: Model
+
     val points: Array<Vector> = arrayOf(
             vec(0, 0),
             vec(0.5, 0.1),
@@ -31,8 +34,19 @@ class PolygonRenderer {
         override val main: String =
                 """
                 out vec2 pos;
+                out vec2 index;
                 void main(void) {
                     pos = $position.xy;
+                    if (pos.x < 0.5) {
+                        index.x = -1.0;
+                    } else {
+                        index.x = 1.0;
+                    }
+                    if (pos.y < 0.5) {
+                        index.y = -1.0;
+                    } else {
+                        index.y = 1.0;
+                    }
                     gl_Position = matrices(vec4($position, 1.0));
                 }
                 """
@@ -48,25 +62,13 @@ class PolygonRenderer {
         override val main: String = """
                 out vec4 fragColor;
                 in vec2 pos;
+                in vec2 index;
                                 
                 void main(void) {
-                                        
-                    bool result = false;
-                    vec2 prev = vec2(p[p.length() - 2], p[p.length() - 1]);
                     
-                    for (int i=0; i<p.length()-1;i+=2) {
-                        vec2 vec = vec2(p[i], p[i + 1]);
-                        if ((vec.y > pos.y) != (prev.y > pos.y) &&
-                                (pos.x < (prev.x - vec.x) * (pos.y - vec.y) / (prev.y-vec.y) + vec.x)) {
-                            result = !result;
-                        }
-                        prev = vec;
-                    }
-                    
-                    if (result) {
-                        fragColor = vec4(0.0, 1.0, 0.0, 1.0);
-                    } else {
-                        fragColor = vec4(0.3, 0.3, 0.3, 1.0);
+                    fragColor = vec4(index, 0.0, 1.0);
+                    if (index.x > 1.0 || index.y > 1.0) {
+                        fragColor = vec4(0.0, 0.0, 1.0, 1.0);
                     }
                     
                 }
@@ -85,12 +87,11 @@ class PolygonRenderer {
     private val transformation = Matrix4f()
 
     init {
-        println("Points size: ${points.size}")
-        println("Floats size: ${points.toFloatArray(2).size}")
 
-
-        val vbo = VBO.createUnitSquarePositionAttribute()
-        model = Model(vbo)
+        val vbo = AttributeArray(points.toFloatArray(3), VBOPointer.position)
+        model = Model(vbo) {
+            glDrawArrays(GL_TRIANGLE_FAN, 0, it.vertexCount)
+        }
     }
 
     fun render(model: Model) {

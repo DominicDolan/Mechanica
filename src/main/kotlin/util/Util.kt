@@ -36,3 +36,12 @@ fun codepointToString(cp: Int): String {
     }
     return sb.toString()
 }
+
+fun scriptWithLineNumbers(script: String): String {
+    val sb = StringBuilder()
+    val lines = script.split("\n")
+    for (i in lines.indices) {
+        sb.append("${i + 1}  ${lines[i]}\n")
+    }
+    return sb.toString()
+}
