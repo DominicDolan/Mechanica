@@ -6,7 +6,7 @@ import util.units.Vector
 import kotlin.math.max
 import kotlin.math.min
 
-class LineSegment(p1: Vector, p2: Vector) : Line {
+open class LineSegment(p1: Vector, p2: Vector) : Line {
     private var hasChanged = true
 
     private var _m: Double = 0.0

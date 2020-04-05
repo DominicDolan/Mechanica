@@ -28,14 +28,6 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
         for (v in iterator) {
             if (v.qualifier == "uniform") {
                 v.location = GL20.glGetUniformLocation(programId, v.locationName)
-                if (v.location == -1) {
-                    if (Game.debug.printWarnings) {
-                        val msg = "Unable to find uniform variable with name: ${v.name} in script\n" +
-                            "OpenGL removes unused variables. Try removing any variables that are not in use\n" +
-                            "Script:\n${scriptWithLineNumbers(script)}"
-                        System.err.println(msg)
-                    }
-                }
             }
         }
     }

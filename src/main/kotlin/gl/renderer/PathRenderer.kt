@@ -165,7 +165,7 @@ class PathRenderer : Renderer() {
             circleGeometry.width.value = value
         }
 
-    var path = ArrayList<Vector>()
+    var path: List<Vector> = ArrayList()
 
     private var floats: FloatArray
 
@@ -213,7 +213,7 @@ class PathRenderer : Renderer() {
         circleShader.render(this.model, transformation)
     }
 
-    private fun fillFloats(path: ArrayList<Vector>) {
+    private fun fillFloats(path: List<Vector>) {
         if (path.size*3 >= floats.size) {
             floats = FloatArray(floats.size*2)
         }

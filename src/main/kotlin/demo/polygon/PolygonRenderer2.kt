@@ -9,26 +9,14 @@ import input.Cursor
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL40.*
+import util.extensions.fill
 import util.extensions.toFloatArray
 import util.extensions.vec
+import util.units.LightweightVector
 import util.units.Vector
 
 class PolygonRenderer2 {
-    private val model: Model
 
-    val points: Array<Vector> = arrayOf(
-            vec(0, 0),
-            vec(0.5, 0.1),
-            vec(1.0, 0.0),
-            vec(0.5, 0.5),
-            vec(1.0, 0.7),
-            vec(1.0, 1.0),
-            vec(0.7, 1.0),
-            vec(0.5, 0.7),
-            vec(0.0, 1.0),
-            vec(0.2, 0.5),
-            vec(0.0, 0.0)
-    )
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -36,17 +24,6 @@ class PolygonRenderer2 {
                 out vec2 pos;
                 out vec2 index;
                 void main(void) {
-                    pos = $position.xy;
-                    if (pos.x < 0.5) {
-                        index.x = -1.0;
-                    } else {
-                        index.x = 1.0;
-                    }
-                    if (pos.y < 0.5) {
-                        index.y = -1.0;
-                    } else {
-                        index.y = 1.0;
-                    }
                     gl_Position = matrices(vec4($position, 1.0));
                 }
                 """
@@ -56,7 +33,6 @@ class PolygonRenderer2 {
     private val fragment = object : ShaderScript() {
 
         val mouse = uniform.vec2(0.0, 0.0)
-        val array = uniform.type("float", "p[22]", points.toFloatArray(2))
 
         //language=GLSL
         override val main: String = """
@@ -66,10 +42,7 @@ class PolygonRenderer2 {
                                 
                 void main(void) {
                     
-                    fragColor = vec4(index, 0.0, 1.0);
-                    if (index.x > 1.0 || index.y > 1.0) {
-                        fragColor = vec4(0.0, 0.0, 1.0, 1.0);
-                    }
+                    fragColor = vec4(0.0, 1.0, 0.0, 1.0);
                     
                 }
             """
@@ -86,16 +59,33 @@ class PolygonRenderer2 {
 
     private val transformation = Matrix4f()
 
-    init {
+    private var floats: FloatArray
 
-        val vbo = AttributeArray(points.toFloatArray(3), VBOPointer.position)
+    private val vbo: AttributeArray
+    private val model: Model
+
+    init {
+        val initialVertices = 300
+        floats = FloatArray(initialVertices*3)
+        vbo = AttributeArray(initialVertices, VBOPointer.position)
+
         model = Model(vbo) {
             glDrawArrays(GL_TRIANGLE_FAN, 0, it.vertexCount)
         }
     }
 
-    fun render(model: Model) {
+    fun render(path: List<LightweightVector>) {
+        fillFloats(path)
         fragment.mouse.set(Cursor.viewX, Cursor.viewY)
         shader.render(this.model, transformation)
+    }
+
+    private fun fillFloats(path: List<LightweightVector>) {
+        if (path.size*3 >= floats.size) {
+            floats = FloatArray(floats.size*2)
+        }
+
+        floats.fill(path)
+        vbo.update(floats)
     }
 }

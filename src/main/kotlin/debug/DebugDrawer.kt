@@ -16,7 +16,7 @@ object DebugDrawer {
         for (drawing in drawings) {
             drawing(draw)
         }
-        draw.ui.green.alpha(0.5).text(sb.toString(), 0.2, -Game.view.width/2.0, Game.view.height/2.0 - 0.2)
+        draw.ui.green.alpha(0.5).text(sb.toString(), Game.view.height*0.02, -Game.view.width/2.0, Game.view.height*(0.5 - 0.02))
         drawings.clear()
         sb.clear()
     }

@@ -83,7 +83,14 @@ fun List<Double>.mean(): Double {
 }
 
 
-fun FloatArray.fill(arrayList: ArrayList<Vector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+fun FloatArray.fill(arrayList: List<Vector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+    for (i in start until end) {
+        this[i*3] = arrayList[i].x.toFloat()
+        this[i*3 + 1] = arrayList[i].y.toFloat()
+    }
+}
+
+fun FloatArray.fill(arrayList: Array<Vector>, start: Int = 0, end: Int = (arrayList.size + start)) {
     for (i in start until end) {
         this[i*3] = arrayList[i].x.toFloat()
         this[i*3 + 1] = arrayList[i].y.toFloat()
