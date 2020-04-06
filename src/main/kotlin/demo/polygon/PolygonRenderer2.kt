@@ -25,14 +25,10 @@ class PolygonRenderer2 {
 
     val typesAttribute = AttributePointer.create(2, 1)
     private val vertex = object : ShaderScript() {
-        val types = attribute(typesAttribute).float()
         //language=GLSL
         override val main: String =
                 """
-                out float pos;
-                out vec2 index;
                 void main(void) {
-                    pos = $types;
                     gl_Position = matrices(vec4($position, 1.0));
                 }
                 """
@@ -46,24 +42,9 @@ class PolygonRenderer2 {
         //language=GLSL
         override val main: String = """
                 out vec4 fragColor;
-                in float pos;
-                in vec2 index;
                                 
                 void main(void) {
-                    float st = pos - 0.5;
-                    
-                    float smoothStroke = 0.1*pixelScale;
-                    float radius = max(0.01, smoothStroke);
-
-                    float relative = abs(st) - (0.5 - radius);
-                    float distance = max(relative, 0.0);
-                    
-                    float smoothStart = radius - smoothStroke;
-                    float smoothEnd = radius;
-                    
-                    float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, distance);
-                    
-                    fragColor = vec4($color.rgb, alpha);
+                    fragColor = $color;
                 }
             """
 
@@ -83,8 +64,7 @@ class PolygonRenderer2 {
     var shorts: ShortArray
 
     private val vbo: AttributeArray
-    private val types: AttributeArray
-//    private val indices: ElementIndexArray
+    private val indices: ElementIndexArray
 
     private val model: Model
 
@@ -94,23 +74,17 @@ class PolygonRenderer2 {
         shorts = ShortArray(initialVertices*3)
 
         vbo = AttributeArray(initialVertices, VBOPointer.position)
-        types = AttributeArray(initialVertices, typesAttribute)
-//        indices = ElementIndexArray(initialVertices)
+        indices = ElementIndexArray(initialVertices)
 
-        model = Model(vbo, types)
+        model = Model(vbo, indices) {
+            glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
+        }
 
         color = hex(0x00FF0080)
     }
 
     fun render(path: List<LightweightVector>, model: Model = this.model) {
         fillFloats(path)
-        fragment.mouse.set(Cursor.viewX, Cursor.viewY)
-        shader.render(model, transformation)
-    }
-
-    fun render(triangulator: Triangulator, model: Model = this.model) {
-        vbo.update(triangulator.floats)
-        types.update(triangulator.types)
         fragment.mouse.set(Cursor.viewX, Cursor.viewY)
         shader.render(model, transformation)
     }
@@ -124,13 +98,9 @@ class PolygonRenderer2 {
         vbo.update(floats)
     }
 
-    private fun fillFloats(floats: FloatArray) {
-        vbo.update(floats)
+    fun fillShorts(triangulator: Triangulator) {
+        shorts = triangulator.indices
+        model.vertexCount = triangulator.indexCount
+        indices.update(shorts)
     }
-
-//    fun fillShorts(triangulator: Triangulator) {
-//        shorts = triangulator.indices
-//        model.vertexCount = triangulator.indexCount
-//        indices.update(shorts)
-//    }
 }

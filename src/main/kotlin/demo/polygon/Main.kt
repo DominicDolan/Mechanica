@@ -64,18 +64,17 @@ private class StartMain : State() {
 
         triangulator.triangulate()
 
-//        polygonRenderer.fillShorts(triangulator)
+        polygonRenderer.fillShorts(triangulator)
     }
 
     override fun update(delta: Double) {
     }
 
     override fun render(draw: Drawer) {
-        val v = Game.view
         val mouse = vec(Mouse.worldX, Mouse.worldY)
 
-        polygonRenderer.render(triangulator)
-//        pathRenderer.render()
+        polygonRenderer.render(points)
+        pathRenderer.render()
         for (n in triangulatorList) {
             if (!n.isConcave) {
                 draw.magenta.circle(n, 0.04)
