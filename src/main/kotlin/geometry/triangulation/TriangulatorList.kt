@@ -44,6 +44,11 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
         node.nextConcave?.prevConcave = node.prevConcave
     }
 
+    fun rewind() {
+        createLinkedList()
+        createConcaveList()
+    }
+
     private fun addAllFromPath(path: Array<LightweightVector>):  Boolean {
         var totalArea = 0.0
         for (i in 1 until path.size) {
@@ -99,16 +104,6 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
         }
     }
 
-    inline fun forEachEar(block: (Vector) -> Unit) {
-        while (iterator().hasNext()) {
-            val node = iterator().next()
-
-            if (node.isEar) {
-                block(node)
-            }
-        }
-    }
-
     override fun iterator() = uncutLines
 
     inner class Node(vector: LightweightVector): Vector {
@@ -146,51 +141,10 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
         return (isLeft && !ccw) || (!isLeft && ccw)
     }
 
-    inner class PolygonLine(p1: Vector, p2: Vector) : LineSegment(p1, p2) {
-        var isLeft = false
-        val isConcave: Boolean
-            get() = (isLeft && !ccw) || (!isLeft && ccw)
-
-    }
-
     companion object {
 
         private val TriangulatorList.zeroNode
             get() = Node(vec(0, 0))
-
-        private fun TriangulatorList.coordinateToLine(path: Array<LightweightVector>, index: Int): PolygonLine {
-            val check = checkCoordinatesForLineConversion(path, index)
-            if (check != null) return check
-
-            val p1 = path[index]
-            val secondIndex = if (index + 1 == path.size) 0
-            else index + 1
-            val p2 = path[secondIndex]
-
-            return PolygonLine(p1, p2)
-
-        }
-
-
-        private fun TriangulatorList.checkCoordinatesForLineConversion(path: Array<LightweightVector>, index: Int): PolygonLine? {
-            if (path.isNotEmpty()) {
-                return if (path.size > 1 && index < path.size) {
-                    null
-                } else {
-                    if (Game.debug.printWarnings) {
-                        System.err.println("The size of this path is not big enough to make a line or the index supplied is larger than the path size")
-                        System.err.println(Exception().stackTrace?.contentToString())
-                    }
-                    PolygonLine(path[0], path[0])
-                }
-            } else {
-                if (Game.debug.printWarnings) {
-                    System.err.println("An empty path was supplied so a point line at the origin is being returned")
-                    System.err.println(Exception().stackTrace?.contentToString())
-                }
-                return PolygonLine(vec(0.0, 0.0), vec(0.0, 0.0))
-            }
-        }
 
         private fun calculateLineArea(p1: LightweightVector, p2: LightweightVector): Double {
             return (p2.x - p1.x)*(p2.y + p1.y)

@@ -7,16 +7,12 @@ import geometry.LineSegment
 import geometry.isInTriangle
 import geometry.triangulation.Triangulator
 import geometry.triangulation.TriangulatorList
-import gl.models.Model
 import gl.renderer.PathRenderer
-import gl.vbo.AttributeArray
-import gl.vbo.VBO
 import input.Keyboard
 import input.Mouse
 import state.State
 import util.colors.hex
 import util.extensions.vec
-import util.units.LightweightVector
 import util.units.Vector
 
 fun main() {
@@ -42,7 +38,7 @@ fun main() {
 }
 
 private class StartMain : State() {
-    val renderer = PolygonRenderer2()
+    val polygonRenderer = PolygonRenderer2()
     val pathRenderer = PathRenderer()
 
     val points = arrayOf(
@@ -67,6 +63,8 @@ private class StartMain : State() {
         pathRenderer.stroke = 0.004f
 
         triangulator.triangulate()
+
+//        polygonRenderer.fillShorts(triangulator)
     }
 
     override fun update(delta: Double) {
@@ -76,10 +74,9 @@ private class StartMain : State() {
         val v = Game.view
         val mouse = vec(Mouse.worldX, Mouse.worldY)
 
-        renderer.render(points)
-        pathRenderer.render()
+        polygonRenderer.render(triangulator)
+//        pathRenderer.render()
         for (n in triangulatorList) {
-//            drawLine(draw, n, n.next)
             if (!n.isConcave) {
                 draw.magenta.circle(n, 0.04)
             }
@@ -87,10 +84,6 @@ private class StartMain : State() {
 
         for (n in triangulatorList.concaveList) {
             draw.yellow.circle(n, 0.04)
-        }
-
-        triangulatorList.forEachEar {
-            draw.red.circle(it, 0.04)
         }
 
         drawDiagonals(draw)
