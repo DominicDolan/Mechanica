@@ -4,6 +4,7 @@ package util.extensions
 
 import loader.toBuffer
 import org.jbox2d.common.Vec2
+import util.units.LightweightVector
 import util.units.Vector
 import java.nio.FloatBuffer
 
@@ -94,5 +95,26 @@ fun FloatArray.fill(arrayList: Array<Vector>, start: Int = 0, end: Int = (arrayL
     for (i in start until end) {
         this[i*3] = arrayList[i].x.toFloat()
         this[i*3 + 1] = arrayList[i].y.toFloat()
+    }
+}
+
+fun FloatArray.fill(arrayList: Array<LightweightVector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+    for (i in start until end) {
+        this[i*3] = arrayList[i].x.toFloat()
+        this[i*3 + 1] = arrayList[i].y.toFloat()
+    }
+}
+
+fun FloatArray.fillLightWeight(iterator: Iterator<LightweightVector>) {
+    for ((i, v) in iterator.withIndex()) {
+        this[i*3] = v.x.toFloat()
+        this[i*3 + 1] = v.y.toFloat()
+    }
+}
+
+fun FloatArray.fill(iterator: Iterator<Vector>) {
+    for ((i, v) in iterator.withIndex()) {
+        this[i*3] = v.x.toFloat()
+        this[i*3 + 1] = v.y.toFloat()
     }
 }

@@ -1,12 +1,15 @@
 package geometry.triangulation
 
 import geometry.LineSegment
+import util.units.LightweightVector
 import util.units.Vector
 import kotlin.math.abs
 
 class Triangulator(private val triangulatorList: TriangulatorList) {
     val indices = ShortArray(500)
     var indexCount = 0
+
+    constructor(path: Array<LightweightVector>) : this(TriangulatorList(path))
 
     fun triangulate(indices: ShortArray = this.indices) {
         val list = triangulatorList

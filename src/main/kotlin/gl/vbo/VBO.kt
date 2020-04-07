@@ -1,43 +1,43 @@
 package gl.vbo
 
-import gl.utils.createQuadFloatArray
 import gl.utils.createTextureUnitSquareFloatArray
 import gl.utils.createUnitSquareFloatArray
 import gl.vbo.pointer.AttributePointer
 import gl.vbo.pointer.VBOPointer
-import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL40.*
+import org.lwjgl.system.MemoryUtil.memAlloc
+import org.lwjgl.system.MemoryUtil.memFree
 
 @Suppress("LeakingThis") // The State of the VBO is set before any leaking occurs
 abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPointer): Bindable {
     private var capacity: Int
-    val id: Int = GL20.glGenBuffers()
+    val id: Int = glGenBuffers()
     var vertexCount: Int
 
     init {
-        GL20.glBindBuffer(pointer.bufferType, id)
+        glBindBuffer(pointer.bufferType, id)
         vertexCount = getArraySize(array)/pointer.coordinateSize
         capacity = vertexCount
         initBufferData(pointer.bufferType, array)
     }
 
     override fun bind() {
-        GL20.glBindBuffer(pointer.bufferType, id)
+        glBindBuffer(pointer.bufferType, id)
         if (pointer is AttributePointer) {
             pointer.enable()
         }
     }
 
-    fun update(array: T, from: Int = 0) {
+    fun update(array: T, from: Int = 0, length: Int = getArraySize(array)/pointer.coordinateSize) {
         val cs = pointer.coordinateSize
         val byteOffset = from*cs*pointer.variableSize
 
-        val vertexCount = getArraySize(array)/pointer.coordinateSize
-        if (vertexCount + from > capacity) {
-            increaseSize()
+        if (length + from > capacity) {
+            increaseSize(length + from)
         }
-        this.vertexCount = vertexCount
+        this.vertexCount = length
 
-        GL20.glBindBuffer(pointer.bufferType, id)
+        glBindBuffer(pointer.bufferType, id)
         bufferSubData(pointer.bufferType, byteOffset.toLong(), array)
     }
 
@@ -47,10 +47,17 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
     protected abstract fun initBufferData(target: Int, array: T)
     protected abstract fun initBufferData(target: Int, arraySize: Int)
 
-    private fun increaseSize() {
-        capacity *= 2
-        GL20.glBindBuffer(pointer.bufferType, id)
+    private fun increaseSize(newSize: Int) {
+        val buffer = memAlloc(pointer.coordinateSize*pointer.variableSize*capacity)
+        capacity = newSize*2
+
+        glBindBuffer(pointer.bufferType, id)
+
+        glGetBufferSubData(pointer.bufferType, 0, buffer)
         initBufferData(pointer.bufferType, capacity*pointer.coordinateSize)
+        glBufferSubData(pointer.bufferType, 0, buffer)
+
+        memFree(buffer)
     }
 
     companion object {

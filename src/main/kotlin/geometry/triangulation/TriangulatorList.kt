@@ -1,24 +1,17 @@
 package geometry.triangulation
 
-import game.Game
-import geometry.LineSegment
 import geometry.rectangleArea
-import geometry.isInTriangle
-import geometry.isLeftOf
-import util.extensions.vec
 import util.units.LightweightVector
 import util.units.Vector
 
-class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorList.Node>{
+class TriangulatorList(path: Array<LightweightVector>) : Iterable<Vector>{
     val head: Node
 
     val ccw: Boolean
 
-    private val allNodes = ArrayList<Node>()
-    private val uncutLines: TriangulatorListIterator.VertexLoopIterator
-    private val concaveIterator: TriangulatorListIterator.ConcaveVertexIterator
-    val concaveList: Iterator<Node>
-        get() = concaveIterator
+    private val allVertices = ArrayList<Node>()
+    private val uncutVertices: TriangulatorListIterator
+    private val concaveVertices: TriangulatorListIterator
 
     init {
         head = if (path.isNotEmpty()) addNode(path[0]) else zeroNode
@@ -27,8 +20,8 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
 
         createLinkedList()
 
-        uncutLines = TriangulatorListIterator.VertexLoopIterator(head)
-        concaveIterator = TriangulatorListIterator.ConcaveVertexIterator(null)
+        uncutVertices = TriangulatorListIterator.VertexLoopIterator(head)
+        concaveVertices = TriangulatorListIterator.ConcaveVertexIterator(null)
 
         createConcaveList()
 
@@ -61,22 +54,22 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
 
     private fun addNode(vector: LightweightVector): Node {
         val n = Node(vector)
-        n.listIndex = allNodes.size
-        allNodes.add(n)
+        n.listIndex = allVertices.size
+        allVertices.add(n)
         return n
     }
 
     private fun createLinkedList() {
-        if (allNodes.isNotEmpty()) {
+        if (allVertices.isNotEmpty()) {
             var prev = head
-            for (i in 1 until allNodes.size) {
-                val n = allNodes[i]
+            for (i in 1 until allVertices.size) {
+                val n = allVertices[i]
 
                 n.prev = prev
                 prev.next = n
 
-                val nextIndex = if (i+1 < allNodes.size) i+1 else 0
-                val area = rectangleArea(n, n.prev, allNodes[nextIndex])
+                val nextIndex = if (i+1 < allVertices.size) i+1 else 0
+                val area = rectangleArea(n, n.prev, allVertices[nextIndex])
                 if (area == 0.0) continue
 
                 prev = n
@@ -88,13 +81,13 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
 
     private fun createConcaveList() {
         var current: Node? = null
-        while (uncutLines.hasNext()) {
-            val node = uncutLines.next()
+        while (uncutVertices.hasNext()) {
+            val node = uncutVertices.next()
 
             if (node.isConcave) {
                 val n = current
                 if (n == null) {
-                    concaveIterator.setNewHead(node)
+                    concaveVertices.setNewHead(node)
                 } else {
                     n.nextConcave = node
                     node.prevConcave = n
@@ -104,7 +97,7 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
         }
     }
 
-    override fun iterator() = uncutLines
+    override fun iterator() = uncutVertices
 
     inner class Node(vector: LightweightVector): Vector {
         override var x: Double = vector.x
@@ -115,40 +108,16 @@ class TriangulatorList(path: Array<LightweightVector>) : Iterable<TriangulatorLi
         var nextConcave: Node? = null
         var prevConcave: Node? = null
 
+        val isCCW: Boolean
+            get() = ccw
         val isEar: Boolean
-            get() = isEar(this)
+            get() = isEar(concaveVertices)
         val isConcave: Boolean
-            get() = isConcave(this)
+            get() = isConcave()
         var listIndex = -1
 
         override fun toString(): String {
             return "($x, $y)"
         }
-    }
-
-    fun isEar(node: Node): Boolean {
-        val p2 = node.next
-        val p3 = node.prev
-        for (n in concaveIterator) {
-            if (n.isInTriangle(node, p2, p3)) return false
-        }
-        return !node.isConcave
-    }
-
-    fun isConcave(node: Node): Boolean {
-        val area = rectangleArea(node.next, node.prev, node)
-        val isLeft = area > 0.0
-        return (isLeft && !ccw) || (!isLeft && ccw)
-    }
-
-    companion object {
-
-        private val TriangulatorList.zeroNode
-            get() = Node(vec(0, 0))
-
-        private fun calculateLineArea(p1: LightweightVector, p2: LightweightVector): Double {
-            return (p2.x - p1.x)*(p2.y + p1.y)
-        }
-
     }
 }

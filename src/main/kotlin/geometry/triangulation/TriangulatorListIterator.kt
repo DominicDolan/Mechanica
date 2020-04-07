@@ -1,7 +1,10 @@
 package geometry.triangulation
 
-class TriangulatorListIterator {
-    class VertexLoopIterator(var head: TriangulatorList.Node) : Iterator<TriangulatorList.Node> {
+interface TriangulatorListIterator : Iterator<TriangulatorList.Node> {
+
+    fun setNewHead(head: TriangulatorList.Node?)
+
+    class VertexLoopIterator(var head: TriangulatorList.Node) : TriangulatorListIterator {
         private var current = head
         private var loopHasStarted = false
 
@@ -21,13 +24,15 @@ class TriangulatorListIterator {
             return cursor
         }
 
-        fun setNewHead(head: TriangulatorList.Node) {
-            this.head = head
-            current = head
+        override fun setNewHead(head: TriangulatorList.Node?) {
+            if (head != null) {
+                this.head = head
+                current = head
+            }
         }
     }
 
-    class ConcaveVertexIterator(private var head: TriangulatorList.Node?) : Iterator<TriangulatorList.Node> {
+    class ConcaveVertexIterator(private var head: TriangulatorList.Node?) : TriangulatorListIterator {
         private var current = head
         override fun hasNext(): Boolean {
             val hasNext = current != null
@@ -46,7 +51,7 @@ class TriangulatorListIterator {
         }
 
 
-        fun setNewHead(head: TriangulatorList.Node?) {
+        override fun setNewHead(head: TriangulatorList.Node?) {
             this.head = head
             current = head
         }

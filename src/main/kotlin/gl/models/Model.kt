@@ -2,8 +2,7 @@ package gl.models
 
 import gl.vbo.Bindable
 import gl.vbo.VBO
-import graphics.Image
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL40.*
 
 open class Model(vararg inputs: Bindable,
                  draw: ((Model) -> Unit)? = null) : Iterable<Bindable> {
@@ -20,7 +19,7 @@ open class Model(vararg inputs: Bindable,
         }
     var vertexCount = maxVertices
     val draw = draw?: {
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, it.vertexCount)
+        glDrawArrays(GL_TRIANGLES, 0, it.vertexCount)
     }
 
     fun bind() {

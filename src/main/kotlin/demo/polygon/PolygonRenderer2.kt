@@ -1,5 +1,6 @@
 package demo.polygon
 
+import geometry.PolygonModel
 import geometry.triangulation.Triangulator
 import gl.models.Model
 import gl.script.ShaderScript
@@ -21,9 +22,8 @@ import util.extensions.vec
 import util.units.LightweightVector
 import util.units.Vector
 
-class PolygonRenderer2 {
+class PolygonRenderer2() {
 
-    val typesAttribute = AttributePointer.create(2, 1)
     private val vertex = object : ShaderScript() {
         //language=GLSL
         override val main: String =
@@ -51,7 +51,7 @@ class PolygonRenderer2 {
     }
 
     private val shader = Shader(vertex, fragment)
-    private val startTime = System.currentTimeMillis()
+
     var color: Color
         get() = fragment.color.value.toColor()
         set(value) {
@@ -60,47 +60,13 @@ class PolygonRenderer2 {
 
     private val transformation = Matrix4f()
 
-    private var floats: FloatArray
-    var shorts: ShortArray
-
-    private val vbo: AttributeArray
-    private val indices: ElementIndexArray
-
-    private val model: Model
-
     init {
-        val initialVertices = 300
-        floats = FloatArray(initialVertices*3)
-        shorts = ShortArray(initialVertices*3)
-
-        vbo = AttributeArray(initialVertices, VBOPointer.position)
-        indices = ElementIndexArray(initialVertices)
-
-        model = Model(vbo, indices) {
-            glDrawElements(GL11.GL_TRIANGLES, it.vertexCount, GL11.GL_UNSIGNED_SHORT, 0)
-        }
-
         color = hex(0x00FF0080)
     }
 
-    fun render(path: List<LightweightVector>, model: Model = this.model) {
-        fillFloats(path)
+    fun render(model: Model) {
         fragment.mouse.set(Cursor.viewX, Cursor.viewY)
         shader.render(model, transformation)
     }
 
-    private fun fillFloats(path: List<LightweightVector>) {
-        if (path.size*3 >= floats.size) {
-            floats = FloatArray(floats.size*2)
-        }
-
-        floats.fill(path)
-        vbo.update(floats)
-    }
-
-    fun fillShorts(triangulator: Triangulator) {
-        shorts = triangulator.indices
-        model.vertexCount = triangulator.indexCount
-        indices.update(shorts)
-    }
 }
