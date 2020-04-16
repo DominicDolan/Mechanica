@@ -1,5 +1,6 @@
 package geometry
 
+import geometry.lines.LineSegment
 import util.units.Vector
 import kotlin.math.abs
 import kotlin.math.sign

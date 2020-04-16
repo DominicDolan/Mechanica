@@ -3,18 +3,16 @@ package lines
 import debug.DebugDrawer
 import drawer.Drawer
 import game.Game
-import geometry.LineSegment
+import geometry.lines.LineSegment
+import geometry.lines.LineSegmentImpl
 import gl.renderer.PathRenderer
 import input.Keyboard
 import input.Mouse
 import state.State
 import util.colors.Color
 import util.colors.hex
-import util.extensions.minus
-import util.extensions.theta
 import util.extensions.vec
 import util.units.Vector
-import kotlin.math.atan
 
 class LinesExample : State() {
     private val stroke = 0.05f
@@ -37,23 +35,23 @@ class LinesExample : State() {
     }
 
     override fun update(delta: Double) {
-        fun setPoint(point: LineSegment.LinePoint) {
+        fun setPoint(point: LineSegmentImpl.LinePoint) {
             point.x = Mouse.viewX
             point.y = Mouse.viewY
         }
 
         if (Mouse.MB1()) {
             if (Keyboard.SHIFT()) {
-                setPoint(l2.p1)
+                setPoint(l2.p1 as LineSegmentImpl.LinePoint)
             } else {
-                setPoint(l1.p1)
+                setPoint(l1.p1 as LineSegmentImpl.LinePoint)
             }
         }
         if (Mouse.MB2()) {
             if (Keyboard.SHIFT()) {
-                setPoint(l2.p2)
+                setPoint(l2.p2 as LineSegmentImpl.LinePoint)
             } else {
-                setPoint(l1.p2)
+                setPoint(l1.p2 as LineSegmentImpl.LinePoint)
             }
         }
     }
@@ -67,16 +65,17 @@ class LinesExample : State() {
         drawIntercepts(draw, l1, l1Color)
         drawIntercepts(draw, l2, l2Color)
 
+        if (l1.segmentIntersect(l2)) {
+            draw.magenta
+        } else draw.red
+        draw.circle(l1.intersect(l2), 0.1)
+
         renderLine(l1, l1Color)
         renderLine(l2, l2Color)
 
         DebugDrawer.drawText("Line1: $l1")
         DebugDrawer.drawText("Line2: $l2")
-        if (l1.segmentIntersect(l2)) {
-            draw.magenta
-        } else draw.red
 
-        draw.circle(l1.intersect(l2), 0.1)
     }
 
     private fun drawIntercepts(draw:  Drawer, line: LineSegment, color: Color) {

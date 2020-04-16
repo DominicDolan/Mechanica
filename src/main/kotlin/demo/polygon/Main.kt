@@ -1,20 +1,16 @@
 package demo.polygon
 
-import debug.DebugDrawer
 import drawer.Drawer
 import game.Game
-import geometry.LineSegment
-import geometry.PolygonModel
-import geometry.isInTriangle
-import geometry.triangulation.Triangulator
-import geometry.triangulation.TriangulatorList
+import gl.models.DynamicPolygonModel
+import geometry.lines.LineSegment
+import geometry.lines.LineSegmentImpl
 import gl.renderer.PathRenderer
 import input.Keyboard
 import input.Mouse
 import state.State
 import util.colors.hex
 import util.extensions.vec
-import util.units.Vector
 
 fun main() {
     Game.configure {
@@ -25,7 +21,7 @@ fun main() {
             printWarnings = true
         }
         configureWindow {
-            isDecorated = false
+//            isDecorated = false
         }
     }
     Game.view.x = 0.5
@@ -55,7 +51,9 @@ private class StartMain : State() {
             vec(0.0, 0.0)
     ).toList()
 
-    val polygonModel = PolygonModel(points)
+    val line = LineSegment(vec(0.01, 0.01), vec(0.02, 0.02))
+
+    val polygonModel = DynamicPolygonModel(points)
 
     val polygonRenderer = PolygonRenderer2()
     init {
@@ -66,18 +64,20 @@ private class StartMain : State() {
     }
 
     override fun update(delta: Double) {
+        val line = this.line as LineSegmentImpl
+        line.p2.x = Mouse.worldX
+        line.p2.y = Mouse.worldY
+
+        if (Mouse.MB1.hasBeenPressed) {
+            polygonModel.add(vec(Mouse.worldX, Mouse.worldY), 3)
+        }
     }
 
     override fun render(draw: Drawer) {
         val mouse = vec(Mouse.worldX, Mouse.worldY)
 
         polygonRenderer.render(polygonModel)
-        pathRenderer.render()
 
-        if (mouse.isInTriangle(points[0], points[1], points[points.size - 2])) {
-            draw.yellow
-        } else draw.blue
-        draw.circle(mouse, 0.05)
     }
 
 }

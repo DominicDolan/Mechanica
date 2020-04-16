@@ -1,6 +1,5 @@
-package geometry
+package geometry.lines
 
-import debug.DebugDrawer
 import util.extensions.vec
 import util.units.LightweightVector
 
@@ -19,11 +18,6 @@ interface Line {
         else if (m==0.0) b
         else other.b
 
-        DebugDrawer.drawText("m1: %.2f, b1: %.2f, n1: %.2f, c1: %.2f".format(m, b, n, c))
-        with(other) {
-            DebugDrawer.drawText("m2: %.2f, b2: %.2f, n2: %.2f, c2: %.2f".format(m, b, n, c))
-        }
-        DebugDrawer.drawText("Intersect: x: %.2f, y: %.2f".format(x, y))
         return vec(x, y)
     }
 }

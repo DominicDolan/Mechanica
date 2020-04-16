@@ -1,26 +1,13 @@
 package demo.polygon
 
-import geometry.PolygonModel
-import geometry.triangulation.Triangulator
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
-import gl.vbo.AttributeArray
-import gl.vbo.ElementIndexArray
-import gl.vbo.pointer.AttributePointer
-import gl.vbo.pointer.VBOPointer
 import input.Cursor
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL40.*
 import util.colors.Color
 import util.colors.hex
 import util.colors.toColor
-import util.extensions.fill
-import util.extensions.toFloatArray
-import util.extensions.vec
-import util.units.LightweightVector
-import util.units.Vector
 
 class PolygonRenderer2() {
 

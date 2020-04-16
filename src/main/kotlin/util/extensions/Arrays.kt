@@ -117,4 +117,5 @@ fun FloatArray.fill(iterator: Iterator<Vector>) {
         this[i*3] = v.x.toFloat()
         this[i*3 + 1] = v.y.toFloat()
     }
+    println("filled floats: ${this.contentToString()}")
 }

@@ -1,13 +1,12 @@
-package geometry
+package geometry.lines
 
-import debug.DebugDrawer
 import util.units.LightweightVector
 import util.units.Vector
 import kotlin.math.max
 import kotlin.math.min
 
-open class LineSegment(p1: Vector, p2: Vector) : Line {
-    private var hasChanged = true
+abstract class LineSegment() : Line {
+    protected var hasChanged = true
 
     private var _m: Double = 0.0
     override val m: Double
@@ -23,8 +22,8 @@ open class LineSegment(p1: Vector, p2: Vector) : Line {
     override val c: Double
         get() = if (!hasChanged) _c else calculateXIntercept()
 
-    val p1 = LinePoint(p1)
-    val p2 = LinePoint(p2)
+    abstract val p1: Vector
+    abstract val p2: Vector
 
     fun isInBoundingBox(point: LightweightVector): Boolean {
         val xBoolean = point.x in min(p1.x, p2.x)..max(p1.x, p2.x)
@@ -34,8 +33,9 @@ open class LineSegment(p1: Vector, p2: Vector) : Line {
 
     fun segmentIntersect(other: LineSegment): Boolean {
         val intersect = intersect(other)
-        DebugDrawer.drawText("Segment Intersect: $intersect")
-        return isInBoundingBox(intersect) && other.isInBoundingBox(intersect)
+        val isInThis = isInBoundingBox(intersect)
+        val isInOther = other.isInBoundingBox(intersect)
+        return isInThis && isInOther
     }
 
     private fun calculateAll() {
@@ -61,24 +61,13 @@ open class LineSegment(p1: Vector, p2: Vector) : Line {
         return _c
     }
 
-    inner class LinePoint(vec: Vector) : Vector {
-        override var x: Double = vec.x
-            set(value) {
-                field = value
-                hasChanged = true
-            }
-        override var y: Double = vec.y
-            set(value) {
-                field = value
-                hasChanged = true
-            }
-
-        override fun toString(): String {
-            return "%.2f, %.2f".format(x, y)
-        }
-    }
-
     override fun toString(): String {
         return "p1: $p1, p2: $p2, slope: %.2f, intercept Y: %.2f, intercept X: %.2f".format(m, b, c)
+    }
+
+    companion object {
+        operator fun invoke(p1: Vector, p2: Vector): LineSegment {
+            return LineSegmentImpl(p1, p2)
+        }
     }
 }

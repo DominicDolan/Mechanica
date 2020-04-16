@@ -1,13 +1,15 @@
 package geometry.triangulation
 
-import geometry.LineSegment
+import drawer.Drawer
+import geometry.lines.LineSegment
+import input.Keyboard
 import util.units.LightweightVector
-import util.units.Vector
-import kotlin.math.abs
 
 class Triangulator(private val triangulatorList: TriangulatorList) {
     val indices = ShortArray(500)
     var indexCount = 0
+    var current: TriangulatorList.Node? = null
+    var new: TriangulatorList.Node? = null
 
     constructor(path: Array<LightweightVector>) : this(TriangulatorList(path))
 
@@ -17,7 +19,7 @@ class Triangulator(private val triangulatorList: TriangulatorList) {
         val start = getStart(list, indices) ?: return
 
         iterate(start, list, indices)
-        triangulatorList.rewind()
+        list.rewind()
     }
 
     private fun getStart(list: TriangulatorList, indices: ShortArray): TriangulatorList.Node? {
@@ -30,13 +32,17 @@ class Triangulator(private val triangulatorList: TriangulatorList) {
     }
 
     private tailrec fun iterate(current: TriangulatorList.Node, list: TriangulatorList, indices: ShortArray): TriangulatorList.Node {
-        val new = if (current.isEar && !hasBecomeTriangle(current)) {
+        val new = processNode(current, list, indices)
+        return if (new != list.head) iterate(new, list, indices) else new
+    }
+
+    private fun processNode(current: TriangulatorList.Node, list: TriangulatorList, indices: ShortArray): TriangulatorList.Node {
+        return if (current.isEar && !hasBecomeTriangle(current)) {
             createTriangle(current, indices)
             removeLinks(current, list)
         } else {
             current.next
         }
-        return if (new != list.head) iterate(new, list, indices) else new
     }
 
     private fun hasBecomeTriangle(current: TriangulatorList.Node) = (current === current.next.next)

@@ -22,13 +22,14 @@ fun isConcave(prev: Vector, current: Vector, next: Vector, ccw: Boolean): Boolea
     return (isLeft && !ccw) || (!isLeft && ccw)
 }
 
-fun TriangulatorList.Node.isEar(concaveVertices: Iterator<TriangulatorList.Node>): Boolean {
+fun TriangulatorList.Node.isEar(concaveVertices: Iterable<TriangulatorList.Node>): Boolean {
+
     val p2 = this.next
     val p3 = this.prev
     for (n in concaveVertices) {
         if (n.isInTriangle(this, p2, p3)) return false
     }
-    return !this.isConcave
+    return (!this.isConcave)
 }
 
 
