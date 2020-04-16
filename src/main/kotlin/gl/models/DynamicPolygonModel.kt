@@ -10,7 +10,7 @@ class DynamicPolygonModel(vertices: Array<LightweightVector>)
 
     constructor(vertices: List<LightweightVector>) : this(vertices.toTypedArray())
 
-    fun add(vector: LightweightVector) = add(vector, triangulatorList.allVertices.size)
+    fun add(vector: LightweightVector) = add(vector, triangulator.vertices.size)
 
     fun add(vector: LightweightVector, index: Int): Boolean {
         val success = addLine(index, vector)
@@ -36,8 +36,8 @@ class DynamicPolygonModel(vertices: Array<LightweightVector>)
     }
 
     private fun addLine(index: Int, new: LightweightVector): Boolean {
-        val n = triangulatorList.add(index, new)
-        lines.add(PolygonLine(triangulatorList.allVertices, n.listIndex))
+        val n = triangulator.add(index, new)
+        lines.add(PolygonLine(triangulator.vertices, n.listIndex))
 
         if (canTriangulate(index)) {
             //revert

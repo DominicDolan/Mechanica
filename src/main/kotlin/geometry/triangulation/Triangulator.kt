@@ -1,74 +1,94 @@
 package geometry.triangulation
 
-import drawer.Drawer
-import geometry.lines.LineSegment
-import input.Keyboard
+import geometry.triangulation.iterators.TriangulatorIterable
+import util.extensions.indexLooped
 import util.units.LightweightVector
+import util.units.Vector
 
-class Triangulator(private val triangulatorList: TriangulatorList) {
-    val indices = ShortArray(500)
-    var indexCount = 0
-    var current: TriangulatorList.Node? = null
-    var new: TriangulatorList.Node? = null
+abstract class Triangulator(path: Array<LightweightVector>) {
 
-    constructor(path: Array<LightweightVector>) : this(TriangulatorList(path))
+    val ccw: Boolean
+    val vertices = ArrayList<Node>()
 
-    fun triangulate(indices: ShortArray = this.indices) {
-        val list = triangulatorList
-        indexCount = 0
-        val start = getStart(list, indices) ?: return
+    abstract val indices: ShortArray
+    abstract var indexCount: Int
+    abstract val concaveVertices: TriangulatorIterable
 
-        iterate(start, list, indices)
-        list.rewind()
+    abstract fun triangulate()
+    abstract fun rewind()
+
+    init {
+        if (path.size < 3) throw IllegalStateException("Can't triangulate less than 3 vertices")
+        Node(path[0])
+
+        ccw = addAllFromPath(path)
     }
 
-    private fun getStart(list: TriangulatorList, indices: ShortArray): TriangulatorList.Node? {
-        val start = list.head.next.next
-        if (start.next === list.head) {
-            createTriangle(start, indices)
-            return null
-        }
-        return start
+    fun add(vector: LightweightVector): Node {
+        val n = Node(vector)
+        rewind()
+        return n
     }
 
-    private tailrec fun iterate(current: TriangulatorList.Node, list: TriangulatorList, indices: ShortArray): TriangulatorList.Node {
-        val new = processNode(current, list, indices)
-        return if (new != list.head) iterate(new, list, indices) else new
+    fun add(index: Int, vector: LightweightVector): Node {
+        val n = Node(vector, index)
+        rewind()
+        return n
     }
 
-    private fun processNode(current: TriangulatorList.Node, list: TriangulatorList, indices: ShortArray): TriangulatorList.Node {
-        return if (current.isEar && !hasBecomeTriangle(current)) {
-            createTriangle(current, indices)
-            removeLinks(current, list)
-        } else {
-            current.next
+
+    private fun addAllFromPath(path: Array<LightweightVector>):  Boolean {
+        var totalArea = 0.0
+        for (i in 1 until path.size) {
+            Node(path[i])
+
+            if (i > 0) totalArea += calculateLineArea(path[i - 1], path[i])
         }
+        return totalArea < 0.0
     }
 
-    private fun hasBecomeTriangle(current: TriangulatorList.Node) = (current === current.next.next)
 
-    private fun removeLinks(current: TriangulatorList.Node, list: TriangulatorList): TriangulatorList.Node {
-        list.removeLink(current)
-        var new = current.prev
-        if (!new.isConcave) {
-            list.removeConcaveLink(current)
-        }
-        if (!new.prev.isConcave) {
-            list.removeConcaveLink(current)
-        }
-        if (new.prev.listIndex == 0) {
-            new = current.next
-        }
-        return new
-    }
+    inner class Node(vertex: LightweightVector, index: Int = vertices.size): Vector {
+        override var x: Double = vertex.x
+        override var y: Double = vertex.y
 
-    val lines = ArrayList<LineSegment>()
-    private fun createTriangle(node: TriangulatorList.Node, indices: ShortArray) {
-        indices[indexCount] = node.prev.listIndex.toShort()
-        indices[indexCount + 1] = node.listIndex.toShort()
-        indices[indexCount + 2] = node.next.listIndex.toShort()
+        private val defaultPrevious: Node
+            get() = vertices[vertices.indexLooped(listIndex - 1)]
+        private val defaultNext: Node
+            get() = vertices[vertices.indexLooped(listIndex + 1)]
 
-        indexCount+=3
-        lines.add(LineSegment(node.prev, node.next))
+        var prev: Node
+        var next: Node
+        var nextConcave: Node? = null
+        var prevConcave: Node? = null
+
+        val isEar: Boolean
+            get() = isEar(concaveVertices)
+        val isConcave: Boolean
+            get() = isConcave(prev, this, next, ccw)
+
+        private var _listIndex = index
+        val listIndex: Int
+            get() {
+                if (_listIndex == -1 || vertices[_listIndex] !== this) {
+                    _listIndex = vertices.indexOf(this)
+                }
+                return _listIndex
+            }
+
+        init {
+            vertices.add(index, this)
+            prev = defaultPrevious
+            next = defaultNext
+        }
+
+        fun rewind() {
+            prev = defaultPrevious
+            next = defaultNext
+        }
+
+        override fun toString(): String {
+            return "($x, $y)"
+        }
     }
 }

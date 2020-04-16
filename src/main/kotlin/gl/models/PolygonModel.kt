@@ -3,14 +3,14 @@ package gl.models
 import geometry.lines.LineSegment
 import geometry.lines.PolygonLine
 import geometry.triangulation.Triangulator
-import geometry.triangulation.TriangulatorList
+import geometry.triangulation.GrahamScanTriangulator
 import gl.vbo.AttributeArray
 import gl.vbo.ElementIndexArray
 import gl.vbo.pointer.VBOPointer
 import org.lwjgl.opengl.GL40
 import util.extensions.fill
-import util.extensions.vec
 import util.units.LightweightVector
+import util.units.Vector
 
 open class PolygonModel(vertices: Array<LightweightVector>)
 :Model(
@@ -20,8 +20,7 @@ open class PolygonModel(vertices: Array<LightweightVector>)
         GL40.glDrawElements(GL40.GL_TRIANGLES, it.vertexCount, GL40.GL_UNSIGNED_SHORT, 0)
     })
 {
-    protected val triangulatorList = TriangulatorList(vertices)
-    protected val triangulator = Triangulator(triangulatorList)
+    protected val triangulator: Triangulator = GrahamScanTriangulator(vertices)
 
     private var floats: FloatArray
     private val positions = (inputs[0] as AttributeArray)
@@ -42,20 +41,20 @@ open class PolygonModel(vertices: Array<LightweightVector>)
     protected fun updateBuffers() {
         vertexCount = triangulator.indexCount
         indices.update(triangulator.indices)
-        fillFloats(triangulatorList)
+        fillFloats(triangulator.vertices)
     }
 
-    private fun fillFloats(path: TriangulatorList) {
-        if (path.allVertices.size*3 > floats.size) {
-            floats = FloatArray(path.allVertices.size*6)
+    private fun fillFloats(path: List<Vector>) {
+        if (path.size*3 > floats.size) {
+            floats = FloatArray(path.size*6)
         }
 
-        floats.fill(path.allVertices)
+        floats.fill(path)
         positions.update(floats)
     }
 
     private fun fillLines() {
-        for (n in triangulatorList.allVertices) {
+        for (n in triangulator.vertices) {
             createLine(n)
         }
     }
@@ -64,17 +63,17 @@ open class PolygonModel(vertices: Array<LightweightVector>)
 
     }
 
-    private fun createLine(node: TriangulatorList.Node): LineSegment {
+    private fun createLine(node: Triangulator.Node): LineSegment {
         val index = node.listIndex
         when {
             lines.size < index -> {
                 throw ArrayIndexOutOfBoundsException("Can't add a line because the lines list is not big enough to place the new line at <node.listIndex>")
             }
             index == lines.size -> {
-                lines.add(PolygonLine(triangulatorList.allVertices, index))
+                lines.add(PolygonLine(triangulator.vertices, index))
             }
             else -> {
-                lines[index] = PolygonLine(triangulatorList.allVertices, index)
+                lines[index] = PolygonLine(triangulator.vertices, index)
             }
         }
         return lines[index]

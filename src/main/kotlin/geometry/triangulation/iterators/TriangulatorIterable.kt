@@ -1,8 +1,12 @@
 package geometry.triangulation.iterators
 
-import geometry.triangulation.TriangulatorList
+import geometry.triangulation.Triangulator
 
-interface TriangulatorIterable : Iterable<TriangulatorList.Node> {
+interface TriangulatorIterable : Iterable<Triangulator.Node> {
 
-    fun setNewHead(head: TriangulatorList.Node?)
+    val head: Triangulator.Node?
+
+    fun rewind()
+
+    fun removeLink(node: Triangulator.Node)
 }

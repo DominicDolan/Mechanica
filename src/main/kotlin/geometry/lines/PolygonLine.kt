@@ -1,13 +1,13 @@
 package geometry.lines
 
-import geometry.triangulation.TriangulatorList
+import geometry.triangulation.Triangulator
 import util.units.LightweightVector
 
-class PolygonLine(private val list: ArrayList<TriangulatorList.Node>, val listIndex: Int) :  LineSegment() {
+class PolygonLine(private val list: ArrayList<Triangulator.Node>, val listIndex: Int) :  LineSegment() {
 
-    override val p1: TriangulatorList.Node
+    override val p1: Triangulator.Node
         get() = list[listIndex]
-    override val p2: TriangulatorList.Node
+    override val p2: Triangulator.Node
         get() = list[listIndex].next
 
     fun hasChanged(hasChange: Boolean) {

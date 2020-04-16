@@ -119,3 +119,19 @@ fun FloatArray.fill(iterator: Iterator<Vector>) {
     }
     println("filled floats: ${this.contentToString()}")
 }
+
+fun List<*>.indexLooped(index: Int): Int {
+    return when {
+        index < 0 -> this.size + index
+        index > this.lastIndex -> index - this.size
+        else -> index
+    }
+}
+
+fun List<*>.indexConstrained(index: Int): Int {
+    return when {
+        index < 0 -> 0
+        index > this.lastIndex -> this.lastIndex
+        else -> index
+    }
+}
