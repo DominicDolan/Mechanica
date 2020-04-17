@@ -2,9 +2,9 @@ package demo.polygon
 
 import drawer.Drawer
 import game.Game
-import gl.models.DynamicPolygonModel
 import geometry.lines.LineSegment
 import geometry.lines.LineSegmentImpl
+import gl.models.PolygonModel
 import gl.renderer.PathRenderer
 import input.Keyboard
 import input.Mouse
@@ -53,7 +53,7 @@ private class StartMain : State() {
 
     val line = LineSegment(vec(0.01, 0.01), vec(0.02, 0.02))
 
-    val polygonModel = DynamicPolygonModel(points)
+    val polygonModel = PolygonModel(points)
 
     val polygonRenderer = PolygonRenderer2()
     init {
@@ -67,10 +67,6 @@ private class StartMain : State() {
         val line = this.line as LineSegmentImpl
         line.p2.x = Mouse.worldX
         line.p2.y = Mouse.worldY
-
-        if (Mouse.MB1.hasBeenPressed) {
-            polygonModel.add(vec(Mouse.worldX, Mouse.worldY), 3)
-        }
     }
 
     override fun render(draw: Drawer) {
