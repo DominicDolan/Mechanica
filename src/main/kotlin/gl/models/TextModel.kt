@@ -6,7 +6,7 @@ import gl.vbo.AttributeArray
 import gl.vbo.ElementIndexArray
 import gl.vbo.pointer.VBOPointer
 import org.lwjgl.opengl.GL11
-import util.extensions.restrain
+import util.extensions.constrain
 import kotlin.math.abs
 
 class TextModel(private val font: Font) : Model(
@@ -96,10 +96,10 @@ class TextModel(private val font: Font) : Model(
     }
 
     fun getCharacterIndex(x: Double, line: Int): Int {
-        val restrainedLine = line.restrain(0, lineCount)
+        val constrainedLine = line.constrain(0, lineCount)
 
-        val start = if (restrainedLine == 0) 0 else newLineLocations[restrainedLine-1]
-        val end = newLineLocations[restrainedLine] - 1
+        val start = if (constrainedLine == 0) 0 else newLineLocations[constrainedLine-1]
+        val end = newLineLocations[constrainedLine] - 1
 
         val search = characterPositions.binarySearch(x, start, end)
 

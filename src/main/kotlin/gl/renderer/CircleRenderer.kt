@@ -17,7 +17,6 @@ import util.extensions.toFloatArray
 class CircleRenderer : Renderer() {
 
     override val vertex = object : ShaderScript() {
-        val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
         //language=GLSL
         override val main: String =
                 """
@@ -50,7 +49,7 @@ class CircleRenderer : Renderer() {
                     vec2 st = (tc - vec2(0.5));
                     float distance = dot(st, st)*2.0;
                     
-                    float alpha = 1.0 - smoothstep(0.5 - 0.2*pixelScale, 0.5 , distance);
+                    float alpha = 1.0 - smoothstep(0.5 - 7.0*pixelSize, 0.5 , distance);
                                         
                     fragColor = vec4($color.rgb, alpha);
                 }

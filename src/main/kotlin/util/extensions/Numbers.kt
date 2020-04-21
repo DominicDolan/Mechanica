@@ -54,12 +54,12 @@ fun Number.isLower(other1: Number, other2: Number, other3: Number, vararg others
     return isLower
 }
 
-fun Double.restrain(lower: Double, higher: Double): Double {
+fun Double.constrain(lower: Double, higher: Double): Double {
     val restrainLower = max(this, lower)
     return min(restrainLower, higher)
 }
 
-fun Int.restrain(lower: Int, higher: Int): Int {
+fun Int.constrain(lower: Int, higher: Int): Int {
     val restrainLower = max(this, lower)
     return min(restrainLower, higher)
 }

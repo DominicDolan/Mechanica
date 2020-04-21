@@ -8,7 +8,7 @@ import org.joml.Matrix4f
 import resources.Res
 import util.colors.Color
 import util.colors.toColor
-import util.extensions.restrain
+import util.extensions.constrain
 import util.extensions.vec
 import util.units.MutableVector
 import util.units.Vector
@@ -180,7 +180,7 @@ class FontRenderer : Renderer() {
             val adjustedY = (y - textPosition.y)/fontSize
             val adjustedX = (x - textPosition.x)/fontSize
 
-            val restrained = (-adjustedY).restrain(0.0, model.lineCount.toDouble())
+            val restrained = (-adjustedY).constrain(0.0, model.lineCount.toDouble())
             val line = ceil(restrained).toInt()
 
             return model.getCharacterIndex(adjustedX, line)
@@ -191,7 +191,7 @@ class FontRenderer : Renderer() {
             val adjustedY = (y - textPosition.y)/fontSize
             val adjustedX = (x - textPosition.x)/fontSize
 
-            val line = (-adjustedY).restrain(0.0, model.lineCount.toDouble())
+            val line = (-adjustedY).constrain(0.0, model.lineCount.toDouble())
             val ceil = ceil(line)
 
             val xOut = model.getClosestCharacterPosition(adjustedX, ceil.toInt())*fontSize + textPosition.x

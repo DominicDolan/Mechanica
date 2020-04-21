@@ -1,11 +1,12 @@
 package gl.shader
 
-import debug.DebugDrawer
 import game.Game
 import game.view.GameMatrices
+import game.view.Matrices
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 import org.joml.Vector3f
+import kotlin.math.min
 
 internal class ShaderImpl(
         override val vertex: ShaderScript,
@@ -15,9 +16,7 @@ internal class ShaderImpl(
 
     private val matrixLoaders = ArrayList<MatrixLoader>()
 
-    private val pixelScale = fragment.qualifier("uniform").float("pixelScale")
-    
-    private val vec3 = Vector3f()
+    private val pixelSize = fragment.qualifier("uniform").float("pixelSize")
 
     private val loader: ShaderLoader by lazy { ShaderLoader(vertex, fragment, tessellation, geometry) }
 
@@ -46,10 +45,6 @@ internal class ShaderImpl(
             loader.projection.set(projection)
             loader.view.set(view)
         }
-
-        val scale = getScale(transformation)*getScale(projection)*getScale(view)
-        this.pixelScale.value = 1f/scale
-//        println("Scale: ${1f/scale}")
     }
 
     private fun setGameMatrices(projection: Matrix4f, view: Matrix4f) {
@@ -60,20 +55,19 @@ internal class ShaderImpl(
                 if (view === Game.matrices.view) {
                     loader.matrixType.value = 0f
                     loader.pvMatrix.set((Game.matrices as GameMatrices).pvMatrix)
+                    this.pixelSize.value = (Game.matrices as GameMatrices).pixelScale
                 } else if (view === Game.matrices.uiView) {
                     loader.matrixType.value = 0f
                     loader.pvMatrix.set((Game.matrices as GameMatrices).pvUiMatrix)
+                    this.pixelSize.value = (Game.matrices as GameMatrices).pixelUIScale
                 }
+            }
+            if (loader.matrixType.value == 1f) {
+                this.pixelSize.value = Matrices.calculatePixelSize(projection, view)
             }
         }
     }
 
-    private fun getScale(mat: Matrix4f): Float {
-        mat.getScale(vec3)
-        vec3.z = 0f
-        return vec3.length()
-    }
-    
     private class MatrixLoader(script: ShaderScript) {
         val matrixType = script.qualifier("uniform").float("matrixType")
 

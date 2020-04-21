@@ -1,6 +1,7 @@
 package game.view
 
 import game.configuration.GameSetup
+import game.view.Matrices.Companion.calculatePixelSize
 import input.Cursor
 import input.Mouse
 import org.joml.Matrix4f
@@ -8,20 +9,24 @@ import org.joml.Vector3f
 import kotlin.math.tan
 
 internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
-    override val projection: Matrix4f// = Matrix4f()
-    override val view = Matrix4f().identity()
+    override val projection: Matrix4f = Matrix4f().identity()// = Matrix4f()
+    override val view: Matrix4f = Matrix4f().identity()
     override val uiView = Matrix4f()
 
     val pvMatrix = Matrix4f()
     val pvUiMatrix = Matrix4f()
 
+    var pixelScale: Float
+    var pixelUIScale: Float
+
     init {
         updateView(data.viewX, data.viewY, data.viewHeight)
         setUiView(view)
 
-        projection = Matrix4f().identity()
         data.projectionMatrixConfiguration(projection, viewPort)
 
+        pixelScale = calculatePixelSize(projection, view)
+        pixelUIScale = calculatePixelSize(projection, uiView)
     }
 
     fun updateView(viewData: GameView) {
@@ -43,6 +48,7 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
 */      val cameraZ = (height) / (2 * tan(fov / 2))
         view.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
 //        projection.scheduleCreation = true
+        pixelScale = calculatePixelSize(projection, view)
     }
 
     private fun setUiView(view: Matrix4f) {

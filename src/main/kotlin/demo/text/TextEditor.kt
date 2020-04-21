@@ -10,7 +10,7 @@ import input.Mouse
 import org.joml.Matrix4f
 import state.State
 import util.colors.hex
-import util.extensions.restrain
+import util.extensions.constrain
 import util.extensions.vec
 import kotlin.math.max
 import kotlin.math.min
@@ -104,7 +104,7 @@ private class StartText : State() {
 
     fun addLetter(index: Int, str: String) {
         val fullText = renderer.text
-        val safeIndex = index.restrain(0, fullText.length)
+        val safeIndex = index.constrain(0, fullText.length)
 
         val before = if (index <= 0) ""
             else fullText.substring(0 until safeIndex)
@@ -119,7 +119,7 @@ private class StartText : State() {
 
     fun removeLetter(index: Int) {
         val fullText = renderer.text
-        val safeIndex = index.restrain(0, fullText.length)
+        val safeIndex = index.constrain(0, fullText.length)
 
         val before = if (index <= 0) ""
         else fullText.substring(0 until max(0,safeIndex-1))

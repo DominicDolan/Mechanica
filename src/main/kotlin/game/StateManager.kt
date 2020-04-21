@@ -30,7 +30,9 @@ internal class StateManager {
         currentState.update(updateDuration)
         currentState.render(drawer)
 
-        DebugDrawer.render(drawer)
+        if (Game.debug.screenLog) {
+            DebugDrawer.render(drawer)
+        }
     }
 
     fun setCurrentState(setter: () -> State) {
