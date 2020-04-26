@@ -1,7 +1,11 @@
 package game.view
 
+import debug.ScreenLog
+import display.Monitor
+import game.Game
 import game.configuration.GameSetup
 import game.view.Matrices.Companion.calculatePixelSize
+import game.view.Matrices.Companion.getYScale
 import input.Cursor
 import input.Mouse
 import org.joml.Matrix4f
@@ -20,10 +24,9 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
     var pixelUIScale: Float
 
     init {
-        updateView(data.viewX, data.viewY, data.viewHeight)
-        setUiView(view)
-
         data.projectionMatrixConfiguration(projection, viewPort)
+        updateView(data.viewX, data.viewY, data.viewHeight)
+        setUiView(data.viewHeight)
 
         pixelScale = calculatePixelSize(projection, view)
         pixelUIScale = calculatePixelSize(projection, uiView)
@@ -38,25 +41,15 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
     }
 
     private fun updateView(x: Double, y: Double, height: Double) {
-        val fov = Math.toRadians(fov.toDouble())
-
-/*      δ = 2*atan(d/2D)
-        δ is angular diameter or fov, 70 degrees.
-        d is actual size, 10
-        D is distance away. ?
-        D = d/(2*tan(δ/2))
-*/      val cameraZ = (height) / (2 * tan(fov / 2))
+        val cameraZ = height*getYScale(projection)/2f
         view.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
-//        projection.scheduleCreation = true
         pixelScale = calculatePixelSize(projection, view)
     }
 
-    private fun setUiView(view: Matrix4f) {
-        uiView.set(view)
-
-        val translation = Vector3f()
-        view.getTranslation(translation)
-        uiView.setTranslation(0f, 0f, translation.z)
+    private fun setUiView(height: Double) {
+        val cameraZ = height*getYScale(projection)/(2f*Monitor.getPrimaryMonitor().contentScale.yScale)
+        uiView.setTranslation(0f, 0f, -cameraZ.toFloat())
+        pixelUIScale = calculatePixelSize(projection, view)
     }
 
     fun updateMatrices() {

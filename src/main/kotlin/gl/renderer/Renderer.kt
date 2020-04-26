@@ -1,5 +1,7 @@
 package gl.renderer
 
+import drawer.shader.DrawerScript
+import drawer.shader.DrawerShader
 import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
@@ -15,7 +17,7 @@ open class Renderer {
     protected open val model = Model()
     protected open val transformation: Matrix4f = Matrix4f().identity()
 
-    protected open val vertex = object : ShaderScript() {
+    protected open val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -26,7 +28,7 @@ open class Renderer {
 
     }
 
-    private val defaultFragment = object : ShaderScript() {
+    private val defaultFragment = object : DrawerScript() {
 
         //language=GLSL
         override val main: String = """
@@ -41,7 +43,7 @@ open class Renderer {
 
     protected open val fragment = defaultFragment
 
-    protected open val shader: Shader by lazy { Shader(vertex, fragment) }
+    protected open val shader: Shader by lazy { DrawerShader(vertex, fragment) }
 
     open var color: Color
         get() = defaultFragment.color.value.toColor()

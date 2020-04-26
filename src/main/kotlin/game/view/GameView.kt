@@ -2,7 +2,7 @@ package game.view
 
 import game.Game
 import game.configuration.GameSetup
-import util.units.MutableVector
+import util.units.DynamicVector
 import util.units.Vector
 
 class GameView(data: GameSetup): View {
@@ -52,12 +52,11 @@ class GameView(data: GameSetup): View {
         }
     var lockRatio = true
 
-    override val center: Vector = MutableVector(x + width/2.0, y + height/2.0)
+    override val center: DynamicVector = DynamicVector.create(x + width/2.0, y + height/2.0)
         get() {
-            val vector = field as MutableVector
-            vector.x = x + width/2.0
-            vector.y = y + height/2.0
-            return vector
+            field.x = x + width/2.0
+            field.y = y + height/2.0
+            return field
         }
 
     private val gameMatrices: GameMatrices

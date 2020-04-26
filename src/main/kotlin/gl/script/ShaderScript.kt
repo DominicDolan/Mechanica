@@ -15,9 +15,7 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
 
     private fun generateScript(): String {
         val sb = java.lang.StringBuilder(header)
-        sb.appendln(globalDeclarations)
         sb.appendln(declarations)
-        globalMethodDeclarations(sb)
         sb.appendln(main.trimIndent())
 
         return sb.toString()
@@ -33,20 +31,6 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
     }
 
     internal fun loadUniforms() {
-        loadGlobalUniforms()
-        loadLocalUniforms()
-    }
-
-    private fun loadGlobalUniforms() {
-        for (v in ShaderDeclarations.iterator) {
-            if (v.qualifier == "uniform") {
-                v.location = GL20.glGetUniformLocation(programId, v.name)
-                loadUniform(v.location, v.value)
-            }
-        }
-    }
-
-    private fun loadLocalUniforms() {
         for (v in iterator) {
             if (v.qualifier == "uniform") {
                 loadUniform(v.location, v.value)

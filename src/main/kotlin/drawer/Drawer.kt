@@ -1,5 +1,7 @@
 package drawer
 
+import drawer.subclasses.color.ColorDrawer
+import drawer.subclasses.rotation.RotatedDrawer
 import graphics.Image
 import graphics.Polygon
 import util.colors.hex

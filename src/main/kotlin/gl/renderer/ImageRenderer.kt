@@ -1,12 +1,13 @@
 package gl.renderer
 
+import drawer.shader.DrawerScript
 import gl.models.Model
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 
 class ImageRenderer : Renderer() {
 
-    override val vertex = object : ShaderScript() {
+    override val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -21,7 +22,7 @@ class ImageRenderer : Renderer() {
 
     }
 
-    private val _fragment = object : ShaderScript() {
+    private val _fragment = object : DrawerScript() {
         val alpha = uniform.float(1f)
         //language=GLSL
         override val main: String = """

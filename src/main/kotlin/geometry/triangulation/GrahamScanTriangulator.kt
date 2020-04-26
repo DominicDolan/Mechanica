@@ -4,7 +4,9 @@ import geometry.lines.LineSegment
 import geometry.triangulation.iterators.ConcaveVertexIterable
 import geometry.triangulation.iterators.TriangulatorIterable
 import geometry.triangulation.iterators.VertexLoopIterable
+import util.extensions.vec
 import util.units.LightweightVector
+import util.units.Vector
 
 class GrahamScanTriangulator(path: Array<LightweightVector>) : Triangulator(path) {
     override val indices = ShortArray(500)
@@ -23,12 +25,13 @@ class GrahamScanTriangulator(path: Array<LightweightVector>) : Triangulator(path
         concaveVertices = ConcaveVertexIterable(vertices)
     }
 
-    override fun triangulate() {
+    override fun triangulate(): ShortArray {
         indexCount = 0
-        val start = getStart() ?: return
+        val start = getStart() ?: return indices
 
         iterate(start)
         rewind()
+        return indices
     }
 
     private fun getStart(): Node? {

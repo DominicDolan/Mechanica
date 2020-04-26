@@ -10,15 +10,14 @@ import util.units.Vector
 
 object DebugDrawer {
     private val drawings = ArrayList<(Drawer) -> Unit>()
-    private val sb = StringBuilder()
 
     internal fun render(draw: Drawer) {
-        for (drawing in drawings) {
-            drawing(draw)
+        if (Game.debug.constructionDraws) {
+            for (drawing in drawings) {
+                drawing(draw)
+            }
+            drawings.clear()
         }
-        draw.ui.green.alpha(0.5).text(sb.toString(), Game.view.height*0.02, -Game.view.width/2.0, Game.view.height*(0.5 - 0.02))
-        drawings.clear()
-        sb.clear()
     }
 
     fun drawCircle(position: Vector, radius: Double) {
@@ -36,9 +35,4 @@ object DebugDrawer {
     fun drawVector(position: Vector, r: Number, theta: Angle) {
         drawVector(position, vec(r, theta))
     }
-
-    fun drawText(text: String) {
-        sb.appendln(text)
-    }
-
 }

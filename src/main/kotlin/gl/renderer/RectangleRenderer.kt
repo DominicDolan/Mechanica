@@ -1,5 +1,7 @@
 package gl.renderer
 
+import drawer.shader.DrawerScript
+import drawer.shader.DrawerShader
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
@@ -18,7 +20,7 @@ class RectangleRenderer {
     val model = Model(positions)
     val transformation: Matrix4f = Matrix4f().identity()
 
-    val vertex = object : ShaderScript() {
+    val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -31,10 +33,9 @@ class RectangleRenderer {
 
     }
 
-    private val defaultFragment = object : ShaderScript() {
+    private val defaultFragment = object : DrawerScript() {
 
-        val size = uniform.vec2(1.0, 1.0)
-        val radius = uniform.float(0.0f)
+
         //language=GLSL
         override val main: String = """
                 out vec4 fragColor;
@@ -47,7 +48,7 @@ class RectangleRenderer {
                     
                     st = vec2(st.x*width, st.y*height);
                     
-                    float smoothStroke = 0.06*pixelScale;
+                    float smoothStroke = 0.06*pixelSize;
                     float radius = max($radius, smoothStroke);
 
                     vec2 relative = abs(st) - vec2(0.5*width - radius, 0.5*height - radius);
@@ -66,7 +67,7 @@ class RectangleRenderer {
 
     val fragment = defaultFragment
 
-    val shader: Shader by lazy { Shader(vertex, fragment) }
+    val shader: Shader by lazy { DrawerShader(vertex, fragment) }
 
     var color: Color
         get() = defaultFragment.color.value.toColor()

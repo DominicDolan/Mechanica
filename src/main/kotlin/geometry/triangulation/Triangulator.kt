@@ -14,7 +14,7 @@ abstract class Triangulator(path: Array<LightweightVector>) {
     abstract var indexCount: Int
     abstract val concaveVertices: TriangulatorIterable
 
-    abstract fun triangulate()
+    abstract fun triangulate(): ShortArray
     abstract fun rewind()
 
     init {
@@ -48,7 +48,7 @@ abstract class Triangulator(path: Array<LightweightVector>) {
     }
 
 
-    inner class Node(vertex: LightweightVector, index: Int = vertices.size): Vector {
+    inner class Node(vertex: Vector, index: Int = vertices.size): Vector {
         override var x: Double = vertex.x
         override var y: Double = vertex.y
 

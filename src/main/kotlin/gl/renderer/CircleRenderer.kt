@@ -1,11 +1,14 @@
 package gl.renderer
 
+import drawer.Drawer
+import drawer.shader.DrawerScript
 import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.utils.createUnitSquareVecArray
 import gl.utils.createTextureUnitSquareVecArray
 import gl.vbo.AttributeArray
+import gl.vbo.VBO
 import gl.vbo.pointer.VBOPointer
 import org.joml.Matrix4f
 import org.joml.Vector4f
@@ -16,7 +19,7 @@ import util.extensions.toFloatArray
 
 class CircleRenderer : Renderer() {
 
-    override val vertex = object : ShaderScript() {
+    override val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -32,7 +35,7 @@ class CircleRenderer : Renderer() {
 
     }
 
-    private val _fragment = object : ShaderScript() {
+    private val _fragment = object : DrawerScript() {
 
         val strokeWidth = uniform.float(1.0f)
 
@@ -57,10 +60,10 @@ class CircleRenderer : Renderer() {
 
     }
 
-    override val fragment: ShaderScript = _fragment
+    override val fragment: DrawerScript = _fragment
 
-    private val positionBuffer = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
-    private val textureBuffer = AttributeArray(createTextureUnitSquareVecArray().toFloatArray(2), VBOPointer.texCoords)
+    private val positionBuffer = VBO.createUnitSquarePositionAttribute()
+    private val textureBuffer = VBO.createUnitSquareTextureAttribute()
 
     var vec4 = Vector4f()
     override val model: Model = Model(positionBuffer, textureBuffer) {

@@ -1,12 +1,14 @@
 package gl.vbo
 
 import gl.utils.createTextureUnitSquareFloatArray
+import gl.utils.createTextureUnitSquareVecArray
 import gl.utils.createUnitSquareFloatArray
 import gl.vbo.pointer.AttributePointer
 import gl.vbo.pointer.VBOPointer
 import org.lwjgl.opengl.GL40.*
 import org.lwjgl.system.MemoryUtil.memAlloc
 import org.lwjgl.system.MemoryUtil.memFree
+import util.extensions.toFloatArray
 
 @Suppress("LeakingThis") // The State of the VBO is set before any leaking occurs
 abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPointer): Bindable {
@@ -66,7 +68,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
         }
 
         fun createUnitSquareTextureAttribute(): AttributeArray {
-            return AttributeArray(createTextureUnitSquareFloatArray(), VBOPointer.texCoords)
+            return AttributeArray(createTextureUnitSquareVecArray().toFloatArray(2), VBOPointer.texCoords)
         }
     }
 

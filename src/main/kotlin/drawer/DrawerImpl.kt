@@ -1,8 +1,9 @@
 package drawer
 
+import drawer.subclasses.color.ColorDrawer
+import drawer.subclasses.rotation.RotatedDrawer
 import game.Game
 import gl.models.ImageModel
-import gl.models.Model
 import gl.renderer.*
 import gl.utils.createUnitSquareVecArray
 import gl.utils.createTextureUnitSquareVecArray
@@ -20,12 +21,13 @@ import util.extensions.component2
 import util.extensions.degrees
 import util.extensions.toFloatArray
 import util.units.Angle
+import util.units.Degree
 import util.units.Vector
 import kotlin.math.atan2
 import kotlin.math.hypot
 
 
-internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
+internal class DrawerImpl() : ColorDrawer, RotatedDrawer, StrokeDrawer {
 
     private var layout: Layouts = Layouts.NORMAL
     private var frame: Frames = Frames.WORLD
@@ -84,8 +86,8 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
             }
             rotate(angle.toDegrees().asDouble(), pivotX, pivotY)
         }
-        transformation.setTranslate(outX, outY, 0.0)
-        transformation.setScale(width, height, 1.0)
+        transformation.setTranslate(outX.toFloat(), outY.toFloat(), 0f)
+        transformation.setScale(width.toFloat(), height.toFloat(), 1f)
 
         renderer.render(drawable, transformation.get())
         reset()
@@ -115,8 +117,8 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     }
 
     private fun rotate(degrees: Double, pivotX: Double, pivotY: Double) {
-        transformation.setPivot(pivotX, pivotY)
-        transformation.setRotate(0.0, 0.0, degrees)
+        transformation.setPivot(pivotX.toFloat(), pivotY.toFloat())
+        transformation.setRotate(0f, 0f, degrees.toFloat())
     }
 
     override fun background() {
@@ -232,11 +234,13 @@ internal class DrawerImpl : ColorDrawer, RotatedDrawer, StrokeDrawer {
     override val ui: Drawer
         get() {
             frame = Frames.UI
+            frameWasSet = true
             return this
         }
     override val world: Drawer
         get() {
             frame = Frames.WORLD
+            frameWasSet = true
             return this
         }
 

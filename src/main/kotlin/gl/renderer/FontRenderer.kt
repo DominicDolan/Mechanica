@@ -1,5 +1,6 @@
 package gl.renderer
 
+import drawer.shader.DrawerScript
 import font.Font
 import gl.models.Model
 import gl.models.TextModel
@@ -10,7 +11,7 @@ import util.colors.Color
 import util.colors.toColor
 import util.extensions.constrain
 import util.extensions.vec
-import util.units.MutableVector
+import util.units.DynamicVector
 import util.units.Vector
 import kotlin.math.ceil
 import kotlin.math.max
@@ -18,7 +19,7 @@ import kotlin.math.max
 
 class FontRenderer : Renderer() {
 
-    override val vertex = object : ShaderScript() {
+    override val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -33,7 +34,7 @@ class FontRenderer : Renderer() {
 
     }
 
-    private val _fragment = object : ShaderScript() {
+    private val _fragment = object : DrawerScript() {
 
         //language=GLSL
         override val main: String = """
@@ -78,9 +79,9 @@ class FontRenderer : Renderer() {
 
     var fontSize: Double = 1.0
 
-    var position: Vector = MutableVector(0.0, 0.0)
+    var position: DynamicVector = DynamicVector.create()
         set(value) {
-            (field as MutableVector).set(value)
+            field.set(value)
         }
 
     init {
@@ -102,7 +103,7 @@ class FontRenderer : Renderer() {
     }
 
     fun from(location: Vector): CharacterOutput {
-        characterOutput.inputPosition = location
+        characterOutput.inputPosition.set(location)
         return characterOutput
     }
 
@@ -129,19 +130,19 @@ class FontRenderer : Renderer() {
             get() = inputPosition.x
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as MutableVector).x = value
+                inputPosition.x = value
             }
         var y: Double
             get() = inputPosition.y
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as MutableVector).y = value
+                inputPosition.y = value
             }
 
-        var inputPosition: Vector = MutableVector(0.0, 0.0)
+        var inputPosition: DynamicVector = DynamicVector.create()
             set(value) {
                 inputType = INPUT_POSITION
-                (field as MutableVector).set(value)
+                field.set(value)
             }
 
         override fun getPosition(): Vector {

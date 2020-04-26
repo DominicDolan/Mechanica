@@ -38,7 +38,7 @@ private class StartText : State() {
     init {
         renderer.text = ""
 
-        renderer.position = startPosition
+        renderer.position.set(startPosition)
 
     }
 

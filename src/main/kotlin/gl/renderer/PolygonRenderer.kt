@@ -22,7 +22,7 @@ class PolygonRenderer : Renderer() {
 
     var polygon: Polygon = Polygon.create(shape)
         set(value) {
-            updateBuffers(value.indexedVertices)
+            updateBuffers(value)
             field = value
         }
 
@@ -34,14 +34,14 @@ class PolygonRenderer : Renderer() {
     }
 
     init {
-        updateBuffers(polygon.indexedVertices)
+        updateBuffers(polygon)
     }
 
     override fun render(model: Model, transformation: Matrix4f) {
         shader.render(this.model, transformation, projection, view)
     }
 
-    private fun updateBuffers(vertices: IndexedVertices) {
+    private fun updateBuffers(vertices: Polygon) {
         val v = vertices.vertices
         val i = vertices.indices
 

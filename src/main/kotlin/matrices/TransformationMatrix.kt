@@ -8,7 +8,7 @@ import org.joml.Vector3f
  */
 
 class TransformationMatrix {
-    private val matrix: Matrix4f = Matrix4f()
+    private val matrix: Matrix4f = Matrix4f().identity()
     private val translation: Vector3f = Vector3f()
     private val pivot: Vector3f = Vector3f()
     private val unpivot: Vector3f = Vector3f()
@@ -25,53 +25,38 @@ class TransformationMatrix {
     val scaleZ = 1f // ScaleZ will be unused most of the time
 
     private var scheduleRotation = true
-    private var setMatrix = false
-    private var customMatrix: Matrix4f = Matrix4f()
 
-    init {
-        matrix.identity()
+    fun setTranslate(x: Float, y: Float, z: Float) {
+        translation.set(x, y, z)
     }
 
-    fun setTranslate(x: Double, y: Double, z: Double) {
-        translation.set(x.toFloat(), y.toFloat(), z.toFloat())
-    }
-
-    fun setRotate(x: Double, y: Double, z: Double) {
-        rx = x.toFloat()
-        ry = y.toFloat()
-        rz = z.toFloat()
+    fun setRotate(x: Float, y: Float, z: Float) {
+        rx = x
+        ry = y
+        rz = z
         scheduleRotation = true
     }
 
-    fun setScale(x: Double, y: Double, z: Double) {
-        scale.set(x.toFloat(), y.toFloat(), z.toFloat())
+    fun setScale(x: Float, y: Float, z: Float) {
+        scale.set(x, y, z)
     }
 
-    fun setPivot(pivotX: Double, pivotY: Double) {
-        pivot.set(pivotX.toFloat(), pivotY.toFloat(), 0f)
-        unpivot.set((-pivotX).toFloat(), (-pivotY).toFloat(), 0f)
+    fun setPivot(pivotX: Float, pivotY: Float) {
+        pivot.set(pivotX, pivotY, 0f)
+        unpivot.set((-pivotX), (-pivotY), 0f)
         scheduleRotation = true
     }
 
-    fun setMatrix(matrix: Matrix4f) {
-        setMatrix = true
-        customMatrix = matrix
-    }
-
-    fun get(): Matrix4f {
-        if (setMatrix) {
-            setMatrix = false
-            return customMatrix
-        }
+    fun get(matrix: Matrix4f = this.matrix): Matrix4f {
         matrix.identity()
         matrix.translate(translation)
         if (scheduleRotation) {
             if (pivot.x != 0f || pivot.y != 0f)
                 matrix.translate(pivot)
 
-            matrix.rotate(Math.toRadians(rx.toDouble()).toFloat(), xAxis)
-            matrix.rotate(Math.toRadians(ry.toDouble()).toFloat(), yAxis)
-            matrix.rotate(Math.toRadians(rz.toDouble()).toFloat(), zAxis)
+            matrix.rotate(rx, xAxis)
+            matrix.rotate(ry, yAxis)
+            matrix.rotate(rz, zAxis)
 
             if (pivot.x != 0f || pivot.y != 0f)
                 matrix.translate(unpivot)
@@ -88,10 +73,10 @@ class TransformationMatrix {
 
     fun rewind() {
         matrix.identity()
-        setRotate(0.0, 0.0, 0.0)
-        setTranslate(0.0, 0.0, 0.0)
-        setScale(1.0, 1.0, 1.0)
-        setPivot(0.0, 0.0)
+        setRotate(0f, 0f, 0f)
+        setTranslate(0f, 0f, 0f)
+        setScale(1f, 1f, 1f)
+        setPivot(0f, 0f)
     }
 
 

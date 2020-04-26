@@ -1,5 +1,7 @@
 package gl.renderer
 
+import drawer.shader.DrawerScript
+import drawer.shader.DrawerShader
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
@@ -22,7 +24,7 @@ import util.units.Vector
 
 class PathRenderer : Renderer() {
 
-    override val vertex = object : ShaderScript() {
+    override val vertex = object : DrawerScript() {
 
         //language=GLSL
         override val main: String =
@@ -36,7 +38,7 @@ class PathRenderer : Renderer() {
 
     }
 
-    private val lineGeometry = object : ShaderScript() {
+    private val lineGeometry = object : DrawerScript() {
 
         val width = uniform.float(1f)
 
@@ -75,7 +77,7 @@ class PathRenderer : Renderer() {
         """
     }
 
-    private val circleGeometry = object : ShaderScript() {
+    private val circleGeometry = object : DrawerScript() {
 
         val width = uniform.float(1f)
 
@@ -115,7 +117,7 @@ class PathRenderer : Renderer() {
     }
 
 
-    private val _fragment = object : ShaderScript() {
+    private val _fragment = object : DrawerScript() {
 
         val mode = uniform.float(0f)
 
@@ -149,8 +151,8 @@ class PathRenderer : Renderer() {
     override val fragment = _fragment
 
 
-    private val lineShader = Shader(vertex, fragment, geometry = lineGeometry)
-    private val circleShader = Shader(vertex, fragment, geometry = circleGeometry)
+    private val lineShader = DrawerShader(vertex, fragment, geometry = lineGeometry)
+    private val circleShader = DrawerShader(vertex, fragment, geometry = circleGeometry)
 
     override var color: Color
         get() = _fragment.color.value.toColor()

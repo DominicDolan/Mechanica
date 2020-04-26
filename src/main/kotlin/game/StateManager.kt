@@ -1,6 +1,7 @@
 package game
 
 import debug.DebugDrawer
+import debug.ScreenLog
 import drawer.Drawer
 import drawer.DrawerImpl
 import game.configuration.ConfigurationData
@@ -30,9 +31,8 @@ internal class StateManager {
         currentState.update(updateDuration)
         currentState.render(drawer)
 
-        if (Game.debug.screenLog) {
-            DebugDrawer.render(drawer)
-        }
+        ScreenLog.render(drawer)
+        DebugDrawer.render(drawer)
     }
 
     fun setCurrentState(setter: () -> State) {

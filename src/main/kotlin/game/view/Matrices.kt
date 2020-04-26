@@ -15,7 +15,14 @@ interface Matrices {
         private val vec3 = Vector3f()
         fun calculatePixelSize(projection: Matrix4f, view: Matrix4f, zTranslation: Float = 0f): Float {
             val zTranslate = (zTranslation + getZTranslate(view))
+
+
+            /*   The following equations help to work out the y height:
+                   zTranslate = height / (2 * tan(fov / 2))
+               For Projection Matrix:
+                   ScaleY = (1f / tan(fov / 2f)) * aspectRatio  */
             val yHeight = zTranslate/getYScale(projection)
+
             val scale = getMinScale(view)
             val fractionOfScreen = scale/yHeight
             val sizeOnScreen = fractionOfScreen* Game.window.resolution.height
@@ -23,7 +30,7 @@ interface Matrices {
             return 2f/sizeOnScreen
         }
 
-        private fun getYScale(mat: Matrix4f): Float {
+        fun getYScale(mat: Matrix4f): Float {
             mat.getScale(vec3)
             return vec3.y
         }

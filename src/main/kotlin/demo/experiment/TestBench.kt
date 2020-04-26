@@ -53,12 +53,9 @@ private class TestState : State() {
         if (Keyboard.A.hasBeenPressed) {
             Game.view.x -= 1.0
         }
-        DebugDrawer.drawText("Radius: $radius")
+
         val pixelScale = ((Game.window.height.toDouble())/Game.view.height)
-        val pixelRadius = radius*pixelScale
-        DebugDrawer.drawText("Radius: $radius")
-        DebugDrawer.drawText("Pixel radius: $pixelRadius")
-        DebugDrawer.drawText("Game height: ${Game.view.height}, resolution: ${Game.window.height}x${Game.window.width}")
+
         draw.centered.blue.rectangle(0, 0, 1.0, 4.9)
         draw.ui.red.rotated(rotation.degrees).circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, radius)
         draw.ui.green.circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, 0.1)

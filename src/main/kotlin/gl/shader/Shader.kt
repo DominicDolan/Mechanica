@@ -1,31 +1,32 @@
 package gl.shader
 
+import drawer.shader.DrawerScript
 import gl.models.Model
 import gl.script.ShaderScript
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
 
-interface Shader {
-    val vertex: ShaderScript
-    val fragment: ShaderScript
-    val tessellation: ShaderScript?
-    val geometry: ShaderScript?
+abstract class Shader {
+    abstract val vertex: ShaderScript
+    abstract val fragment: ShaderScript
+    abstract val tessellation: ShaderScript?
+    abstract val geometry: ShaderScript?
 
-    val id: Int
+    abstract val id: Int
 
-    fun load() {
+    private fun load() {
         GL20.glUseProgram(id)
         loadUniforms()
     }
 
-    fun loadUniforms() {
+    private fun loadUniforms() {
         vertex.loadUniforms()
         fragment.loadUniforms()
         tessellation?.loadUniforms()
         geometry?.loadUniforms()
     }
 
-    fun loadMatrices(transformation: Matrix4f, projection: Matrix4f?, view: Matrix4f?)
+    abstract fun loadMatrices(transformation: Matrix4f, projection: Matrix4f?, view: Matrix4f?)
 
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
 
@@ -37,6 +38,15 @@ interface Shader {
 
         model.bind()
         model.draw(model)
+    }
+
+    protected open class MatrixLoader(script: DrawerScript) {
+        val matrixType = script.qualifier("uniform").float("matrixType")
+
+        val projection = script.qualifier("uniform").mat4("projection")
+        val transformation = script.qualifier("uniform").mat4("transformation")
+        val view = script.qualifier("uniform").mat4("view")
+
     }
 
     companion object {

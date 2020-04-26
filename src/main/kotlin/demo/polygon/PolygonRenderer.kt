@@ -1,5 +1,6 @@
 package demo.polygon
 
+import drawer.shader.DrawerScript
 import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
@@ -26,7 +27,7 @@ class PolygonRenderer {
             vec(0.2, 0.5),
             vec(0.0, 0.0)
     )
-    private val vertex = object : ShaderScript() {
+    private val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -39,7 +40,7 @@ class PolygonRenderer {
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val fragment = object : DrawerScript() {
 
         val mouse = uniform.vec2(0.0, 0.0)
         val array = uniform.type("float", "p[22]", points.toFloatArray(2))
@@ -93,7 +94,7 @@ class PolygonRenderer {
         model = Model(vbo)
     }
 
-    fun render(model: Model) {
+    fun render() {
         fragment.mouse.set(Cursor.viewX, Cursor.viewY)
         shader.render(this.model, transformation)
     }

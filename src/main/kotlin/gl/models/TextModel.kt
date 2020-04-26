@@ -51,7 +51,8 @@ class TextModel(private val font: Font) : Model(
         for (char in text) {
 
             characterIndex++
-            if (char == '\n') {
+            if (char.isLineSeparator()) {
+                if (char == '\r') continue
                 coords.xAdvance = 0f
                 newLineLocations[line] = characterIndex
                 line++
@@ -93,6 +94,13 @@ class TextModel(private val font: Font) : Model(
     fun getClosestCharacterPosition(x: Double, line: Int): Double {
         val index = getCharacterIndex(x, line)
         return characterPositions[index]
+    }
+
+    fun getEndOfLinePosition(line: Int): Double {
+        val characterIndex = newLineLocations[line]-1
+        return if (characterIndex > -1) {
+            characterPositions[characterIndex]
+        } else 0.0
     }
 
     fun getCharacterIndex(x: Double, line: Int): Int {
@@ -137,6 +145,14 @@ class TextModel(private val font: Font) : Model(
         return array
     }
 
+    private fun Char.isLineSeparator(): Boolean {
+        for (c in LINE_SEPARATOR) {
+            if (this == c) return true
+        }
+        return false
+    }
 
-
+    companion object {
+        private val LINE_SEPARATOR = System.getProperty("line.separator")
+    }
 }

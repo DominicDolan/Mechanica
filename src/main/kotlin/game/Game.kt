@@ -4,6 +4,7 @@ import data.loadData
 import data.saveData
 import debug.DebugDrawer
 import display.GLFWContext
+import display.Monitor
 import display.Window
 import game.configuration.GameConfiguration
 import game.configuration.GameConfigurationImpl
@@ -11,15 +12,19 @@ import game.configuration.GameSetup
 import game.view.GameMatrices
 import game.view.GameView
 import game.view.Matrices
+import game.view.View
 import gl.utils.GLContext
 import state.State
 import util.Timer
+import util.extensions.vec
+import util.units.Vector
 
 object Game {
     private val configuration = GameConfigurationImpl()
     private val data by lazy { configuration.data }
 
     val view: GameView by lazy { GameView(data) }
+    val ui: View by lazy { UIView() }
     val window: Window by lazy { data.window }
 
     internal val controls by lazy { data.controlsMap }
@@ -121,6 +126,24 @@ object Game {
     private fun savePersistenceData() {
         for (saveData in data.saveData) {
             saveData(saveData)
+        }
+    }
+
+    private class UIView : View {
+        private val scale: Vector
+        override val width: Double
+            get() = view.width/scale.x
+        override val height: Double
+            get() = view.height/scale.y
+        override val x: Double = 0.0
+        override val y: Double = 0.0
+        override val center: Vector = vec(0.0, 0.0)
+        override val ratio: Double
+            get() = view.ratio*(scale.y/scale.x)
+
+        init {
+            val contentScale = Monitor.getPrimaryMonitor().contentScale
+            scale = vec(contentScale.xScale, contentScale.yScale)
         }
     }
 }

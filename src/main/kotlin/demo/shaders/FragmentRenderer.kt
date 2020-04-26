@@ -1,5 +1,6 @@
 package demo.shaders
 
+import drawer.shader.DrawerScript
 import game.Game
 import gl.models.Model
 import gl.script.ShaderScript
@@ -16,7 +17,7 @@ class FragmentRenderer {
     private val vbo = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
     private val model = Model(vbo)
 
-    private val vertex = object : ShaderScript() {
+    private val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -27,7 +28,7 @@ class FragmentRenderer {
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val fragment = object : DrawerScript() {
 
         //        val color = uniform.vec4(hex(0xFF00FFFF))
         val mouse = uniform.vec2(0.0, 0.0)

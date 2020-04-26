@@ -1,5 +1,6 @@
 package demo.polygon
 
+import drawer.shader.DrawerScript
 import gl.models.Model
 import gl.script.ShaderScript
 import gl.shader.Shader
@@ -11,7 +12,7 @@ import util.colors.toColor
 
 class PolygonRenderer2() {
 
-    private val vertex = object : ShaderScript() {
+    private val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -22,7 +23,7 @@ class PolygonRenderer2() {
 
     }
 
-    private val fragment = object : ShaderScript() {
+    private val fragment = object : DrawerScript() {
 
         val mouse = uniform.vec2(0.0, 0.0)
 

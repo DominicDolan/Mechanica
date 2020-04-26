@@ -34,7 +34,7 @@ private class StartMain : State() {
     val polygon: Polygon
 
     init {
-        transformation.setScale(1.0, 1.0,1.0)
+        transformation.setScale(1f, 1f,1f)
 
         image = loadImage(Res.image["testImage"])
 
