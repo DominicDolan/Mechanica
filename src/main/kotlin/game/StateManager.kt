@@ -14,7 +14,7 @@ internal class StateManager {
     private var currentState: State = ConfigurationData.emptyState()
     private var scheduleStateChange = true
 
-    private val drawer: Drawer by lazy { DrawerImpl() }
+    private val drawer: Drawer by lazy { Drawer.create() }
 
     private var startOfLoop = Timer.now
     private var updateDuration = 0.1

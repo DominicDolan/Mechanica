@@ -1,9 +1,9 @@
 package drawer.subclasses.transformation
 
 import drawer.DrawData
-import drawer.Drawer2
+import drawer.Drawer
 
-class TransformationDrawerImpl(drawer: Drawer2, private val data: DrawData): TransformationDrawer, Drawer2 by drawer {
+class TransformationDrawerImpl(drawer: Drawer, private val data: DrawData): TransformationDrawer, Drawer by drawer {
     override fun translate(x: Number, y: Number): TransformationDrawer {
         data.setTranslate(x.toFloat(), y.toFloat())
         return this

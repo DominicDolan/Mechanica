@@ -2,6 +2,7 @@ package demo.renderer
 
 import drawer.Drawer
 import game.Game
+import gl.models.PolygonModel
 import gl.utils.loadImage
 import graphics.Image
 import graphics.Polygon
@@ -31,7 +32,7 @@ private class StartMain : State() {
     val image: Image
     var timer = 0.0
     var score = 0
-    val polygon: Polygon
+    val polygon: PolygonModel
 
     init {
         transformation.setScale(1f, 1f,1f)
@@ -48,7 +49,7 @@ private class StartMain : State() {
                 vec(1, -1)
         )
 
-        polygon = Polygon.create(random)
+        polygon = PolygonModel(random)
         glEnable(GL_STENCIL_TEST)
     }
 
@@ -81,9 +82,9 @@ private class StartMain : State() {
         val cursorFraction = ((Cursor.viewX / Game.view.width) + 0.5)
         val blend = (cursorFraction*360).degrees
 
-        draw.stroke(0.1).blue.polygon(polygon, scaleWidth = cursorFraction*3.0)
+        draw.stroke(0.1).transformed.scale(cursorFraction*3.0).blue.polygon(polygon)
         draw.centered.rotated(blend).about(0, 1).image(image, 0, 0, 1, 1)
-        draw.normal.image(image, -0.5, -0.5, 1, 1)
+        draw.image(image, -0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
     }

@@ -1,13 +1,12 @@
 package drawer.superclass.rectangle
 
-import drawer.Drawer2
+import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.Model
 import gl.vbo.VBO
-import util.units.LightweightVector
 
 internal class RectangleDrawerImpl(
-        private val matrices: Drawer2.Matrices,
+        private val matrices: Drawer.Matrices,
         private val renderer: DrawerRenderer) : RectangleDrawer {
 
     private val model: Model
@@ -20,7 +19,7 @@ internal class RectangleDrawerImpl(
     override fun rectangle() {
         renderer.size.x = matrices.data.scaleX.toDouble()
         renderer.size.y = matrices.data.scaleY.toDouble()
-        Drawer2.draw(model, renderer, matrices)
+        Drawer.draw(model, renderer, matrices)
     }
 
     override fun rectangle(x: Number, y: Number) {

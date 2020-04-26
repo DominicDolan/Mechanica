@@ -1,13 +1,13 @@
 package drawer.superclass.text
 
-import drawer.Drawer2
+import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.TextModel
 import util.extensions.vec
 import util.units.LightweightVector
 
 class TextDrawerImpl(
-        private val matrices: Drawer2.Matrices,
+        private val matrices: Drawer.Matrices,
         private val renderer: DrawerRenderer) : TextDrawer {
 
     override fun text(text: String) {
@@ -28,7 +28,7 @@ class TextDrawerImpl(
         val oY = origin.y
 
         origin.set(oX*width, oY*height - bottomRight.y)
-        Drawer2.draw(model, renderer, matrices)
+        Drawer.draw(model, renderer, matrices)
         origin.set(oX, oY)
     }
 

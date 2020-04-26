@@ -1,13 +1,13 @@
 package drawer.superclass.circle
 
-import drawer.Drawer2
+import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.Model
 import gl.vbo.VBO
 import util.units.LightweightVector
 
 class CircleDrawerImpl(
-        private val matrices: Drawer2.Matrices,
+        private val matrices: Drawer.Matrices,
         private val renderer: DrawerRenderer): CircleDrawer {
 
     private val model: Model
@@ -29,7 +29,7 @@ class CircleDrawerImpl(
             origin.set(0.5, 0.5)
         }
 
-        Drawer2.draw(model, renderer, matrices)
+        Drawer.draw(model, renderer, matrices)
     }
 
     override fun circle(x: Number, y: Number) {

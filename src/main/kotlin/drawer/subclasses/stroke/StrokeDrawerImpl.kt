@@ -1,12 +1,12 @@
 package drawer.subclasses.stroke
 
 import drawer.DrawData
-import drawer.Drawer2
+import drawer.Drawer
 import util.colors.Color
 import util.colors.HexColor
 
-class StrokeDrawerImpl(drawer: Drawer2, private val data: DrawData) : StrokeDrawer2, Drawer2 by drawer {
-    override operator fun invoke(stroke: Double): Drawer2 {
+class StrokeDrawerImpl(drawer: Drawer, private val data: DrawData) : StrokeDrawer, Drawer by drawer {
+    override operator fun invoke(stroke: Double): Drawer {
         data.strokeWidth = stroke
         return this
     }

@@ -1,13 +1,12 @@
 package drawer.shader
 
-import drawer.Drawer2
+import drawer.Drawer
 import gl.models.Model
 import gl.shader.Shader
 import org.joml.Matrix4f
 import util.colors.Color
 import util.colors.toColor
 import util.units.DynamicVector
-import util.units.Vector
 
 class DrawerRenderer {
 
@@ -129,7 +128,7 @@ class DrawerRenderer {
 
     }
 
-    fun render(model: Model, matrices: Drawer2.Matrices) {
+    fun render(model: Model, matrices: Drawer.Matrices) {
         matrices.data.getTransformationMatrix(this.transformation)
         shader.render(model, this.transformation, matrices.projection, matrices.view)
         this.transformation.identity()

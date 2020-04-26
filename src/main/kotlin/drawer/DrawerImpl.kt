@@ -1,303 +1,89 @@
 package drawer
 
-import drawer.subclasses.color.ColorDrawer
+import drawer.subclasses.color.ColorDrawer2
+import drawer.subclasses.color.ColorDrawerImpl
 import drawer.subclasses.rotation.RotatedDrawer
+import drawer.subclasses.rotation.RotatedDrawerImpl
+import drawer.shader.DrawerRenderer
+import drawer.subclasses.layout.LayoutDrawer
+import drawer.subclasses.layout.LayoutDrawerImpl
+import drawer.subclasses.stroke.StrokeDrawer
+import drawer.subclasses.stroke.StrokeDrawerImpl
+import drawer.subclasses.transformation.TransformationDrawer
+import drawer.subclasses.transformation.TransformationDrawerImpl
+import drawer.superclass.circle.CircleDrawer
+import drawer.superclass.circle.CircleDrawerImpl
+import drawer.superclass.image.ImageDrawer
+import drawer.superclass.image.ImageDrawerImpl
+import drawer.superclass.path.PathDrawer
+import drawer.superclass.path.PathDrawerImpl
+import drawer.superclass.rectangle.RectangleDrawer
+import drawer.superclass.rectangle.RectangleDrawerImpl
+import drawer.superclass.text.TextDrawer
+import drawer.superclass.text.TextDrawerImpl
 import game.Game
-import gl.models.ImageModel
-import gl.renderer.*
-import gl.utils.createUnitSquareVecArray
-import gl.utils.createTextureUnitSquareVecArray
-import gl.vbo.AttributeArray
-import gl.vbo.pointer.VBOPointer
-import graphics.Image
-import graphics.Polygon
-import matrices.TransformationMatrix
-import org.lwjgl.opengl.GL11.glClearColor
-import util.colors.Color
-import util.colors.rgba2Hex
-import util.colors.toColor
-import util.extensions.component1
-import util.extensions.component2
-import util.extensions.degrees
-import util.extensions.toFloatArray
-import util.units.Angle
-import util.units.Degree
-import util.units.Vector
-import kotlin.math.atan2
-import kotlin.math.hypot
+import gl.models.PolygonModel
+import org.lwjgl.opengl.GL11
 
+class DrawerImpl(private val matrices: Drawer.Matrices, private val renderer: DrawerRenderer) :
+        RectangleDrawer by RectangleDrawerImpl(matrices, renderer),
+        CircleDrawer by CircleDrawerImpl(matrices, renderer),
+        ImageDrawer by ImageDrawerImpl(matrices, renderer),
+        TextDrawer by TextDrawerImpl(matrices, renderer),
+        PathDrawer by PathDrawerImpl(matrices.data, renderer),
+        Drawer
+{
 
-internal class DrawerImpl() : ColorDrawer, RotatedDrawer, StrokeDrawer {
+    private val colorDrawer = ColorDrawerImpl(this, matrices.data)
+    override val color: ColorDrawer2
+        get() = colorDrawer
 
-    private var layout: Layouts = Layouts.NORMAL
-    private var frame: Frames = Frames.WORLD
-
-    private var layoutWasSet: Boolean = false
-    private var frameWasSet: Boolean = false
-    private var strokeWasSet: Boolean = false
-
-    private var wasRotated: Boolean = false
-    private var wasPivoted: Boolean = false
-    private var angle: Angle = 0.degrees
-
-    private var pivotX: Double = 0.0
-    private var pivotY: Double = 0.0
-
-    private var strokeWidth: Double = 0.3
-
-    private val transformation = TransformationMatrix()
-
-    private val vbo = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
-    private val texVbo = AttributeArray(createTextureUnitSquareVecArray().toFloatArray(2), VBOPointer.texCoords)
-    private val drawable = ImageModel(Image(-1), vbo, texVbo)
-
-    private val colorRenderer = Renderer()
-    private val imageRenderer = ImageRenderer()
-    private val circleRenderer = CircleRenderer()
-    private val fontRenderer = FontRenderer()
-    private val polygonRenderer = PolygonRenderer()
-
-    private var renderer: Renderer = colorRenderer
-
-    private var colorArray: FloatArray = floatArrayOf(1f,1f,1f,1f)
-
-    private fun draw(x: Double, y: Double, width: Double, height: Double) {
-        var outX = x
-        var outY = y
-
-        if (layout == Layouts.CENTERED) {
-            outX = x - width /2.0
-            outY = y - height/2.0
-        }
-
-        renderer.view = when (frame) {
-            Frames.UI -> {
-                Game.matrices.uiView
-            }
-            Frames.WORLD -> {
-                Game.matrices.view
-            }
-        }
-
-        if (wasRotated) {
-            if (!wasPivoted) {
-                pivotX = width/2.0
-                pivotY = height/2.0
-            }
-            rotate(angle.toDegrees().asDouble(), pivotX, pivotY)
-        }
-        transformation.setTranslate(outX.toFloat(), outY.toFloat(), 0f)
-        transformation.setScale(width.toFloat(), height.toFloat(), 1f)
-
-        renderer.render(drawable, transformation.get())
-        reset()
-    }
-
-    private fun reset() {
-        layout = Layouts.NORMAL
-        frame = Frames.WORLD
-
-        wasRotated = false
-        wasPivoted = false
-        angle = 0.degrees
-
-        layoutWasSet = false
-        frameWasSet = false
-        strokeWasSet = false
-
-        pivotX = 0.0
-        pivotY = 0.0
-
-        strokeWidth = 0.3
-
-        imageRenderer.alpha = 1f
-
-        transformation.rewind()
-
-    }
-
-    private fun rotate(degrees: Double, pivotX: Double, pivotY: Double) {
-        transformation.setPivot(pivotX.toFloat(), pivotY.toFloat())
-        transformation.setRotate(0f, 0f, degrees.toFloat())
-    }
-
-    override fun background() {
-        glClearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
-    }
-
-    override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
-        renderer = colorRenderer
-        draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
-    }
-
-    override fun ellipse(x: Number, y: Number, width: Number, height: Number) {
-        renderer = circleRenderer
-        if (!layoutWasSet) {
-            layout = Layouts.CENTERED
-        }
-        draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
-    }
-
-    override fun text(text: String, fontSize: Number, x: Number, y: Number) {
-        if (!frameWasSet) {
-            frame = Frames.UI
-        }
-        fontRenderer.text = text
-//        fontRenderer.fontSize = fontSize.toDouble()
-//        fontRenderer.position = vec(x, y)
-        renderer = fontRenderer
-        draw(x.toDouble(), y.toDouble(), fontSize.toDouble(), fontSize.toDouble())
-    }
-
-    override fun image(image: Image, x: Number, y: Number, width: Number, height: Number) {
-        if (!layoutWasSet) {
-            layout = Layouts.CENTERED
-        }
-        drawable.image = image
-        renderer = imageRenderer
-        draw(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
-    }
-
-    override fun polygon(polygon: Polygon, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
-        polygonRenderer.polygon = polygon
-        if (strokeWasSet) {
-            renderer = colorRenderer
-            val p = polygon.path
-            path(p, x, y, scaleWidth, scaleHeight)
-            drawLineForPath(p[p.size-1], p[0], x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
-        } else {
-            renderer = polygonRenderer
-            layout = Layouts.NORMAL
-            draw(x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
-        }
-    }
-
-    override fun path(path: List<Vector>, x: Number, y: Number, scaleWidth: Number, scaleHeight: Number) {
-        for (i in 0..path.size-2) {
-            drawLineForPath(path[i], path[i+1], x.toDouble(), y.toDouble(), scaleWidth.toDouble(), scaleHeight.toDouble())
-        }
-    }
-
-    override fun line(x1: Number, y1: Number, x2: Number, y2: Number) {
-        val triangleWidth = x2.toDouble() - x1.toDouble()
-        val triangleHeight = y2.toDouble() - y1.toDouble()
-
-        val angle = Math.toDegrees(atan2(triangleHeight, triangleWidth))
-        rotate(angle, 0.0, strokeWidth/2.0)
-        wasRotated = false
-        renderer = colorRenderer
-        draw(x1.toDouble(), y1.toDouble(), hypot(triangleWidth, triangleHeight), strokeWidth)
-    }
-
-    private fun drawLineForPath(p1: Vector, p2: Vector, x: Double = 0.0, y: Double = 0.0, scaleWidth: Double = 1.0, scaleHeight: Double = 1.0) {
-        val (x1, y1) = p1
-        val (x2, y2) = p2
-        val stroke = strokeWidth
-        line(
-                x1 * scaleWidth + x,
-                y1 * scaleHeight + y,
-                x2 * scaleWidth + x,
-                y2 * scaleHeight + y)
-        strokeWidth = stroke
-    }
-
-    override val normal: Drawer
-        get() {
-            layoutWasSet = true
-            layout = Layouts.NORMAL
-            return this
-        }
-    override val centered: Drawer
-        get() {
-            layoutWasSet = true
-            layout = Layouts.CENTERED
-            return this
-        }
-
-    override val color: ColorDrawer
-        get() {
-            return this
-        }
-
+    private val strokeDrawer = StrokeDrawerImpl(this, matrices.data)
     override val stroke: StrokeDrawer
-        get() {
-            strokeWasSet = true
-            return this
-        }
+        get() = strokeDrawer
 
+    private val rotatedDrawer = RotatedDrawerImpl(this, matrices.data)
     override val rotated: RotatedDrawer
-        get() {
-            wasRotated = true
-            return this
-        }
+        get() = rotatedDrawer
+
+    private val layoutDrawer = LayoutDrawerImpl(this, matrices.data)
+    override val layout: LayoutDrawer
+        get() = layoutDrawer
+
+    private val transformationDrawer = TransformationDrawerImpl(this, matrices.data)
+    override val transformed: TransformationDrawer
+        get() = transformationDrawer
+
 
     override val ui: Drawer
         get() {
-            frame = Frames.UI
-            frameWasSet = true
+            matrices.view = Game.matrices.uiView
             return this
         }
     override val world: Drawer
         get() {
-            frame = Frames.WORLD
-            frameWasSet = true
+            matrices.view = Game.matrices.view
             return this
         }
 
-    override fun get() = colorArray.toColor()
-
-    override fun invoke(color: Color): Drawer {
-        colorArray[0] = color.r.toFloat()
-        colorArray[1] = color.g.toFloat()
-        colorArray[2] = color.b.toFloat()
-        colorArray[3] = color.a.toFloat()
-
-        colorRenderer.color = color
-        circleRenderer.color = color
-        fontRenderer.color = color
-        polygonRenderer.color = color
-        imageRenderer.alpha = color.a.toFloat()
+    override fun radius(r: Number): Drawer {
+        matrices.data.radius = r.toDouble()
         return this
     }
 
-    override fun invoke(angle: Angle): RotatedDrawer {
-        wasRotated = true
-        this.angle = angle
+    override fun depth(z: Number): Drawer {
+        matrices.data.setDepth(z.toFloat())
         return this
     }
 
-    override fun about(pivotX: Number, pivotY: Number): Drawer {
-        wasPivoted = true
-        this.pivotX = pivotX.toDouble()
-        this.pivotY = pivotY.toDouble()
-        return this
+    override fun background() {
+        with(colorDrawer) {
+            GL11.glClearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+        }
     }
 
-    override fun invoke(stroke: Double): Drawer {
-        strokeWasSet = true
-        strokeWidth = stroke
-        circleRenderer.strokeWidth = stroke.toFloat()
-        return this
+    override fun polygon(polygon: PolygonModel) {
+        renderer.colorPassthrough = true
+        Drawer.draw(polygon, renderer, matrices)
     }
-
-    private enum class Layouts {
-        NORMAL,
-        CENTERED
-    }
-
-    private enum class Frames {
-        WORLD,
-        UI
-    }
-
-    override val a: Double
-        get() = colorArray[3].toDouble()
-    override val r: Double
-        get() = colorArray[0].toDouble()
-    override val g: Double
-        get() = colorArray[1].toDouble()
-    override val b: Double
-        get() = colorArray[2].toDouble()
-
-    override fun toLong() = rgba2Hex(r,g,b,a)
 }

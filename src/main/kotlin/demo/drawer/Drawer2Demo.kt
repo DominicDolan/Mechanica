@@ -1,17 +1,14 @@
 package demo.drawer
 
 import debug.ScreenLog
-import drawer.Drawer2
+import drawer.Drawer
 import game.Game
-import geometry.lines.LineSegment
 import gl.models.PolygonModel
 import gl.utils.loadImage
 import input.Mouse
-import org.lwjgl.opengl.GL11
 import resources.Res
 import util.colors.hex
 import util.extensions.degrees
-import util.extensions.radians
 import util.extensions.vec
 import util.units.LightweightVector
 
@@ -21,7 +18,7 @@ fun main() {
         configureDebugMode { screenLog = true }
     }
 
-    val draw = Drawer2.create()
+    val draw = Drawer.create()
     val image = loadImage(Res.image["testImage"])
 
     val points = arrayOf(

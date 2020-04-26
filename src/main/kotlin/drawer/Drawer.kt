@@ -1,102 +1,80 @@
 package drawer
 
-import drawer.subclasses.color.ColorDrawer
+import drawer.subclasses.color.ColorDrawer2
 import drawer.subclasses.rotation.RotatedDrawer
-import graphics.Image
-import graphics.Polygon
+import drawer.shader.DrawerRenderer
+import drawer.subclasses.layout.LayoutDrawer
+import drawer.subclasses.stroke.StrokeDrawer
+import drawer.subclasses.transformation.TransformationDrawer
+import drawer.superclass.circle.CircleDrawer
+import drawer.superclass.image.ImageDrawer
+import drawer.superclass.path.PathDrawer
+import drawer.superclass.rectangle.RectangleDrawer
+import drawer.superclass.text.TextDrawer
+import game.Game
+import gl.models.Model
+import gl.models.PolygonModel
+import org.joml.Matrix4f
 import util.colors.hex
-import util.units.Vector
 
-interface Drawer {
-
-    fun background()
-
-    fun rectangle(x: Number, y: Number, width: Number, height: Number)
-
-    fun circle(x: Number, y: Number, radius: Number) {
-        val diameter = 2.0*radius.toDouble()
-        ellipse(x, y, diameter, diameter)
-    }
-
-    fun circle(position: Vector, radius: Number) = circle(position.x, position.y, radius)
-
-    fun ellipse(x: Number, y: Number, width: Number, height: Number)
-
-    fun text(text: String, fontSize: Number, x: Number, y: Number)
-
-    fun image(image: Image, x: Number, y: Number, width: Number, height: Number)
-
-    fun polygon(polygon: Polygon, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0)
-
-    fun path(path: List<Vector>, x: Number = 0.0, y: Number = 0.0, scaleWidth: Number = 1.0, scaleHeight: Number = 1.0)
-
-    fun line(x1: Number, y1: Number, x2: Number, y2: Number)
-
-    fun line(p1: Vector, p2: Vector) = line(p1.x, p1.y, p2.x, p2.y)
-
-    val normal: Drawer
+interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathDrawer {
+    val layout: LayoutDrawer
     val centered: Drawer
+        get() = layout.origin(0.5, 0.5)
 
-//    @Suppress("LeakingThis") // Leaking this is okay because no processing is being done on 'this' inside the constructor
-//    val positional: Positional = Positional(this)
-//        get() {
-//            Drawer.isLayoutSet = true
-//            return field
-//        }
+    val color: ColorDrawer2
 
-    val color: ColorDrawer
-
-    val black: ColorDrawer
+    val black: ColorDrawer2
         get() {
             color(hex(0x000000FF))
             return color
         }
-    val white: ColorDrawer
+    val white: ColorDrawer2
         get() {
             color(hex(0xFFFFFFFF))
             return color
         }
-    val grey: ColorDrawer
+    val grey: ColorDrawer2
         get() {
             color(hex(0x808080FF))
             return color
         }
-    val darkGrey: ColorDrawer
+    val darkGrey: ColorDrawer2
         get() {
             color(hex(0x696969FF))
             return color
         }
-    val lightGrey: ColorDrawer
+    val lightGrey: ColorDrawer2
         get() {
             color(hex(0xD3D3D3FF))
             return color
         }
-    val red: ColorDrawer
+    val red: ColorDrawer2
         get() {
             color(hex(0xFF0000FF))
             return color
         }
-    val green: ColorDrawer
+    val green: ColorDrawer2
         get() {
             color(hex(0x00FF00FF))
             return color
         }
-    val blue: ColorDrawer
+    val blue: ColorDrawer2
         get() {
             color(hex(0x0000FFFF))
             return color
         }
-    val magenta: ColorDrawer
+    val magenta: ColorDrawer2
         get() {
             color(hex(0xFF00FFFF))
             return color
         }
-    val cyan: ColorDrawer
+    val cyan: ColorDrawer2
         get() {
             color(hex(0x00FFFFFF))
             return color
         }
-    val yellow: ColorDrawer
+    val yellow: ColorDrawer2
         get() {
             color(hex(0xFFFF00FF))
             return color
@@ -108,4 +86,36 @@ interface Drawer {
 
     val ui: Drawer
     val world: Drawer
+
+    val transformed: TransformationDrawer
+
+    fun background()
+
+    fun polygon(polygon: PolygonModel)
+
+    fun radius(r: Number): Drawer
+
+    fun depth(z: Number): Drawer
+    
+    companion object {
+        fun create(): Drawer {
+            val matrices = Matrices(DrawData(), Game.matrices.view, Game.matrices.projection)
+            val renderer = DrawerRenderer()
+
+            return DrawerImpl(matrices, renderer)
+        }
+
+        fun draw(model: Model, renderer: DrawerRenderer, matrices: Matrices) {
+            renderer.color = matrices.data.fillColor
+            renderer.radius = matrices.data.radius.toFloat()
+            renderer.render(model, matrices)
+
+            if (!matrices.data.noReset) {
+                matrices.data.rewind()
+                renderer.rewind()
+            }
+        }
+    }
+    data class Matrices(val data: DrawData, var view: Matrix4f, var projection: Matrix4f)
+
 }

@@ -1,13 +1,13 @@
 package drawer.superclass.image
 
-import drawer.Drawer2
+import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.ImageModel
 import gl.vbo.VBO
 import graphics.Image
 
 class ImageDrawerImpl(
-        private val matrices: Drawer2.Matrices,
+        private val matrices: Drawer.Matrices,
         private val renderer: DrawerRenderer) : ImageDrawer {
 
     private val model: ImageModel
@@ -26,7 +26,7 @@ class ImageDrawerImpl(
         renderer.size.y = matrices.data.scaleY.toDouble()
 
         renderer.blend = 1f
-        Drawer2.draw(model, renderer, matrices)
+        Drawer.draw(model, renderer, matrices)
         renderer.blend = 0f
     }
 
