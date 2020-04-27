@@ -51,8 +51,9 @@ fun main() {
         draw.layout.origin(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
         draw.transformed.scale(3, 3).translate(4, -2).cyan.polygon(polygonModel)
         draw.color.strokeColor(hex(0xD0F045FF), strokeWidth = 0.05).path(points)
+        draw.cyan.ellipse(-3, -3, 2, 1)
     }
 }
 
 val mouse: LightweightVector
-    get() = vec(Mouse.worldX, Mouse.worldY)
+    get() = vec(Mouse.world.x, Mouse.world.y)

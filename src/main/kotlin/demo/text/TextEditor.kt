@@ -3,8 +3,6 @@ package demo.text
 import drawer.Drawer
 import game.Game
 import gl.models.Model
-import gl.renderer.FontRenderer
-import input.Cursor
 import input.Keyboard
 import input.Mouse
 import org.joml.Matrix4f
@@ -89,7 +87,7 @@ private class StartText : State() {
         }
 
         if (Mouse.MB1.hasBeenPressed) {
-            cursor = renderer.from(Cursor.viewX, Cursor.viewY).getIndex()
+            cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex()
         }
 
     }

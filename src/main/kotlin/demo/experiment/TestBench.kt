@@ -1,16 +1,13 @@
 @file:Suppress("unused") // Experimentation class, many functions/variables will be unused
 package demo.experiment
 
-import debug.DebugDrawer
 import drawer.Drawer
 import game.Game
-import input.Cursor
 import input.Keyboard
 import input.Mouse
 import org.joml.Vector3f
 import org.joml.Vector4f
 import state.State
-import util.extensions.degrees
 
 fun main() {
     createGameInstance()
@@ -28,6 +25,18 @@ fun createGameInstance() {
 private class TestState : State() {
 //    val renderer = FontRenderer()
     override fun update(delta: Double) {
+        if (Keyboard.D()) {
+            Game.view.x += 1.0*delta
+        }
+        if (Keyboard.A()) {
+            Game.view.x -= 1.0*delta
+        }
+        if (Keyboard.W()) {
+            Game.view.y += 1.0*delta
+        }
+        if (Keyboard.S()) {
+            Game.view.y -= 1.0*delta
+        }
     }
 
     var radius = 1.0
@@ -47,18 +56,12 @@ private class TestState : State() {
         if (Keyboard.RIGHT.hasBeenPressed) {
             rotation += 5.0
         }
-        if (Keyboard.D.hasBeenPressed) {
-            Game.view.x += 1.0
-        }
-        if (Keyboard.A.hasBeenPressed) {
-            Game.view.x -= 1.0
-        }
 
         val pixelScale = ((Game.window.height.toDouble())/Game.view.height)
 
-        draw.centered.blue.rectangle(0, 0, 1.0, 4.9)
-        draw.ui.red.rotated(rotation.degrees).circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, radius)
-        draw.ui.green.circle(Cursor.viewX - 0.2, Cursor.viewY + 0.2, 0.1)
+        draw.world.centered.blue.rectangle(0, 0, 1.0, 4.9)
+        draw.world.red.circle(Mouse.world.x, Mouse.world.y, radius)
+        draw.ui.green.circle(Mouse.view.x, Mouse.view.y, 0.1)
     }
 
 

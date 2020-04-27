@@ -1,11 +1,11 @@
 package demo.polygon
 
 import drawer.Drawer
+import drawer.shader.PathRenderer
 import game.Game
 import geometry.lines.LineSegment
 import geometry.lines.LineSegmentImpl
 import gl.models.PolygonModel
-import gl.renderer.PathRenderer
 import input.Keyboard
 import input.Mouse
 import state.State
@@ -55,23 +55,21 @@ private class StartMain : State() {
 
     val polygonModel = PolygonModel(points)
 
-    val polygonRenderer = PolygonRenderer2()
+    val polygonRenderer = PolygonRenderer()
     init {
         pathRenderer.color = hex(0x404040FF)
-        pathRenderer.path = points
+        pathRenderer.fillFloats(points)
         pathRenderer.stroke = 0.004f
 
     }
 
     override fun update(delta: Double) {
         val line = this.line as LineSegmentImpl
-        line.p2.x = Mouse.worldX
-        line.p2.y = Mouse.worldY
+        line.p2.x = Mouse.world.x
+        line.p2.y = Mouse.world.y
     }
 
     override fun render(draw: Drawer) {
-        val mouse = vec(Mouse.worldX, Mouse.worldY)
-
         polygonRenderer.render(polygonModel)
 
     }

@@ -16,5 +16,5 @@ interface CircleDrawer {
     fun circle(position: LightweightVector, radius: Number) = circle(position.x, position.y, radius)
 
     fun ellipse(x: Number, y: Number, width: Number, height: Number)
-    fun ellipse(xy: LightweightVector, wh: LightweightVector)
+    fun ellipse(xy: LightweightVector, wh: LightweightVector) = ellipse(xy.x, xy.y, wh.x, wh.y)
 }

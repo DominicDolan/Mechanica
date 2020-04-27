@@ -6,10 +6,10 @@ import game.Game
 import game.configuration.GameSetup
 import game.view.Matrices.Companion.calculatePixelSize
 import game.view.Matrices.Companion.getYScale
-import input.Cursor
 import input.Mouse
 import org.joml.Matrix4f
 import org.joml.Vector3f
+import util.units.DynamicVector
 import kotlin.math.tan
 
 internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
@@ -34,10 +34,8 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
 
     fun updateView(viewData: GameView) {
         updateView(viewData.x, viewData.y, viewData.height)
-        Cursor.worldX = Cursor.viewX + viewData.x
-        Cursor.worldY = Cursor.viewY + viewData.y
-        Mouse.worldX = Mouse.viewX + viewData.x
-        Mouse.worldY = Mouse.viewY + viewData.y
+
+        Mouse.refreshCursor()
     }
 
     private fun updateView(x: Double, y: Double, height: Double) {

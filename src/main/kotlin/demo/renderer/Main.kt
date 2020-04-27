@@ -5,9 +5,8 @@ import game.Game
 import gl.models.PolygonModel
 import gl.utils.loadImage
 import graphics.Image
-import graphics.Polygon
-import input.Cursor
 import input.Keyboard
+import input.Mouse
 import matrices.TransformationMatrix
 import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.opengl.GL11.GL_STENCIL_TEST
@@ -79,13 +78,13 @@ private class StartMain : State() {
 
     override fun render(draw: Drawer) {
 
-        val cursorFraction = ((Cursor.viewX / Game.view.width) + 0.5)
+        val cursorFraction = ((Mouse.view.x / Game.view.width) + 0.5)
         val blend = (cursorFraction*360).degrees
 
         draw.stroke(0.1).transformed.scale(cursorFraction*3.0).blue.polygon(polygon)
         draw.centered.rotated(blend).about(0, 1).image(image, 0, 0, 1, 1)
         draw.image(image, -0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
-        draw.stroke(0.1).green.line(vec(4, 3), vec(Cursor.worldX, Cursor.worldY))
+        draw.stroke(0.1).green.line(vec(4, 3), Mouse.world)
     }
 }

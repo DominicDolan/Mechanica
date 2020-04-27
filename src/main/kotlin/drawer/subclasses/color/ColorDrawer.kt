@@ -2,6 +2,7 @@ package drawer.subclasses.color
 
 import drawer.Drawer
 import util.colors.Color
+import util.colors.HexColor
 import util.colors.hex
 import util.colors.hsl
 import util.units.Angle
@@ -10,6 +11,8 @@ interface ColorDrawer : Drawer, Color {
     fun get(): Color
 
     operator fun invoke(color: Color): Drawer
+
+    operator fun invoke(color: HexColor): Drawer
 
     operator fun invoke(hex: Long): Drawer = invoke(hex(hex))
 
@@ -38,4 +41,9 @@ interface ColorDrawer : Drawer, Color {
         return this
     }
 
+    fun strokeColor(color: HexColor, strokeWidth: Double = -1.0): ColorDrawer
+    fun strokeColor(color: Color, strokeWidth: Double = -1.0): ColorDrawer
+
+    fun fillColor(color: HexColor): ColorDrawer
+    fun fillColor(color: Color): ColorDrawer
 }

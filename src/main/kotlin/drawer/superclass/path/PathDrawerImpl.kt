@@ -1,15 +1,12 @@
 package drawer.superclass.path
 
 import drawer.DrawData
-import drawer.shader.DrawerRenderer
 import drawer.shader.PathRenderer
 import org.joml.Matrix4f
 import util.units.DynamicVector
 import util.units.Vector
 
-class PathDrawerImpl(
-        private val data: DrawData,
-        private val drawerRenderer: DrawerRenderer): PathDrawer {
+class PathDrawerImpl(private val data: DrawData): PathDrawer {
 
     private val renderer = PathRenderer()
     private val transformation = Matrix4f().identity()

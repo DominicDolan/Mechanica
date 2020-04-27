@@ -1,5 +1,6 @@
 package drawer.superclass.text
 
+import drawer.DrawData
 import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.TextModel
@@ -7,15 +8,14 @@ import util.extensions.vec
 import util.units.LightweightVector
 
 class TextDrawerImpl(
-        private val matrices: Drawer.Matrices,
-        private val renderer: DrawerRenderer) : TextDrawer {
+        private val data: DrawData) : TextDrawer {
 
     override fun text(text: String) {
-        val model = matrices.data.textModel
+        val model = data.textModel
         model.text = text
-        renderer.blend = 0f
-        renderer.alphaBlend = 1f
-        renderer.colorPassthrough = true
+        data.blend = 0f
+        data.alphaBlend = 1f
+        data.colorPassthrough = true
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)
@@ -23,18 +23,18 @@ class TextDrawerImpl(
         val height = bottomRight.y - topLeft.y
         val width = bottomRight.x - topLeft.x
 
-        val origin = matrices.data.modelOrigin
+        val origin = data.modelOrigin
         val oX = origin.x
         val oY = origin.y
 
         origin.set(oX*width, oY*height - bottomRight.y)
-        Drawer.draw(model, renderer, matrices)
+        data.draw(model)
         origin.set(oX, oY)
     }
 
     override fun text(text: String, size: Number, x: Number, y: Number) {
-        matrices.data.setTranslate(x.toFloat(), y.toFloat())
-        matrices.data.setScale(size.toFloat(), size.toFloat())
+        data.setTranslate(x.toFloat(), y.toFloat())
+        data.setScale(size.toFloat(), size.toFloat())
         text(text)
     }
 

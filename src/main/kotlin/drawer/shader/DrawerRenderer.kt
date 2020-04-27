@@ -1,5 +1,6 @@
 package drawer.shader
 
+import drawer.DrawData
 import drawer.Drawer
 import gl.models.Model
 import gl.shader.Shader
@@ -77,8 +78,6 @@ class DrawerRenderer {
 
     private val shader: Shader by lazy { DrawerShader(vertex, fragment) }
 
-    private val transformation = Matrix4f().identity()
-
     var color: Color
         get() = fragment.color.value.toColor()
         set(value) {
@@ -114,7 +113,7 @@ class DrawerRenderer {
                     if (value) 1f else 0f
         }
 
-    var size: DynamicVector = object : DynamicVector {
+    val size: DynamicVector = object : DynamicVector {
         override var x: Double
             get() = fragment.size.value[0].toDouble()
             set(value) {
@@ -125,13 +124,12 @@ class DrawerRenderer {
             set(value) {
                 fragment.size.set(x, value)
             }
-
     }
 
-    fun render(model: Model, matrices: Drawer.Matrices) {
-        matrices.data.getTransformationMatrix(this.transformation)
-        shader.render(model, this.transformation, matrices.projection, matrices.view)
-        this.transformation.identity()
+    var strokeWidth = 0.0
+
+    fun render(model: Model, transformation: Matrix4f, view: Matrix4f, projection: Matrix4f) {
+        shader.render(model, transformation, projection, view)
     }
 
     fun rewind() {

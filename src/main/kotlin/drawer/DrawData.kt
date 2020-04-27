@@ -1,17 +1,27 @@
 package drawer
 
+import drawer.shader.DrawerRenderer
 import font.Font
+import game.Game
+import gl.models.Model
 import gl.models.TextModel
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import resources.Res
 import util.colors.Color
 import util.colors.DynamicColor
-import util.colors.rgba2Hex
+import util.units.DynamicVector
 import util.units.LightweightVector
 import util.units.Vector
 
 class DrawData {
+
+    var viewMatrix: Matrix4f = Game.matrices.view
+    var projectionMatrix: Matrix4f = Game.matrices.projection
+
+    private val renderer = DrawerRenderer()
+    private val transformation = Matrix4f().identity()
+
     private val translation: Vector3f = Vector3f()
     private val pivot: Vector3f = Vector3f()
     private val unpivot: Vector3f = Vector3f()
@@ -31,15 +41,35 @@ class DrawData {
     val translateZ get() = translation.z
 
     var strokeWidth: Double = 0.0
+        set(value) {
+            field = value
+            renderer.strokeWidth = value
+        }
+
     val strokeColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
 
     val fillColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
 
     val modelOrigin = OriginVector()
 
-    var radius: Double = 0.0
+    var radius: Float = 0f
+
+    var blend: Float
+        get() = renderer.blend
+        set(value) { renderer.blend = value}
+
+    var alphaBlend: Float
+        get() = renderer.alphaBlend
+        set(value) { renderer.alphaBlend = value}
+
+    var colorPassthrough: Boolean
+        get() = renderer.colorPassthrough
+        set(value) { renderer.colorPassthrough = value}
 
     var noReset = false
+
+    val cornerSize: DynamicVector
+        get() = renderer.size
 
     private val fontMap = HashMap<Font, TextModel>()
 
@@ -86,13 +116,32 @@ class DrawData {
         return matrix
     }
 
-    fun rewind() {
+    fun draw(model: Model) {
+        renderer.color = fillColor
+        renderer.radius = radius
+
+        getTransformationMatrix(transformation)
+        renderer.render(model, transformation, viewMatrix, projectionMatrix)
+
+        if (!noReset) {
+            rewind()
+        }
+    }
+
+    private fun rewind() {
         setRotate(0f)
         setTranslate(0f, 0f)
         setDepth(0f)
         setScale(1f, 1f)
-        radius = 0.0
+
+        radius = 0f
         noReset = false
+
+        viewMatrix = Game.matrices.view
+        projectionMatrix = Game.matrices.projection
+
+        transformation.identity()
+        renderer.rewind()
         modelOrigin.reset()
     }
 

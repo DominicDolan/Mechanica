@@ -1,10 +1,11 @@
-package gl.renderer
+package demo.text
 
 import drawer.shader.DrawerScript
+import drawer.shader.DrawerShader
 import font.Font
+import game.Game
 import gl.models.Model
 import gl.models.TextModel
-import gl.script.ShaderScript
 import org.joml.Matrix4f
 import resources.Res
 import util.colors.Color
@@ -17,9 +18,13 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 
-class FontRenderer : Renderer() {
+class FontRenderer {
 
-    override val vertex = object : DrawerScript() {
+    private val transformation = Matrix4f().identity()
+    private val projection = Game.matrices.projection
+    private val view = Game.matrices.view
+
+    private val vertex = object : DrawerScript() {
         //language=GLSL
         override val main: String =
                 """
@@ -34,7 +39,7 @@ class FontRenderer : Renderer() {
 
     }
 
-    private val _fragment = object : DrawerScript() {
+    private val fragment = object : DrawerScript() {
 
         //language=GLSL
         override val main: String = """
@@ -49,7 +54,8 @@ class FontRenderer : Renderer() {
             """
 
     }
-    override val fragment = _fragment
+
+    private val shader = DrawerShader(vertex, fragment)
 
     private val fontMap = HashMap<Font, TextModel>()
 
@@ -60,15 +66,15 @@ class FontRenderer : Renderer() {
             field = value
         }
 
-    override val model: TextModel
+    val model: TextModel
         get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
 
     private val characterOutput = CharacterOutputImpl()
 
-    override var color: Color
-        get() = _fragment.color.value.toColor()
+    var color: Color
+        get() = fragment.color.value.toColor()
         set(value) {
-            _fragment.color.set(value)
+            fragment.color.set(value)
         }
 
     var text: String = ""
@@ -88,7 +94,7 @@ class FontRenderer : Renderer() {
         model.text = ""
     }
 
-    override fun render(model: Model, transformation: Matrix4f ) {
+    fun render(model: Model, transformation: Matrix4f ) {
         if (transformation == this.transformation) {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
             transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
@@ -103,7 +109,7 @@ class FontRenderer : Renderer() {
     }
 
     fun from(location: Vector): CharacterOutput {
-        characterOutput.inputPosition.set(location)
+        characterOutput.inputPosition = location
         return characterOutput
     }
 
@@ -130,19 +136,19 @@ class FontRenderer : Renderer() {
             get() = inputPosition.x
             set(value) {
                 inputType = INPUT_POSITION
-                inputPosition.x = value
+                (inputPosition as DynamicVector).x = value
             }
         var y: Double
             get() = inputPosition.y
             set(value) {
                 inputType = INPUT_POSITION
-                inputPosition.y = value
+                (inputPosition as DynamicVector).y = value
             }
 
-        var inputPosition: DynamicVector = DynamicVector.create()
+        var inputPosition: Vector = DynamicVector.create()
             set(value) {
                 inputType = INPUT_POSITION
-                field.set(value)
+                (field as DynamicVector).set(value)
             }
 
         override fun getPosition(): Vector {

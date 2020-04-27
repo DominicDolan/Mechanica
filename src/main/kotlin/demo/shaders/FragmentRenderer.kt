@@ -1,14 +1,14 @@
 package demo.shaders
 
 import drawer.shader.DrawerScript
+import drawer.shader.DrawerShader
 import game.Game
 import gl.models.Model
-import gl.script.ShaderScript
 import gl.shader.Shader
 import gl.utils.createUnitSquareVecArray
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
-import input.Cursor
+import input.Mouse
 import org.joml.Matrix4f
 import util.extensions.toFloatArray
 
@@ -30,7 +30,7 @@ class FragmentRenderer {
 
     private val fragment = object : DrawerScript() {
 
-        //        val color = uniform.vec4(hex(0xFF00FFFF))
+        //        val unitTests.color = uniform.vec4(hex(0xFF00FFFF))
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
         val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
@@ -47,14 +47,14 @@ class FragmentRenderer {
 
     }
 
-    private val shader = Shader(vertex, fragment)
+    private val shader = DrawerShader(vertex, fragment)
     private val startTime = System.currentTimeMillis()
 
     private val transformation = Matrix4f().also { it.identity() }
 
 
     fun render() {
-        fragment.mouse.set(Cursor.viewX, Cursor.viewY)
+        fragment.mouse.set(Mouse.view.x, Mouse.view.y)
         fragment.time.value = (System.currentTimeMillis() - startTime).toFloat()/1000f
         shader.render(model, transformation)
     }

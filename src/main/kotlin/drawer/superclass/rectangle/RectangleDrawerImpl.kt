@@ -1,13 +1,13 @@
 package drawer.superclass.rectangle
 
+import drawer.DrawData
 import drawer.Drawer
 import drawer.shader.DrawerRenderer
 import gl.models.Model
 import gl.vbo.VBO
 
 internal class RectangleDrawerImpl(
-        private val matrices: Drawer.Matrices,
-        private val renderer: DrawerRenderer) : RectangleDrawer {
+        private val data: DrawData) : RectangleDrawer {
 
     private val model: Model
 
@@ -17,19 +17,19 @@ internal class RectangleDrawerImpl(
     }
 
     override fun rectangle() {
-        renderer.size.x = matrices.data.scaleX.toDouble()
-        renderer.size.y = matrices.data.scaleY.toDouble()
-        Drawer.draw(model, renderer, matrices)
+        data.cornerSize.x = data.scaleX.toDouble()
+        data.cornerSize.y = data.scaleY.toDouble()
+        data.draw(model)
     }
 
     override fun rectangle(x: Number, y: Number) {
-        matrices.data.setTranslate(x.toFloat(), y.toFloat())
+        data.setTranslate(x.toFloat(), y.toFloat())
         rectangle()
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
-        matrices.data.setTranslate(x.toFloat(), y.toFloat())
-        matrices.data.setScale(width.toFloat(), height.toFloat())
+        data.setTranslate(x.toFloat(), y.toFloat())
+        data.setScale(width.toFloat(), height.toFloat())
         rectangle()
     }
 

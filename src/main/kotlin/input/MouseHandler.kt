@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWCursorPosCallback
 import org.lwjgl.glfw.GLFWMouseButtonCallback
 import org.lwjgl.glfw.GLFWScrollCallback
+import util.units.DynamicVector
 
 class MouseHandler {
     class ButtonHandler : GLFWMouseButtonCallback() {
@@ -24,10 +25,7 @@ class MouseHandler {
 
     class CursorHandler : GLFWCursorPosCallback() {
         override fun invoke(window: Long, x: Double, y: Double) {
-            Cursor.x = x
-            Cursor.y = y
-            Mouse.x = x
-            Mouse.y = y
+            (Mouse.pixel as DynamicVector).set(x, y)
         }
 
     }
