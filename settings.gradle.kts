@@ -8,4 +8,3 @@
  */
 
 rootProject.name = "Mechanica"
-includeBuild("E:/Src/General/KotlinMarkupLanguage")

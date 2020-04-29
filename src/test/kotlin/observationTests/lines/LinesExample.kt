@@ -1,13 +1,15 @@
-package lines
+package observationTests.lines
 
 import debug.DebugDrawer
+import debug.ScreenLog
 import drawer.Drawer
+import drawer.shader.PathRenderer
 import game.Game
 import geometry.lines.LineSegment
 import geometry.lines.LineSegmentImpl
-import gl.renderer.PathRenderer
 import input.Keyboard
 import input.Mouse
+import org.joml.Matrix4f
 import state.State
 import util.colors.Color
 import util.colors.hex
@@ -26,18 +28,20 @@ class LinesExample : State() {
 
     private val pathHolder = ArrayList<Vector>()
 
+    private val transformation = Matrix4f().identity()
+
     init {
         renderer.stroke = stroke
         pathHolder.add(l1.p1)
         pathHolder.add(l1.p2)
-        renderer.path = pathHolder
+        renderer.fillFloats(pathHolder)
 
     }
 
     override fun update(delta: Double) {
         fun setPoint(point: LineSegmentImpl.LinePoint) {
-            point.x = Mouse.viewX
-            point.y = Mouse.viewY
+            point.x = Mouse.view.x
+            point.y = Mouse.view.y
         }
 
         if (Mouse.MB1()) {
@@ -73,8 +77,8 @@ class LinesExample : State() {
         renderLine(l1, l1Color)
         renderLine(l2, l2Color)
 
-        DebugDrawer.drawText("Line1: $l1")
-        DebugDrawer.drawText("Line2: $l2")
+//        ScreenLog { "Line1: $l1" }
+//        ScreenLog { "Line2: $l2" }
 
     }
 
@@ -86,7 +90,7 @@ class LinesExample : State() {
     private fun renderLine(line: LineSegment, color: Color) {
         setPath(line)
         renderer.color = color
-        renderer.render()
+        renderer.render(transformation)
     }
 
     private fun setPath(line: LineSegment) {

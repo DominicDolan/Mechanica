@@ -2,7 +2,6 @@
 package util.extensions
 
 import graphics.Polygon
-import org.jbox2d.common.Vec2
 import util.units.Angle
 import util.units.LightweightVector
 import util.units.Vector
@@ -12,75 +11,6 @@ import kotlin.math.*
 /**
  * Created by domin on 02/11/2017.
  */
-
-fun Vec2.hyp() = hypot(x.toDouble(),y.toDouble())
-
-operator fun Vec2.plus(other: Vec2) : Vec2 {
-    return Vec2(this.x + other.x, this.y + other.y)
-}
-
-operator fun Vec2.minus(other: Vec2) : Vec2 {
-    return Vec2(this.x - other.x, this.y - other.y)
-}
-
-operator fun Vec2.plusAssign(other: Vec2) {
-    this.x += other.x
-    this.y += other.y
-}
-
-operator fun Vec2.minusAssign(other: Vec2) {
-    this.x -= other.x
-    this.y -= other.y
-}
-
-operator fun Vec2.times(other: Vec2): Float = x* other.x + y* other.y
-
-
-operator fun Vec2.times(scale: Double): Vec2 = this.set(this.x*scale.toFloat(), this.y*scale.toFloat())
-
-operator fun Vec2.timesAssign(scale: Double) {
-    this.x *= scale.toFloat()
-    this.y *= scale.toFloat()
-}
-
-
-operator fun Vec2.divAssign(scale: Float) {
-    this.x /= scale
-    this.y /= scale
-}
-
-operator fun Vec2.unaryMinus() : Vec2 {
-    x = -x
-    y = -y
-    return this
-}
-
-fun Vec2.midpoint(other: Vec2) : Vec2{
-    return Vec2((this.x + other.x)/2f, (this.y + other.y)/2f)
-}
-
-fun Vec2.angle(): Double{
-    return atan2(this.y.toDouble(), this.x.toDouble())
-}
-
-fun Vec2.rotate(angle: Double, center: Vec2){
-    this -= center
-    val r = this.hyp()
-    val a = this.angle() + angle
-
-    val newX = (r* cos(a)).toFloat()
-    val newY = (r* sin(a)).toFloat()
-
-    this.set(center.x + newX, center.y + newY)
-}
-
-fun Vec2.scale(scale: Double, center: Vec2){
-    this -= center
-    this *= scale
-    this.set(center.x + this.x, center.y + this.y)
-}
-
-fun Vec2.toVec() = vec(this.x, this.y)
 
 fun List<Vector>.centroid(): Vector {
     var xAverage = 0.0
@@ -195,8 +125,6 @@ fun vec(r: Number, theta: Angle): LightweightVector {
     return vec(x, y)
 }
 
-fun vec(vec2: Vec2) = vec(vec2.x, vec2.y)
-
 fun vec(vector: Vector) = vec(vector.x, vector.y)
 
 operator fun Vector.component1() = this.x
@@ -225,8 +153,6 @@ operator fun Vector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
 infix fun Vector.equals(other: Vector) = this.x.toFloat() == other.x.toFloat() && this.y.toFloat() == other.y.toFloat()
 
 fun Vector.normalize() = vec(1.0, this.theta)
-
-fun Vector.toVec2() = Vec2(this.x.toFloat(), this.y.toFloat())
 
 fun Vector.dot(other: Vector) = this.x*other.x + this.y*other.y
 

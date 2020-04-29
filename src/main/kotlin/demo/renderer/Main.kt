@@ -8,7 +8,6 @@ import graphics.Image
 import input.Keyboard
 import input.Mouse
 import matrices.TransformationMatrix
-import org.lwjgl.nanovg.NVGColor
 import org.lwjgl.opengl.GL11.GL_STENCIL_TEST
 import org.lwjgl.opengl.GL11.glEnable
 import resources.Res
@@ -73,8 +72,6 @@ private class StartMain : State() {
             Game.view.y -= 3.0 * delta
         }
     }
-
-    val color = NVGColor.create()
 
     override fun render(draw: Drawer) {
 

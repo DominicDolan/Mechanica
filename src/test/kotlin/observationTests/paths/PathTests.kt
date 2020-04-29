@@ -1,4 +1,4 @@
-package paths
+package observationTests.paths
 
 import demo.paths.DrawingExample
 import demo.paths.BezierCurves

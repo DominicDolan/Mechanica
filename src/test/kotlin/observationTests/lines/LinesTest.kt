@@ -1,6 +1,5 @@
-package lines
+package observationTests.lines
 
-import demo.paths.DrawingExample
 import game.Game
 import input.Keyboard
 import kotlin.test.Test

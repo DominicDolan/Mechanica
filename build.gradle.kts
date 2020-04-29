@@ -17,21 +17,12 @@ buildscript {
     repositories {
         jcenter()
     }
-    dependencies {
-        classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
-    }
 }
 
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.3.61"
-//    java
     `java-library`
-    // Apply the application plugin to add support for building a CLI application.
-    id("com.github.johnrengelman.shadow") version "5.2.0"
-
     maven
-    application
 }
 
 repositories {
@@ -58,39 +49,22 @@ dependencies {
     api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
     implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-bgfx")
     implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-nanovg")
-    implementation("org.lwjgl", "lwjgl-nuklear")
     implementation("org.lwjgl", "lwjgl-openal")
     implementation("org.lwjgl", "lwjgl-opengl")
     implementation("org.lwjgl", "lwjgl-stb")
-    implementation("org.lwjgl", "lwjgl-vulkan")
     runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-bgfx", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-nanovg", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-nuklear", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
 
     implementation("org.joml:joml:1.9.12")
-    implementation("com.vividsolutions:jts:1.13")
-    implementation("org.jsoup:jsoup:1.11.3")
-    api("com.googlecode.playn:playn-jbox2d:1.9.1")
-
-    api("com.dubulduke.ui:KotlinMarkupLanguage:0.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.3.50")
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-}
-
-application {
-    // Define the main class for the application.
-    mainClassName = "demo.resource.MainKt"
 }
 
 java {

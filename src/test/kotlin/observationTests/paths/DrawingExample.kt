@@ -1,11 +1,11 @@
 package demo.paths
 
 import drawer.Drawer
+import drawer.shader.PathRenderer
 import game.Game
 import gl.models.Model
-import gl.renderer.PathRenderer
-import input.Cursor
 import input.Keyboard
+import input.Mouse
 import org.joml.Matrix4f
 import state.State
 import util.colors.rgba
@@ -16,7 +16,6 @@ import util.units.Vector
 class DrawingExample : State() {
     val renderer = PathRenderer()
 
-    private val model = Model()
     private val transformation = Matrix4f()
 
     private val paths = ArrayList<ArrayList<Vector>>()
@@ -40,7 +39,7 @@ class DrawingExample : State() {
 
         if (Keyboard.MB1.isDown) {
             val path = paths.last()
-            val cursor = vec(Cursor.viewX, Cursor.viewY)
+            val cursor = vec(Mouse.view.x, Mouse.view.y)
             val addPoint = if (path.size == 0) true else path.last().distanceTo(cursor) > minLineLength
 
             if (addPoint) {
@@ -65,9 +64,9 @@ class DrawingExample : State() {
     override fun render(draw: Drawer) {
         renderer.color = rgba(1.0, 0.0, 0.0, 0.5)
         for (i in paths.indices) {
-            renderer.path = paths[i]
+            renderer.fillFloats(paths[i])
             renderer.stroke = strokes[i]
-            renderer.render(model, transformation)
+            renderer.render(transformation)
         }
     }
 

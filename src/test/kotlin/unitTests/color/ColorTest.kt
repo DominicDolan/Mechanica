@@ -1,4 +1,4 @@
-package color
+package unitTests.color
 
 import util.colors.Color
 import util.colors.hex
@@ -7,7 +7,7 @@ import kotlin.test.Test
 
 class ColorTest {
     @Test fun colorConversions() {
-        val hexadecimals = arrayOf(
+        val hexadecimals = arrayOf<Long>(
                 0xFFFFFFFF,
                 0x808080FF,
                 0x000000FF,

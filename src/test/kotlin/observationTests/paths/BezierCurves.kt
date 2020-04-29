@@ -3,11 +3,10 @@ package demo.paths
 import drawer.Drawer
 import game.Game
 import gl.models.Model
-import gl.renderer.Renderer
 import gl.vbo.AttributeArray
 import gl.vbo.pointer.VBOPointer
-import input.Cursor
 import input.Keyboard
+import input.Mouse
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
@@ -18,6 +17,7 @@ import state.State
 import util.colors.rgba
 import util.extensions.*
 import util.units.Vector
+import utils.Renderer
 
 class BezierCurves : State() {
     private val renderer = Renderer()
@@ -64,15 +64,15 @@ class BezierCurves : State() {
     override fun render(draw: Drawer) {
 
         if (Keyboard.MB1.isDown && Keyboard.SHIFT.isDown) {
-            val cursor = vec(Cursor.viewX, Cursor.viewY)
+            val cursor = vec(Mouse.view.x, Mouse.view.y)
             bezierPoint = cursor
             reset()
         } else if (Keyboard.MB1.isDown) {
-            val cursor = vec(Cursor.viewX, Cursor.viewY)
+            val cursor = vec(Mouse.view.x, Mouse.view.y)
             p1 = cursor
             reset()
         }else if (Keyboard.MB2.isDown) {
-            val cursor = vec(Cursor.viewX, Cursor.viewY)
+            val cursor = vec(Mouse.view.x, Mouse.view.y)
             p2 = cursor
             reset()
         }
