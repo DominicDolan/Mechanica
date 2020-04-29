@@ -8,3 +8,5 @@
  */
 
 rootProject.name = "Mechanica"
+
+include("common", "backend-lwjgl")

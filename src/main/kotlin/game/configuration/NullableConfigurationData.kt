@@ -1,6 +1,6 @@
 package game.configuration
 
-import debug.DebugConfiguration
+import debug.GameDebugConfiguration
 import display.Monitor
 import display.Window
 import game.view.View
@@ -32,6 +32,6 @@ class NullableConfigurationData : ConfigurationData {
     override var loadState: (() -> LoadState)? = null
 
     override var windowConfiguration: (Window.() -> Unit)? = null
-    override var debugConfiguration: (DebugConfiguration.() -> Unit)? = null
+    override var debugConfiguration: (GameDebugConfiguration.() -> Unit)? = null
     override var projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)? = null
 }

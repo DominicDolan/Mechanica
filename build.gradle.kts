@@ -9,9 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val lwjglVersion = "3.2.3"
 val lwjglNatives = "natives-windows"
 
-group = "com.dubulduke"
-version = "0.1"
-
+val kotlinVersion = "1.3.50"
 
 buildscript {
     repositories {
@@ -25,41 +23,52 @@ plugins {
     maven
 }
 
-repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+allprojects {
+    group = "com.mechanica.engine"
+    version = 1.0
 
-    mavenLocal()
-    maven {
-        url = uri("http://repo.maven.apache.org/maven2")
+    repositories {
+        // Use jcenter for resolving your dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        jcenter()
+
+        mavenLocal()
+        maven {
+            url = uri("http://repo.maven.apache.org/maven2")
+        }
+    }
+
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+
+    dependencies {
+
+        //lwjgl
+        api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
+
+        implementation("org.lwjgl", "lwjgl")
+        implementation("org.lwjgl", "lwjgl-glfw")
+        implementation("org.lwjgl", "lwjgl-opengl")
+        implementation("org.lwjgl", "lwjgl-openal")
+        implementation("org.lwjgl", "lwjgl-stb")
+        runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
+        runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+
+        implementation("org.joml:joml:1.9.12")
+
+        // Align versions of all Kotlin components
+        implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+        implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+
     }
 }
 
 dependencies {
-    // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.50")
-
     implementation("com.google.guava:guava:28.0-jre")
-
-    //lwjgl
-    api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-
-    implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-openal")
-    implementation("org.lwjgl", "lwjgl-opengl")
-    implementation("org.lwjgl", "lwjgl-stb")
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-
-    implementation("org.joml:joml:1.9.12")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.3.50")
 

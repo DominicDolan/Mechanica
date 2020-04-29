@@ -1,6 +1,6 @@
 package game.configuration
 
-import debug.DebugConfiguration
+import debug.GameDebugConfiguration
 import display.Monitor
 import display.Window
 import drawer.Drawer
@@ -25,7 +25,7 @@ interface ConfigurationData {
     val startingState: (() -> State)?
     val loadState: (() -> LoadState)?
     val windowConfiguration: (Window.() -> Unit)?
-    val debugConfiguration: (DebugConfiguration.() -> Unit)?
+    val debugConfiguration: (GameDebugConfiguration.() -> Unit)?
     val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)?
 
     companion object {

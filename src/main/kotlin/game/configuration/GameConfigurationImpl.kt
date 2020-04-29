@@ -1,6 +1,6 @@
 package game.configuration
 
-import debug.DebugConfiguration
+import debug.GameDebugConfiguration
 import display.GLFWContext
 import display.Window
 import game.view.View
@@ -59,7 +59,7 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.windowConfiguration = configuration
     }
 
-    override fun configureDebugMode(configuration: DebugConfiguration.() -> Unit) {
+    override fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit) {
         _data.debugConfiguration = configuration
     }
 

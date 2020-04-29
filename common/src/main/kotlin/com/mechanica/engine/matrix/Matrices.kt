@@ -1,6 +1,5 @@
-package game.view
+package com.mechanica.engine.matrix
 
-import game.Game
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.min
@@ -13,7 +12,7 @@ interface Matrices {
     companion object {
 
         private val vec3 = Vector3f()
-        fun calculatePixelSize(projection: Matrix4f, view: Matrix4f, zTranslation: Float = 0f): Float {
+        fun calculatePixelSize(projection: Matrix4f, view: Matrix4f, resolutionHeight: Int, zTranslation: Float = 0f): Float {
             val zTranslate = (zTranslation + getZTranslate(view))
 
 
@@ -25,7 +24,7 @@ interface Matrices {
 
             val scale = getMinScale(view)
             val fractionOfScreen = scale/yHeight
-            val sizeOnScreen = fractionOfScreen* Game.window.resolution.height
+            val sizeOnScreen = fractionOfScreen* resolutionHeight
 
             return 2f/sizeOnScreen
         }

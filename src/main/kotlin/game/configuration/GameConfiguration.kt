@@ -1,6 +1,6 @@
 package game.configuration
 
-import debug.DebugConfiguration
+import debug.GameDebugConfiguration
 import display.Window
 import game.view.View
 import input.ControlsMap
@@ -24,7 +24,7 @@ interface GameConfiguration {
     fun setMultisampling(samples: Int)
 
     fun configureWindow(configuration: (Window.() -> Unit))
-    fun configureDebugMode(configuration: DebugConfiguration.() -> Unit)
+    fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit)
 
     fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)
 }

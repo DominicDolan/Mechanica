@@ -1,6 +1,6 @@
 package game.configuration
 
-import debug.DebugConfiguration
+import debug.GameDebugConfiguration
 import display.Monitor
 import display.Window
 import game.configuration.ConfigurationData.Companion.emptyLoadeState
@@ -32,14 +32,14 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val startingState: (() -> State) = data.startingState ?: { emptyState() }
     override val loadState: (() -> LoadState) = data.loadState ?: { emptyLoadeState() }
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }
-    override val debugConfiguration: (DebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
+    override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
             = data.projectionMatrixConfiguration ?: GameMatrices.Companion::defaultProjectionMatrix
 
     val ratio: Double
 
     val window: Window
-    val debugConfig = DebugConfiguration()
+    val debugConfig = GameDebugConfiguration()
 
     val resolutionConverter: ResolutionConverter
 
