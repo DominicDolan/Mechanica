@@ -5,6 +5,7 @@ package com.mechanica.engine.util.extensions
 import com.mechanica.engine.memory.buffer.toBuffer
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.VectorArray
 import java.nio.FloatBuffer
 
 /**
@@ -87,10 +88,17 @@ fun FloatArray.fill(arrayList: List<Vector>, start: Int = 0, end: Int = (arrayLi
     }
 }
 
-fun FloatArray.fill(arrayList: Array<Vector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+fun FloatArray.fill(array: Array<out Vector>, start: Int = 0, end: Int = (array.size + start)) {
     for (i in start until end) {
-        this[i*3] = arrayList[i].x.toFloat()
-        this[i*3 + 1] = arrayList[i].y.toFloat()
+        this[i*3] = array[i].x.toFloat()
+        this[i*3 + 1] = array[i].y.toFloat()
+    }
+}
+
+fun FloatArray.fill(array: VectorArray, start: Int = 0, end: Int = (array.size + start)) {
+    for (i in start until end) {
+        this[i*3] = array[i].x.toFloat()
+        this[i*3 + 1] = array[i].y.toFloat()
     }
 }
 

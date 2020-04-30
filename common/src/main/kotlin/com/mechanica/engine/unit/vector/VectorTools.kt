@@ -22,7 +22,7 @@ fun List<Vector>.centroid(): Vector {
 }
 
 fun Vector.distanceTo(other: Vector): Float {
-    return (this - other).r.toFloat()
+    return (vec(this) - vec(other)).r.toFloat()
 }
 
 fun List<Vector>.toFloatArray(): FloatArray{
@@ -125,30 +125,26 @@ fun vec(vector: Vector) = vec(vector.x, vector.y)
 operator fun Vector.component1() = this.x
 operator fun Vector.component2() = this.y
 
-val Vector.r get() = hypot(x, y)
-
-val Vector.theta get() = atan2(this.y, this.x).radians
-
-operator fun Vector.plus(other: Vector) : Vector {
+operator fun LightweightVector.plus(other: LightweightVector) : LightweightVector {
     return vec(this.x.toFloat() + other.x.toFloat(), this.y.toFloat() + other.y.toFloat())
 }
 
-operator fun Vector.minus(other: Vector) : Vector {
+operator fun LightweightVector.minus(other: LightweightVector) : LightweightVector {
     return vec(this.x.toFloat() - other.x.toFloat(), this.y.toFloat() - other.y.toFloat())
 }
 
-operator fun Vector.times(other: Vector): Float = x.toFloat()* other.x.toFloat() + y.toFloat()* other.y.toFloat()
+operator fun LightweightVector.times(other: LightweightVector): Float = x.toFloat()* other.x.toFloat() + y.toFloat()* other.y.toFloat()
 
-operator fun Vector.times(scale: Number) = vec(this.x.toFloat() * scale.toFloat(), this.y.toFloat() * scale.toFloat())
+operator fun LightweightVector.times(scale: Number) = vec(this.x.toFloat() * scale.toFloat(), this.y.toFloat() * scale.toFloat())
 
-operator fun Vector.div(scale: Number) = vec(this.x.toFloat() / scale.toFloat(), this.y.toFloat() / scale.toFloat())
+operator fun LightweightVector.div(scale: Number) = vec(this.x.toFloat() / scale.toFloat(), this.y.toFloat() / scale.toFloat())
 
-operator fun Vector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
+operator fun LightweightVector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
 
-infix fun Vector.equals(other: Vector) = this.x.toFloat() == other.x.toFloat() && this.y.toFloat() == other.y.toFloat()
+infix fun LightweightVector.equals(other: LightweightVector) = this.x.toFloat() == other.x.toFloat() && this.y.toFloat() == other.y.toFloat()
 
-fun Vector.normalize() = vec(1.0, this.theta)
+fun LightweightVector.normalize() = vec(1.0, this.theta)
 
-fun Vector.dot(other: Vector) = this.x*other.x + this.y*other.y
+fun LightweightVector.dot(other: LightweightVector) = this.x*other.x + this.y*other.y
 
-fun Vector.cross(other: Vector) = (this.x * other.y - this.y * other.x)
+fun LightweightVector.cross(other: LightweightVector) = (this.x * other.y - this.y * other.x)

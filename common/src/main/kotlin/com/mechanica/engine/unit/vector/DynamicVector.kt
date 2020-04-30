@@ -17,5 +17,15 @@ interface DynamicVector : Vector {
             override var x = x
             override var y = y
         }
+
+        fun create(vector: LightweightVector) = object : DynamicVector {
+            override var x = vector.x
+            override var y = vector.y
+        }
+
+        fun create(vector: Vector) = object : DynamicVector {
+            override var x = vector.x
+            override var y = vector.y
+        }
     }
 }

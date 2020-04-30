@@ -9,4 +9,4 @@
 
 rootProject.name = "Mechanica"
 
-include("common", "backend-lwjgl")
+include("common", "backend-lwjgl", "mechanica", "samples")
