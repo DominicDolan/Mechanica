@@ -45,12 +45,12 @@ private class StartText : State() {
             Game.view.x = startPosition.x + Game.view.width/2.0
             Game.view.y = startPosition.y + 1.0 - Game.view.height/2.0
         }
-        if (Mouse.SCROLL_DOWN.hasBeenPressed) {
-            Game.view.height *= 1.0 + Mouse.SCROLL_DOWN.distance/10.0
+        if (Mouse.scrollDown.hasBeenPressed) {
+            Game.view.height *= 1.0 + Mouse.scrollDown.distance/10.0
             setViewPosition()
         }
-        if (Mouse.SCROLL_UP.hasBeenPressed) {
-            Game.view.height /= 1.0 + Mouse.SCROLL_UP.distance/10.0
+        if (Mouse.scrollUp.hasBeenPressed) {
+            Game.view.height /= 1.0 + Mouse.scrollUp.distance/10.0
             setViewPosition()
         }
 
@@ -58,30 +58,30 @@ private class StartText : State() {
             addLetter(cursor, Keyboard.textInput.inputText)
         }
 
-        if (Keyboard.BACKSPACE.hasBeenPressed) {
+        if (Keyboard.backspace.hasBeenPressed) {
             removeLetter(cursor)
             if (cursor > 0) {
                 cursor--
             }
         }
-        if (Keyboard.DELETE.hasBeenPressed) {
+        if (Keyboard.delete.hasBeenPressed) {
             removeLetter(cursor+1)
         }
-        if (Keyboard.ENTER.hasBeenPressed) {
+        if (Keyboard.enter.hasBeenPressed) {
             addLetter(cursor, "\n")
         }
 
-        if (Keyboard.LEFT.hasBeenPressed) {
+        if (Keyboard.left.hasBeenPressed) {
             cursor = max(0, cursor-1)
         }
-        if (Keyboard.RIGHT.hasBeenPressed) {
+        if (Keyboard.right.hasBeenPressed) {
             cursor = min(renderer.text.length, cursor+1)
         }
-        if (Keyboard.UP.hasBeenPressed) {
+        if (Keyboard.up.hasBeenPressed) {
             val pos = renderer.from(cursor).getPosition()
             cursor = renderer.from(vec(pos.x - 0.15, pos.y + 1.0)).getIndex()
         }
-        if (Keyboard.DOWN.hasBeenPressed) {
+        if (Keyboard.down.hasBeenPressed) {
             val pos = renderer.from(cursor).getPosition()
             cursor = renderer.from(vec(pos.x - 0.15, pos.y - 1.0)).getIndex()
         }

@@ -28,7 +28,7 @@ fun main() {
     Game.view.y = 0.5
 
     Game.run {
-        if (Keyboard.ESC.hasBeenPressed) {
+        if (Keyboard.esc.hasBeenPressed) {
             Game.close()
         }
     }

@@ -37,13 +37,13 @@ class BezierCurve : State() {
     }
 
     override fun update(delta: Double) {
-        if (Keyboard.MB1() && Keyboard.SHIFT()) {
+        if (Mouse.MB1() && Keyboard.shift()) {
             bezierPoint.set(Mouse.world)
             reset()
-        } else if (Keyboard.MB1()) {
+        } else if (Mouse.MB1()) {
             p1.set(Mouse.world)
             reset()
-        }else if (Keyboard.MB2()) {
+        }else if (Mouse.MB2()) {
             p2.set(Mouse.world)
             reset()
         }

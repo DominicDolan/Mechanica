@@ -34,13 +34,13 @@ class MouseHandler {
         override fun invoke(window: Long, xoffset: Double, yoffset: Double) {
 
             if (yoffset > 0.0) {
-                Mouse.SCROLL_UP.isDown = false
-                Mouse.SCROLL_UP.isDown = true
-                Mouse.SCROLL_UP.distance = yoffset
+                Mouse.scrollUp.isDown = false
+                Mouse.scrollUp.isDown = true
+                Mouse.scrollUp.distance = yoffset
             } else if (yoffset < 0.0) {
-                Mouse.SCROLL_DOWN.isDown = false
-                Mouse.SCROLL_DOWN.isDown = true
-                Mouse.SCROLL_DOWN.distance = -yoffset
+                Mouse.scrollDown.isDown = false
+                Mouse.scrollDown.isDown = true
+                Mouse.scrollDown.distance = -yoffset
             }
         }
 

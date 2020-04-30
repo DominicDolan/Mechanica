@@ -8,7 +8,7 @@ object ScreenLog {
     private val sb = StringBuilder()
     internal fun render(draw: Drawer) {
         if (Game.debug.screenLog) {
-            val v = if (Keyboard.SPACE()) {
+            val v = if (Keyboard.space()) {
                 draw.ui
                 Game.ui
             } else {

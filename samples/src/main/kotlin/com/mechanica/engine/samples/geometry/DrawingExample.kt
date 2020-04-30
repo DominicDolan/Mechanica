@@ -40,12 +40,12 @@ class DrawingExample : State() {
     }
 
     override fun update(delta: Double) {
-        if (!Keyboard.SHIFT() && Keyboard.MB1.hasBeenReleased) {
+        if (!Keyboard.shift() && Mouse.MB1.hasBeenReleased) {
             paths.add(ArrayList())
             strokes.add(strokes.last())
         }
 
-        if (Keyboard.MB1()) {
+        if (Mouse.MB1()) {
             val path = paths.last()
             val cursor = vec(Mouse.world)
             val addPoint = if (path.size == 0) true else path.last().distanceTo(cursor) > minLineLength
@@ -63,7 +63,7 @@ class DrawingExample : State() {
             val newStroke = strokes.last()/1.1f
             strokes[strokes.size-1] = newStroke
         }
-        if (Keyboard.CTRL() && Keyboard.Z.hasBeenPressed) {
+        if (Keyboard.ctrl() && Keyboard.Z.hasBeenPressed) {
             paths.remove(paths.last())
             strokes.remove(strokes.last())
         }
@@ -76,7 +76,7 @@ class DrawingExample : State() {
             renderer.stroke = strokes[i]
             renderer.render(transformation)
         }
-        if (!Keyboard.MB1()) {
+        if (!Mouse.MB1()) {
             draw.color(renderer.color).circle(Mouse.world, strokes.last() / 2f)
         }
     }

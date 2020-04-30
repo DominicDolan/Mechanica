@@ -23,6 +23,35 @@ plugins {
     maven
 }
 
+val commonDependencies: DependencyHandlerScope.() -> Unit = {
+    implementation("org.joml:joml:1.9.12")
+
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+}
+
+val coreLwjgl: DependencyHandlerScope.() -> Unit = {
+    //lwjgl
+    api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
+
+    implementation("org.lwjgl", "lwjgl")
+    implementation("org.lwjgl", "lwjgl-glfw")
+    implementation("org.lwjgl", "lwjgl-opengl")
+    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+}
+
+val supplementaryLwjgl: DependencyHandlerScope.() -> Unit = {
+    implementation("org.lwjgl", "lwjgl-openal")
+    implementation("org.lwjgl", "lwjgl-stb")
+    runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
+    runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+}
+
 allprojects {
     group = "com.mechanica.engine"
     version = 1.0
@@ -39,41 +68,25 @@ allprojects {
     }
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    dependencies(commonDependencies)
+}
 
+project(":backend-lwjgl") {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies {
-
-        //lwjgl
-        api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-
-        implementation("org.lwjgl", "lwjgl")
-        implementation("org.lwjgl", "lwjgl-glfw")
-        implementation("org.lwjgl", "lwjgl-opengl")
-        implementation("org.lwjgl", "lwjgl-openal")
-        implementation("org.lwjgl", "lwjgl-stb")
-        runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-        runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-        runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-        runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
-        runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-
-        implementation("org.joml:joml:1.9.12")
-
-        // Align versions of all Kotlin components
-        implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-        implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-
+        coreLwjgl()
+        supplementaryLwjgl()
     }
 }
 
-dependencies {
-    implementation("com.google.guava:guava:28.0-jre")
+project(":mechanica") {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    dependencies(coreLwjgl)
+}
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.3.50")
-
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+project(":samples") {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    dependencies(coreLwjgl)
 }
 
 java {

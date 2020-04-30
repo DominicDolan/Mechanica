@@ -13,7 +13,7 @@ object Keyboard {
 
     val textInput = TextInput()
 
-    val ANY = KeyboardKey()
+    val any = KeyboardKey()
 
     val A = KeyboardKey(Keys.A)
     val B = KeyboardKey(Keys.B)
@@ -42,21 +42,17 @@ object Keyboard {
     val Y = KeyboardKey(Keys.Y)
     val Z = KeyboardKey(Keys.Z)
 
-    val MB1 = KeyboardKey(Keys.M1)
-    val MB2 = KeyboardKey(Keys.M2)
-    val MMB = KeyboardKey(Keys.M3)
+    val space = KeyboardKey(Keys.SPACE)
+    val shift = KeyboardKey(Keys.LSHIFT)
+    val tab = KeyboardKey(Keys.TAB)
+    val lAlt = KeyboardKey(Keys.LALT)
+    val esc = KeyboardKey(Keys.ESC)
+    val comma = KeyboardKey(Keys.COMMA)
+    val period = KeyboardKey(Keys.PERIOD)
 
-    val SPACE = KeyboardKey(Keys.SPACE)
-    val SHIFT = KeyboardKey(Keys.LSHIFT)
-    val TAB = KeyboardKey(Keys.TAB)
-    val LALT = KeyboardKey(Keys.LALT)
-    val ESC = KeyboardKey(Keys.ESC)
-    val COMMA = KeyboardKey(Keys.COMMA)
-    val PERIOD = KeyboardKey(Keys.PERIOD)
-
-    val APOSTROPHE = KeyboardKey(Keys.APOSTROPHE)
-    val MINUS = KeyboardKey(Keys.MINUS)
-    val SLASH = KeyboardKey(Keys.SLASH)
+    val apostrophe = KeyboardKey(Keys.APOSTROPHE)
+    val minus = KeyboardKey(Keys.MINUS)
+    val slash = KeyboardKey(Keys.SLASH)
     val N0 = KeyboardKey(Keys.N0)
     val N1 = KeyboardKey(Keys.N1)
     val N2 = KeyboardKey(Keys.N2)
@@ -67,32 +63,32 @@ object Keyboard {
     val N7 = KeyboardKey(Keys.N7)
     val N8 = KeyboardKey(Keys.N8)
     val N9 = KeyboardKey(Keys.N9)
-    val SEMICOLON = KeyboardKey(Keys.SEMICOLON)
-    val EQUAL = KeyboardKey(Keys.EQUAL)
+    val semicolon = KeyboardKey(Keys.SEMICOLON)
+    val equal = KeyboardKey(Keys.EQUAL)
 
-    val LEFT_BRACKET = KeyboardKey(Keys.LEFT_BRACKET)
-    val BACKSLASH = KeyboardKey(Keys.BACKSLASH)
-    val RIGHT_BRACKET = KeyboardKey(Keys.RIGHT_BRACKET)
-    val GRAVE_ACCENT = KeyboardKey(Keys.GRAVE_ACCENT)
-    val WORLD_1 = KeyboardKey(Keys.WORLD_1)
-    val WORLD_2 = KeyboardKey(Keys.WORLD_2)
-    val ENTER = KeyboardKey(Keys.ENTER)
-    val BACKSPACE = KeyboardKey(Keys.BACKSPACE)
-    val INSERT = KeyboardKey(Keys.INSERT)
-    val DELETE = KeyboardKey(Keys.DELETE)
-    val RIGHT = KeyboardKey(Keys.RIGHT)
-    val LEFT = KeyboardKey(Keys.LEFT)
-    val DOWN = KeyboardKey(Keys.DOWN)
-    val UP = KeyboardKey(Keys.UP)
-    val PAGE_UP = KeyboardKey(Keys.PAGE_UP)
-    val PAGE_DOWN = KeyboardKey(Keys.PAGE_DOWN)
-    val HOME = KeyboardKey(Keys.HOME)
-    val END = KeyboardKey(Keys.END)
-    val CAPS_LOCK = KeyboardKey(Keys.CAPS_LOCK)
-    val SCROLL_LOCK = KeyboardKey(Keys.SCROLL_LOCK)
-    val NUM_LOCK = KeyboardKey(Keys.NUM_LOCK)
-    val PRINT_SCREEN = KeyboardKey(Keys.PRINT_SCREEN)
-    val PAUSE = KeyboardKey(Keys.PAUSE)
+    val leftBracket = KeyboardKey(Keys.LEFT_BRACKET)
+    val backslash = KeyboardKey(Keys.BACKSLASH)
+    val rightBracket = KeyboardKey(Keys.RIGHT_BRACKET)
+    val graveAccent = KeyboardKey(Keys.GRAVE_ACCENT)
+    val world1 = KeyboardKey(Keys.WORLD_1)
+    val world2 = KeyboardKey(Keys.WORLD_2)
+    val enter = KeyboardKey(Keys.ENTER)
+    val backspace = KeyboardKey(Keys.BACKSPACE)
+    val insert = KeyboardKey(Keys.INSERT)
+    val delete = KeyboardKey(Keys.DELETE)
+    val right = KeyboardKey(Keys.RIGHT)
+    val left = KeyboardKey(Keys.LEFT)
+    val down = KeyboardKey(Keys.DOWN)
+    val up = KeyboardKey(Keys.UP)
+    val pageUp = KeyboardKey(Keys.PAGE_UP)
+    val pageDown = KeyboardKey(Keys.PAGE_DOWN)
+    val home = KeyboardKey(Keys.HOME)
+    val end = KeyboardKey(Keys.END)
+    val capsLock = KeyboardKey(Keys.CAPS_LOCK)
+    val scrollLock = KeyboardKey(Keys.SCROLL_LOCK)
+    val numLock = KeyboardKey(Keys.NUM_LOCK)
+    val printScreen = KeyboardKey(Keys.PRINT_SCREEN)
+    val pause = KeyboardKey(Keys.PAUSE)
 
     val F1 = KeyboardKey(Keys.F1)
     val F2 = KeyboardKey(Keys.F2)
@@ -107,15 +103,15 @@ object Keyboard {
     val F11 = KeyboardKey(Keys.F11)
     val F12 = KeyboardKey(Keys.F12)
 
-    val LSHIFT = KeyboardKey(Keys.LSHIFT)
-    val LCTRL = KeyboardKey(Keys.LCTRL)
-    val CTRL = KeyboardKey(Keys.LCTRL, Keys.RCTRL)
-    val LEFT_SUPER = KeyboardKey(Keys.LEFT_SUPER)
-    val RSHIFT = KeyboardKey(Keys.RSHIFT)
-    val RCTRL = KeyboardKey(Keys.RCTRL)
-    val RALT = KeyboardKey(Keys.RALT)
-    val RIGHT_SUPER = KeyboardKey(Keys.RIGHT_SUPER)
-    val MENU = KeyboardKey(Keys.MENU)
+    val lShift = KeyboardKey(Keys.LSHIFT)
+    val lCtrl = KeyboardKey(Keys.LCTRL)
+    val ctrl = KeyboardKey(Keys.LCTRL, Keys.RCTRL)
+    val leftSuper = KeyboardKey(Keys.LEFT_SUPER)
+    val rShift = KeyboardKey(Keys.RSHIFT)
+    val rCtrl = KeyboardKey(Keys.RCTRL)
+    val rAlt = KeyboardKey(Keys.RALT)
+    val rightSuper = KeyboardKey(Keys.RIGHT_SUPER)
+    val menu = KeyboardKey(Keys.MENU)
 
     operator fun get(keyId: Int): ArrayList<Key> {
         val keys = map[keyId]
@@ -130,7 +126,7 @@ object Keyboard {
         val pressedCount = pressed.size
         get(key).forEach { it.isDown = true }
         pressed.add(key)
-        ANY.isDown = pressed.size > pressedCount
+        any.isDown = pressed.size > pressedCount
     }
 
     internal fun removePressed(key: Int) {
@@ -138,7 +134,7 @@ object Keyboard {
         val pressedCount = pressed.size
         get(key).forEach { it.isDown = false }
         pressed.remove(key)
-        ANY.isDown = pressed.size >= pressedCount
+        any.isDown = pressed.size >= pressedCount
     }
 
     class KeyboardKey(vararg keys: Keys): Key(map, *keys)

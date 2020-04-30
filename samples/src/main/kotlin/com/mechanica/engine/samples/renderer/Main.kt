@@ -53,10 +53,10 @@ private class StartMain : State() {
 
     override fun update(delta: Double) {
         timer += delta
-        if (Keyboard.MB1.hasBeenPressed) {
+        if (Mouse.MB1.hasBeenPressed) {
             score++
         }
-        if (Keyboard.MB2.hasBeenPressed) {
+        if (Mouse.MB2.hasBeenPressed) {
             score--
         }
         if (Keyboard.A()) {

@@ -13,7 +13,6 @@ import com.mechanica.engine.state.State
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import debug.ScreenLog
-import org.joml.Matrix4f
 
 fun main() {
     Game.configure {
@@ -51,14 +50,14 @@ class LinesDemo : State() {
         }
 
         if (Mouse.MB1()) {
-            if (Keyboard.SHIFT()) {
+            if (Keyboard.shift()) {
                 setPoint(l2.p1 as LineSegmentImpl.LinePoint)
             } else {
                 setPoint(l1.p1 as LineSegmentImpl.LinePoint)
             }
         }
         if (Mouse.MB2()) {
-            if (Keyboard.SHIFT()) {
+            if (Keyboard.shift()) {
                 setPoint(l2.p2 as LineSegmentImpl.LinePoint)
             } else {
                 setPoint(l1.p2 as LineSegmentImpl.LinePoint)

@@ -16,8 +16,8 @@ object Mouse {
     val M7 = MouseButton(Keys.M7)
     val M8 = MouseButton(Keys.M8)
 
-    val SCROLL_UP = ScrollWheel(Keys.SCROLL_UP)
-    val SCROLL_DOWN = ScrollWheel(Keys.SCROLL_DOWN)
+    val scrollUp = ScrollWheel(Keys.SCROLL_UP)
+    val scrollDown = ScrollWheel(Keys.SCROLL_DOWN)
 
     operator fun get(keyId: Int): ArrayList<Key> {
         val keys = map[keyId]
