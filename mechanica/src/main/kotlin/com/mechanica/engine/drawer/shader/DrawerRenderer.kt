@@ -111,18 +111,7 @@ class DrawerRenderer {
                     if (value) 1f else 0f
         }
 
-    val size: DynamicVector = object : DynamicVector {
-        override var x: Double
-            get() = fragment.size.value[0].toDouble()
-            set(value) {
-                fragment.size.set(value, y)
-            }
-        override var y: Double
-            get() = fragment.size.value[1].toDouble()
-            set(value) {
-                fragment.size.set(x, value)
-            }
-    }
+    val size: DynamicVector = fragment.size.value
 
     var strokeWidth = 0.0
 

@@ -1,12 +1,8 @@
 package com.mechanica.engine.gl.script
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.gl.glvars.GLVar
-import com.mechanica.engine.gl.glvars.GLVector2f
-import com.mechanica.engine.gl.glvars.GLVector3f
-import com.mechanica.engine.gl.glvars.GLVector4f
+import com.mechanica.engine.gl.glvars.*
 import com.mechanica.engine.unit.vector.Vector
-import gl.glvars.*
 import org.joml.Matrix4f
 
 abstract class Qualifier(private val variables: ScriptVariables) {
@@ -20,6 +16,7 @@ abstract class Qualifier(private val variables: ScriptVariables) {
             override val name: String = name
             override val qualifier: String = qualifier
             override val type: String = type
+            override fun loadUniform() { }
         }
         variables.addVariable(v)
         return v

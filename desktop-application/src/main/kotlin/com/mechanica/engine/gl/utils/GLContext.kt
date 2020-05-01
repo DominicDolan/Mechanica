@@ -3,6 +3,8 @@ package com.mechanica.engine.gl.utils
 import com.mechanica.engine.display.GLFWContext
 import com.mechanica.engine.display.Version
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.gl.context.GLInitializer
+import com.mechanica.engine.gl.context.LwjglGL40
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.*
 import java.util.*
@@ -50,6 +52,7 @@ object GLContext : Version {
 
     private fun initContext(windowId: Long) {
         GLFW.glfwMakeContextCurrent(windowId)
+        GLInitializer.initialize(LwjglGL40())
         GL.createCapabilities()
     }
 

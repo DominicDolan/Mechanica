@@ -70,14 +70,15 @@ class DrawingExample : State() {
     }
 
     override fun render(draw: Drawer) {
-        renderer.color = rgba(1.0, 0.0, 0.0, 0.5)
+        val color = rgba(1.0, 0.0, 0.0, 0.5)
+        renderer.color = color
         for (i in paths.indices) {
             renderer.fillFloats(paths[i])
             renderer.stroke = strokes[i]
             renderer.render(transformation)
         }
         if (!Mouse.MB1()) {
-            draw.color(renderer.color).circle(Mouse.world, strokes.last() / 2f)
+            draw.color(color).circle(Mouse.world, strokes.last() / 2f)
         }
     }
 

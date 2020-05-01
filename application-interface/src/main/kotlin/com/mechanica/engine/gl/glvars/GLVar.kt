@@ -1,10 +1,11 @@
 package com.mechanica.engine.gl.glvars
 
 abstract class GLVar<T> {
-    abstract var value: T
+    abstract val value: T
     abstract val name: String
     abstract val qualifier: String
     abstract val type: String
+    abstract fun loadUniform()
 
     var location = 0
 

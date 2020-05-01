@@ -1,5 +1,6 @@
 package com.mechanica.engine.game
 
+import com.mechanica.engine.config.BackendDebugConfiguration
 import com.mechanica.engine.display.GLFWContext
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
@@ -43,6 +44,7 @@ object Game {
     fun configure(setup: GameConfiguration.() -> Unit) {
         setup(configuration)
         if (configuration.initaliize) start()
+        BackendDebugConfiguration.set(debug)
     }
 
     fun start() {

@@ -31,7 +31,7 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
     internal fun loadUniforms() {
         for (v in iterator) {
             if (v.qualifier == "uniform") {
-                loadUniform(v.location, v.value)
+                v.loadUniform()
             }
         }
     }

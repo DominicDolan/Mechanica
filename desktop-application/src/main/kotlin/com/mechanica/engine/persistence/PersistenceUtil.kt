@@ -1,6 +1,6 @@
 package com.mechanica.engine.persistence
 
-import com.mechanica.engine.resources.Res
+import com.mechanica.engine.resources.ExternalResource
 import java.io.File
 import java.lang.reflect.Method
 import java.util.*
@@ -26,7 +26,7 @@ fun saveData(dataObj: Any) {
     }
     val content = contentBuilder.toString()
 
-    val file = Res.external(dataObj.dataFile, true)
+    val file = resource(dataObj.dataFile, true)
     file.write(content)
 
 }
@@ -49,7 +49,7 @@ fun loadData(dataObj: Any) {
     val setters = getSetters(dataObj)
     val getters = getGetters(dataObj)
 
-    val dataFile = Res.external(dataObj.dataFile, true)
+    val dataFile = resource(dataObj.dataFile, true)
 
 
     dataFile.lines.forEach {
@@ -82,6 +82,11 @@ private fun getSetters(dataObj: Any): HashMap<String, Method> {
     }
 
     return setters
+}
+
+private fun resource(path: String, createIfAbsent: Boolean = false): ExternalResource {
+    val prefix = "res/"
+    return ExternalResource("$prefix$path", createIfAbsent)
 }
 
 private val Method.camelCaseName: String

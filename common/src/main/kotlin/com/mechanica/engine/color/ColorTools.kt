@@ -4,13 +4,14 @@ package com.mechanica.engine.color
 
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.angle.Angle
+import org.joml.Vector4f
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
 fun hex(color: Long): Color = LightweightColor(color)
 
-fun rgba(r: Double, g: Double, b: Double, a: Double): Color = LightweightColor(rgba2Hex(r, g, b, a))
+fun rgba(r: Double, g: Double, b: Double, a: Double) = LightweightColor(rgba2Hex(r, g, b, a))
 
 fun Color.linearBlend(p: Double, other: Color): Color {
     val (r0, g0, b0, a0) = this
@@ -148,12 +149,20 @@ fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0):
     return rgba(f(0, h, s, l), f(8, h, s, l), f(4, h, s, l), alpha)
 }
 
-fun FloatArray.toColor(): Color {
+fun FloatArray.toColor(): LightweightColor {
     fun getComponent(i: Int) = if (this.size > i) this[i].toDouble() else 0.0
     val r = getComponent(0)
     val g = getComponent(1)
     val b = getComponent(2)
     val a = getComponent(3)
+    return rgba(r, g, b, a)
+}
+
+fun Vector4f.toColor(): LightweightColor {
+    val r = this.x().toDouble()
+    val g = this.y().toDouble()
+    val b = this.z().toDouble()
+    val a = this.w().toDouble()
     return rgba(r, g, b, a)
 }
 

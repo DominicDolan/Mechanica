@@ -9,7 +9,7 @@ application {
 }
 
 dependencies {
-    implementation(project(":common"))
-    implementation(project(":backend-lwjgl"))
+    implementation(project(":application-interface"))
+    implementation(project(":desktop-application"))
     implementation(project(":mechanica"))
 }

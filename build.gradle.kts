@@ -71,7 +71,7 @@ allprojects {
     dependencies(commonDependencies)
 }
 
-project(":backend-lwjgl") {
+project(":desktop-application") {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies {
         coreLwjgl()
