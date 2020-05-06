@@ -1,9 +1,10 @@
 package com.mechanica.engine.gl.script
 
-import com.mechanica.engine.gl.glvars.GLVar
+import com.mechanica.engine.gl.vars.ShaderVariable
+import com.mechanica.engine.gl.vars.uniforms.UniformVar
 
-class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
-    private val variables = ArrayList<GLVar<*>>()
+class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariable> {
+    private val variables = ArrayList<ShaderVariable>()
     private val functions = ArrayList<String>()
 
     val scriptHead: String
@@ -24,7 +25,7 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
         return "$placeHolder${variableIncrement++}"
     }
 
-    fun addVariable(v: GLVar<*>): GLVar<*> {
+    fun addVariable(v: ShaderVariable): ShaderVariable {
         val existingVariable = variables.byName(v.name)
         return if (existingVariable != null) {
             existingVariable
@@ -38,21 +39,21 @@ class ScriptVariables(private val placeHolder: String): Iterable<GLVar<*>> {
         functions.add(f.trimIndent())
     }
 
-    private fun ArrayList<GLVar<*>>.containsName(name: String): Boolean {
+    private fun ArrayList<UniformVar<*>>.containsName(name: String): Boolean {
         for (v in this) {
             if (v.name == name) return true
         }
         return false
     }
 
-    private fun ArrayList<GLVar<*>>.byName(name: String): GLVar<*>? {
+    private fun ArrayList<ShaderVariable>.byName(name: String): ShaderVariable? {
         for (v in this) {
             if (v.name == name) return v
         }
         return null
     }
 
-    override fun iterator(): Iterator<GLVar<*>> {
+    override fun iterator(): Iterator<ShaderVariable> {
         return variables.iterator()
     }
 

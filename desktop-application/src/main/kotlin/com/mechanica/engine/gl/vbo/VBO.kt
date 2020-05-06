@@ -1,5 +1,6 @@
 package com.mechanica.engine.gl.vbo
 
+import com.mechanica.engine.gl.Bindable
 import com.mechanica.engine.util.extensions.toFloatArray
 import com.mechanica.engine.gl.utils.createTextureUnitSquareVecArray
 import com.mechanica.engine.gl.utils.createUnitSquareFloatArray
@@ -31,7 +32,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
 
     fun update(array: T, from: Int = 0, length: Int = getArraySize(array)/pointer.coordinateSize) {
         val cs = pointer.coordinateSize
-        val byteOffset = from*cs*pointer.variableSize
+        val byteOffset = from*cs*pointer.variableByteSize
 
         if (length + from > capacity) {
             increaseSize(length + from)
@@ -49,7 +50,7 @@ abstract class VBO<T> protected constructor(array: T, private val pointer: VBOPo
     protected abstract fun initBufferData(target: Int, arraySize: Int)
 
     private fun increaseSize(newSize: Int) {
-        val buffer = memAlloc(pointer.coordinateSize*pointer.variableSize*capacity)
+        val buffer = memAlloc(pointer.coordinateSize*pointer.variableByteSize*capacity)
         capacity = newSize*2
 
         glBindBuffer(pointer.bufferType, id)

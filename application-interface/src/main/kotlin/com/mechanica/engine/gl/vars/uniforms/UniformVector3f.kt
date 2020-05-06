@@ -1,13 +1,14 @@
-package com.mechanica.engine.gl.glvars
+package com.mechanica.engine.gl.vars.uniforms
 
-import com.mechanica.engine.gl.context.GL
+import com.mechanica.engine.gl.qualifiers.Qualifier
+import com.mechanica.engine.gl.vars.uniforms.UniformVar
 import org.joml.Vector3f
 
-class GLVector3f(
+abstract class UniformVector3f(
         x: Number, y: Number, z: Number,
         override val name: String,
-        override val qualifier: String
-) : GLVar<Vector3f>() {
+        override val qualifier: Qualifier
+) : UniformVar<Vector3f>() {
     override var value: Vector3f = Vector3f()
     override val type: String = "vec3"
 
@@ -15,9 +16,5 @@ class GLVector3f(
         value.x = x.toFloat()
         value.y = x.toFloat()
         value.z = x.toFloat()
-    }
-
-    override fun loadUniform() {
-        GL.glUniform3f(location, value.x, value.y, value.z)
     }
 }

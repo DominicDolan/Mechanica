@@ -2,6 +2,7 @@ package com.mechanica.engine.gl.shader
 
 import com.mechanica.engine.gl.models.Model
 import com.mechanica.engine.gl.script.ShaderScript
+import com.mechanica.engine.gl.Bindable
 import com.mechanica.engine.matrix.Matrices
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
@@ -20,10 +21,10 @@ abstract class Shader {
     }
 
     private fun loadUniforms() {
-        vertex.loadUniforms()
-        fragment.loadUniforms()
-        tessellation?.loadUniforms()
-        geometry?.loadUniforms()
+        vertex.loadVariables()
+        fragment.loadVariables()
+        tessellation?.loadVariables()
+        geometry?.loadVariables()
     }
 
     abstract fun loadMatrices(transformation: Matrix4f, projection: Matrix4f?, view: Matrix4f?)
@@ -40,12 +41,22 @@ abstract class Shader {
         model.draw(model)
     }
 
-    protected open class MatrixLoader(script: ShaderScript) {
-        val matrixType = script.qualifier("uniform").float("matrixType")
+    fun render(inputs: Array<Bindable>, draw: () -> Unit) {
 
-        val projection = script.qualifier("uniform").mat4("projection")
-        val transformation = script.qualifier("uniform").mat4("transformation")
-        val view = script.qualifier("uniform").mat4("view")
+        GL20.glUseProgram(id)
+
+        inputs.forEach { it.bind() }
+        load()
+
+        draw()
+    }
+
+    protected open class MatrixLoader(script: ShaderScript) {
+        val matrixType = script.uniform.float("matrixType")
+
+        val projection = script.uniform.mat4("projection")
+        val transformation = script.uniform.mat4("transformation")
+        val view = script.uniform.mat4("view")
 
     }
 

@@ -2,7 +2,6 @@
 
 package com.mechanica.engine.util.extensions
 
-import com.mechanica.engine.memory.buffer.toBuffer
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
@@ -33,10 +32,6 @@ fun Array<Vector>.containsPoint(point: Vector): Boolean {
     return result
 }
 
-fun Array<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
-    return this.toFloatArray(coordinateSize).toBuffer()
-}
-
 fun Array<Vector>.toFloatArray(coordinateSize: Int): FloatArray {
     val floats = FloatArray(this.size*coordinateSize)
     for (i in this.indices) {
@@ -50,18 +45,18 @@ fun Array<Vector>.toFloatArray(coordinateSize: Int): FloatArray {
     return floats
 }
 
-fun List<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
-    val floats = FloatArray(this.size*coordinateSize)
-    for (i in this.indices) {
-        val floatsIndex = i*coordinateSize
-        floats[floatsIndex] = this[i].x.toFloat()
-        floats[floatsIndex+1] = this[i].y.toFloat()
-        for (j in 2 until coordinateSize) {
-            floats[floatsIndex + j] = 1f
-        }
-    }
-    return floats.toBuffer()
-}
+//fun List<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
+//    val floats = FloatArray(this.size*coordinateSize)
+//    for (i in this.indices) {
+//        val floatsIndex = i*coordinateSize
+//        floats[floatsIndex] = this[i].x.toFloat()
+//        floats[floatsIndex+1] = this[i].y.toFloat()
+//        for (j in 2 until coordinateSize) {
+//            floats[floatsIndex + j] = 1f
+//        }
+//    }
+//    return floats.toBuffer()
+//}
 
 inline operator fun <reified T> Array<T>.get(range: IntRange): Array<T>{
     return range.map { this[it] }.toTypedArray()

@@ -1,7 +1,8 @@
 package com.mechanica.engine.gl.script
 
+import com.mechanica.engine.gl.Bindable
+import com.mechanica.engine.gl.vars.uniforms.UniformVar
 import org.lwjgl.opengl.GL20
-import java.nio.FloatBuffer
 
 abstract class ShaderScript : ShaderDeclarations("autoVal") {
     val script: String
@@ -11,8 +12,10 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
 
     abstract val main: String
 
+    private val inputs: Array<Bindable?> = Array(20) { null }
+
     private fun generateScript(): String {
-        val sb = java.lang.StringBuilder(header)
+        val sb = StringBuilder(header)
         sb.appendln(declarations)
         sb.appendln(main.trimIndent())
 
@@ -22,35 +25,17 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
     internal fun loadProgram(programId: Int) {
         this.programId = programId
         for (v in iterator) {
-            if (v.qualifier == "uniform") {
+            if (v is UniformVar<*>) {
                 v.location = GL20.glGetUniformLocation(programId, v.locationName)
             }
         }
     }
 
-    internal fun loadUniforms() {
+    internal fun loadVariables() {
         for (v in iterator) {
-            if (v.qualifier == "uniform") {
+            if (v is UniformVar<*>) {
                 v.loadUniform()
             }
-        }
-    }
-
-    private fun loadUniform(location: Int, value: Any?) {
-        when (value) {
-            is Float -> GL20.glUniform1f(location, value)
-            is FloatArray -> loadFloatArray(location, value)
-            is FloatBuffer -> GL20.glUniformMatrix4fv(location, false, value)
-        }
-    }
-
-    private fun loadFloatArray(location: Int, array: FloatArray) {
-        when (array.size) {
-            1 -> GL20.glUniform1f(location, array[0])
-            2 -> GL20.glUniform2f(location, array[0], array[1])
-            3 -> GL20.glUniform3f(location, array[0], array[1], array[2])
-            4 -> GL20.glUniform4f(location, array[0], array[1], array[2], array[3])
-            else -> GL20.glUniform1fv(location, array)
         }
     }
 

@@ -16,7 +16,7 @@ class DrawerShader(
 
     private val matrixLoaders = ArrayList<DrawerMatrixLoader>()
 
-    private val pixelSize = fragment.qualifier("uniform").float("pixelSize")
+    private val pixelSize = fragment.uniform.float("pixelSize")
 
     private val loader: ShaderLoader by lazy { ShaderLoader(vertex, fragment, tessellation, geometry) }
 
@@ -69,7 +69,7 @@ class DrawerShader(
     }
 
     private class DrawerMatrixLoader(script: DrawerScript) : MatrixLoader(script) {
-        val pvMatrix = script.qualifier("uniform").mat4("pvMatrix")
+        val pvMatrix = script.uniform.mat4("pvMatrix")
 
         init {
             loadMatrixMethod(script)

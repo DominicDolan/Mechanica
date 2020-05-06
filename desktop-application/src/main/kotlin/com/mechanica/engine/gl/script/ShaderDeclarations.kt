@@ -1,22 +1,26 @@
 package com.mechanica.engine.gl.script
 
-import com.mechanica.engine.gl.glvars.GLVar
-import com.mechanica.engine.gl.vbo.pointer.AttributePointer
+import com.mechanica.engine.gl.qualifiers.Attribute
+import com.mechanica.engine.gl.vars.uniforms.UniformVars
+import com.mechanica.engine.gl.qualifiers.Qualifier
+import com.mechanica.engine.gl.qualifiers.Uniform
+import com.mechanica.engine.gl.vars.ShaderVariable
+import com.mechanica.engine.gl.vars.attributes.ShaderAttributeVars
 
 abstract class ShaderDeclarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
-    protected val iterator: Iterator<GLVar<*>>
+    protected val iterator: Iterator<ShaderVariable>
         get() = variables.iterator()
 
     val declarations: String
         get() = variables.declarations
 
-    protected open val uniform: Qualifier = qualifier("uniform")
-    protected open fun attribute(pointer: AttributePointer) = qualifier("layout (location=${pointer.index}) in")
+    open val uniform: UniformVars = Uniform(variables)
+    open fun attribute(location: Int): ShaderAttributeVars = Attribute(location, variables)
 
-    fun qualifier(name: String) = object : Qualifier(variables) {
-        override val qualifierName: String
-            get() = name
+    fun qualifier(name: String) = object : Qualifier {
+        override val qualifierName = name
+        override fun toString() = qualifierName
     }
 
     fun addOther(body: String) {

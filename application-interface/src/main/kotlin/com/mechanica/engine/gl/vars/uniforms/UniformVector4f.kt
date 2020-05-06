@@ -1,16 +1,17 @@
-package com.mechanica.engine.gl.glvars
+package com.mechanica.engine.gl.vars.uniforms
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.LightweightColor
-import com.mechanica.engine.gl.context.GL
+import com.mechanica.engine.gl.qualifiers.Qualifier
+import com.mechanica.engine.gl.vars.uniforms.UniformVar
 import org.joml.Vector4f
 
 
-class GLVector4f (
+abstract class UniformVector4f (
         x: Number, y: Number, z: Number, w: Number,
         override val name: String,
-        override val qualifier: String
-) : GLVar<Vector4f>() {
+        override val qualifier: Qualifier
+) : UniformVar<Vector4f>() {
     override var value: Vector4f = Vector4f()
     override val type: String = "vec4"
 
@@ -33,9 +34,5 @@ class GLVector4f (
         value.y = y.toFloat()
         value.z = z.toFloat()
         value.w = w.toFloat()
-    }
-
-    override fun loadUniform() {
-        GL.glUniform4f(location, value.x, value.y, value.z, value.w)
     }
 }

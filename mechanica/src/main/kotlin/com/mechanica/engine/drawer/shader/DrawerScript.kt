@@ -5,8 +5,8 @@ import com.mechanica.engine.gl.script.ShaderScript
 import com.mechanica.engine.gl.vbo.pointer.VBOPointer
 
 abstract class DrawerScript : ShaderScript() {
-    protected val position by lazy { attribute(VBOPointer.position).vec3("position") }
-    protected val textureCoords by lazy { attribute(VBOPointer.texCoords).vec2("textureCoords") }
+    protected val position by lazy { attribute(0).vec3("position") }
+    protected val textureCoords by lazy { attribute(1).vec2("textureCoords") }
 
     val color by lazy { uniform.vec4(hex(0x000000FF)) }
 

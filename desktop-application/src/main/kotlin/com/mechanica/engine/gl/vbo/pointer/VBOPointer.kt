@@ -6,7 +6,7 @@ interface VBOPointer {
     val coordinateSize: Int
     val bufferType: Int
     val variableType: Int
-    val variableSize: Int
+    val variableByteSize: Int
 
     companion object {
 
@@ -17,7 +17,7 @@ interface VBOPointer {
             override val coordinateSize: Int = 1
             override val bufferType: Int = GL20.GL_ELEMENT_ARRAY_BUFFER
             override val variableType: Int = GL20.GL_SHORT
-            override val variableSize: Int = 2
+            override val variableByteSize: Int = 2
 
         }
     }

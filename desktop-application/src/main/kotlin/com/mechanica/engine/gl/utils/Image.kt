@@ -1,6 +1,6 @@
 package com.mechanica.engine.gl.utils
 
-import com.mechanica.engine.gl.vbo.Bindable
+import com.mechanica.engine.gl.Bindable
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.glBindTexture
 

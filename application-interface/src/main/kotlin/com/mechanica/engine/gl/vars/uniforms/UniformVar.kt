@@ -1,10 +1,13 @@
-package com.mechanica.engine.gl.glvars
+package com.mechanica.engine.gl.vars.uniforms
 
-abstract class GLVar<T> {
+import com.mechanica.engine.gl.qualifiers.Qualifier
+import com.mechanica.engine.gl.vars.ShaderVariable
+
+abstract class UniformVar<T> : ShaderVariable {
     abstract val value: T
-    abstract val name: String
-    abstract val qualifier: String
-    abstract val type: String
+    abstract override val name: String
+    abstract override val qualifier: Qualifier
+    abstract override val type: String
     abstract fun loadUniform()
 
     var location = 0
@@ -17,9 +20,6 @@ abstract class GLVar<T> {
                 name.substring(0 until index)
             } else name
         }
-
-    val declaration: String
-        get() = "$qualifier $type $name; \n"
 
     override fun toString() = name
 }

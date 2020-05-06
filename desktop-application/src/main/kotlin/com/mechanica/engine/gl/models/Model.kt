@@ -1,6 +1,6 @@
 package com.mechanica.engine.gl.models
 
-import com.mechanica.engine.gl.vbo.Bindable
+import com.mechanica.engine.gl.Bindable
 import com.mechanica.engine.gl.vbo.VBO
 import org.lwjgl.opengl.GL40.*
 

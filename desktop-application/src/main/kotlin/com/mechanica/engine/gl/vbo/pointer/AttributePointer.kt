@@ -8,7 +8,7 @@ class AttributePointer private constructor(
         override val coordinateSize: Int,
         override val bufferType: Int,
         override val variableType: Int,
-        override val variableSize: Int) : VBOPointer {
+        override val variableByteSize: Int) : VBOPointer {
 
     fun enable() {
         GL20.glVertexAttribPointer(index, coordinateSize, variableType, false, 0, 0)

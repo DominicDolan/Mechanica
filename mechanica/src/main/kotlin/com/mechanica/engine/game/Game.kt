@@ -13,6 +13,8 @@ import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.GameView
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.gl.context.GLInitializer
+import com.mechanica.engine.gl.loader.LwjglLoader
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.state.State
 import com.mechanica.engine.state.StateManager
@@ -52,6 +54,7 @@ object Game {
             hasStarted = true
 
             GLContext.initialize(window)
+            GLInitializer.initialize(LwjglLoader())
             window.addRefreshCallback { refreshView(it) }
 
             Timer
