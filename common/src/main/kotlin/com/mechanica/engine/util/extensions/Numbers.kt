@@ -63,3 +63,8 @@ fun Int.constrain(lower: Int, higher: Int): Int {
     val restrainLower = max(this, lower)
     return min(restrainLower, higher)
 }
+
+fun Int.constrain(range: IntRange): Int {
+    val restrainLower = max(this, range.first)
+    return min(restrainLower, range.last)
+}

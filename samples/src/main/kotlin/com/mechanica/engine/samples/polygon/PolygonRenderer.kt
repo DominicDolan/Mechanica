@@ -5,8 +5,8 @@ import com.mechanica.engine.color.hex
 import com.mechanica.engine.color.toColor
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
-import com.mechanica.engine.gl.models.Model
 import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.models.Model
 import org.joml.Matrix4f
 
 class PolygonRenderer() {

@@ -2,11 +2,11 @@ package com.mechanica.engine.samples.renderer
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.PolygonModel
-import com.mechanica.engine.gl.utils.Image
-import com.mechanica.engine.gl.utils.loadImage
+import com.mechanica.engine.models.Image
+import com.mechanica.engine.utils.loadImage
 import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.state.State
 import com.mechanica.engine.unit.angle.degrees

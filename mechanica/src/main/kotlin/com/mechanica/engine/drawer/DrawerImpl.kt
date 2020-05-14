@@ -21,7 +21,7 @@ import com.mechanica.engine.drawer.superclass.rectangle.RectangleDrawerImpl
 import com.mechanica.engine.drawer.superclass.text.TextDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.PolygonModel
+import com.mechanica.engine.models.PolygonModel
 import org.lwjgl.opengl.GL11
 
 class DrawerImpl(private val data: DrawData) :

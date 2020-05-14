@@ -2,8 +2,7 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.shader.Shader
+import com.mechanica.engine.models.Model
 import com.mechanica.engine.unit.vector.DynamicVector
 import org.joml.Matrix4f
 
@@ -55,14 +54,15 @@ class DrawerRenderer {
                         
                         st = vec2(st.x*width, st.y*height);
                         
-                        float smoothStroke = 3.5*pixelSize;
-                        float radius = max($radius, smoothStroke);
+                        float smoothStroke = 3.0*pixelSize;
+                        float strokeShift = 0.7;
+                        float radius = max($radius, smoothStroke*strokeShift);
     
                         vec2 relative = abs(st) - vec2(0.5*width - radius, 0.5*height - radius);
                         float distance = length(max(relative, 0.0));
                         
-                        float smoothStart = radius - smoothStroke;
-                        float smoothEnd = radius;
+                        float smoothStart = radius - smoothStroke*strokeShift;
+                        float smoothEnd = radius + smoothStroke*(1.0 - strokeShift);
                         
                         float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, distance);
                         fragColor = vec4(inColor.rgb, inColor.a*alpha);
@@ -74,7 +74,7 @@ class DrawerRenderer {
 
     }
 
-    private val shader: Shader by lazy { DrawerShader(vertex, fragment) }
+    private val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
 
     var color: Color
         get() = fragment.color.value.toColor()

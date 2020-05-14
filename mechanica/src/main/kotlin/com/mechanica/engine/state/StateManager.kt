@@ -3,13 +3,14 @@ package com.mechanica.engine.state
 import com.mechanica.engine.debug.DebugDrawer
 import debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.ConfigurationData
 import com.mechanica.engine.util.Timer
 
 internal class StateManager {
 
-    private var stateSetter: () -> State = { ConfigurationData.emptyState() }
-    private var currentState: State = ConfigurationData.emptyState()
+    private var stateSetter: () -> State? = { null }
+    private var currentState: State? = null
     private var scheduleStateChange = true
 
     private val drawer: Drawer by lazy { Drawer.create() }
@@ -26,14 +27,16 @@ internal class StateManager {
             scheduleStateChange = false
         }
 
-        currentState.update(updateDuration)
-        currentState.render(drawer)
+        currentState?.update(updateDuration)
+        currentState?.render(drawer)
 
-        ScreenLog.render(drawer)
-        DebugDrawer.render(drawer)
+        if (Game.debug.screenLog)
+            ScreenLog.render(drawer)
+        if (Game.debug.constructionDraws)
+            DebugDrawer.render(drawer)
     }
 
-    fun setCurrentState(setter: () -> State) {
+    fun setCurrentState(setter: () -> State?) {
         stateSetter = setter
         scheduleStateChange = true
     }

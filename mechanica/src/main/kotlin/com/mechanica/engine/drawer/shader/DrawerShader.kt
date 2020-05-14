@@ -2,10 +2,11 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.gl.script.ShaderScript
-import com.mechanica.engine.gl.shader.Shader
-import com.mechanica.engine.gl.shader.ShaderLoader
+import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shader.script.Shader
+import com.mechanica.engine.shader.script.ShaderLoader
 import com.mechanica.engine.matrix.Matrices
+import com.mechanica.engine.models.Model
 import org.joml.Matrix4f
 
 class DrawerShader(
@@ -14,7 +15,7 @@ class DrawerShader(
         override val tessellation: DrawerScript? = null,
         override val geometry: DrawerScript? = null): Shader() {
 
-    private val matrixLoaders = ArrayList<DrawerMatrixLoader>()
+    private val matrixLoaders = ArrayList<MatrixLoader>()
 
     private val pixelSize = fragment.uniform.float("pixelSize")
 
@@ -24,17 +25,22 @@ class DrawerShader(
         get() = loader.id
 
     init {
-        matrixLoaders.add(DrawerMatrixLoader(vertex))
+        matrixLoaders.add(MatrixLoader(vertex))
         if (geometry != null) {
-            matrixLoaders.add(DrawerMatrixLoader(geometry))
+            matrixLoaders.add(MatrixLoader(geometry))
         }
     }
 
-    override fun loadMatrices(transformation: Matrix4f, projection: Matrix4f?, view: Matrix4f?) {
+    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
+
         loadMatrixUniforms(transformation,
                 projection ?: Game.matrices.projection,
                 view ?: Game.matrices.view
         )
+        load()
+
+        model.bind()
+        model.draw()
     }
 
     private fun loadMatrixUniforms(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
@@ -68,7 +74,13 @@ class DrawerShader(
         }
     }
 
-    private class DrawerMatrixLoader(script: DrawerScript) : MatrixLoader(script) {
+    private class MatrixLoader(script: DrawerScript) {
+        val matrixType = script.uniform.float("matrixType")
+
+        val projection = script.uniform.mat4("projection")
+        val transformation = script.uniform.mat4("transformation")
+        val view = script.uniform.mat4("view")
+
         val pvMatrix = script.uniform.mat4("pvMatrix")
 
         init {

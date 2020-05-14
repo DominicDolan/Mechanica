@@ -29,8 +29,8 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val saveData: Array<Any> = data.saveData ?: emptyArray()
     override val controlsMap: ControlsMap = data.controlsMap ?: object : ControlsMap() { }
     override val fullscreen: Boolean = data.fullscreen ?: false
-    override val startingState: (() -> State) = data.startingState ?: { emptyState() }
-    override val loadState: (() -> LoadState) = data.loadState ?: { emptyLoadeState() }
+    override val startingState: (() -> State)? = data.startingState
+    override val loadState: (() -> LoadState)? = data.loadState
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }
     override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)

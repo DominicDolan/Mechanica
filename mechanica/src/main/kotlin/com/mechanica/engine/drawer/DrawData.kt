@@ -1,12 +1,10 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.font.Font
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.models.TextModel
-import com.mechanica.engine.resources.Res
+import com.mechanica.engine.models.Model
+import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
@@ -68,12 +66,12 @@ class DrawData {
     val cornerSize: DynamicVector
         get() = renderer.size
 
-    private val fontMap = HashMap<Font, TextModel>()
+//    private val fontMap = HashMap<Font, TextModel>()
+//
+//    private var font: Font = Font.create(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel("", it) }
 
-    private var font: Font = Font(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(it) }
-
-    val textModel: TextModel
-        get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
+    val textModel: TextModel = TextModel("Test")
+        //get() = fontMap[font] ?: TextModel("", font).also { fontMap[font] = it }
 
     fun setTranslate(x: Float, y: Float) {
         translation.set(x, y, translateZ)

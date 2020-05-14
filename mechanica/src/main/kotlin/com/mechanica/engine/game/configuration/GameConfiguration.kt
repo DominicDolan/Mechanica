@@ -9,7 +9,7 @@ import com.mechanica.engine.state.LoadState
 import com.mechanica.engine.state.State
 
 interface GameConfiguration {
-    var initaliize: Boolean
+    var initalize: Boolean
     fun setResolution(width: Int, height: Int)
     fun setFullscreen(isFullscreen: Boolean)
     fun setViewport(width: Double = 0.0, height: Double = 0.0)

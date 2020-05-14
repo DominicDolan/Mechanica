@@ -3,9 +3,9 @@ package com.mechanica.engine.samples.text
 import com.mechanica.engine.color.hex
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.Model
 import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.models.Model
 import com.mechanica.engine.state.State
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
@@ -90,6 +90,7 @@ private class StartText : State() {
             cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex()
         }
 
+        println("End of update")
     }
 
     override fun render(draw: Drawer) {
@@ -98,6 +99,7 @@ private class StartText : State() {
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)
         renderer.render(transformation)
+        println("End of render")
     }
 
     fun addLetter(index: Int, str: String) {

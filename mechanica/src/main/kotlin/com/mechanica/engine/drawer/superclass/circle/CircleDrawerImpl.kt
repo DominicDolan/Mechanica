@@ -1,8 +1,9 @@
 package com.mechanica.engine.drawer.superclass.circle
 
+import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.vbo.VBO
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.models.Model
 import kotlin.math.min
 
 class CircleDrawerImpl(
@@ -11,12 +12,17 @@ class CircleDrawerImpl(
     private val model: Model
 
     init {
-        val position = VBO.createUnitSquarePositionAttribute()
-        model = Model(position)
+        val position = Attribute(0).vec3().createUnitQuad()
+        model = Model(position, draw = GLLoader.graphicsLoader::drawArrays)
     }
 
     override fun circle() {
-        val radius = if (data.radius > 0.0) data.radius else 1f
+        val radius = if (data.radius > 0.0) data.radius
+        else {
+            data.radius = 0.5f
+            0.5f
+        }
+
         val diameter = radius*2.0
 
         data.setScale(diameter.toFloat(), diameter.toFloat())

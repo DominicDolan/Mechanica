@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClassName = "com.mechanica.engine.samples.color.MainKt"
+    mainClassName = "com.mechanica.engine.samples.temp.SmallKt"
 }
 
 dependencies {

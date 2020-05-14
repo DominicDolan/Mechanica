@@ -1,6 +1,6 @@
 package com.mechanica.engine.animation
 
-import com.mechanica.engine.gl.utils.Image
+import com.mechanica.engine.models.Image
 import kotlin.math.abs
 import kotlin.math.floor
 

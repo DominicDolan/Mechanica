@@ -1,5 +1,6 @@
 package com.mechanica.engine.display
 
+import com.mechanica.engine.context.GLFWContext
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGammaRamp
 import org.lwjgl.glfw.GLFWMonitorCallback

@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.image
 
-import com.mechanica.engine.gl.utils.Image
+import com.mechanica.engine.models.Image
 import com.mechanica.engine.unit.vector.LightweightVector
 
 interface ImageDrawer {

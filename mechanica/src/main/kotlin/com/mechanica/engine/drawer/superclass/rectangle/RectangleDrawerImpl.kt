@@ -1,8 +1,11 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
 import com.mechanica.engine.drawer.DrawData
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.vbo.VBO
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.models.Model
+import com.mechanica.engine.utils.createUnitSquareVecArray
+import org.lwjgl.opengl.GL11.GL_TRIANGLE_FAN
+import org.lwjgl.opengl.GL11.glDrawArrays
 
 internal class RectangleDrawerImpl(
         private val data: DrawData) : RectangleDrawer {
@@ -10,8 +13,10 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = VBO.createUnitSquarePositionAttribute()
-        model = Model(position)
+        val position = Attribute(0).vec2().createBuffer(createUnitSquareVecArray())
+        model = Model(position) {
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+        }
     }
 
     override fun rectangle() {

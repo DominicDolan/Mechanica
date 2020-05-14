@@ -3,17 +3,14 @@ package com.mechanica.engine.samples.shaders
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.utils.createUnitSquareVecArray
-import com.mechanica.engine.gl.vbo.AttributeArray
-import com.mechanica.engine.gl.vbo.pointer.VBOPointer
+import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.util.extensions.toFloatArray
+import com.mechanica.engine.models.Model
 import org.joml.Matrix4f
 
 class FragmentRenderer {
 
-    private val vbo = AttributeArray(createUnitSquareVecArray().toFloatArray(3), VBOPointer.position)
+    private val vbo = Attribute(0).vec3().createUnitQuad()
     private val model = Model(vbo)
 
     private val vertex = object : DrawerScript() {
@@ -29,7 +26,6 @@ class FragmentRenderer {
 
     private val fragment = object : DrawerScript() {
 
-        //        val unitTests.color = uniform.vec4(hex(0xFF00FFFF))
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
         val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())

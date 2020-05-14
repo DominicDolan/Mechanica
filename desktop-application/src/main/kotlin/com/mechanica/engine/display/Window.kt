@@ -1,6 +1,7 @@
 package com.mechanica.engine.display
 
-import com.mechanica.engine.gl.utils.ImageData
+import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.utils.ImageData
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWImage
@@ -11,6 +12,8 @@ import java.nio.ByteBuffer
 
 class Window private constructor(width: Int, height: Int, val title: String, monitor: Monitor?) {
     val id: Long= glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, MemoryUtil.NULL)
+    var hasInitialized = false
+        private set
 
     val width: Int
         get() = resolution.width
@@ -124,6 +127,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             finished = true
         }
 
+        hasInitialized = true
     }
 
     fun addRefreshCallback(callback: (Window) -> Unit) {
@@ -164,8 +168,11 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
     }
 
     fun destroy() {
-        glfwDestroyWindow(id)
-        Callbacks.glfwFreeCallbacks(id)
+        if (hasInitialized) {
+            Callbacks.glfwFreeCallbacks(id)
+            glfwDestroyWindow(id)
+            hasInitialized = false
+        }
     }
 
     fun swapBuffers() {

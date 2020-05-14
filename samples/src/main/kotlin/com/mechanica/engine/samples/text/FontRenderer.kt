@@ -4,10 +4,9 @@ import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
-import com.mechanica.engine.font.Font
+import com.mechanica.engine.text.Font
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.models.TextModel
+import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
@@ -57,17 +56,17 @@ class FontRenderer {
 
     private val shader = DrawerShader(vertex, fragment)
 
-    private val fontMap = HashMap<Font, TextModel>()
+//    private val fontMap = HashMap<Font, TextModel>()
 
-    var font: Font = Font(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(it) }
+    var font: Font = Font.create(Res.font["Roboto-Regular.ttf"])//.also { fontMap[it] = TextModel("", it) }
         set(value) {
-            val newModel = TextModel(value)
+            val newModel = TextModel("", value)
             newModel.text = text
             field = value
         }
 
-    val model: TextModel
-        get() = fontMap[font] ?: TextModel(font).also { fontMap[font] = it }
+    val model: TextModel = TextModel("", font)
+//        get() = fontMap[font] ?: TextModel("", font).also { fontMap[font] = it }
 
     private val characterOutput = CharacterOutputImpl()
 

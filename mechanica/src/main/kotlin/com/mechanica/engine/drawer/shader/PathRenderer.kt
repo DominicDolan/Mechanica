@@ -2,19 +2,20 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
-import com.mechanica.engine.gl.models.Model
-import com.mechanica.engine.gl.utils.enableAlphaBlending
-import com.mechanica.engine.gl.vbo.AttributeArray
-import com.mechanica.engine.gl.vbo.pointer.VBOPointer
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.utils.enableAlphaBlending
+import com.mechanica.engine.models.Model
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
+import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.vertices.FloatBufferMaker
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
 
-class PathRenderer {
+class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute(0).vec3()) {
 
     private val vertex = object : DrawerScript() {
 
@@ -175,7 +176,7 @@ class PathRenderer {
     init {
         val initialVertices = 300
         floats = FloatArray(initialVertices*3)
-        vbo = AttributeArray(initialVertices, VBOPointer.position)
+        vbo = positionBufferMaker.createBuffer(floats) as AttributeArray
         model = Model(vbo) {
             GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
             GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
@@ -203,19 +204,19 @@ class PathRenderer {
     fun fillFloats(path: List<Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.update(floats)
+        vbo.set(floats)
     }
 
     fun fillFloats(path: Array<out Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.update(floats)
+        vbo.set(floats)
     }
 
     fun fillFloats(path: VectorArray, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.update(floats)
+        vbo.set(floats)
     }
 
     private fun checkFloats(pathSize: Int) {

@@ -1,10 +1,10 @@
 package com.mechanica.engine.game
 
 import com.mechanica.engine.config.BackendDebugConfiguration
-import com.mechanica.engine.display.GLFWContext
+import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
-import com.mechanica.engine.gl.utils.GLContext
+import com.mechanica.engine.context.GLContext
 import com.mechanica.engine.persistence.loadData
 import com.mechanica.engine.persistence.saveData
 import com.mechanica.engine.game.configuration.GameConfiguration
@@ -13,8 +13,8 @@ import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.GameView
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.gl.context.GLInitializer
-import com.mechanica.engine.gl.loader.LwjglLoader
+import com.mechanica.engine.context.GLInitializer
+import com.mechanica.engine.context.loader.LwjglLoader
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.state.State
 import com.mechanica.engine.state.StateManager
@@ -45,7 +45,7 @@ object Game {
 
     fun configure(setup: GameConfiguration.() -> Unit) {
         setup(configuration)
-        if (configuration.initaliize) start()
+        if (configuration.initalize) start()
         BackendDebugConfiguration.set(debug)
     }
 
@@ -65,19 +65,25 @@ object Game {
 
     fun run(update: () -> Unit = { }) {
         start()
-        while (!hasFinished) {
-            GLContext.startFrame()
+        try {
+            while (!hasFinished) {
+                GLContext.startFrame()
 
-            gameMatrices.updateMatrices()
+                gameMatrices.updateMatrices()
 
-            stateManager.updateState()
+                stateManager.updateState()
 
-            update()
+                update()
 
-            if (!window.update()) {
-                terminate()
-                return
+                if (!window.update()) {
+                    return
+                }
             }
+        } catch (ex: Exception) {
+            throw ex
+        } finally {
+            window.destroy()
+            terminate()
         }
     }
 
@@ -89,22 +95,28 @@ object Game {
     fun terminate() {
         savePersistenceData()
         hasFinished = true
+        GLContext.free()
         GLFWContext.terminate()
     }
 
-    fun setCurrentState(setter: () -> State) {
+    fun setCurrentState(setter: () -> State?) {
         stateManager.setCurrentState(setter)
     }
 
     private fun setStartingState(data: GameSetup) {
         val state = data.startingState
-        val loadState = data.loadState()
-        loadState.onFinish = {
-            setCurrentState { state() }
-        }
-        setCurrentState {
-            loadState.preLoad()
-            loadState
+        val loadState = data.loadState?.invoke()
+
+        if (loadState != null) {
+            loadState.onFinish = {
+                setCurrentState { state?.invoke() }
+            }
+            setCurrentState {
+                loadState.preLoad()
+                loadState
+            }
+        } else {
+            setCurrentState { state?.invoke() }
         }
     }
 

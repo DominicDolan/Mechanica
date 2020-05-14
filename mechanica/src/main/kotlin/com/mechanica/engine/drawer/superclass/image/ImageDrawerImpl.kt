@@ -1,9 +1,9 @@
 package com.mechanica.engine.drawer.superclass.image
 
 import com.mechanica.engine.drawer.DrawData
-import com.mechanica.engine.gl.models.ImageModel
-import com.mechanica.engine.gl.utils.Image
-import com.mechanica.engine.gl.vbo.VBO
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.models.Image
+import com.mechanica.engine.models.ImageModel
 
 class ImageDrawerImpl(
         private val data: DrawData) : ImageDrawer {
@@ -11,9 +11,9 @@ class ImageDrawerImpl(
     private val model: ImageModel
 
     init {
-        val position = VBO.createUnitSquarePositionAttribute()
-        VBO.createUnitSquareTextureAttribute()
-        val textureCoords = VBO.createUnitSquareTextureAttribute()
+        val position = Attribute(0).vec3().createUnitQuad()
+        val textureCoords = Attribute(1).vec2().createInvertedUnitQuad()
+
         model = ImageModel(Image(0), position, textureCoords)
     }
 

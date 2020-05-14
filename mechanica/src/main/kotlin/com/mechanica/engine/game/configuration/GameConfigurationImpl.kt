@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.configuration
 
-import com.mechanica.engine.display.GLFWContext
+import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Window
 import debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
@@ -14,7 +14,7 @@ internal class GameConfigurationImpl : GameConfiguration {
     val data: GameSetup
         get() = GameSetup(_data)
 
-    override var initaliize: Boolean = true
+    override var initalize: Boolean = true
 
     override fun setResolution(width: Int, height: Int) {
         _data.resolutionWidth = width

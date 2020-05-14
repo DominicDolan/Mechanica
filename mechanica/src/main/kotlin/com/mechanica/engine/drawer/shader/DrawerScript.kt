@@ -1,8 +1,7 @@
 package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.hex
-import com.mechanica.engine.gl.script.ShaderScript
-import com.mechanica.engine.gl.vbo.pointer.VBOPointer
+import com.mechanica.engine.shader.script.ShaderScript
 
 abstract class DrawerScript : ShaderScript() {
     protected val position by lazy { attribute(0).vec3("position") }
