@@ -1,12 +1,9 @@
 package com.mechanica.engine.samples.temp
 
-import com.mechanica.engine.text.Text
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.vertices.ElementArrayBuffer
 import org.intellij.lang.annotations.Language
 
 fun main() {

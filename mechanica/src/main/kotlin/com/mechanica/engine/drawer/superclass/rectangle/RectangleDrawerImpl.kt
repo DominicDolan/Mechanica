@@ -1,11 +1,11 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
+import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
-import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
-import com.mechanica.engine.utils.createUnitSquareVecArray
-import org.lwjgl.opengl.GL11.GL_TRIANGLE_FAN
-import org.lwjgl.opengl.GL11.glDrawArrays
+import com.mechanica.engine.shader.qualifiers.Attribute
+import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 
 internal class RectangleDrawerImpl(
         private val data: DrawData) : RectangleDrawer {
@@ -13,10 +13,15 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = Attribute(0).vec2().createBuffer(createUnitSquareVecArray())
-        model = Model(position) {
-            glDrawArrays(GL_TRIANGLE_FAN, 0, 6)
+        val position = Attribute(0).vec3().createUnitQuad()
+
+        val disableTexCoords = object : Bindable {
+            override fun bind() {
+                glDisableVertexAttribArray(1)
+            }
         }
+        model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
+
     }
 
     override fun rectangle() {

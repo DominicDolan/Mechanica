@@ -1,8 +1,7 @@
-package debug
+package com.mechanica.engine.debug
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
 
 object ScreenLog {
     private val sb = StringBuilder()

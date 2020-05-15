@@ -17,6 +17,9 @@ fun main() {
     Game.configure {
         setViewport(height = 10.0)
         setStartingState { StartText() }
+        configureDebugMode {
+            constructionDraws = true
+        }
     }
 
     Game.run()
@@ -90,7 +93,6 @@ private class StartText : State() {
             cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex()
         }
 
-        println("End of update")
     }
 
     override fun render(draw: Drawer) {
@@ -99,7 +101,6 @@ private class StartText : State() {
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)
         renderer.render(transformation)
-        println("End of render")
     }
 
     fun addLetter(index: Int, str: String) {
@@ -109,7 +110,7 @@ private class StartText : State() {
         val before = if (index <= 0) ""
             else fullText.substring(0 until safeIndex)
 
-        val after = if (index >= fullText.length-1) ""
+        val after = if (index >= fullText.length) ""
                     else fullText.substring(safeIndex until fullText.length)
 
         renderer.text = before + str + after

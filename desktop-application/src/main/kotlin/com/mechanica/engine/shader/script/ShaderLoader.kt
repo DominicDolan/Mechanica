@@ -12,7 +12,7 @@ class ShaderLoader(
         tessellation: ShaderScript?,
         geometry: ShaderScript?): ShaderDeclarations() {
 
-    val id: Int
+    val id: Int = GL20.glCreateProgram()
 
     private val vertexShaderID: Int
     private val fragmentShaderID: Int
@@ -34,7 +34,6 @@ class ShaderLoader(
             TODO()// implement tessellation
         }
 
-        id = GL20.glCreateProgram()
         GL20.glAttachShader(id, vertexShaderID)
 
         if (geometryShaderID != null) {
@@ -74,7 +73,10 @@ class ShaderLoader(
             System.err.println("Shader compilation failed")
             System.err.println(scriptWithLineNumbers(script))
             System.err.println(GL20.glGetShaderInfoLog(shaderID, GL20.GL_INFO_LOG_LENGTH))
-            cleanUp()
+
+            GL20.glDetachShader(shaderID, type)
+            GL20.glDeleteShader(shaderID)
+            
             exitProcess(-1)
         }
         return shaderID

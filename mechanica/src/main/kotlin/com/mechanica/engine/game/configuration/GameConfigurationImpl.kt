@@ -2,7 +2,7 @@ package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Window
-import debug.GameDebugConfiguration
+import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
 import org.joml.Matrix4f

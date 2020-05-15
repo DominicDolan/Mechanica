@@ -10,7 +10,7 @@ import com.mechanica.engine.resources.Res
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.vec
-import debug.ScreenLog
+import com.mechanica.engine.debug.ScreenLog
 
 fun main() {
     Game.configure {

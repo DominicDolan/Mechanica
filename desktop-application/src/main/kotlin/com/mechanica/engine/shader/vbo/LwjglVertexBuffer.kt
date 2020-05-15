@@ -6,22 +6,17 @@ import org.lwjgl.opengl.GL40.*
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
-@Suppress("LeakingThis") // The state of the class is set before any leaking occurs
-abstract class LwjglVertexBuffer<T>(var byteCapacity: Int, val bufferType: Int) : VertexBuffer<T> {
-    override val id = glGenBuffers()
+abstract class LwjglVertexBuffer<T>(var byteCapacity: Int, val bufferTarget: Int) : VertexBuffer<T> {
+    final override val id = glGenBuffers()
 
     init {
-        glBindBuffer(bufferType, id)
+        glBindBuffer(bufferTarget, id)
 
-        useMemoryStack {
-            val buffer = this.calloc(byteCapacity)
-            glBufferData(bufferType, buffer, GL_STATIC_DRAW)
-
-        }
+        glBufferData(bufferTarget, byteCapacity.toLong(), GL_STATIC_DRAW)
     }
 
     override fun bind() {
-        glBindBuffer(bufferType, id)
+        glBindBuffer(bufferTarget, id)
     }
 
     override fun set(array: T, from: Int, length: Int) {
@@ -47,29 +42,33 @@ abstract class LwjglVertexBuffer<T>(var byteCapacity: Int, val bufferType: Int) 
             bind()
         }
 
-        useMemoryStack {
-            val buffer = calloc(byteLength)
+        if (byteLength > 0) {
+            useMemoryStack {
+                val buffer = calloc(byteLength)
 
-            for (i in 0 until length) {
-                operation(array[i], buffer)
+                for (i in 0 until length) {
+                    operation(array[i], buffer)
+                }
+                buffer.flip()
+                glBufferSubData(bufferTarget, byteStart.toLong(), buffer)
             }
-            buffer.flip()
-            glBufferSubData(bufferType, byteStart.toLong(), buffer)
         }
     }
 
     fun increaseSize(newByteSize: Int) {
-        glBindBuffer(bufferType, id)
+        glBindBuffer(bufferTarget, id)
         val buffer = MemoryUtil.memAlloc(newByteSize)
 
-        buffer.limit(byteCapacity)
+        if (byteCapacity > 0) {
+            buffer.limit(byteCapacity)
 
-        glGetBufferSubData(bufferType, 0, buffer)
+            glGetBufferSubData(bufferTarget, 0, buffer)
+        }
 
         buffer.limit(newByteSize)
         byteCapacity = newByteSize
 
-        glBufferData(bufferType, buffer, GL_STATIC_DRAW)
+        glBufferData(bufferTarget, buffer, GL_DYNAMIC_DRAW)
 
         MemoryUtil.memFree(buffer)
     }

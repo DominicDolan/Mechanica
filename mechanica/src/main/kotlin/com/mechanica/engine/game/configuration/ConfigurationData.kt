@@ -2,7 +2,7 @@ package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
-import debug.GameDebugConfiguration
+import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap

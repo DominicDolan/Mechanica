@@ -12,6 +12,7 @@ import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
+import com.mechanica.engine.debug.ScreenLog
 import org.joml.Matrix4f
 import kotlin.math.ceil
 import kotlin.math.max
@@ -56,17 +57,22 @@ class FontRenderer {
 
     private val shader = DrawerShader(vertex, fragment)
 
-//    private val fontMap = HashMap<Font, TextModel>()
-
-    var font: Font = Font.create(Res.font["Roboto-Regular.ttf"])//.also { fontMap[it] = TextModel("", it) }
+    var text: String = ""
         set(value) {
-            val newModel = TextModel("", value)
-            newModel.text = text
+            model.text = value
             field = value
         }
 
-    val model: TextModel = TextModel("", font)
-//        get() = fontMap[font] ?: TextModel("", font).also { fontMap[font] = it }
+    private val fontMap = HashMap<Font, TextModel>()
+
+    var font: Font = Font.create(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(text, it) }
+        set(value) {
+            fontMap[value] = TextModel(text, value)
+            field = value
+        }
+
+    val model: TextModel
+        get() = fontMap[font] ?: TextModel(text, font).also { fontMap[font] = it }
 
     private val characterOutput = CharacterOutputImpl()
 
@@ -76,22 +82,12 @@ class FontRenderer {
             fragment.color.set(value)
         }
 
-    var text: String = ""
-        set(value) {
-            model.text = value
-            field = value
-        }
-
     var fontSize: Double = 1.0
 
     var position: DynamicVector = DynamicVector.create()
         set(value) {
             field.set(value)
         }
-
-    init {
-        model.text = ""
-    }
 
     fun render(transformation: Matrix4f ) {
         if (transformation == this.transformation) {
@@ -100,6 +96,7 @@ class FontRenderer {
         }
         shader.render(this.model, transformation, projection, view)
         if (transformation == this.transformation) { transformation.identity() }
+        ScreenLog { "testing testing" }
     }
 
     fun from(index: Int): CharacterOutput {
@@ -178,6 +175,7 @@ class FontRenderer {
             val safeIndex = max(0, index)
             val x = model.getCharacterPosition(safeIndex)*fontSize + this@FontRenderer.position.x
             val y = -model.getLine(safeIndex)*fontSize + this@FontRenderer.position.y
+//            println(" Calculated x: $x, font size: ${fontSize}, position x: ${this@FontRenderer.position.x}")
             return vec(x, y)
         }
 
@@ -198,6 +196,7 @@ class FontRenderer {
             val adjustedX = (x - textPosition.x)/fontSize
 
             val line = (-adjustedY).constrain(0.0, model.lineCount.toDouble())
+            println("calculated line: $line")
             val ceil = ceil(line)
 
             val xOut = model.getClosestCharacterPosition(adjustedX, ceil.toInt())*fontSize + textPosition.x

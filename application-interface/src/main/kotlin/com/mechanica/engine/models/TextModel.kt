@@ -6,7 +6,7 @@ import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.utils.createIndicesArrayForQuads
 import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.ElementArrayBuffer
+import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.FloatBufferMaker
 
 class TextModel(text: Text,
@@ -14,7 +14,7 @@ class TextModel(text: Text,
                 texCoordsBufferMaker: FloatBufferMaker = Attribute(1).vec2()) : Model(
         positionBufferMaker.createBuffer(text.positions),
         texCoordsBufferMaker.createBuffer(text.texCoords),
-        ElementArrayBuffer.create(*createIndicesArrayForQuads(100)),
+        IndexArray.create(*createIndicesArrayForQuads(20)),
         Image.invoke(text.font.atlas.id),
         draw = { model ->
             GLLoader.graphicsLoader.drawElements(model)
@@ -22,6 +22,7 @@ class TextModel(text: Text,
 ) {
     private val positionAttribute = inputs[0] as AttributeArray
     private val texCoordsAttribute = inputs[1] as AttributeArray
+    private val indexArray = inputs[2] as IndexArray
 
     private var textHolder: Text = text
 
@@ -54,6 +55,10 @@ class TextModel(text: Text,
         positionAttribute.set(textHolder.positions, 0, textHolder.vertexCount)
         texCoordsAttribute.set(textHolder.texCoords, 0, textHolder.vertexCount)
         vertexCount = textHolder.vertexCount
+
+        if (vertexCount > indexArray.vertexCount) {
+            indexArray.set(createIndicesArrayForQuads(vertexCount*2/6))
+        }
     }
 
     fun getLine(index: Int) = textHolder.getLine(index)
@@ -62,7 +67,7 @@ class TextModel(text: Text,
 
     fun getEndOfLinePosition(line: Int) = textHolder.getEndOfLinePosition(line)
 
-    fun getCharacterIndex(x: Double, line: Int) = textHolder.search(x, line)
+    fun getCharacterIndex(x: Double, line: Int) = textHolder.searchCharacter(x, line)
 
     fun getCharacterPosition(index: Int) = textHolder.getCharacterPosition(index)
 

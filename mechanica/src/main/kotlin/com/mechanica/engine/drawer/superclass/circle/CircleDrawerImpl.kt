@@ -2,8 +2,10 @@ package com.mechanica.engine.drawer.superclass.circle
 
 import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.models.Model
+import org.lwjgl.opengl.GL20
 import kotlin.math.min
 
 class CircleDrawerImpl(
@@ -13,7 +15,13 @@ class CircleDrawerImpl(
 
     init {
         val position = Attribute(0).vec3().createUnitQuad()
-        model = Model(position, draw = GLLoader.graphicsLoader::drawArrays)
+
+        val disableTexCoords = object : Bindable {
+            override fun bind() {
+                GL20.glDisableVertexAttribArray(1)
+            }
+        }
+        model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
     }
 
     override fun circle() {

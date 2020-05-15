@@ -49,17 +49,24 @@ object Game {
         BackendDebugConfiguration.set(debug)
     }
 
-    fun start() {
-        if (!hasStarted) {
-            hasStarted = true
+    fun start(block: () -> Unit = {}) {
+        try {
+            if (!hasStarted) {
+                GLContext.initialize(window)
+                GLInitializer.initialize(LwjglLoader())
+                window.addRefreshCallback { refreshView(it) }
 
-            GLContext.initialize(window)
-            GLInitializer.initialize(LwjglLoader())
-            window.addRefreshCallback { refreshView(it) }
+                Timer
+                loadPersistenceData()
+                setStartingState(data)
 
-            Timer
-            loadPersistenceData()
-            setStartingState(data)
+                hasStarted = true
+            }
+            block()
+        } catch (ex: Exception) {
+            window.destroy()
+            terminate()
+            throw ex
         }
     }
 
@@ -86,7 +93,6 @@ object Game {
             terminate()
         }
     }
-
 
     fun close() {
         window.shouldClose = true

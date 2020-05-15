@@ -1,10 +1,9 @@
 package com.mechanica.engine.state
 
 import com.mechanica.engine.debug.DebugDrawer
-import debug.ScreenLog
+import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.configuration.ConfigurationData
 import com.mechanica.engine.util.Timer
 
 internal class StateManager {

@@ -2,9 +2,7 @@ package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
-import debug.GameDebugConfiguration
-import com.mechanica.engine.game.configuration.ConfigurationData.Companion.emptyLoadeState
-import com.mechanica.engine.game.configuration.ConfigurationData.Companion.emptyState
+import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.ResolutionConverter
 import com.mechanica.engine.game.view.View

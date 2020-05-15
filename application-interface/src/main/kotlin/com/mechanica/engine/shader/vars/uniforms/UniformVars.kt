@@ -29,7 +29,7 @@ interface UniformVars {
     fun mat4(name: String? = null): UniformMatrix4f
 
     fun mat4(matrix: Matrix4f, name: String? = null): UniformMatrix4f {
-        val v = mat4()
+        val v = mat4(name)
         v.set(matrix)
         return v
     }

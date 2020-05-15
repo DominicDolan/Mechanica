@@ -8,7 +8,7 @@ interface VertexBufferType<T> {
 }
 
 interface ElementArrayType: VertexBufferType<ShortArray> {
-    override fun createBuffer(array: ShortArray): ElementArrayBuffer
+    override fun createBuffer(array: ShortArray): IndexArray
 
     companion object : ElementArrayType by GLLoader.createElementArray()
 }

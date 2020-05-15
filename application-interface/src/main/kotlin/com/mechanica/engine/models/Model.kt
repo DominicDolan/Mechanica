@@ -1,7 +1,7 @@
 package com.mechanica.engine.models
 
 import com.mechanica.engine.context.loader.GLLoader
-import com.mechanica.engine.vertices.ElementArrayBuffer
+import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.VertexBuffer
 
 open class Model(vararg inputs: Bindable,
@@ -35,7 +35,7 @@ open class Model(vararg inputs: Bindable,
     override fun iterator() = inputs.iterator()
 
     companion object {
-        fun defaultDraw(model: Model)  = if (model.inputs.any { it is ElementArrayBuffer }) {
+        fun defaultDraw(model: Model)  = if (model.inputs.any { it is IndexArray }) {
                 GLLoader.graphicsLoader::drawElements
             } else {
                 GLLoader.graphicsLoader::drawArrays

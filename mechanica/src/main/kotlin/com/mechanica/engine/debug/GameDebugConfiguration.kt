@@ -1,6 +1,4 @@
-package debug
-
-import com.mechanica.engine.debug.DebugConfiguration
+package com.mechanica.engine.debug
 
 class GameDebugConfiguration : DebugConfiguration {
     override var failEarly = false

@@ -113,6 +113,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
     init {
         if (id == MemoryUtil.NULL)
             throw RuntimeException("Failed to create the GLFW window")
+        hasInitialized = true
 
         setFramebufferSizeCallback()
         setWindowSizeCallback()
@@ -127,7 +128,6 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             finished = true
         }
 
-        hasInitialized = true
     }
 
     fun addRefreshCallback(callback: (Window) -> Unit) {
