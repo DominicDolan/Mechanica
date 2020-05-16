@@ -15,5 +15,15 @@ interface Color {
     val lightness: Double
         get() = rgb2Lightness(r, g, b)
 
+    operator fun get(index: Int): Double {
+        return when (index) {
+            0 -> r
+            1 -> g
+            2 -> b
+            3 -> a
+            else -> 0.0
+        }
+    }
+
     fun toLong(): Long
 }

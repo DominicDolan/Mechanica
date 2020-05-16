@@ -64,18 +64,18 @@ object Mouse {
     }
 
     private fun setX(value: Double) {
-        val viewX = value/ uiRatio.x - Game.ui.width/2.0
+        val uiX = value/ uiRatio.x - Game.ui.width/2.0
         val worldX = value/ worldRatio.x - Game.view.width/2.0 + Game.view.x
 
-        setUi(x = viewX)
+        setUi(x = uiX)
         setWorld(x = worldX)
     }
 
     private fun setY(value: Double) {
-        val viewY = Game.ui.height/2.0 - value/ uiRatio.y
+        val uiY = Game.ui.height/2.0 - value/ uiRatio.y
         val worldY = Game.view.height/2.0 - value/ worldRatio.y + Game.view.y
 
-        setUi(y = viewY)
+        setUi(y = uiY)
         setWorld(y = worldY)
     }
 

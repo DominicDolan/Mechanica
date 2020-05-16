@@ -4,16 +4,17 @@ package com.mechanica.engine.color
 
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.angle.Angle
+import com.mechanica.engine.unit.angle.Degree
 import org.joml.Vector4f
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-fun hex(color: Long): Color = LightweightColor(color)
+fun hex(color: Long) = LightweightColor(color)
 
 fun rgba(r: Double, g: Double, b: Double, a: Double) = LightweightColor(rgba2Hex(r, g, b, a))
 
-fun Color.linearBlend(p: Double, other: Color): Color {
+fun Color.linearBlend(p: Double, other: Color): LightweightColor {
     val (r0, g0, b0, a0) = this
     val (r1, g1, b1, a1) = other
 
@@ -44,6 +45,39 @@ fun Color.logBlend(percent: Double, other: Color): Color {
     return LightweightColor(rgba2Hex(red, green, blue, alpha))
 }
 
+
+fun Color.alphaBlend(src: Color): LightweightColor {
+
+    val alpha = src.a + a*(1 - src.a)
+    val red = alphaBlendComponent(0, src, this)
+    val green = alphaBlendComponent(1, src, this)
+    val blue = alphaBlendComponent(2, src, this)
+    return rgba(red, green, blue, alpha)
+}
+
+private fun alphaBlendComponent(index: Int, src: Color, dst: Color): Double {
+    val srcComponent = src[index]
+    val dstComponent = dst[index]
+    val alpha = src.a
+    return srcComponent*alpha + dstComponent*(1 - alpha)
+}
+
+fun LightweightColor.alphaBlend(src: LightweightColor): LightweightColor {
+
+    val alpha = src.a + a*(1 - src.a)
+    val red = alphaBlendComponent(0, src, this)
+    val green = alphaBlendComponent(1, src, this)
+    val blue = alphaBlendComponent(2, src, this)
+    return rgba(red, green, blue, alpha)
+}
+
+private fun alphaBlendComponent(index: Int, src: LightweightColor, dst: LightweightColor): Double {
+    val srcComponent = src[index]
+    val dstComponent = dst[index]
+    val alpha = src.a
+    return srcComponent*alpha + dstComponent*(1 - alpha)
+}
+
 fun Color.lighten(amount: Int): Color {
     return LightweightColor(adjustShade(this.toLong(), amount))
 }
@@ -66,6 +100,19 @@ private fun adjustShade(hex: Long, amount: Int): Long {
     val a = (hex and 0xFF)
 
     return a or (b shl 8) or (g shl 16) or (r shl 24)
+}
+
+
+fun Color.lightness(level: Double): LightweightColor {
+    return hsl(hue, saturation, level)
+}
+
+fun Color.hue(level: Degree): LightweightColor {
+    return hsl(level, saturation, lightness)
+}
+
+fun Color.saturation(level: Double): LightweightColor {
+    return hsl(hue, level, lightness)
 }
 
 fun rgba2Hex(red: Double, green: Double, blue: Double, alpha: Double): Long {
@@ -135,7 +182,7 @@ fun rgb2Lightness(r: Double, g: Double, b: Double): Double {
     return (max + min)/2.0
 }
 
-fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0): Color {
+fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
     fun f(n: Int, h: Double, s: Double, l: Double): Double {
         val a = s* min(l, 1.0-l)
         val k = (n + h/30.0)%12

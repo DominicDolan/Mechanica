@@ -69,7 +69,7 @@ class ExternalResource(filePath: String, createIfAbsent: Boolean = false) : Reso
             try {
                 Resource(filePath)
             } catch (ex: java.lang.IllegalStateException) {
-                val newFile = File("${getResourceLocation()}$filePath")
+                val newFile = File("${getResourceLocation()}/$filePath")
                 newFile.parentFile.mkdirs()
                 newFile.createNewFile()
 

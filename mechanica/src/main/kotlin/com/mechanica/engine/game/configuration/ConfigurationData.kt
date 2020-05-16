@@ -39,7 +39,7 @@ interface ConfigurationData {
         fun emptyLoadeState(): LoadState {
             return object : LoadState(){
                 override fun preLoad() {}
-                override fun renderLoadScreen(g: Drawer) {}
+                override fun renderLoadScreen(draw: Drawer) {}
                 override fun load() { }
             }
         }

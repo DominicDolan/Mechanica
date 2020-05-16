@@ -5,6 +5,6 @@ plugins {
 
 dependencies {
     api(project(":common"))
-    implementation(project(":application-interface"))
+    api(project(":application-interface"))
     implementation(project(":desktop-application"))
 }

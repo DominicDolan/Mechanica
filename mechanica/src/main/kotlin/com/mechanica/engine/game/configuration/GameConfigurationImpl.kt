@@ -3,6 +3,7 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
 import org.joml.Matrix4f
@@ -52,7 +53,7 @@ internal class GameConfigurationImpl : GameConfiguration {
     }
 
     override fun setSaveData(vararg savedata: Any) {
-        _data.saveData = arrayOf(savedata)
+        _data.saveData = arrayOf(*savedata)
     }
 
     override fun configureWindow(configuration: Window.() -> Unit) {

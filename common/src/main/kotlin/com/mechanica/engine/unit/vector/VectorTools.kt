@@ -10,102 +10,6 @@ import kotlin.math.*
  * Created by domin on 02/11/2017.
  */
 
-fun List<Vector>.centroid(): Vector {
-    var xAverage = 0.0
-    var yAverage = 0.0
-    this.forEachIndexed { i, vec ->
-        xAverage = (xAverage*i + vec.x)/(i+1)
-        yAverage = (yAverage*i + vec.y)/(i+1)
-    }
-
-    return vec(xAverage, yAverage)
-}
-
-fun Vector.distanceTo(other: Vector): Float {
-    return (vec(this) - vec(other)).r.toFloat()
-}
-
-fun List<Vector>.toFloatArray(): FloatArray{
-    val floatArray = FloatArray(this.size*3) {0f}
-    this.forEachIndexed { i, v ->
-        floatArray[3 * i] = v.x.toFloat()
-        floatArray[3 * i + 1] = v.y.toFloat()
-    }
-    return floatArray
-}
-
-fun List<Vector>.normalizeX(width: Double): List<Vector> {
-    val currentHeight = this.xRange()
-    val factor = width/currentHeight
-    this.scale(factor)
-    return this
-}
-
-
-fun List<Vector>.normalizeY(height: Double): List<Vector> {
-    val currentHeight = this.yRange()
-    val factor = height/currentHeight
-    this.scale(factor)
-    return this
-}
-
-fun List<Vector>.flipVertically(): List<Vector> {
-    return this.map {
-        vec(it.x, -it.y)
-    }
-}
-
-fun List<Vector>.toOrigin(): List<Vector> {
-    val minX = (this.minBy { it.x } ?: vec(0.0, 0.0)).x
-    val minY = (this.minBy { it.y } ?: vec(0.0, 0.0)).y
-    return this.map {
-        vec(it.x - minX, it.y - minY)
-    }
-}
-
-fun List<Vector>.xRange(): Double {
-    val max = this.maxBy { it.x } ?: vec(0.0, 0.0)
-    val min = this.minBy { it.x } ?: vec(0.0, 0.0)
-    return max.x - min.x
-}
-
-fun List<Vector>.yRange(): Double {
-    val max = this.maxBy { it.y } ?: vec(0.0, 0.0)
-    val min = this.minBy { it.y } ?: vec(0.0, 0.0)
-    return max.y - min.y
-}
-
-fun List<Vector>.scale(factor: Double): List<Vector> {
-    return this.map {
-        vec(it.x * factor, it.y * factor)
-    }
-}
-
-
-fun List<Vector>.scaleX(factor: Double): List<Vector> {
-    return this.map {
-        vec(it.x * factor, it.y)
-    }
-}
-
-
-fun List<Vector>.scaleY(factor: Double): List<Vector> {
-    return this.map {
-        vec(it.x, it.y * factor)
-    }
-}
-
-fun List<Vector>.calculateLength(): Double {
-    var previous = this[0]
-    var length = 0.0
-    for (vector in this) {
-        val x = vector.x - previous.x
-        val y = vector.y - previous.y
-        length += sqrt(x*x + y*y)
-        previous = vector
-    }
-    return length
-}
 
 fun vec(x: Number, y: Number): LightweightVector {
     val xBits = java.lang.Float.floatToRawIntBits(x.toFloat())
@@ -142,6 +46,11 @@ operator fun LightweightVector.div(scale: Number) = vec(this.x.toFloat() / scale
 operator fun LightweightVector.unaryMinus() = vec(-this.x.toFloat(), -this.y.toFloat())
 
 infix fun LightweightVector.equals(other: LightweightVector) = this.x.toFloat() == other.x.toFloat() && this.y.toFloat() == other.y.toFloat()
+
+
+fun Vector.distanceTo(other: Vector): Float {
+    return (vec(this) - vec(other)).r.toFloat()
+}
 
 fun LightweightVector.normalize() = vec(1.0, this.theta)
 

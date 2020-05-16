@@ -49,8 +49,8 @@ class DrawerRenderer {
                     if ($colorPassthrough == 0f) {
                         vec2 st = pos - vec2(0.5);
                         
-                        float height = $size.y;
-                        float width = $size.x;
+                        float height = abs($size.y);
+                        float width = abs($size.x);
                         
                         st = vec2(st.x*width, st.y*height);
                         

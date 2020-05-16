@@ -9,12 +9,12 @@ internal class ColorDrawerImpl(drawer: Drawer, private val data: DrawData): Colo
 
     override fun get() = data.fillColor
 
-    override fun invoke(color: Color): Drawer {
+    override fun invoke(color: Color): ColorDrawer {
         data.fillColor.set(color)
         return this
     }
 
-    override fun invoke(color: LightweightColor): Drawer {
+    override fun invoke(color: LightweightColor): ColorDrawer {
         data.fillColor.set(color)
         return this
     }

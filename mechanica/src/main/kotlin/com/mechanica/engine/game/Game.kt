@@ -155,9 +155,7 @@ object Game {
     private class UIView : View {
         private val scale: Vector
         override val width: Double
-            get() = view.width/scale.x
         override val height: Double
-            get() = view.height/scale.y
         override val x: Double = 0.0
         override val y: Double = 0.0
         override val center: Vector = vec(0.0, 0.0)
@@ -167,6 +165,8 @@ object Game {
         init {
             val contentScale = Monitor.getPrimaryMonitor().contentScale
             scale = vec(contentScale.xScale, contentScale.yScale)
+            width = view.width/scale.x
+            height = view.height/scale.y
         }
     }
 }

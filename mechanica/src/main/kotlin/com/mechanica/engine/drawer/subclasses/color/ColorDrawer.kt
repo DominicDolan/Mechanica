@@ -10,11 +10,11 @@ import com.mechanica.engine.unit.angle.Angle
 interface ColorDrawer : Drawer, Color {
     fun get(): Color
 
-    operator fun invoke(color: Color): Drawer
+    operator fun invoke(color: Color): ColorDrawer
 
-    operator fun invoke(color: LightweightColor): Drawer
+    operator fun invoke(color: LightweightColor): ColorDrawer
 
-    operator fun invoke(hex: Long): Drawer = invoke(hex(hex))
+    operator fun invoke(hex: Long): ColorDrawer = invoke(hex(hex))
 
     fun alpha(alpha: Double): Drawer {
         this.invoke(com.mechanica.engine.color.rgba(r, g, b, alpha))

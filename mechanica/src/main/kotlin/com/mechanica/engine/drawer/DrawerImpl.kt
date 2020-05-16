@@ -21,6 +21,7 @@ import com.mechanica.engine.drawer.superclass.rectangle.RectangleDrawerImpl
 import com.mechanica.engine.drawer.superclass.text.TextDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
 import org.lwjgl.opengl.GL11
 
@@ -84,5 +85,10 @@ class DrawerImpl(private val data: DrawData) :
     override fun polygon(polygon: PolygonModel) {
         data.colorPassthrough = true
         data.draw(polygon)
+    }
+
+    override fun model(model: Model) {
+        data.colorPassthrough = true
+        data.draw(model)
     }
 }

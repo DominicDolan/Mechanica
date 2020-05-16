@@ -24,7 +24,7 @@ abstract class LoadState : State() {
 
     override fun render(draw: Drawer) {
         renderLoadScreen(draw)
-        if (startLoading) {
+        if (startLoading && !finishedLoading) {
             load()
             finishedLoading = true
         }
@@ -32,7 +32,7 @@ abstract class LoadState : State() {
     }
 
     abstract fun preLoad()
-    abstract fun renderLoadScreen(g: Drawer)
+    abstract fun renderLoadScreen(draw: Drawer)
 
     abstract fun load()
 

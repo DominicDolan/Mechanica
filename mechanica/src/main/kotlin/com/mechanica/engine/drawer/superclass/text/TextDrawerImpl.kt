@@ -58,7 +58,7 @@ class TextDrawerImpl(
     }
 
     private fun bottomRight(model: TextModel): LightweightVector {
-        val lc = model.lineCount - 1
+        val lc = model.lineCount
         val y = lc.toDouble()
         var longest = 0.0
         for (i in 0 until lc) {
@@ -70,6 +70,6 @@ class TextDrawerImpl(
 
         val x = longest
 
-        return vec(x, y)
+        return vec(x, y - 1.0)
     }
 }

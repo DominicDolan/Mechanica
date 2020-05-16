@@ -1,6 +1,8 @@
 package com.mechanica.engine.animation
 
 import com.mechanica.engine.models.Image
+import com.mechanica.engine.resources.ResourceDirectory
+import com.mechanica.engine.utils.loadImage
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -35,5 +37,10 @@ class FrameAnimation(private val frames: List<Image>, frameRate : Double) {
         } else {
             progress -= scale*delta
         }
+    }
+
+    companion object {
+        fun loadAnimation(directory: ResourceDirectory, frameRate: Double = 24.0)
+                = FrameAnimation(directory.map { loadImage(it) }, frameRate)
     }
 }

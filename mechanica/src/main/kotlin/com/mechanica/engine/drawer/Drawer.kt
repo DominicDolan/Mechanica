@@ -11,6 +11,7 @@ import com.mechanica.engine.drawer.superclass.image.ImageDrawer
 import com.mechanica.engine.drawer.superclass.path.PathDrawer
 import com.mechanica.engine.drawer.superclass.rectangle.RectangleDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawer
+import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
 
 interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathDrawer {
@@ -88,6 +89,8 @@ interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathD
     fun background()
 
     fun polygon(polygon: PolygonModel)
+
+    fun model(model: Model)
 
     fun radius(r: Number): Drawer
 
