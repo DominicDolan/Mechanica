@@ -75,7 +75,7 @@ class LwjglAttributeBuffer(
         }
     }
 
-    override fun set(array: Array<Color>, from: Int, length: Int) {
+    override fun set(array: Array<out Color>, from: Int, length: Int) {
         vertexCount = array.size
         set(array, coordinateSize*4, length = length) {color, buffer ->
             var i = 0

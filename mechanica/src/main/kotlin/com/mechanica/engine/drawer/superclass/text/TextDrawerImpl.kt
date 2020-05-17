@@ -1,6 +1,7 @@
 package com.mechanica.engine.drawer.superclass.text
 
 import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.text.Text
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.unit.vector.LightweightVector
@@ -25,6 +26,8 @@ class TextDrawerImpl(
         data.blend = 0f
         data.alphaBlend = 1f
         data.colorPassthrough = true
+
+        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiView
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)

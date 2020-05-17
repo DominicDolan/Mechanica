@@ -20,7 +20,7 @@ interface AttributeArray : VertexBuffer<FloatArray> {
     fun set(array: Array<out Vector>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<Vector3f>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<Vector4f>, from: Int = 0, length: Int = array.size)
-    fun set(array: Array<Color>, from: Int = 0, length: Int = array.size)
+    fun set(array: Array<out Color>, from: Int = 0, length: Int = array.size)
     fun disable()
 }
 

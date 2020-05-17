@@ -19,3 +19,21 @@ fun Vector.isInTriangle(p0: Vector, p1: Vector, p2: Vector): Boolean {
 
     return s > 0.0 && t > 0.0 && (s + t) < abs(area)
 }
+
+fun Array<Vector>.containsPoint(point: Vector) = arrayContainsPoint(this, point)
+
+fun Vector.isInPath(path: Array<Vector>) = arrayContainsPoint(path, this)
+
+private fun arrayContainsPoint(array: Array<Vector>, point: Vector): Boolean {
+    val len = array.size
+    var result = false
+
+    for (i in 0 until len){
+        val j = (i + len - 1)%len
+        if ((array[i].y > point.y) != (array[j].y > point.y) &&
+                (point.x < (array[j].x - array[i].x) * (point.y - array[i].y) / (array[j].y-array[i].y) + array[i].x)) {
+            result = !result
+        }
+    }
+    return result
+}

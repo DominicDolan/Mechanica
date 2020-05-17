@@ -1,6 +1,7 @@
 package com.mechanica.engine.color
 
 import com.mechanica.engine.unit.angle.Angle
+import com.mechanica.engine.unit.angle.Degree
 
 interface Color {
     val a: Double
@@ -8,7 +9,7 @@ interface Color {
     val g: Double
     val b: Double
 
-    val hue: Angle
+    val hue: Degree
         get() = rgb2Hue(r, g, b)
     val saturation: Double
         get() = rgb2Saturation(r, g, b)

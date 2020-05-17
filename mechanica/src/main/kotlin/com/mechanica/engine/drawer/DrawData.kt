@@ -13,7 +13,13 @@ import org.joml.Vector3f
 
 class DrawData {
 
+    var viewMatrixWasSet = false
+        private set
     var viewMatrix: Matrix4f = Game.matrices.view
+        set(value) {
+            viewMatrixWasSet = true
+            field = value
+        }
     var projectionMatrix: Matrix4f = Game.matrices.projection
 
     private val renderer = DrawerRenderer()
@@ -31,9 +37,9 @@ class DrawData {
     val scaleX get() = scale.x
     val scaleY get() = scale.y
 
-    val translateX get() = translation.x
-    val translateY get() = translation.y
-    val translateZ get() = translation.z
+    private val translateX get() = translation.x
+    private val translateY get() = translation.y
+    private val translateZ get() = translation.z
 
     var strokeWidth: Double = 0.0
         set(value) {
@@ -132,6 +138,7 @@ class DrawData {
         noReset = false
 
         viewMatrix = Game.matrices.view
+        viewMatrixWasSet = false
         projectionMatrix = Game.matrices.projection
 
         transformation.identity()

@@ -1,6 +1,7 @@
 package com.mechanica.engine.color
 
 import com.mechanica.engine.unit.angle.Angle
+import com.mechanica.engine.unit.angle.Degree
 
 inline class LightweightColor(private val hex: Long): Color {
     override val a: Double
@@ -11,7 +12,7 @@ inline class LightweightColor(private val hex: Long): Color {
         get() = hex2Green(hex)
     override val b: Double
         get() = hex2Blue(hex)
-    override val hue: Angle
+    override val hue: Degree
         get() = hex2Hue(hex)
 
     override fun toLong() = hex

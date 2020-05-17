@@ -16,7 +16,7 @@ interface FloatBufferMaker : VertexBufferMaker<FloatArray> {
     fun createBuffer(array: Array<out Vector>): AttributeArray
     fun createBuffer(array: Array<Vector3f>): AttributeArray
     fun createBuffer(array: Array<Vector4f>): AttributeArray
-    fun createBuffer(array: Array<Color>): AttributeArray
+    fun createBuffer(array: Array<out Color>): AttributeArray
 
     fun createUnitQuad() = createBuffer(createQuadVecArray(0f, 1f, 1f, 0f))
     fun createInvertedUnitQuad() = createBuffer(createQuadVecArray(0f, 0f, 1f, 1f))

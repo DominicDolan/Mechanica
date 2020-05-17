@@ -6,11 +6,11 @@ inline val Number.degrees: Degree
 inline val Number.radians: Radian
     get() = Radian(this.toDouble())
 
-operator fun Angle.plus(other: Angle): Angle = (this.toRadians().asDouble() + other.toRadians().asDouble()).radians
-
 operator fun Angle.minus(other: Angle): Angle = (this.toRadians().asDouble() - other.toRadians().asDouble()).radians
 
-operator fun Angle.unaryMinus(): Angle = Radian(-(this.toRadians().asDouble()))
+operator fun Degree.unaryMinus(): Degree = Degree(-(this.asDouble()))
+
+operator fun Radian.unaryMinus(): Radian = Radian(-(this.asDouble()))
 
 operator fun Degree.plus(other: Degree): Degree {
     return (this.asDouble() + other.asDouble()).degrees

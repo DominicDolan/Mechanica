@@ -24,8 +24,10 @@ class ImageDrawerImpl(
         data.cornerSize.y = data.scaleY.toDouble()
 
         data.blend = 1f
+        data.alphaBlend = 1f
         data.draw(model)
         data.blend = 0f
+        data.alphaBlend = 0f
     }
 
     override fun image(image: Image, x: Number, y: Number) {

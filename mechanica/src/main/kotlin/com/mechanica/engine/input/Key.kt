@@ -2,8 +2,9 @@ package com.mechanica.engine.input
 
 import org.lwjgl.glfw.GLFW
 
-open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
-    private val label = getLabel(key)
+open class Key (map: HashMap<Int, ArrayList<Key>>, private vararg val key: Int) {
+    private val label: String
+            get() = getLabel(key)
 
     internal var isDown: Boolean = false
         set(value) {
@@ -71,6 +72,6 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, vararg key: Int) {
     }
 
     override fun toString(): String {
-        return label
+        return label.toUpperCase()
     }
 }

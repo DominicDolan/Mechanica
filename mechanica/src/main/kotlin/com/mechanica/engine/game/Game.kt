@@ -21,6 +21,7 @@ import com.mechanica.engine.state.StateManager
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.Timer
+import org.lwjgl.glfw.GLFW
 
 object Game {
     private val configuration = GameConfigurationImpl()

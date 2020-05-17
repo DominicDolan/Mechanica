@@ -69,7 +69,7 @@ class Attribute(
         override fun createBuffer(array: Array<out Vector>) = createBuffer(array.size) { set(array) }
         override fun createBuffer(array: Array<Vector3f>) = createBuffer(array.size) { set(array) }
         override fun createBuffer(array: Array<Vector4f>) = createBuffer(array.size) { set(array) }
-        override fun createBuffer(array: Array<Color>) = createBuffer(array.size) { set(array) }
+        override fun createBuffer(array: Array<out Color>) = createBuffer(array.size) { set(array) }
 
         private inline fun createBuffer(size: Int, setter: AttributeArray.() -> Unit): AttributeArray {
             val v = loader.createAttributeArray(size, this)

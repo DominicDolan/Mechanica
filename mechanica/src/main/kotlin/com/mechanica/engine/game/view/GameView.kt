@@ -3,6 +3,8 @@ package com.mechanica.engine.game.view
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.vec
 
 class GameView(data: GameSetup): View {
     private var _width: Double = data.viewWidth
@@ -40,6 +42,20 @@ class GameView(data: GameSetup): View {
         set(value) {
             field = value
             gameMatrices.updateView(this)
+        }
+
+    var xy: Vector = DynamicVector.create()
+        set(value) {
+            (field as DynamicVector).set(value)
+            x = value.x
+            y = value.y
+        }
+
+    var wh: Vector = DynamicVector.create()
+        set(value) {
+            (field as DynamicVector).set(value)
+            width = value.x
+            height = value.y
         }
 
     override var ratio: Double = height/width

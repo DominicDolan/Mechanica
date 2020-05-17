@@ -128,14 +128,14 @@ fun hex2Blue(hex: Long) = (hex shr 8 and 0xFF)/255.0
 fun hex2Green(hex: Long) = (hex shr 16 and 0xFF)/255.0
 fun hex2Red(hex: Long) = (hex shr 24 and 0xFF)/255.0
 
-fun hex2Hue(hex: Long): Angle {
+fun hex2Hue(hex: Long): Degree {
     val r = hex2Red(hex)
     val g = hex2Green(hex)
     val b = hex2Blue(hex)
     return rgb2Hue(r, g, b)
 }
 
-fun rgb2Hue(r: Double, g: Double, b: Double): Angle {
+fun rgb2Hue(r: Double, g: Double, b: Double): Degree {
     var x = 0.0
     var y = 0.0
     var c = 0.0
