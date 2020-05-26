@@ -20,7 +20,6 @@ fun main() {
 
     val draw = Drawer.create()
     val image = loadImage(Res.image["testImage"])
-    val stand = loadImage(Res.image["stand"])
 
     val points = arrayOf(
             vec(0, 0),
@@ -53,7 +52,6 @@ fun main() {
         draw.transformed.scale(3, 3).translate(4, -2).cyan.polygon(polygonModel)
         draw.color.strokeColor(hex(0xD0F045FF), strokeWidth = 0.05).path(points)
         draw.cyan.ellipse(-3, -3, 2, 1)
-        draw.image(stand)
     }
 }
 

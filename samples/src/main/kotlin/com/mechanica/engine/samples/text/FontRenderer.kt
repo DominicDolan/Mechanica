@@ -13,6 +13,7 @@ import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
 import com.mechanica.engine.debug.ScreenLog
+import com.mechanica.engine.input.Mouse
 import org.joml.Matrix4f
 import kotlin.math.ceil
 import kotlin.math.max
@@ -41,6 +42,7 @@ class FontRenderer {
 
     private val fragment = object : DrawerScript() {
 
+        val mouse = uniform.float()
         //language=GLSL
         override val main: String = """
                 sample in vec2 tc;
@@ -49,7 +51,23 @@ class FontRenderer {
                                 
                 void main(void) {
                     vec4 texColor = texture(samp, tc);
-                    out_Color = vec4($color.rgb, texColor.a*$color.a);
+                    float alpha = texColor.a;
+                    float thickness = 0.52;
+                    vec3 neon = vec3(1.0, 0.43, 0.78);
+                    
+                    vec4 inside = vec4(mix(neon, vec3(1.0), 0.95), 1.0);
+                    vec4 outside = vec4(mix(vec3(1.0, 0.43, 0.78), vec3(1.0), alpha*thickness), texColor.a/0.55 - 0.5);
+                    float border = 0.03;
+                    if (alpha < 1.0 && alpha > thickness) {
+                        out_Color = inside;
+                    } else if (alpha < thickness && alpha > thickness-border) {
+                        float blend = (alpha - thickness + border)/border;
+                        out_Color = mix(outside, inside, blend);
+                    } else {
+                        float blend = texColor.a*thickness;
+                        out_Color = outside;
+                    }
+//                    out_Color = vec4($color.rgb, alpha*$color.a);
                 }
             """
 
@@ -63,16 +81,15 @@ class FontRenderer {
             field = value
         }
 
-    private val fontMap = HashMap<Font, TextModel>()
-
-    var font: Font = Font.create(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel(text, it) }
-        set(value) {
-            fontMap[value] = TextModel(text, value)
-            field = value
+    private val font: Font = Font.create(Res.font["Roboto-Regular.ttf"]) {
+        characterSize = 100f
+        configureSDF {
+            start = -20.0
+            end = 20.0
         }
+    }
 
-    val model: TextModel
-        get() = fontMap[font] ?: TextModel(text, font).also { fontMap[font] = it }
+    val model: TextModel = TextModel(text, font)
 
     private val characterOutput = CharacterOutputImpl()
 
@@ -90,6 +107,7 @@ class FontRenderer {
         }
 
     fun render(transformation: Matrix4f ) {
+        fragment.mouse.value = (Mouse.world.x/Game.view.width).toFloat() + 0.5f
         if (transformation == this.transformation) {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
             transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)

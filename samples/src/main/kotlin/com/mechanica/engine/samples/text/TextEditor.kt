@@ -1,6 +1,5 @@
 package com.mechanica.engine.samples.text
 
-import com.mechanica.engine.color.hex
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Keyboard
@@ -21,6 +20,7 @@ fun main() {
             constructionDraws = true
         }
     }
+//    val font = LwjglSDFFont(Res.font["freebooterscript.ttf"])
 
     Game.run()
 }
@@ -96,7 +96,7 @@ private class StartText : State() {
     }
 
     override fun render(draw: Drawer) {
-        draw.color(hex(0xC0C0C0FF)).background()
+        draw.black.background()
 
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)

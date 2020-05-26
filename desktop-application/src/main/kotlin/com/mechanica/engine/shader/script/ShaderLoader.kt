@@ -60,9 +60,6 @@ class ShaderLoader(
         GL20.glValidateProgram(id)
         checkProgram(id, GL20.GL_VALIDATE_STATUS) { "Shader validating failed" }
 
-        vertex.loadProgram(id)
-        geometry?.loadProgram(id)
-        fragment.loadProgram(id)
     }
 
     private fun loadShader(script: String, type: Int): Int {

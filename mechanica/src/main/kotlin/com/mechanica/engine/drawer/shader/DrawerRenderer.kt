@@ -41,7 +41,7 @@ class DrawerRenderer {
                     vec4 inColor;
                     if ($blend > 0.0 || $alphaBlend > 0.0) {
                         vec4 texColor = texture(samp, tc);
-                        inColor = vec4(mix($color.rgb, texColor.rgb, $blend), mix($color.a, texColor.a, $alphaBlend));
+                        inColor = vec4(mix($color.rgb, texColor.rgb, $blend), $color.a*texColor.a);
                     } else {
                         inColor = $color;
                     }

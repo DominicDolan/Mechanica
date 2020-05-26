@@ -17,8 +17,8 @@ abstract class Font {
     abstract fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<DynamicVector>, texCoords: Array<DynamicVector>)
 
     companion object {
-        fun create(resource: Resource): Font {
-            return GLLoader.fontLoader.font(resource)
+        fun create(resource: Resource, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
+            return GLLoader.fontLoader.font(resource, configureAtlas)
         }
     }
 }

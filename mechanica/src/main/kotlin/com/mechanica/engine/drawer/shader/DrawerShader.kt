@@ -8,12 +8,13 @@ import com.mechanica.engine.shader.script.ShaderLoader
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.models.Model
 import org.joml.Matrix4f
+import org.lwjgl.opengl.GL20
 
 class DrawerShader(
-        override val vertex: DrawerScript,
-        override val fragment: DrawerScript,
-        override val tessellation: DrawerScript? = null,
-        override val geometry: DrawerScript? = null): Shader() {
+        vertex: DrawerScript,
+        fragment: DrawerScript,
+        tessellation: DrawerScript? = null,
+        geometry: DrawerScript? = null): Shader(vertex, fragment, tessellation, geometry) {
 
     private val matrixLoaders = ArrayList<MatrixLoader>()
 
@@ -73,6 +74,12 @@ class DrawerShader(
             }
         }
     }
+
+    override fun loadProgram(id: Int) {
+        GL20.glUseProgram(id)
+    }
+
+    override fun loadUniformLocation(name: String) = GL20.glGetUniformLocation(id, name)
 
     private class MatrixLoader(script: DrawerScript) {
         val matrixType = script.uniform.float("matrixType")

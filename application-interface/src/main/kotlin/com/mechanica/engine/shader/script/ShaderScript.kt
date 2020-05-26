@@ -2,13 +2,10 @@ package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.shader.vars.uniforms.vars.UniformVar
-import org.lwjgl.opengl.GL20
 
 abstract class ShaderScript : ShaderDeclarations("autoVal") {
     val script: String
         get() = generateScript()
-
-    private var programId: Int = 0
 
     abstract val main: String
 
@@ -22,11 +19,10 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
         return sb.toString()
     }
 
-    internal fun loadProgram(programId: Int) {
-        this.programId = programId
+    fun loadUniformLocations(shader: Shader) {
         for (v in iterator) {
             if (v is UniformVar<*>) {
-                v.location = GL20.glGetUniformLocation(programId, v.locationName)
+                v.location = shader.loadUniformLocation(v.locationName)
             }
         }
     }

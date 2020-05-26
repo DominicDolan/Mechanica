@@ -1,7 +1,9 @@
 package com.mechanica.engine.memory.buffer
 
+import com.mechanica.engine.memory.BitmapBuffer
 import com.mechanica.engine.memory.useMemoryStack
 import org.lwjgl.BufferUtils
+import org.lwjgl.stb.STBImageWrite
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
@@ -78,4 +80,9 @@ fun FloatBuffer.contentsToString(): String {
         sb.append(this.get()).append(", ")
     }
     return sb.toString()
+}
+
+
+fun BitmapBuffer.write(name: String) {
+    STBImageWrite.stbi_write_png(name, width, height, 1, buffer, width)
 }

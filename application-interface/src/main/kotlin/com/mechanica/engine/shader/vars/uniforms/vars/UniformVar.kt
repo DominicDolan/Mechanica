@@ -13,14 +13,19 @@ abstract class UniformVar<T> : ShaderVariable {
 
     var location = 0
 
-    private val regex = Regex("[^\\w\\d]")
     val locationName: String
-        get() {
+        get() = getLocationName(name)
+
+    override fun toString() = name
+
+    companion object {
+        private val regex = Regex("[^\\w\\d]")
+
+        fun getLocationName(name: String): String {
             val index = regex.find(name)?.range?.first
             return if (index != null) {
                 name.substring(0 until index)
             } else name
         }
-
-    override fun toString() = name
+    }
 }

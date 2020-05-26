@@ -1,28 +1,35 @@
 package com.mechanica.engine.shader.script
 
+import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
-import org.lwjgl.opengl.GL20
 
-abstract class Shader {
-    abstract val vertex: ShaderScript
-    abstract val fragment: ShaderScript
-    abstract val tessellation: ShaderScript?
-    abstract val geometry: ShaderScript?
-
+abstract class Shader(
+    val vertex: ShaderScript,
+    val fragment: ShaderScript,
+    val tessellation: ShaderScript?,
+    val geometry: ShaderScript?) {
     abstract val id: Int
 
+    private var locationsFound = false
+
     protected fun load() {
-        GL20.glUseProgram(id)
+        loadProgram(id)
         loadUniforms()
     }
 
+    protected abstract fun loadProgram(id: Int)
+
     private fun loadUniforms() {
+        if (!locationsFound) findLocations()
+
         vertex.loadVariables()
         fragment.loadVariables()
         tessellation?.loadVariables()
         geometry?.loadVariables()
     }
+
+    abstract fun loadUniformLocation(name: String): Int
 
     open fun render(inputs: Array<Bindable>, draw: () -> Unit) {
         load()
@@ -40,13 +47,20 @@ abstract class Shader {
         model.draw()
     }
 
+    private fun findLocations() {
+        vertex.loadUniformLocations(this)
+        geometry?.loadUniformLocations(this)
+        fragment.loadUniformLocations(this)
+        locationsFound = true
+    }
+
     companion object {
         operator fun invoke(
                 vertex: ShaderScript,
                 fragment: ShaderScript,
                 tessellation: ShaderScript? = null,
                 geometry: ShaderScript? = null): Shader {
-            return ShaderImpl(vertex, fragment, tessellation, geometry)
+            return GLLoader.defaultShader(vertex, fragment, tessellation, geometry)
         }
     }
 }
