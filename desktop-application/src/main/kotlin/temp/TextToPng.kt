@@ -1,6 +1,5 @@
 package temp
 
-import TruetypeOversample
 import com.mechanica.engine.context.GLContext
 import com.mechanica.engine.context.GLInitializer
 import com.mechanica.engine.context.loader.LwjglLoader
@@ -15,15 +14,12 @@ import java.nio.ByteBuffer
 
 
 fun main() {
-    GLContext.initialize(Window.Companion.create("test", 100, 100))
+    GLContext.initialize(Window.create("test", 100, 100))
     GLInitializer.initialize(LwjglLoader())
 
     val demo = TextToPngDemo("Roboto-Regular.ttf")
 
-    val text = "The quick brown fox jumped over the lazy dog"
     demo.packCharacters()
-//    STBTruetype.stbtt_PackBegin(ctx)
-
 }
 
 private class TextToPngDemo(fontName: String) {
@@ -158,8 +154,6 @@ private class TextToPngDemo(fontName: String) {
         val scale = stbtt_ScaleForPixelHeight(info, fontHeight.toFloat())
 
         val ascent = (ascent*scale).toInt()
-        val descent = (descent*scale).toInt()
-        val lineGap = (lineGap*scale).toInt()
 
 
         var xAdvance = 0
@@ -168,7 +162,7 @@ private class TextToPngDemo(fontName: String) {
 
             val axBuffer = stack.mallocInt(1)
             val lsbBuffer = stack.mallocInt(1)
-            STBTruetype.stbtt_GetCodepointHMetrics(info, character, axBuffer, lsbBuffer)
+            stbtt_GetCodepointHMetrics(info, character, axBuffer, lsbBuffer)
 
             val ax = axBuffer[0]
             val lsb = lsbBuffer[0]
@@ -178,13 +172,13 @@ private class TextToPngDemo(fontName: String) {
             val y1 = stack.mallocInt(1);
             val y2 = stack.mallocInt(1)
 
-            STBTruetype.stbtt_GetCodepointBitmapBox(info, character, scale, scale, x1, y1, x2, y2)
+            stbtt_GetCodepointBitmapBox(info, character, scale, scale, x1, y1, x2, y2)
 
             val y: Int = ascent + y1[0]
 
             val byteOffset: Int = x + (lsb * scale + y * width.toLong()).toInt()
 
-            STBTruetype.stbtt_MakeCodepointBitmap(info, bitmap.position(byteOffset), x2[0] - x1[0], y2[0] - y1[0], width, scale, scale, character)
+            stbtt_MakeCodepointBitmap(info, bitmap.position(byteOffset), x2[0] - x1[0], y2[0] - y1[0], width, scale, scale, character)
 
             xAdvance = x + (ax*scale).toInt()
 

@@ -74,7 +74,6 @@ class FontAtlas(private val data: LwjglStandardFont.FontData, private val config
             }
         }
         bitmap.position(0)
-        bitmapBuffer.write("font.png")
     }
 
     private fun getScale(data: LwjglStandardFont.FontData): Double {

@@ -4,7 +4,6 @@ import java.net.URI
 import java.nio.file.*
 import java.util.stream.Stream
 
-
 class ResourceDirectory(directory: String): Iterable<Resource> {
     private val resources: Array<Resource>
     val fileCount: Int

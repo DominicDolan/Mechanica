@@ -18,7 +18,7 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.61"
     `java-library`
     maven
 }
@@ -69,6 +69,16 @@ allprojects {
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies(commonDependencies)
+    val compileKotlin: KotlinCompile by tasks
+    compileKotlin.kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
+        jvmTarget = "12"
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_12
+        targetCompatibility = JavaVersion.VERSION_12
+    }
 }
 
 project(":desktop-application") {
@@ -87,15 +97,4 @@ project(":mechanica") {
 project(":samples") {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies(coreLwjgl)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
-    jvmTarget = "1.8"
 }
