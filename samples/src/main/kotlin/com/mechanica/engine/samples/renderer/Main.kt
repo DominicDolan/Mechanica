@@ -8,7 +8,7 @@ import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
-import com.mechanica.engine.state.State
+import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.vec
 import org.joml.Matrix4f
@@ -24,7 +24,7 @@ fun main() {
     Game.run()
 }
 
-private class StartMain : State() {
+private class StartMain : MainScene() {
     private val transformation = Matrix4f()
 
     val image: Image

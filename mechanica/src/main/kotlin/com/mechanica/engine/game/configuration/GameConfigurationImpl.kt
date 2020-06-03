@@ -3,12 +3,11 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
-import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
+import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
-import com.mechanica.engine.state.LoadState
-import com.mechanica.engine.state.State
 
 internal class GameConfigurationImpl : GameConfiguration {
     private val _data = NullableConfigurationData()
@@ -40,11 +39,11 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.viewY = y
     }
 
-    override fun setStartingState(state: () -> State) {
-        _data.startingState = state
+    override fun setStartingState(scene: () -> MainScene) {
+        _data.startingScene = scene
     }
 
-    override fun setLoader(loader: () -> LoadState) {
+    override fun setLoader(loader: () -> LoadScene) {
         _data.loadState = loader
     }
 

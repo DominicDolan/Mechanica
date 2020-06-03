@@ -5,7 +5,7 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.state.State
+import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.vector.*
 
 fun main() {
@@ -17,7 +17,7 @@ fun main() {
     Game.run()
 }
 
-class BezierCurve : State() {
+class BezierCurve : MainScene() {
 
     private val maxVertices = 1000
     private val minLineLength = 0.1

@@ -99,7 +99,7 @@ class DrawerShader(
                 //language=GLSL
                 script.addOther("""
                     vec4 matrices(vec4 position) {
-                        if(matrixType == 0f) {
+                        if(matrixType == 0.0) {
                             return pvMatrix*transformation*position;
                         }
                         return projection*view*transformation*position;

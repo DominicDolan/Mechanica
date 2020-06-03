@@ -46,7 +46,7 @@ class DrawerRenderer {
                         inColor = $color;
                     }
                     
-                    if ($colorPassthrough == 0f) {
+                    if ($colorPassthrough == 0.0) {
                         vec2 st = pos - vec2(0.5);
                         
                         float height = abs($size.y);

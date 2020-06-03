@@ -6,6 +6,8 @@ import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
+import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
 import com.mechanica.engine.state.LoadState
 import com.mechanica.engine.state.State
@@ -22,8 +24,8 @@ interface ConfigurationData {
     val saveData: Array<Any>?
     val controlsMap: ControlsMap?
     val fullscreen: Boolean?
-    val startingState: (() -> State)?
-    val loadState: (() -> LoadState)?
+    val startingScene: (() -> MainScene)?
+    val loadState: (() -> LoadScene)?
     val windowConfiguration: (Window.() -> Unit)?
     val debugConfiguration: (GameDebugConfiguration.() -> Unit)?
     val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)?

@@ -9,10 +9,10 @@ import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.lines.LineSegmentImpl
 import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.state.State
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.debug.ScreenLog
+import com.mechanica.engine.scenes.scenes.MainScene
 
 fun main() {
     Game.configure {
@@ -23,7 +23,7 @@ fun main() {
     Game.run()
 }
 
-class LinesDemo : State() {
+class LinesDemo : MainScene() {
     private val stroke = 0.05f
 
     private val renderer = PathRenderer()

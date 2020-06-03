@@ -4,9 +4,9 @@ import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
+import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
-import com.mechanica.engine.state.LoadState
-import com.mechanica.engine.state.State
 
 interface GameConfiguration {
     var initalize: Boolean
@@ -15,8 +15,8 @@ interface GameConfiguration {
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
 
-    fun setStartingState(state: () -> State)
-    fun setLoader(loader: () -> LoadState)
+    fun setStartingState(scene: () -> MainScene)
+    fun setLoader(loader: () -> LoadScene)
 
     fun setControlMapping(controlsMap: ControlsMap)
     fun setSaveData(vararg savedata: Any)

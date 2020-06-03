@@ -4,8 +4,7 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Keyboard
 import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.state.State
+import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
 import org.joml.Matrix4f
@@ -26,10 +25,9 @@ fun main() {
 }
 
 
-private class StartText : State() {
+private class StartText : MainScene() {
     val renderer = FontRenderer()
 
-    val model = Model()
     val transformation = Matrix4f()
 
     val startPosition = vec(-Game.view.width.toFloat()/2f, Game.view.height.toFloat()/2f - renderer.fontSize)
@@ -45,15 +43,15 @@ private class StartText : State() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            Game.view.x = startPosition.x + Game.view.width/2.0
-            Game.view.y = startPosition.y + 1.0 - Game.view.height/2.0
+            view.x = startPosition.x + Game.view.width/2.0
+            view.y = startPosition.y + 1.0 - Game.view.height/2.0
         }
         if (Mouse.scrollDown.hasBeenPressed) {
-            Game.view.height *= 1.0 + Mouse.scrollDown.distance/10.0
+            view.height *= 1.0 + Mouse.scrollDown.distance/10.0
             setViewPosition()
         }
         if (Mouse.scrollUp.hasBeenPressed) {
-            Game.view.height /= 1.0 + Mouse.scrollUp.distance/10.0
+            view.height /= 1.0 + Mouse.scrollUp.distance/10.0
             setViewPosition()
         }
 

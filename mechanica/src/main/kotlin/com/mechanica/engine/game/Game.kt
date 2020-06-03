@@ -9,19 +9,18 @@ import com.mechanica.engine.persistence.loadData
 import com.mechanica.engine.persistence.saveData
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
-import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.GameView
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.context.GLInitializer
 import com.mechanica.engine.context.loader.LwjglLoader
 import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.state.State
-import com.mechanica.engine.state.StateManager
+import com.mechanica.engine.scenes.SceneManager
+import com.mechanica.engine.scenes.processes.Process
+import com.mechanica.engine.scenes.scenes.*
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.Timer
-import org.lwjgl.glfw.GLFW
 
 object Game {
     private val configuration = GameConfigurationImpl()
@@ -39,10 +38,20 @@ object Game {
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
-    private val stateManager = StateManager()
+    private val sceneManager = SceneManager()
+    val scene: Scene
+        get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
     private var hasFinished = false
+
+    fun addProcess(process: Process) {
+        sceneManager.addProcess(process)
+    }
+
+    fun addScene(scene: Scene) {
+        sceneManager.addScene(scene)
+    }
 
     fun configure(setup: GameConfiguration.() -> Unit) {
         setup(configuration)
@@ -59,7 +68,7 @@ object Game {
 
                 Timer
                 loadPersistenceData()
-                setStartingState(data)
+                sceneManager.setStartingScene(data)
 
                 hasStarted = true
             }
@@ -71,17 +80,25 @@ object Game {
         }
     }
 
-    fun run(update: () -> Unit = { }) {
+    fun run() {
         start()
+        loop()
+    }
+
+    fun run(update: (Double) -> Unit) {
+        start()
+        sceneManager.updateVar = update
+        loop()
+    }
+
+    private fun loop() {
         try {
             while (!hasFinished) {
                 GLContext.startFrame()
 
                 gameMatrices.updateMatrices()
 
-                stateManager.updateState()
-
-                update()
+                sceneManager.updateScenes()
 
                 if (!window.update()) {
                     return
@@ -106,25 +123,8 @@ object Game {
         GLFWContext.terminate()
     }
 
-    fun setCurrentState(setter: () -> State?) {
-        stateManager.setCurrentState(setter)
-    }
-
-    private fun setStartingState(data: GameSetup) {
-        val state = data.startingState
-        val loadState = data.loadState?.invoke()
-
-        if (loadState != null) {
-            loadState.onFinish = {
-                setCurrentState { state?.invoke() }
-            }
-            setCurrentState {
-                loadState.preLoad()
-                loadState
-            }
-        } else {
-            setCurrentState { state?.invoke() }
-        }
+    fun setMainScene(setter: () -> MainScene?) {
+        sceneManager.setMainScene(setter)
     }
 
     private fun refreshView(window: Window) {

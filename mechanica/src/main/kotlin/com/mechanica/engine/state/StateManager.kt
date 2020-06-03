@@ -17,7 +17,7 @@ internal class StateManager {
     private var startOfLoop = Timer.now
     private var updateDuration = 0.1
 
-    fun updateState() {
+    fun updateState(): Double {
         updateDuration = Timer.now - startOfLoop
         startOfLoop = Timer.now
 
@@ -33,6 +33,8 @@ internal class StateManager {
             ScreenLog.render(drawer)
         if (Game.debug.constructionDraws)
             DebugDrawer.render(drawer)
+
+        return updateDuration
     }
 
     fun setCurrentState(setter: () -> State?) {
