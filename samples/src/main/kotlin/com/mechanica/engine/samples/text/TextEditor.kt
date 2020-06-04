@@ -2,11 +2,11 @@ package com.mechanica.engine.samples.text
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.input.TextInput
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.util.extensions.constrain
 import org.joml.Matrix4f
 import kotlin.math.max
 import kotlin.math.min
@@ -34,6 +34,8 @@ private class StartText : MainScene() {
 
     var cursor = 0
 
+    private val sb = StringBuilder()
+
     init {
         renderer.text = ""
 
@@ -46,17 +48,14 @@ private class StartText : MainScene() {
             view.x = startPosition.x + Game.view.width/2.0
             view.y = startPosition.y + 1.0 - Game.view.height/2.0
         }
-        if (Mouse.scrollDown.hasBeenPressed) {
-            view.height *= 1.0 + Mouse.scrollDown.distance/10.0
-            setViewPosition()
-        }
-        if (Mouse.scrollUp.hasBeenPressed) {
-            view.height /= 1.0 + Mouse.scrollUp.distance/10.0
+
+        if (Mouse.scroll.hasBeenPressed) {
+            view.height /= 1.0 + Mouse.scroll.distance/10.0
             setViewPosition()
         }
 
-        if (Keyboard.textInput.hasBeenInput.isNotEmpty()) {
-            addLetter(cursor, Keyboard.textInput.inputText)
+        if (TextInput.hasTextInput) {
+            addLetterFromKeyboard()
         }
 
         if (Keyboard.backspace.hasBeenPressed) {
@@ -65,11 +64,13 @@ private class StartText : MainScene() {
                 cursor--
             }
         }
+
         if (Keyboard.delete.hasBeenPressed) {
-            removeLetter(cursor+1)
+            removeLetter(cursor + 1)
         }
         if (Keyboard.enter.hasBeenPressed) {
-            addLetter(cursor, "\n")
+            addLetter('\n', cursor)
+            cursor++
         }
 
         if (Keyboard.left.hasBeenPressed) {
@@ -101,33 +102,24 @@ private class StartText : MainScene() {
         renderer.render(transformation)
     }
 
-    fun addLetter(index: Int, str: String) {
-        val fullText = renderer.text
-        val safeIndex = index.constrain(0, fullText.length)
+    fun updateText() {
+        renderer.text = sb.toString()
+    }
 
-        val before = if (index <= 0) ""
-            else fullText.substring(0 until safeIndex)
+    fun addLetterFromKeyboard() {
+        val changed = TextInput.getCodepoints(sb, cursor)
+        cursor += changed
+        updateText()
+    }
 
-        val after = if (index >= fullText.length) ""
-                    else fullText.substring(safeIndex until fullText.length)
-
-        renderer.text = before + str + after
-        cursor++
-
+    fun addLetter(char: Char, index: Int) {
+        sb.insert(index, char)
+        updateText()
     }
 
     fun removeLetter(index: Int) {
-        val fullText = renderer.text
-        val safeIndex = index.constrain(0, fullText.length)
-
-        val before = if (index <= 0) ""
-        else fullText.substring(0 until max(0,safeIndex-1))
-
-        val after = if (index >= fullText.length) ""
-        else fullText.substring(safeIndex until fullText.length)
-
-        renderer.text = before + after
+        sb.delete(index-1, index)
+        updateText()
     }
-
 }
 

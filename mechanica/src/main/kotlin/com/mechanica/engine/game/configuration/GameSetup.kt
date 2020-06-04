@@ -7,8 +7,6 @@ import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.ResolutionConverter
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.input.ControlsMap
-import com.mechanica.engine.input.KeyboardHandler
-import com.mechanica.engine.input.MouseHandler
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
@@ -52,7 +50,6 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
         ratio = resolutionHeight.toDouble()/resolutionWidth.toDouble()
 
         window = setWindow(resolutionWasSet)
-        setCallbacks(window)
 
         resolutionConverter = ResolutionConverter(resolutionWidth, resolutionHeight, data.viewWidth, data.viewHeight)
 
@@ -78,17 +75,6 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
         val screenWidth = monitor.currentVideoMode.width()
         val screenHeight = monitor.currentVideoMode.height()
         window.position.set((screenWidth - window.width)/2, (screenHeight - window.height)/2)
-    }
-
-    private fun setCallbacks(window: Window) {
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        GLFW.glfwSetKeyCallback(window.id, KeyboardHandler.KeyHandler())
-        GLFW.glfwSetCharCallback(window.id, KeyboardHandler.TextHandler())
-
-        GLFW.glfwSetMouseButtonCallback(window.id, MouseHandler.ButtonHandler())
-        GLFW.glfwSetCursorPosCallback(window.id, MouseHandler.CursorHandler())
-        GLFW.glfwSetScrollCallback(window.id, MouseHandler.ScrollHandler())
-
     }
 
     private fun setResolution(resolutionWasSet: Boolean, data: NullableConfigurationData): Pair<Int, Int> {

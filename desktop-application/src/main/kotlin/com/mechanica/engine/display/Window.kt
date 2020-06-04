@@ -1,6 +1,8 @@
 package com.mechanica.engine.display
 
 import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.context.callbacks.EventCallbacks
+import com.mechanica.engine.context.callbacks.KeyboardHandler
 import com.mechanica.engine.utils.ImageData
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -159,6 +161,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
 
     fun update(): Boolean {
         swapBuffers()
+        EventCallbacks.prepare()
         pollEvents()
         val shouldClose = this.shouldClose
         if (finished) {

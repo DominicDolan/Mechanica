@@ -63,7 +63,8 @@ object Game {
         try {
             if (!hasStarted) {
                 GLContext.initialize(window)
-                GLInitializer.initialize(LwjglLoader())
+                val callbacks = GLInitializer.initialize(LwjglLoader())
+                GLContext.setCallbacks(window, callbacks)
                 window.addRefreshCallback { refreshView(it) }
 
                 Timer

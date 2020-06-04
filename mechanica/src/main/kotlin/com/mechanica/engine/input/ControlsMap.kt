@@ -8,11 +8,11 @@ abstract class ControlsMap {
         if (keys != null) {
             return keys
         }
-        return arrayListOf(Key(map, keyId))
+        return arrayListOf(Key(keyId))
     }
 
     protected fun mapToKeys(vararg keys: Keys): Key {
-        return Key(map, *keys)
+        return Key(*keys)
     }
 
     companion object {

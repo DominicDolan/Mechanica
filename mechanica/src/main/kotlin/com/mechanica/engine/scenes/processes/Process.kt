@@ -2,19 +2,19 @@ package com.mechanica.engine.scenes.processes
 
 abstract class Process : ProcessNode {
 
-    protected val childProcesses: List<Process> = ArrayList()
+    protected val childProcesses: List<ProcessNode> = ArrayList()
 
-    override fun <P:Process> addProcess(process: P): P {
+    override fun <P:ProcessNode> addProcess(process: P): P {
         (childProcesses as ArrayList).add(process)
         return process
     }
 
-    override fun removeProcess(process: Process): Boolean {
+    override fun removeProcess(process: ProcessNode): Boolean {
         process.destructor()
         return (childProcesses as ArrayList).remove(process)
     }
 
-    override fun <P:Process> replaceProcess(old: P, new: P): P {
+    override fun <P:ProcessNode> replaceProcess(old: P, new: P): P {
         val index = childProcesses.indexOf(old)
         if (index != -1) {
             childProcesses[index].destructor()
@@ -24,16 +24,16 @@ abstract class Process : ProcessNode {
         return old
     }
 
-    inline fun forEachProcess(operation: (Process)-> Unit) {
+    inline fun forEachProcess(operation: (ProcessNode)-> Unit) {
         for (i in `access$childProcesses`.indices) {
             operation(`access$childProcesses`[i])
         }
     }
 
-    internal open fun internalUpdate(delta: Double) {
+    override fun updateNodes(delta: Double) {
         this.update(delta)
         for (i in childProcesses.indices) {
-            childProcesses[i].internalUpdate(delta)
+            childProcesses[i].updateNodes(delta)
         }
     }
 
@@ -43,6 +43,6 @@ abstract class Process : ProcessNode {
 
     @Suppress("PropertyName")
     @PublishedApi
-    internal val `access$childProcesses`: List<Process>
+    internal val `access$childProcesses`: List<ProcessNode>
         get() = childProcesses
 }

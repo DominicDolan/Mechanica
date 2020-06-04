@@ -13,7 +13,7 @@ import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
 import com.mechanica.engine.debug.ScreenLog
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.mouse.Mouse
 import org.joml.Matrix4f
 import kotlin.math.ceil
 import kotlin.math.max

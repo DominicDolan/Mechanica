@@ -83,7 +83,7 @@ internal class SceneManager : Scene() {
 
         checkStateChange()
 
-        internalUpdate(updateDuration)
+        updateNodes(updateDuration)
 
         render()
 
@@ -96,7 +96,7 @@ internal class SceneManager : Scene() {
 
     private fun render() {
         if (currentScene != null || childScenes.isNotEmpty()) {
-            internalRender(getDrawer())
+            renderNodes(getDrawer())
         }
 
         if (Game.debug.screenLog)

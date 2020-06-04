@@ -24,6 +24,7 @@ object Res {
     val svg = SpecificResource("res/svg/", "svg")
     val image = SpecificResource("res/images/", "png")
     val font = SpecificResource("res/fonts/", "ttf")
+    val audio = SpecificResource("res/audio/", "ogg")
     val animations = SpecificResourceDirectory("/res/animations/")
 
     fun external(path: String, createIfAbsent: Boolean = false): ExternalResource {

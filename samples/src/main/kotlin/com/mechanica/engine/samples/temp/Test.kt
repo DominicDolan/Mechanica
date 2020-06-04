@@ -9,8 +9,8 @@ import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.utils.loadImage
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.unit.angle.degrees

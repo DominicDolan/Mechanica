@@ -6,8 +6,8 @@ import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.lines.LineSegmentImpl
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.vector.vec

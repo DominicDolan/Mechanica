@@ -135,7 +135,8 @@ enum class Keys(val id: Int) {
     MENU(GLFW_KEY_MENU),
 
     SCROLL_UP(1000),
-    SCROLL_DOWN(1000);
+    SCROLL_DOWN(1001),
+    SCROLL(1002);
 
     companion object {
         fun uniqueId(): Int {

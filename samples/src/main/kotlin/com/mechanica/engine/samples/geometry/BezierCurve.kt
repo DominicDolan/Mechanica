@@ -3,8 +3,8 @@ package com.mechanica.engine.samples.geometry
 import com.mechanica.engine.color.rgba
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.vector.*
 

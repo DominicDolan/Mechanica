@@ -2,15 +2,13 @@ package com.mechanica.engine.input
 
 import org.lwjgl.glfw.GLFW
 
-open class Key (map: HashMap<Int, ArrayList<Key>>, private vararg val key: Int) {
-    private val label: String
-            get() = getLabel(key)
-
-    internal var isDown: Boolean = false
-        set(value) {
-            if (value) hasBeenReleased = true
+open class Key (private val condition: () -> Boolean) {
+    val isDown: Boolean
+        get() {
+            val isPressed = condition()
+            if (isPressed) hasBeenReleased = true
             else hasBeenPressed = true
-            field = value
+            return isPressed
         }
 
     private var privateHasBeenDown = false
@@ -20,6 +18,7 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, private vararg val key: Int) 
         }
         get() {
             if (isDown) {
+                privateHasBeenDown = true
                 return false
             }
             if (privateHasBeenDown) {
@@ -36,6 +35,7 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, private vararg val key: Int) 
         }
         get() {
             if (!isDown) {
+                privateHasBeenUp = true
                 return false
             }
             if (privateHasBeenUp) {
@@ -45,33 +45,25 @@ open class Key (map: HashMap<Int, ArrayList<Key>>, private vararg val key: Int) 
             return privateHasBeenUp
         }
 
-
     operator fun invoke(): Boolean {
         return isDown
     }
 
-    init {
-        key.forEach {
-            if (map.containsKey(it)) {
-                map[it]?.add(this)
-            } else {
-                map[it] = arrayListOf(this)
-            }
-        }
-    }
+    constructor(vararg key: Int) : this(keysToBoolean(*key))
 
-    constructor(map: HashMap<Int, ArrayList<Key>>, vararg keys: Keys) : this(
-            map,
+    constructor(vararg keys: Keys) : this(
             *(keys.map { it.id }).toIntArray()
     )
 
-    private fun getLabel(keys: IntArray): String {
-        return if (keys.isNotEmpty()) {
-            GLFW.glfwGetKeyName(keys[0], 0) ?: "N/A"
-        } else "N/A"
-    }
-
-    override fun toString(): String {
-        return label.toUpperCase()
+    companion object {
+        fun keysToBoolean(vararg key: Int): () -> Boolean {
+            return {
+                var isPressed = false
+                for (i in key.indices) {
+                    isPressed = KeyInput.isPressed(key[i]) || isPressed
+                }
+                isPressed
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.mechanica.engine.context
 
+import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.input.*
 import com.mechanica.engine.utils.enableAlphaBlending
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.*
@@ -50,6 +52,17 @@ object GLContext : Version {
     private fun initContext(windowId: Long) {
         GLFW.glfwMakeContextCurrent(windowId)
         GL.createCapabilities()
+    }
+
+
+    fun setCallbacks(window: Window, callbacks: EventCallbacks) {
+        GLFW.glfwSetKeyCallback(window.id, GLFWKeyHandler(callbacks.keyboardHandler))
+        GLFW.glfwSetCharCallback(window.id, GLFWTextInputHandler(callbacks.keyboardHandler))
+
+        GLFW.glfwSetMouseButtonCallback(window.id, GLFWMouseButtonHandler(callbacks.mouseHandler))
+        GLFW.glfwSetCursorPosCallback(window.id, GLFWMouseCursorHandler(callbacks.mouseHandler))
+        GLFW.glfwSetScrollCallback(window.id, GLFWScrollHandler(callbacks.mouseHandler))
+
     }
 
     private fun parseVersionString(): GLVersionStringParser {
