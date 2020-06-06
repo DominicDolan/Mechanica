@@ -13,6 +13,7 @@ class LwjglLoader : GLLoader {
     override val bufferLoader = LwjglBufferLoader()
     override val fontLoader = LwjglFontLoader()
     override val graphicsLoader = LwjglGraphicsLoader()
+    override val audioLoader = LwjglAudioLoader()
 
     override fun createAttributeLoader(qualifier: AttributeQualifier) = LwjglAttributeLoader(qualifier)
 

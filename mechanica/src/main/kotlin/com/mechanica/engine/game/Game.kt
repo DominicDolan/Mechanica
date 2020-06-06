@@ -1,6 +1,7 @@
 package com.mechanica.engine.game
 
 import com.mechanica.engine.config.BackendDebugConfiguration
+import com.mechanica.engine.context.ALContext
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
@@ -65,6 +66,7 @@ object Game {
                 GLContext.initialize(window)
                 val callbacks = GLInitializer.initialize(LwjglLoader())
                 GLContext.setCallbacks(window, callbacks)
+                ALContext.initialize()
                 window.addRefreshCallback { refreshView(it) }
 
                 Timer
@@ -122,6 +124,7 @@ object Game {
         hasFinished = true
         GLContext.free()
         GLFWContext.terminate()
+        ALContext.destroy()
     }
 
     fun setMainScene(setter: () -> MainScene?) {

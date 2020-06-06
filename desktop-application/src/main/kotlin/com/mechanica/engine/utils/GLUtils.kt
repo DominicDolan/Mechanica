@@ -59,7 +59,7 @@ class ImageData(resource: Resource) {
         val heightBuffer = BufferUtils.createIntBuffer(1)
         val componentsBuffer = BufferUtils.createIntBuffer(1)
 
-        data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
+        data = STBImage.stbi_load_from_memory(resource.buffer as ByteBuffer, widthBuffer, heightBuffer, componentsBuffer, 4)
         width = widthBuffer.get()
         height = heightBuffer.get()
     }

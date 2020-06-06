@@ -6,20 +6,19 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URI
 import java.net.URL
+import java.nio.Buffer
 import java.nio.ByteBuffer
 import kotlin.streams.toList
 
-interface Resource {
-    val path: String
-    val stream: InputStream
-    val lines: List<String>
+interface Resource : GenericResource {
+    override val lines: List<String>
         get() {
             val reader = BufferedReader(InputStreamReader(stream))
             val lines = reader.lines().toList()
             reader.close()
             return lines
         }
-    val contents: String
+    override val contents: String
         get() {
             val sb = StringBuilder()
             lines.forEach {
@@ -27,7 +26,7 @@ interface Resource {
             }
             return sb.toString()
         }
-    val buffer: ByteBuffer
+    override val buffer: ByteBuffer
         get() {
             val bytes = stream.readAllBytes()
             val buffer = GLLoader.bufferLoader.byteBuffer(bytes.size)

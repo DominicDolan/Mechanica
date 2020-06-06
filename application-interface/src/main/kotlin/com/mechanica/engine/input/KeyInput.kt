@@ -12,12 +12,16 @@ object KeyInput {
 
     internal fun addPressed(key: Int) {
         pressedKeyCount++
-        pressedKeys[key] = true
+        if (key >= 0) {
+            pressedKeys[key] = true
+        }
     }
 
     internal fun removePressed(key: Int) {
         if (pressedKeyCount > 0) pressedKeyCount--
-        pressedKeys[key] = false
+        if (key >= 0) {
+            pressedKeys[key] = false
+        }
     }
 
 }
