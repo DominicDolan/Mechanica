@@ -5,7 +5,6 @@ import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
@@ -22,7 +21,6 @@ interface ConfigurationData {
     val viewX: Double?
     val viewY: Double?
     val saveData: Array<Any>?
-    val controlsMap: ControlsMap?
     val fullscreen: Boolean?
     val startingScene: (() -> MainScene)?
     val loadState: (() -> LoadScene)?

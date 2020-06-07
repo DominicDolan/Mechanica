@@ -4,28 +4,38 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.processes.Process
 
-abstract class Scene : Process(), SceneNode {
+abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
 
     protected val childScenes: List<SceneNode> = ArrayList()
 
-    protected open val Drawer.inScene: Drawer
+    protected val Drawer.inScene: Drawer
         get() = drawInScene(this, view)
 
-    override fun <S:SceneNode> addScene(scene: S): S {
-        (childScenes as ArrayList).add(scene)
+    protected open fun drawInScene(draw: Drawer, view: View): Drawer = draw.transformed.translate(view.x, view.y)
+
+    final override fun <S:SceneNode> addScene(scene: S): S {
+        addProcess(scene)
+        val scenes = (childScenes as ArrayList)
+
+        scenes.add(scene)
+        scenes.sortBy { it.priority }
         return scene
     }
 
-    override fun removeScene(scene: SceneNode): Boolean {
-        scene.destructor()
+    final override fun removeScene(scene: SceneNode): Boolean {
+        removeProcess(scene)
         return (childScenes as ArrayList).remove(scene)
     }
 
-    override fun <S : SceneNode> replaceScene(old: S, new: S): S {
-        val index = childScenes.indexOf(old)
+    final override fun <S : SceneNode> replaceScene(old: S, new: S): S {
+        replaceProcess(old, new)
+
+        val scenes = (childScenes as ArrayList)
+        val index = scenes.indexOf(old)
         if (index != -1) {
-            childScenes[index].destructor()
-            (childScenes as ArrayList)[index] = new
+            scenes.removeAt(index)
+            scenes.add(index, new)
+            scenes.sortBy { it.priority }
             return new
         }
         return old
@@ -37,18 +47,28 @@ abstract class Scene : Process(), SceneNode {
         }
     }
 
-    override fun updateNodes(delta: Double) {
-        super.updateNodes(delta)
-        for (i in childScenes.indices) {
-            childScenes[i].updateNodes(delta)
-        }
+    override fun renderNodes(draw: Drawer) {
+        val index = renderNodesFor(draw) { it.priority < 0}
+        this.render(draw)
+        renderNodesFor(draw, index) { it.priority >= 0}
     }
 
-    override fun renderNodes(draw: Drawer) {
-        this.render(draw)
+    private inline fun renderNodesFor(draw: Drawer, from: Int = 0, condition: (SceneNode) -> Boolean): Int {
+        var i = from
+        do {
+            val scene = childScenes.getOrNull(i++) ?: break
+            scene.renderNodes(draw)
+        } while (condition(scene))
+        return i
+    }
+
+    override fun update(delta: Double) { }
+
+    override fun destructNodes() {
         for (i in childScenes.indices) {
-            childScenes[i].renderNodes(draw)
+            childScenes[i].destructNodes()
         }
+        super.destructNodes()
     }
 
     @Suppress("PropertyName")
@@ -56,7 +76,4 @@ abstract class Scene : Process(), SceneNode {
     internal val `access$childScenes`: List<SceneNode>
         get() = childScenes
 
-    companion object {
-        internal fun drawInScene(draw: Drawer, view: View): Drawer = draw.transformed.translate(view.x, view.y).layout.origin()
-    }
 }

@@ -6,7 +6,7 @@ import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 
-class GameView(data: GameSetup): View {
+class GameView(data: GameSetup): DynamicView {
     private var _width: Double = data.viewWidth
     override var width: Double
         get() = _width
@@ -44,18 +44,46 @@ class GameView(data: GameSetup): View {
             gameMatrices.updateView(this)
         }
 
-    var xy: Vector = DynamicVector.create()
+    @Suppress("SetterBackingFieldAssignment")
+    override var xy: DynamicVector = object : DynamicVector {
+        override var x: Double
+            get() = this@GameView.x
+            set(value) {this@GameView.x = value}
+        override var y: Double
+            get() = this@GameView.y
+            set(value) { this@GameView.y = value}
+    }
         set(value) {
-            (field as DynamicVector).set(value)
             x = value.x
             y = value.y
         }
 
-    var wh: Vector = DynamicVector.create()
+    @Suppress("SetterBackingFieldAssignment")
+    override var center: DynamicVector = object : DynamicVector {
+        override var x: Double
+            get() = this@GameView.x + width/2.0
+            set(value) {this@GameView.x = value - width/2.0}
+        override var y: Double
+            get() = this@GameView.y + height/2.0
+            set(value) { this@GameView.y = value - height/2.0}
+    }
         set(value) {
-            (field as DynamicVector).set(value)
-            width = value.x
-            height = value.y
+            x = value.x
+            y = value.y
+        }
+
+    @Suppress("SetterBackingFieldAssignment")
+    override var wh: DynamicVector = object : DynamicVector {
+        override var x: Double
+            get() = this@GameView.width
+            set(value) {this@GameView.width = value }
+        override var y: Double
+            get() = this@GameView.height
+            set(value) { this@GameView.height = value}
+    }
+        set(value) {
+            x = value.x
+            y = value.y
         }
 
     override var ratio: Double = height/width
@@ -66,13 +94,6 @@ class GameView(data: GameSetup): View {
             } else field
         }
     var lockRatio = true
-
-    override val center: DynamicVector = DynamicVector.create(x + width/2.0, y + height/2.0)
-        get() {
-            field.x = x + width/2.0
-            field.y = y + height/2.0
-            return field
-        }
 
     private val gameMatrices: GameMatrices
         get() = Game.matrices as GameMatrices

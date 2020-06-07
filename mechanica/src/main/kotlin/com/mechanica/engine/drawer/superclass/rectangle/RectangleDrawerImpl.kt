@@ -24,21 +24,16 @@ internal class RectangleDrawerImpl(
 
     }
 
-    override fun rectangle() {
-        data.cornerSize.x = data.scaleX.toDouble()
-        data.cornerSize.y = data.scaleY.toDouble()
-        data.draw(model)
-    }
-
-    override fun rectangle(x: Number, y: Number) {
-        data.setTranslate(x.toFloat(), y.toFloat())
-        rectangle()
-    }
-
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
         data.setTranslate(x.toFloat(), y.toFloat())
         data.setScale(width.toFloat(), height.toFloat())
-        rectangle()
+        drawRectangle()
+    }
+
+    private fun drawRectangle() {
+        data.cornerSize.x = data.scaleX.toDouble()
+        data.cornerSize.y = data.scaleY.toDouble()
+        data.draw(model)
     }
 
 }

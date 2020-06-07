@@ -14,4 +14,9 @@ class TransformationDrawerImpl(drawer: Drawer, private val data: DrawData): Tran
         return this
     }
 
+    override fun invoke(x: Number, y: Number, scaleX: Number, scaleY: Number): TransformationDrawer {
+        translate(x, y)
+        scale(scaleX, scaleY)
+        return this
+    }
 }

@@ -15,4 +15,6 @@ interface TransformationDrawer : Drawer {
     fun scale(scale: LightweightVector) = scale(scale.x, scale.y)
     fun scale(scale: Vector) = scale(scale.x, scale.y)
     fun scale(scale: Double) = scale(scale, scale)
+
+    operator fun invoke(x: Number = 0.0, y: Number = 0.0, scaleX: Number = 1.0, scaleY: Number = 1.0): TransformationDrawer
 }

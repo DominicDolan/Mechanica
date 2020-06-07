@@ -4,7 +4,6 @@ import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
@@ -45,10 +44,6 @@ internal class GameConfigurationImpl : GameConfiguration {
 
     override fun setLoader(loader: () -> LoadScene) {
         _data.loadState = loader
-    }
-
-    override fun setControlMapping(controlsMap: ControlsMap) {
-        _data.controlsMap = controlsMap
     }
 
     override fun setSaveData(vararg savedata: Any) {

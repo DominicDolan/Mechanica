@@ -3,7 +3,6 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
@@ -18,7 +17,6 @@ interface GameConfiguration {
     fun setStartingState(scene: () -> MainScene)
     fun setLoader(loader: () -> LoadScene)
 
-    fun setControlMapping(controlsMap: ControlsMap)
     fun setSaveData(vararg savedata: Any)
 
     fun setMultisampling(samples: Int)

@@ -3,7 +3,7 @@ package com.mechanica.engine.input
 
 import org.lwjgl.glfw.GLFW.*
 
-enum class Keys(val id: Int) {
+enum class Keys(var id: Int) {
     UNKNOWN(GLFW_KEY_UNKNOWN),
     M1(GLFW_MOUSE_BUTTON_1),
     M2(GLFW_MOUSE_BUTTON_2),
@@ -138,6 +138,7 @@ enum class Keys(val id: Int) {
     SCROLL_DOWN(1001),
     SCROLL(1002);
 
+    val label: String get() = glfwGetKeyName(id, 0) ?: "?"
     companion object {
         fun uniqueId(): Int {
             val keys = values().map { it.id }.toTypedArray()

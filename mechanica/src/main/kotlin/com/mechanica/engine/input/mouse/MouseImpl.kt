@@ -4,21 +4,21 @@ import com.mechanica.engine.context.callbacks.MouseHandler
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Key
-import com.mechanica.engine.input.Keys
+import com.mechanica.engine.input.KeyIDs
 
 internal class MouseImpl : Mouse {
-    override val MB1 = Key(Keys.M1)
-    override val MB2 = Key(Keys.M2)
-    override val MMB = Key(Keys.M3)
-    override val M4 = Key(Keys.M4)
-    override val M5 = Key(Keys.M5)
-    override val M6 = Key(Keys.M6)
-    override val M7 = Key(Keys.M7)
-    override val M8 = Key(Keys.M8)
+    override val MB1 = Key(KeyIDs.M1)
+    override val MB2 = Key(KeyIDs.M2)
+    override val MMB = Key(KeyIDs.M3)
+    override val M4 = Key(KeyIDs.M4)
+    override val M5 = Key(KeyIDs.M5)
+    override val M6 = Key(KeyIDs.M6)
+    override val M7 = Key(KeyIDs.M7)
+    override val M8 = Key(KeyIDs.M8)
 
-    override val scroll = Mouse.ScrollWheel(Keys.SCROLL)
-    override val scrollDown = Mouse.ScrollWheel(Keys.SCROLL_DOWN)
-    override val scrollUp = Mouse.ScrollWheel(Keys.SCROLL_UP)
+    override val scroll = Mouse.ScrollWheel(KeyIDs.SCROLL)
+    override val scrollDown = Mouse.ScrollWheel(KeyIDs.SCROLL_DOWN)
+    override val scrollUp = Mouse.ScrollWheel(KeyIDs.SCROLL_UP)
 
     private val worldRatio: Vector = object : Vector {
         override val x: Double

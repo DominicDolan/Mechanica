@@ -5,14 +5,16 @@ import org.joml.Vector3f
 import org.lwjgl.openal.AL10.*
 import kotlin.reflect.KProperty
 
-class ALSource(override val sound: Sound) : ALAudioObject(), SoundSource {
+class ALSource(override var sound: Sound) : ALAudioObject(), SoundSource {
     override val id: Int = alGenSources()
 
-    override var gain: Float by ALFloatProperty(AL_GAIN)
-    override var pitch: Float by ALFloatProperty(AL_PITCH)
-    override var rolloff: Float by ALFloatProperty(AL_ROLLOFF_FACTOR)
-    override var maxDistance: Float by ALFloatProperty(AL_MAX_DISTANCE)
-    override var referenceDistance: Float by ALFloatProperty(AL_REFERENCE_DISTANCE)
+    private val properties = ALSourceProperty(id)
+
+    override var gain: Float by properties.createProperty(AL_GAIN)
+    override var pitch: Float by properties.createProperty(AL_PITCH)
+    override var rolloff: Float by properties.createProperty(AL_ROLLOFF_FACTOR)
+    override var maxDistance: Float by properties.createProperty(AL_MAX_DISTANCE)
+    override var referenceDistance: Float by properties.createProperty(AL_REFERENCE_DISTANCE)
 
     init {
         alSourcei(id, AL_BUFFER, sound.id)

@@ -11,6 +11,8 @@ class FrameAnimation(private val frames: List<Image>, frameRate : Double) {
     private var progress = 0.0
         set(value) { field = value%duration }
 
+    var reversed = false
+
     var fraction: Double
         get() = progress/duration
         set(value) {
@@ -31,7 +33,7 @@ class FrameAnimation(private val frames: List<Image>, frameRate : Double) {
             field = abs(value)
         }
 
-    fun play(delta: Double, reversed: Boolean = false) {
+    fun update(delta: Double) {
         if (!reversed) {
             progress += scale*delta
         } else {

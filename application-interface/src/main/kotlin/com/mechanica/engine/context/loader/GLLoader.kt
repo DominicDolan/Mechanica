@@ -14,6 +14,7 @@ interface GLLoader {
     val fontLoader: FontLoader
     val graphicsLoader: GraphicsLoader
     val audioLoader: AudioLoader
+    val inputLoader: InputLoader
 
     fun createAttributeLoader(qualifier: AttributeQualifier): AttributeLoader
     fun createUniformLoader(qualifier: Qualifier): UniformLoader

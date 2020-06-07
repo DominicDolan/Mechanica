@@ -4,7 +4,6 @@ import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.LoadScene
 import org.joml.Matrix4f
@@ -24,7 +23,6 @@ class NullableConfigurationData : ConfigurationData {
     override var viewY: Double? = null
     
     override var saveData: Array<Any>? = null
-    override var controlsMap: ControlsMap? = null
     
     override var fullscreen: Boolean? = null
 

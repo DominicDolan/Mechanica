@@ -16,36 +16,30 @@ internal class SceneManager : Scene() {
         get() = Game.view
 
     var updateVar: ((Double) -> Unit)? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                updateAndRenderVar = null
-            }
-        }
-    var updateAndRenderVar: ((Double, Drawer) -> Unit)? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                updateVar = null
-            }
-        }
 
     private var sceneSetter: () -> MainScene? = { null }
     var currentScene: MainScene? = null
-        get() {
-            val first = if (childScenes.isNotEmpty()) childScenes.first() else null
-            return if (first is MainScene) first else null
-        }
         private set(value) {
-            val children = childScenes as ArrayList
-            if (value != null) {
-                when {
-                    children.isEmpty() -> super.addScene(value)
-                    children[0] === field -> children[0] = value
-                    else -> children.add(0, value)
-                }
+            val scene = currentScene
+
+            if (value == null) {
+                if (scene != null) removeScene(scene)
+                field = null
+                return
             }
-            field = value
+
+            if (scene == null) {
+                addScene(value)
+                field = value
+                return
+            }
+
+            val new = replaceScene(scene, value)
+            if (new === scene) {
+                addScene(value)
+            }
+
+            field = new
         }
 
     private var scheduleSceneChange = true
@@ -105,9 +99,7 @@ internal class SceneManager : Scene() {
             DebugDrawer.render(getDrawer())
     }
 
-    override fun render(draw: Drawer) {
-        updateAndRenderVar?.invoke(updateDuration, draw)
-    }
+    override fun render(draw: Drawer) { }
 
     private fun checkStateChange() {
         if (scheduleSceneChange) {

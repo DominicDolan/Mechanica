@@ -20,14 +20,13 @@ class DrawData {
             viewMatrixWasSet = true
             field = value
         }
-    var projectionMatrix: Matrix4f = Game.matrices.projection
+    private var projectionMatrix: Matrix4f = Game.matrices.projection
 
     private val renderer = DrawerRenderer()
     private val transformation = Matrix4f().identity()
 
     private val translation: Vector3f = Vector3f()
     private val pivot: Vector3f = Vector3f()
-    private val unpivot: Vector3f = Vector3f()
     private val scale: Vector3f = Vector3f(1f, 1f, 1f)
     private val zAxis = Vector3f(0f, 0f, 1f)
     private var rx = 0f
@@ -72,27 +71,22 @@ class DrawData {
     val cornerSize: DynamicVector
         get() = renderer.size
 
-//    private val fontMap = HashMap<Font, TextModel>()
-//
-//    private var font: Font = Font.create(Res.font["Roboto-Regular.ttf"]).also { fontMap[it] = TextModel("", it) }
-
-    val textModel: TextModel = TextModel("Test")
-        //get() = fontMap[font] ?: TextModel("", font).also { fontMap[font] = it }
+    val textModel: TextModel = TextModel("")
 
     fun setTranslate(x: Float, y: Float) {
-        translation.set(x, y, translateZ)
+        translation.set(translation.x + x, translation.y + y, translateZ)
     }
 
     fun setRotate(angle: Float) {
-        rz = angle
+        rz += angle
     }
 
     fun setScale(x: Float, y: Float) {
-        scale.set(x, y, 0f)
+        scale.set(scale.x*x, scale.y*y, 0f)
     }
 
     fun setDepth(z: Float) {
-        translation.set(translateX, translateY, -z)
+        translation.set(translateX, translateY, translation.z-z)
     }
 
     fun getTransformationMatrix(matrix: Matrix4f): Matrix4f {
@@ -109,10 +103,6 @@ class DrawData {
 
         matrix.scale(scale)
         pivot.set(0f, 0f, 0f)
-        unpivot.set(0f, 0f, 0f)
-        rx = 0f
-        ry = 0f
-        rz = 0f
         return matrix
     }
 
@@ -129,10 +119,9 @@ class DrawData {
     }
 
     fun rewind() {
-        setRotate(0f)
-        setTranslate(0f, 0f)
-        setDepth(0f)
-        setScale(1f, 1f)
+        rz = 0f
+        translation.set(0f, 0f, 0f)
+        scale.set(1f, 1f, 1f)
 
         radius = 0f
         noReset = false

@@ -1,8 +1,8 @@
 package com.mechanica.engine.input
 
-import org.lwjgl.glfw.GLFW
+open class Key (label: String, private val condition: () -> Boolean) {
+    private val label = label.toUpperCase()
 
-open class Key (private val condition: () -> Boolean) {
     val isDown: Boolean
         get() {
             val isPressed = condition()
@@ -49,18 +49,22 @@ open class Key (private val condition: () -> Boolean) {
         return isDown
     }
 
-    constructor(vararg key: Int) : this(keysToBoolean(*key))
-
-    constructor(vararg keys: Keys) : this(
-            *(keys.map { it.id }).toIntArray()
+    constructor(vararg keys: KeyID) : this(
+            keys[0].label,
+            keysToBoolean(*keys)
     )
 
+    override fun toString(): String {
+        return label
+    }
+
     companion object {
-        fun keysToBoolean(vararg key: Int): () -> Boolean {
+
+        fun keysToBoolean(vararg key: KeyID): () -> Boolean {
             return {
                 var isPressed = false
                 for (i in key.indices) {
-                    isPressed = KeyInput.isPressed(key[i]) || isPressed
+                    isPressed = KeyInput.isPressed(key[i].id) || isPressed
                 }
                 isPressed
             }

@@ -31,8 +31,6 @@ object Game {
     val ui: View by lazy { UIView() }
     val window: Window by lazy { data.window }
 
-    internal val controls by lazy { data.controlsMap }
-
     val debug by lazy { data.debugConfig }
 
     val matrices: Matrices by lazy { GameMatrices(data, view) }
@@ -163,7 +161,9 @@ object Game {
         override val height: Double
         override val x: Double = 0.0
         override val y: Double = 0.0
-        override val center: Vector = vec(0.0, 0.0)
+        override val xy: Vector = vec(0.0, 0.0)
+        override val wh: Vector
+        override val center: Vector
         override val ratio: Double
             get() = view.ratio*(scale.y/scale.x)
 
@@ -172,6 +172,8 @@ object Game {
             scale = vec(contentScale.xScale, contentScale.yScale)
             width = view.width/scale.x
             height = view.height/scale.y
+            wh = vec(width, height)
+            center = vec(width/2.0, height/2.0)
         }
     }
 }
