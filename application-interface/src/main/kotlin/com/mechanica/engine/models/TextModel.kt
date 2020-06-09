@@ -8,13 +8,14 @@ import com.mechanica.engine.utils.createIndicesArrayForQuads
 import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.FloatBufferMaker
+import kotlin.math.max
 
 class TextModel(text: Text,
                 positionBufferMaker: FloatBufferMaker = Attribute(0).vec3(),
                 texCoordsBufferMaker: FloatBufferMaker = Attribute(1).vec2()) : Model(
         positionBufferMaker.createBuffer(text.positions),
         texCoordsBufferMaker.createBuffer(text.texCoords),
-        IndexArray.create(*createIndicesArrayForQuads(20)),
+        IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
         Image.invoke(text.font.atlas.id),
         draw = { model ->
             GLLoader.graphicsLoader.drawElements(model)
@@ -26,11 +27,11 @@ class TextModel(text: Text,
 
     private var textHolder: Text = text
 
-    var text: String = textHolder.text
+    var string: String
+        get() = textHolder.string
         set(value) {
-            field = value
-            textHolder.text = value
-            updateTextHolder()
+            textHolder.string = value
+            updateTextHolder(textHolder)
         }
 
     val lineCount: Int
@@ -44,20 +45,19 @@ class TextModel(text: Text,
     }
 
     fun setText(text: Text) {
-        if (text.text != this.text || textHolder != text) {
+//        if (text.string != this.string || textHolder != text) {
             this.textHolder = text
-            this.text = textHolder.text
-            updateTextHolder()
-        }
+            updateTextHolder(text)
+//        }
     }
 
-    private fun updateTextHolder() {
-        positionAttribute.set(textHolder.positions, 0, textHolder.vertexCount)
-        texCoordsAttribute.set(textHolder.texCoords, 0, textHolder.vertexCount)
-        vertexCount = textHolder.vertexCount
+    private fun updateTextHolder(text: Text) {
+        positionAttribute.set(text.positions, 0, text.vertexCount)
+        texCoordsAttribute.set(text.texCoords, 0, text.vertexCount)
+        vertexCount = text.vertexCount
 
         if (vertexCount > indexArray.vertexCount) {
-            indexArray.set(createIndicesArrayForQuads(vertexCount*2/6))
+            indexArray.set(createIndicesArrayForQuads(vertexCount))
         }
     }
 

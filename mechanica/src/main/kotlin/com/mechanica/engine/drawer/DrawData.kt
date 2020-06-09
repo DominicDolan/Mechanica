@@ -81,7 +81,8 @@ class DrawData {
     val cornerSize: DynamicVector
         get() = renderer.size
 
-    val textModel: TextModel = TextModel("")
+    val stringHolderModel: TextModel = TextModel("")
+    val textHolderModel: TextModel = TextModel("")
 
     fun setTranslate(x: Float, y: Float) {
         translation.set(translation.x + x, translation.y + y, translateZ)

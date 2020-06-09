@@ -15,8 +15,8 @@ abstract class LoadScene : MainScene() {
 
     override fun update(delta: Double) {
         if (!hasPreLoaded) {
-            preLoad()
             hasPreLoaded = true
+            preLoad()
         }
         currentWait += delta
         currentLoops++

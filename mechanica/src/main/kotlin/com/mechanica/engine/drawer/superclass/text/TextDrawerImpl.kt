@@ -11,14 +11,14 @@ class TextDrawerImpl(
         private val data: DrawData) : TextDrawer {
 
     override fun text(text: String) {
-        val model = data.textModel
-        model.text = text
+        val model = data.stringHolderModel
+        model.string = text
         drawText(model)
     }
 
     override fun text(text: Text) {
-        val model = data.textModel
-        data.textModel.setText(text)
+        val model = data.textHolderModel
+        model.setText(text)
         drawText(model)
     }
 

@@ -77,7 +77,7 @@ class FontRenderer {
 
     var text: String = ""
         set(value) {
-            model.text = value
+            model.string = value
             field = value
         }
 

@@ -18,5 +18,8 @@ class LwjglIndexArray(array: ShortArray) : LwjglVertexBuffer<ShortArray>(array.s
 
     override fun subData(offset: Long, array: ShortArray) = glBufferSubData(bufferTarget, offset, array)
 
-
+    override fun set(array: ShortArray, from: Int, length: Int) {
+        vertexCount = array.size
+        super.set(array, from, length)
+    }
 }

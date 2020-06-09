@@ -115,7 +115,7 @@ fun main() {
         draw.image(image, -1, 0)
         shader.render(textModel)
         if (Keyboard.enter.hasBeenPressed) {
-            textModel.text = "Enter Pressed"
+            textModel.string = "Enter Pressed"
         }
         draw.text(text)
     }

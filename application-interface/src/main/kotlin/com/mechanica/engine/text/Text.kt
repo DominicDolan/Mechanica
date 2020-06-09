@@ -8,7 +8,7 @@ import kotlin.math.max
 
 class Text(text: String, val font: Font = GLLoader.fontLoader.defaultFont) {
 
-    var text = text
+    var string = text
         set(value) {
             field = value
             update(value, font)
