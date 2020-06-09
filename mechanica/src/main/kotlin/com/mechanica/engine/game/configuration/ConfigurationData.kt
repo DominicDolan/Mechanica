@@ -23,7 +23,6 @@ interface ConfigurationData {
     val saveData: Array<Any>?
     val fullscreen: Boolean?
     val startingScene: (() -> MainScene)?
-    val loadState: (() -> LoadScene)?
     val windowConfiguration: (Window.() -> Unit)?
     val debugConfiguration: (GameDebugConfiguration.() -> Unit)?
     val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)?

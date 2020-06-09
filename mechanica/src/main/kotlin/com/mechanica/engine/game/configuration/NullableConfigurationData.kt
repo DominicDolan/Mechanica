@@ -27,7 +27,6 @@ class NullableConfigurationData : ConfigurationData {
     override var fullscreen: Boolean? = null
 
     override var startingScene: (() -> MainScene)? = null
-    override var loadState: (() -> LoadScene)? = null
 
     override var windowConfiguration: (Window.() -> Unit)? = null
     override var debugConfiguration: (GameDebugConfiguration.() -> Unit)? = null

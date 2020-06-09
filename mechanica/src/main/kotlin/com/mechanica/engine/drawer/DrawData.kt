@@ -46,9 +46,19 @@ class DrawData {
             renderer.strokeWidth = value
         }
 
+    var strokeColorWasSet = false
     val strokeColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
+        get() {
+            strokeColorWasSet = true
+            return field
+        }
 
+    var fillColorWasSet = false
     val fillColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
+        get() {
+            fillColorWasSet = true
+            return field
+        }
 
     val modelOrigin = OriginVector()
 
@@ -129,6 +139,9 @@ class DrawData {
         viewMatrix = Game.matrices.view
         viewMatrixWasSet = false
         projectionMatrix = Game.matrices.projection
+
+        strokeColorWasSet = false
+        fillColorWasSet = false
 
         transformation.identity()
         renderer.rewind()

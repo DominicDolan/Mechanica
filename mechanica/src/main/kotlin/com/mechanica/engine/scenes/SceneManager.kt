@@ -51,19 +51,8 @@ internal class SceneManager : Scene() {
 
     fun setStartingScene(data: GameSetup) {
         val state = data.startingScene
-        val loadState = data.loadState?.invoke()
 
-        if (loadState != null) {
-            loadState.onFinish = {
-                setMainScene { state?.invoke() }
-            }
-            setMainScene {
-                loadState.preLoad()
-                loadState
-            }
-        } else {
-            setMainScene { state?.invoke() }
-        }
+        setMainScene { state?.invoke() }
     }
 
     fun setMainScene(setter: () -> MainScene?) {

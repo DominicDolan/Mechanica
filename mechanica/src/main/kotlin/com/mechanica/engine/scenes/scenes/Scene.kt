@@ -2,6 +2,7 @@ package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 import com.mechanica.engine.scenes.processes.Process
 
 abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
@@ -17,8 +18,10 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
         addProcess(scene)
         val scenes = (childScenes as ArrayList)
 
-        scenes.add(scene)
-        scenes.sortBy { it.priority }
+        if (!scenes.contains(scene)) {
+            scenes.add(scene)
+            scenes.sortBy { it.priority }
+        }
         return scene
     }
 
@@ -57,7 +60,9 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
         var i = from
         do {
             val scene = childScenes.getOrNull(i++) ?: break
-            scene.renderNodes(draw)
+            if (scene.active) {
+                scene.renderNodes(draw)
+            }
         } while (condition(scene))
         return i
     }
@@ -69,6 +74,25 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
             childScenes[i].destructNodes()
         }
         super.destructNodes()
+    }
+
+    /**
+     * This does the same as [exclusivelyActiveProcesses][com.mechanica.engine.scenes.processes.Process.exclusivelyActiveProcesses] but it adds
+     * scenes to the parent instead of processes
+     *
+     * @param scenes the set of scenes that will be added as children to this scene and only one can be
+     *                  set to active at a time
+     * @return An ExclusiveProcessMap which can have more processes added at a later stage
+     */
+    protected fun <P: Scene> exclusivelyActiveScenes(vararg scenes: P): ExclusiveActivationMap<P> {
+        return ExclusiveSceneMap(*scenes)
+    }
+
+    private inner class ExclusiveSceneMap<P: Scene>(vararg scenes: P) : ExclusiveActivationMap<P>(*scenes) {
+        override fun <R : P> addProcess(process: R): R {
+            this@Scene.addScene(process)
+            return super.addProcess(process)
+        }
     }
 
     @Suppress("PropertyName")

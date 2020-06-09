@@ -19,7 +19,7 @@ abstract class DynamicScene(
 
     open val position = DynamicVector.create(x + width/2.0, y + height/2.0)
 
-    override val view: DynamicView = DynamicSceneView(width, height)
+    override val view: DynamicView by lazy { DynamicSceneView(width, height) }
 
     override fun drawInScene(draw: Drawer, view: View): Drawer {
         return draw.centered.transformed.translate(position).scale(view.wh)
@@ -30,7 +30,9 @@ abstract class DynamicScene(
             override var height: Double) : DynamicView {
 
         override var x: Double
-            get() = center.x - width/2.0
+            get() {
+                return center.x - width/2.0
+            }
             set(value) { center.x = value + width/2.0}
         override var y: Double
             get() = center.y - height/2.0

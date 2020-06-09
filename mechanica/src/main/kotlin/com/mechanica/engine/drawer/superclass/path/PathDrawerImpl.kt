@@ -45,7 +45,11 @@ class PathDrawerImpl(private val data: DrawData): PathDrawer {
 
     private fun draw() {
         data.getTransformationMatrix(transformation)
-        renderer.color = data.strokeColor
+        if (!data.strokeColorWasSet && data.fillColorWasSet) {
+            renderer.color = data.fillColor
+        } else {
+            renderer.color = data.strokeColor
+        }
         renderer.stroke = data.strokeWidth.toFloat()
         renderer.render(transformation)
     }

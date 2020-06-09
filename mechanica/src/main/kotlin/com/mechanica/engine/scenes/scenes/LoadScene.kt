@@ -11,7 +11,13 @@ abstract class LoadScene : MainScene() {
     private var startLoading = false
     private var finishedLoading = false
 
+    private var hasPreLoaded = false
+
     override fun update(delta: Double) {
+        if (!hasPreLoaded) {
+            preLoad()
+            hasPreLoaded = true
+        }
         currentWait += delta
         currentLoops++
         startLoading = currentWait > waitTime && currentLoops > minLoops
@@ -33,5 +39,5 @@ abstract class LoadScene : MainScene() {
 
     abstract fun load()
 
-    internal var onFinish: () -> Unit = { }
+    abstract fun onFinish()
 }

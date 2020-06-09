@@ -1,16 +1,39 @@
 package com.mechanica.engine.scenes.processes
 
-import kotlin.math.max
+import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 
 abstract class Process(override val priority: Int = 0) : ProcessNode {
 
-    protected val childProcesses: List<ProcessNode> = ArrayList()
+    private val activationListeners = ArrayList<(Boolean) -> Unit>()
+    final override var active: Boolean = true
+        set(value) {
+            val hasChanged = field != value
+            field = value
+            if (hasChanged) {
+                runActivationCallbacks(value)
+            }
+        }
+
+    private val childProcesses: List<ProcessNode> = ArrayList()
+
+    fun addActivationChangedListener(listener: (Boolean) -> Unit) {
+        activationListeners.add(listener)
+        runActivationCallbacks(active)
+    }
+
+    private fun runActivationCallbacks(activate: Boolean) {
+        for (i in activationListeners.indices) {
+            activationListeners[i].invoke(activate)
+        }
+    }
 
     final override fun <P:ProcessNode> addProcess(process: P): P {
         val processes = (childProcesses as ArrayList)
 
-        processes.add(process)
-        processes.sortBy { it.priority }
+        if (!processes.contains(process)) {
+            processes.add(process)
+            processes.sortBy { it.priority }
+        }
         return process
     }
 
@@ -47,7 +70,9 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
         var i = from
         do {
             val process = childProcesses.getOrNull(i++) ?: break
-            process.updateNodes(delta)
+            if (process.active) {
+                process.updateNodes(delta)
+            }
         } while (condition(process))
         return i
     }
@@ -57,6 +82,29 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
             childProcesses[i].destructNodes()
         }
         destructor()
+    }
+
+    /**
+     * Sets the [processes] in which only one process can be active at once. This exclusivity is automatically enforced
+     *
+     * Usage:
+     * ```
+     * val currentlyActiveProcess by exclusivelyActiveProcesses(Process1(), Process2(), Process3())
+     * ```
+     *
+     * @param processes the set of processes that will be added as children to this process and only one can be
+     *                  set to active at a time
+     * @return An ExclusiveProcessMap which can have more processes added at a later stage
+     */
+    protected fun <P: Process> exclusivelyActiveProcesses(vararg processes: P): ExclusiveActivationMap<P> {
+        return ExclusiveProcessMap(*processes)
+    }
+
+    private inner class ExclusiveProcessMap<P: Process>(vararg processes: P) : ExclusiveActivationMap<P>(*processes) {
+        override fun <R : P> addProcess(process: R): R {
+            this@Process.addProcess(process)
+            return super.addProcess(process)
+        }
     }
 
     override fun destructor() { }

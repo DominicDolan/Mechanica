@@ -1,5 +1,6 @@
 package com.mechanica.engine.context.loader
 
+import com.mechanica.engine.display.GLFWWindow
 import com.mechanica.engine.shader.qualifiers.AttributeQualifier
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.script.Shader

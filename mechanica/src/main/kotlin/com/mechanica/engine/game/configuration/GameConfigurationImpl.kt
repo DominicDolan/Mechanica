@@ -42,10 +42,6 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.startingScene = scene
     }
 
-    override fun setLoader(loader: () -> LoadScene) {
-        _data.loadState = loader
-    }
-
     override fun setSaveData(vararg savedata: Any) {
         _data.saveData = arrayOf(*savedata)
     }

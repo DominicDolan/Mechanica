@@ -15,7 +15,6 @@ interface GameConfiguration {
     fun setViewLocation(x: Double, y: Double)
 
     fun setStartingState(scene: () -> MainScene)
-    fun setLoader(loader: () -> LoadScene)
 
     fun setSaveData(vararg savedata: Any)
 

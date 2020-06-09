@@ -7,9 +7,14 @@ import org.lwjgl.glfw.GLFWMonitorCallback
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.system.MemoryStack
 
-class Monitor private constructor(val id: Long) {
+class GLFWMonitor private constructor(override val id: Long) : Monitor {
 
-    val name by lazy { glfwGetMonitorName(id) ?: "N/A" }
+    override val name by lazy { glfwGetMonitorName(id) ?: "N/A" }
+
+    override val width: Int
+        get() = currentVideoMode.width()
+    override val height: Int
+        get() = currentVideoMode.height()
 
     var monitorUserPointer: Long
         get() = glfwGetMonitorUserPointer(id)
@@ -19,6 +24,7 @@ class Monitor private constructor(val id: Long) {
 
     val currentVideoMode: GLFWVidMode
         get() = glfwGetVideoMode(id) ?: throw IllegalStateException("Error retrieving the current Vid Mode")
+
     val supportedVideoModes: Array<GLFWVidMode>
         get() {
             val vidmodes = glfwGetVideoModes(id)
@@ -29,7 +35,7 @@ class Monitor private constructor(val id: Long) {
             }
         }
 
-    val size: Size
+    override val size: Monitor.Size
         get() {
             var width = -1
             var height = -1
@@ -40,10 +46,10 @@ class Monitor private constructor(val id: Long) {
                 width = widthBuffer[0]
                 height = heightBuffer[0]
             }
-            return Size(width, height)
+            return Monitor.Size(width, height)
         }
 
-    val contentScale: ContentScale
+    override val contentScale: Monitor.ContentScale
         get() {
             var xScale = 1f
             var yScale = 1f
@@ -54,7 +60,7 @@ class Monitor private constructor(val id: Long) {
                 xScale = xBuffer[0]
                 yScale = yBuffer[0]
             }
-            return ContentScale(xScale, yScale)
+            return Monitor.ContentScale(xScale, yScale)
         }
 
     var gammaRamp: GLFWGammaRamp
@@ -71,10 +77,6 @@ class Monitor private constructor(val id: Long) {
             field = value
         }
 
-    data class Size(val width_mm: Int, val height_mm: Int)
-
-    data class ContentScale(val xScale: Float, val yScale: Float)
-
     companion object {
         var allMonitors = createMonitorsArray()
             private set
@@ -83,22 +85,22 @@ class Monitor private constructor(val id: Long) {
                 return field
             }
 
-        fun getPrimaryMonitor(): Monitor {
+        fun getPrimaryMonitor(): GLFWMonitor {
             GLFWContext.initialize()
-            return Monitor(glfwGetPrimaryMonitor())
+            return GLFWMonitor(glfwGetPrimaryMonitor())
         }
 
-        private fun createMonitorsArray(): Array<Monitor> {
+        private fun createMonitorsArray(): Array<GLFWMonitor> {
             GLFWContext.initialize()
             val pointers = glfwGetMonitors()
             return if (pointers != null) {
-                Array(pointers.limit()) {Monitor(pointers[it])}
+                Array(pointers.limit()) {GLFWMonitor(pointers[it])}
             } else {
                 emptyArray()
             }
         }
 
-        private fun checkMonitors(monitors: Array<Monitor>): Array<Monitor> {
+        private fun checkMonitors(monitors: Array<GLFWMonitor>): Array<GLFWMonitor> {
             val pointers = glfwGetMonitors()
             if (pointers != null) {
                 val pointerSize = pointers.limit()

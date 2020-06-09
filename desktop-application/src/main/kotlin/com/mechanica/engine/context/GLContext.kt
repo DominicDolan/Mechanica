@@ -22,6 +22,9 @@ object GLContext : Version {
     override val version: Double
         get() = parsedVersionString?.version ?: throw IllegalStateException(errorMessage)
 
+    var initialized = false
+        private set
+
     fun isExtensionSupported(extension: String): Boolean {
         return extensionMap.containsKey(extension)
     }
@@ -47,6 +50,7 @@ object GLContext : Version {
         GL11.glEnable(GL11.GL_STENCIL_TEST)
 
         enableAlphaBlending()
+        initialized = true
     }
 
     private fun initContext(windowId: Long) {

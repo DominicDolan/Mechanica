@@ -1,8 +1,8 @@
 package com.mechanica.engine.display
 
+import com.mechanica.engine.context.GLContext
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.context.callbacks.EventCallbacks
-import com.mechanica.engine.context.callbacks.KeyboardHandler
 import com.mechanica.engine.utils.ImageData
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -12,60 +12,62 @@ import com.mechanica.engine.resources.Resource
 import java.nio.ByteBuffer
 
 
-class Window private constructor(width: Int, height: Int, val title: String, monitor: Monitor?) {
-    val id: Long= glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, MemoryUtil.NULL)
+class GLFWWindow private constructor(width: Int, height: Int, override val title: String, monitor: Monitor?) : Window {
+    override val id: Long= glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, MemoryUtil.NULL)
     var hasInitialized = false
         private set
 
-    val width: Int
+    override val width: Int
         get() = resolution.width
-    val height: Int
+    override val height: Int
         get() = resolution.height
-    val aspectRatio: Double
+    override val aspectRatio: Double
         get() = width.toDouble()/height.toDouble()
-    var isFocused: Boolean
+    override var isFocused: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FOCUSED) == GLFW_TRUE
         set(value) { if (value) glfwFocusWindow(id) }
 
-    var isIconified: Boolean
+    override var isIconified: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_ICONIFIED ) == GLFW_TRUE
         set(value) {
             if (value) glfwIconifyWindow(id)
             else glfwRestoreWindow(id) }
-    var isMaximized: Boolean
+    override var isMaximized: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_MAXIMIZED ) == GLFW_TRUE
         set(value) {
             if (value) glfwMaximizeWindow(id)
             else glfwRestoreWindow(id) }
 
-    val isHovered: Boolean
+    override val isHovered: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_HOVERED ) == GLFW_TRUE
-    var isVisible: Boolean
+    override var isVisible: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_VISIBLE ) == GLFW_TRUE
         set(value) {
             if (value) glfwShowWindow(id)
             else glfwHideWindow(id) }
-    var isResizable: Boolean
+    override var isResizable: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_RESIZABLE ) == 1
         set(value) { glfwSetWindowAttrib(id, GLFW_RESIZABLE, if (value) GLFW_TRUE else GLFW_FALSE ) }
-    var isDecorated: Boolean
+    override var isDecorated: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_DECORATED ) == 1
         set(value) { glfwSetWindowAttrib(id, GLFW_DECORATED, if (value) GLFW_TRUE else GLFW_FALSE ) }
-    var isFloating: Boolean
+    override var isFloating: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FLOATING ) == 1
         set(value) { glfwSetWindowAttrib(id, GLFW_FLOATING, if (value) GLFW_TRUE else GLFW_FALSE ) }
-    var shouldClose: Boolean
+    override var shouldClose: Boolean
         get() = glfwWindowShouldClose(id)
         set(value) { glfwSetWindowShouldClose(id, value) }
-    var vSync: Boolean = true
+    override var vSync: Boolean = true
         set(value) {
-            glfwSwapInterval(if (value) 1 else 0)
+            if (GLContext.initialized) {
+                glfwSwapInterval(if (value) 1 else 0)
+            }
             field = value
         }
 
     private var finished = false
 
-    var opacity: Float
+    override var opacity: Float
         get() = glfwGetWindowOpacity(id)
         set(value) = glfwSetWindowOpacity(id, value)
 
@@ -73,7 +75,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         get() {
             val monitor = field
             val monitorId = glfwGetWindowMonitor(id)
-            val foundMonitor = Monitor.allMonitors.firstOrNull { it.id == monitorId }
+            val foundMonitor = GLFWMonitor.allMonitors.firstOrNull { it.id == monitorId }
             return if (monitorId == MemoryUtil.NULL){
                 field = null
                 null
@@ -90,17 +92,17 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             field = value
         }
 
-    val position: Position = Position()
+    override val position: PositionImpl = PositionImpl()
 
-    val resolution: Dimension by lazy {
+    override val resolution: Window.Dimension by lazy {
         setResolution(DimensionImpl(0, 0, false))
     }
 
-    val size: Dimension by lazy {
+    override val size: Window.Dimension by lazy {
         setWindowSize(DimensionImpl(0, 0, false))
     }
 
-    val isResizing: Boolean
+    override val isResizing: Boolean
         get() {
             val resolution = (resolution as DimensionImpl)
             val size = (size as DimensionImpl)
@@ -132,7 +134,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
 
     }
 
-    fun addRefreshCallback(callback: (Window) -> Unit) {
+    override fun addRefreshCallback(callback: (Window) -> Unit) {
         callbackList.add(callback)
     }
 
@@ -159,7 +161,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         }
     }
 
-    fun update(): Boolean {
+    override fun update(): Boolean {
         swapBuffers()
         EventCallbacks.prepare()
         pollEvents()
@@ -170,7 +172,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         return !shouldClose
     }
 
-    fun destroy() {
+    override fun destroy() {
         if (hasInitialized) {
             Callbacks.glfwFreeCallbacks(id)
             glfwDestroyWindow(id)
@@ -186,11 +188,11 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         glfwPollEvents()
     }
 
-    fun requestAttention() {
+    override fun requestAttention() {
         glfwRequestWindowAttention(id)
     }
 
-    private fun setWindowSize(out: DimensionImpl): Dimension {
+    private fun setWindowSize(out: DimensionImpl): Window.Dimension {
         val widthArray = IntArray(1)
         val heightArray = IntArray(1)
         glfwGetWindowSize(id, widthArray, heightArray)
@@ -199,7 +201,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         return out
     }
 
-    private fun setResolution(out: DimensionImpl): Dimension {
+    private fun setResolution(out: DimensionImpl): Window.Dimension {
         val widthArray = IntArray(1)
         val heightArray = IntArray(1)
         glfwGetFramebufferSize(id, widthArray, heightArray)
@@ -208,7 +210,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         return out
     }
 
-    fun setIcon(resource: Resource) {
+    override fun setIcon(resource: Resource) {
         val image = ImageData(resource)
 
         if (image.data != null) {
@@ -218,7 +220,7 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         image.free()
     }
 
-    fun setIcon(width: Int, height: Int, imageBuffer: ByteBuffer) {
+    override fun setIcon(width: Int, height: Int, imageBuffer: ByteBuffer) {
         val image: GLFWImage = GLFWImage.malloc()
         val imagebf: GLFWImage.Buffer = GLFWImage.malloc(1)
 
@@ -228,32 +230,32 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
         glfwSetWindowIcon(id, imagebf)
     }
 
-    fun setFullscreen(monitor: Monitor) {
-        val vidMode = monitor.currentVideoMode
+    override fun setFullscreen(monitor: Monitor) {
+        val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
         glfwSetWindowMonitor(id, monitor.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
     }
 
-    fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int = 60) {
+    override fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int) {
         glfwSetWindowMonitor(id, monitor.id, 0, 0, width, height, refreshRate)
     }
 
-    fun exitFullscreen() {
+    override fun exitFullscreen() {
         if (this.monitor != null) {
-            val vidMode = Monitor.getPrimaryMonitor().currentVideoMode
+            val vidMode = GLFWMonitor.getPrimaryMonitor().currentVideoMode
             glfwSetWindowMonitor(id, MemoryUtil.NULL, 0, 0, vidMode.width(), vidMode.height(), 0)
         }
     }
 
-    inner class Position {
+    inner class PositionImpl : Window.Position {
         val xArray = IntArray(1)
         val yArray = IntArray(1)
-        var x: Int
+        override var x: Int
             set(value) = set(value, y)
             get() {
                 updatePosition()
                 return xArray[0]
             }
-        var y: Int
+        override var y: Int
             set(value) = set(x, value)
             get() {
                 updatePosition()
@@ -264,29 +266,25 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             glfwGetWindowPos(id, xArray, yArray)
         }
 
-        fun set(x: Int, y: Int) {
+        override fun set(x: Int, y: Int) {
             glfwSetWindowPos(id, x, y)
         }
     }
 
-    interface Dimension {
-        val width: Int
-        val height: Int
-    }
     private data class DimensionImpl(
             override var width: Int, 
             override var height: Int, 
-            var isChanging: Boolean) : Dimension
+            var isChanging: Boolean) : Window.Dimension
 
     companion object {
         fun create(title: String, width: Int, height: Int): Window {
             GLFWContext.initialize()
-            return Window(width, height, title, null)
+            return GLFWWindow(width, height, title, null)
         }
 
         fun create(title: String, monitor: Monitor): Window {
             GLFWContext.initialize()
-            val vidMode = monitor.currentVideoMode
+            val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to create window")
             val width = vidMode.width()
             val height = vidMode.height()
             glfwWindowHint(GLFW_RED_BITS, vidMode.redBits())
@@ -294,12 +292,12 @@ class Window private constructor(width: Int, height: Int, val title: String, mon
             glfwWindowHint(GLFW_BLUE_BITS, vidMode.blueBits())
             glfwWindowHint(GLFW_REFRESH_RATE, vidMode.refreshRate())
 
-            return Window(width, height, title, monitor)
+            return GLFWWindow(width, height, title, monitor)
         }
 
         fun create(title: String, width: Int, height: Int, monitor: Monitor): Window {
             GLFWContext.initialize()
-            return Window(width, height, title, monitor)
+            return GLFWWindow(width, height, title, monitor)
         }
 
     }
