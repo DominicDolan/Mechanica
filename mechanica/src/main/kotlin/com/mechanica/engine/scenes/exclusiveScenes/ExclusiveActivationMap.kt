@@ -5,11 +5,11 @@ import com.mechanica.engine.scenes.processes.Process
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-open class ExclusiveActivationMap<P : Process>(vararg processes: P) : ReadOnlyProperty<ProcessNode, P> {
+open class ExclusiveActivationMap<P : Process>(vararg processes: P) : ReadOnlyProperty<ProcessNode, P?> {
     private val processes: ArrayList<P> = ArrayList()
     private var activeIndex = -1
-    val active: P
-        get() = processes[activeIndex]
+    val active: P?
+        get() = if (activeIndex != -1) processes[activeIndex] else null
 
     init {
         for (i in processes.indices) {
@@ -17,7 +17,7 @@ open class ExclusiveActivationMap<P : Process>(vararg processes: P) : ReadOnlyPr
         }
     }
 
-    override operator fun getValue(thisRef: ProcessNode, property: KProperty<*>): P = active
+    override operator fun getValue(thisRef: ProcessNode, property: KProperty<*>): P? = active
 
     fun add(process: P) = addProcess(process)
 
@@ -28,7 +28,7 @@ open class ExclusiveActivationMap<P : Process>(vararg processes: P) : ReadOnlyPr
     }
 
     private fun P.addActivationCallback() {
-        addActivationChangedListener  {
+        addActivationChangedListener(0) {
             if (it) {
                 setExclusiveActivation(this)
             } else if (this@ExclusiveActivationMap.active === this) {

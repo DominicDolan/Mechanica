@@ -37,7 +37,7 @@ object Game {
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
-    private val sceneManager = SceneManager()
+    internal val sceneManager = SceneManager()
     val scene: Scene
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 

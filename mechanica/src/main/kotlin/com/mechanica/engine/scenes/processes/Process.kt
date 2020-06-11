@@ -4,11 +4,12 @@ import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 
 abstract class Process(override val priority: Int = 0) : ProcessNode {
 
-    private val activationListeners = ArrayList<(Boolean) -> Unit>()
-    final override var active: Boolean = true
+    private val activationListeners = ArrayList<ActivationChangedEvents>()
+    private var _active = true
+    final override var active: Boolean
+        get() = _active
         set(value) {
-            val hasChanged = field != value
-            field = value
+            val hasChanged = _active != value
             if (hasChanged) {
                 runActivationCallbacks(value)
             }
@@ -16,14 +17,33 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
 
     private val childProcesses: List<ProcessNode> = ArrayList()
 
-    fun addActivationChangedListener(listener: (Boolean) -> Unit) {
-        activationListeners.add(listener)
-        runActivationCallbacks(active)
+    private var callbacksInitialized = false
+
+    init {
+        addActivationChangedListener(0) { _active = it }
+    }
+
+    /**
+     * Adds a callback for when the value of [active] is changed. The [priority] value dictates the order in which
+     * the callbacks are executed, the higher the priority value, the earlier the callback will execute.
+     * The value can be negative, in which case the callback will be called after the value for [active]
+     * has been set
+     *
+     * @param priority an integer value which represents the order that the callbacks are executed, the higher
+     * the value, the earlier the execution, the value for [active] is changed at a priority of zero
+     *
+     * @param listener the callback which will execute when the value of [active] has been changed, the lambda takes
+     * a boolean expression which is the new value for [active]
+     */
+    fun addActivationChangedListener(priority: Int = 0, listener: (Boolean) -> Unit) {
+        activationListeners.add(ActivationChangedEvents(priority, listener))
+        activationListeners.sortByDescending { it.priority }
     }
 
     private fun runActivationCallbacks(activate: Boolean) {
+        callbacksInitialized = true
         for (i in activationListeners.indices) {
-            activationListeners[i].invoke(activate)
+            activationListeners[i].listener.invoke(activate)
         }
     }
 
@@ -61,10 +81,17 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
     }
 
     override fun updateNodes(delta: Double) {
+        if (!callbacksInitialized) runActivationCallbacks(active)
+
         val index = updateNodesFor(delta) { it.priority < 0 }
         this.update(delta)
         updateNodesFor(delta, index) { it.priority >= 0 }
     }
+
+    /**
+     * A function to be overridden which will run while [active] is set to false
+     */
+    open fun whileInactive(delta: Double) { }
 
     private inline fun updateNodesFor(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
         var i = from
@@ -72,6 +99,8 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
             val process = childProcesses.getOrNull(i++) ?: break
             if (process.active) {
                 process.updateNodes(delta)
+            } else if (process is Process) {
+                process.whileInactive(delta)
             }
         } while (condition(process))
         return i
@@ -115,4 +144,6 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
     @PublishedApi
     internal val `access$childProcesses`: List<ProcessNode>
         get() = childProcesses
+
+    private class ActivationChangedEvents(val priority: Int, val listener: (Boolean) -> Unit)
 }

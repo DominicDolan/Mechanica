@@ -6,7 +6,6 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.processes.Process
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
@@ -49,6 +48,26 @@ internal class SceneManager : Scene() {
     private var startOfLoop = Timer.now
     private var updateDuration = 0.1
 
+    private var pause = false
+    private var hasPaused = false
+    private var pausedUpdate = 0.17
+
+    private var frameAdvance = false
+
+    fun pauseExecution(pause: Boolean) {
+        this.pause = pause
+        hasPaused = false
+
+        if (!pause) {
+            updateDuration = 0.017
+            startOfLoop = Timer.now
+        }
+    }
+
+    fun frameAdvance() {
+        frameAdvance = true
+    }
+
     fun setStartingScene(data: GameSetup) {
         val state = data.startingScene
 
@@ -61,16 +80,25 @@ internal class SceneManager : Scene() {
     }
 
     fun updateScenes(): Double {
+
+        if (!pause || frameAdvance) {
+            updateScene()
+            frameAdvance = false
+        } else {
+            updatePaused()
+        }
+
+        render()
+        checkStateChange()
+
+        return updateDuration
+    }
+
+    private fun updateScene() {
         updateDuration = Timer.now - startOfLoop
         startOfLoop = Timer.now
 
-        checkStateChange()
-
         updateNodes(updateDuration)
-
-        render()
-
-        return updateDuration
     }
 
     override fun update(delta: Double) {
@@ -102,5 +130,15 @@ internal class SceneManager : Scene() {
         this.drawer = drawer
         return drawer
     }
+
+
+    private fun updatePaused() {
+        if (!hasPaused) {
+            hasPaused = true
+            updateDuration = Timer.now - startOfLoop
+        }
+        startOfLoop = Timer.now
+    }
+
 
 }
