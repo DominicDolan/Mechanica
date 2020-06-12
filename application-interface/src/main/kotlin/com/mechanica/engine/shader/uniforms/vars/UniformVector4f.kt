@@ -1,10 +1,11 @@
-package com.mechanica.engine.shader.vars.uniforms.vars
+package com.mechanica.engine.shader.uniforms.vars
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.LightweightColor
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.vars.ShaderType
 import org.joml.Vector4f
+import kotlin.reflect.KProperty
 
 
 abstract class UniformVector4f (
@@ -36,5 +37,9 @@ abstract class UniformVector4f (
         value.y = y.toFloat()
         value.z = z.toFloat()
         value.w = w.toFloat()
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: Vector4f) {
+        this.value.set(value)
     }
 }

@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.shader.vars.uniforms.UniformVars
+import com.mechanica.engine.shader.uniforms.UniformVars
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.qualifiers.Uniform
 import com.mechanica.engine.shader.vars.ShaderVariable

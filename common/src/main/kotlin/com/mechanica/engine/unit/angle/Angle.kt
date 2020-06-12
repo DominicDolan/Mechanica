@@ -1,7 +1,8 @@
 package com.mechanica.engine.unit.angle
 
 interface Angle {
-    fun asDouble(): Double
+    fun toDouble(): Double
+    fun toFloat(): Float
     fun toDegrees(): Degree
     fun toRadians(): Radian
 }

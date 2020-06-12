@@ -2,7 +2,7 @@ package com.mechanica.engine.scenes.processes
 
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 
-abstract class Process(override val priority: Int = 0) : ProcessNode {
+abstract class Process(override val order: Int = 0) : ProcessNode {
 
     private val activationListeners = ArrayList<ActivationChangedEvents>()
     private var _active = true
@@ -52,7 +52,7 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
 
         if (!processes.contains(process)) {
             processes.add(process)
-            processes.sortBy { it.priority }
+            processes.sortBy { it.order }
         }
         return process
     }
@@ -68,7 +68,7 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
         if (index != -1) {
             removeProcess(processes[index])
             processes.add(index, new)
-            processes.sortBy { it.priority }
+            processes.sortBy { it.order }
             return new
         }
         return old
@@ -83,9 +83,9 @@ abstract class Process(override val priority: Int = 0) : ProcessNode {
     override fun updateNodes(delta: Double) {
         if (!callbacksInitialized) runActivationCallbacks(active)
 
-        val index = updateNodesFor(delta) { it.priority < 0 }
+        val index = updateNodesFor(delta) { it.order < 0 }
         this.update(delta)
-        updateNodesFor(delta, index) { it.priority >= 0 }
+        updateNodesFor(delta, index) { it.order >= 0 }
     }
 
     /**

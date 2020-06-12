@@ -2,7 +2,6 @@
 package com.mechanica.engine.unit.vector
 
 import com.mechanica.engine.unit.angle.Angle
-import com.mechanica.engine.unit.angle.radians
 import kotlin.math.*
 
 
@@ -19,8 +18,8 @@ fun vec(x: Number, y: Number): LightweightVector {
 }
 
 fun vec(r: Number, theta: Angle): LightweightVector {
-    val x = r.toDouble()*cos(theta.toRadians().asDouble())
-    val y = r.toDouble()*sin(theta.toRadians().asDouble())
+    val x = r.toDouble()*cos(theta.toRadians().toDouble())
+    val y = r.toDouble()*sin(theta.toRadians().toDouble())
     return vec(x, y)
 }
 

@@ -25,7 +25,17 @@ class TextModel(text: Text,
     private val texCoordsAttribute = inputs[1] as AttributeArray
     private val indexArray = inputs[2] as IndexArray
 
-    private var textHolder: Text = text
+    private var atlas
+        get() = inputs[3] as Image
+        set(value) {
+            inputs[3] = value
+        }
+
+    var textHolder: Text = text
+        set(value) {
+            atlas = value.font.atlas
+            field = value
+        }
 
     var string: String
         get() = textHolder.string
@@ -45,10 +55,10 @@ class TextModel(text: Text,
     }
 
     fun setText(text: Text) {
-//        if (text.string != this.string || textHolder != text) {
+        if (text.string != this.string || textHolder != text) {
             this.textHolder = text
             updateTextHolder(text)
-//        }
+        }
     }
 
     private fun updateTextHolder(text: Text) {

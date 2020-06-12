@@ -2,18 +2,19 @@ package com.mechanica.engine.samples.renderer
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Image
-import com.mechanica.engine.utils.loadImage
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.utils.loadImage
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_STENCIL_TEST
 import org.lwjgl.opengl.GL11.glEnable
+import kotlin.math.tan
 
 
 fun main() {
@@ -34,6 +35,15 @@ private class StartMain : MainScene() {
 
     init {
         transformation.scale(1f, 1f,1f)
+        println(transformation)
+        println()
+
+        transformation.rotationZ((-Math.PI/6f).toFloat())
+        transformation.m01(transformation.m10() + transformation.m01())
+
+//        transformation.rotationZ((-Math.PI/6f).toFloat())
+//        transformation.m10(transformation.m10() + transformation.m01())
+
 
         image = loadImage(Res.image["testImage"])
 
@@ -80,7 +90,8 @@ private class StartMain : MainScene() {
 
         draw.stroke(0.1).transformed.scale(cursorFraction*3.0).blue.polygon(polygon)
         draw.centered.rotated(blend).about(0, 1).image(image, 0, 0, 1, 1)
-        draw.image(image, -0.5, -0.5, 1, 1)
+        draw.transformed(transformation).image(image, -0.5, -0.5, 1, 1)
+        draw.rotated(30.degrees).image(image, 0.5, -0.5, 1, 1)
         draw.stroke(0.1).red.circle(0, 3, 1.0)
         draw.stroke(0.1).green.line(vec(4, 3), Mouse.world)
     }

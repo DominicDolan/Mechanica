@@ -3,11 +3,12 @@ package com.mechanica.engine.shader.qualifiers
 import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.context.loader.UniformLoader
 import com.mechanica.engine.shader.script.ScriptVariables
+import com.mechanica.engine.shader.uniforms.UniformVars
+import com.mechanica.engine.shader.uniforms.vars.*
 import com.mechanica.engine.shader.vars.ShaderType
 import com.mechanica.engine.shader.vars.ShaderVariable
-import com.mechanica.engine.shader.vars.uniforms.*
-import com.mechanica.engine.shader.vars.uniforms.vars.*
 import org.joml.Matrix4f
+import kotlin.reflect.KProperty
 
 class Uniform(private val variables: ScriptVariables) : Qualifier, UniformVars {
     override val qualifierName: String = "uniform"
@@ -21,6 +22,9 @@ class Uniform(private val variables: ScriptVariables) : Qualifier, UniformVars {
             override val qualifier = this@Uniform
             override val type = ShaderType.get(type)
             override fun loadUniform() { load(value) }
+            override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+                this.value = value
+            }
         }
         return addVariable(v)
     }

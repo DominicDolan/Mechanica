@@ -1,8 +1,9 @@
-package com.mechanica.engine.shader.vars.uniforms.vars
+package com.mechanica.engine.shader.uniforms.vars
 
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.vars.ShaderType
 import org.joml.Vector3f
+import kotlin.reflect.KProperty
 
 abstract class UniformVector3f(
         x: Number, y: Number, z: Number,
@@ -18,5 +19,9 @@ abstract class UniformVector3f(
         value.x = x.toFloat()
         value.y = y.toFloat()
         value.z = z.toFloat()
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: Vector3f) {
+        this.value.set(value)
     }
 }

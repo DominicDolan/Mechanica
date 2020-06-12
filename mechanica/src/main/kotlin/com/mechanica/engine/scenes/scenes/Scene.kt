@@ -5,7 +5,7 @@ import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 import com.mechanica.engine.scenes.processes.Process
 
-abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
+abstract class Scene(order: Int = 0) : Process(order), SceneNode {
 
     protected val childScenes: List<SceneNode> = ArrayList()
 
@@ -20,7 +20,7 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
 
         if (!scenes.contains(scene)) {
             scenes.add(scene)
-            scenes.sortBy { it.priority }
+            scenes.sortBy { it.order }
         }
         return scene
     }
@@ -38,7 +38,7 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
         if (index != -1) {
             scenes.removeAt(index)
             scenes.add(index, new)
-            scenes.sortBy { it.priority }
+            scenes.sortBy { it.order }
             return new
         }
         return old
@@ -51,9 +51,9 @@ abstract class Scene(priority: Int = 0) : Process(priority), SceneNode {
     }
 
     override fun renderNodes(draw: Drawer) {
-        val index = renderNodesFor(draw) { it.priority < 0}
+        val index = renderNodesFor(draw) { it.order < 0}
         this.render(draw)
-        renderNodesFor(draw, index) { it.priority >= 0}
+        renderNodesFor(draw, index) { it.order >= 0 }
     }
 
     private inline fun renderNodesFor(draw: Drawer, from: Int = 0, condition: (SceneNode) -> Boolean): Int {

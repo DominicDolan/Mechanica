@@ -1,7 +1,7 @@
-package com.mechanica.engine.shader.vars.uniforms
+package com.mechanica.engine.shader.uniforms
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.shader.vars.uniforms.vars.*
+import com.mechanica.engine.shader.uniforms.vars.*
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
 import org.joml.Vector3f

@@ -4,12 +4,13 @@ import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
 
-abstract class Shader(
-    val vertex: ShaderScript,
-    val fragment: ShaderScript,
-    val tessellation: ShaderScript?,
-    val geometry: ShaderScript?) {
+abstract class Shader {
     abstract val id: Int
+
+    abstract val vertex: ShaderScript
+    abstract val fragment: ShaderScript
+    open val tessellation: ShaderScript? = null
+    open val geometry: ShaderScript? = null
 
     private var locationsFound = false
 
@@ -56,6 +57,14 @@ abstract class Shader(
 
     companion object {
         operator fun invoke(
+                vertex: ShaderScript,
+                fragment: ShaderScript,
+                tessellation: ShaderScript? = null,
+                geometry: ShaderScript? = null): Shader {
+            return create(vertex, fragment, tessellation, geometry)
+        }
+
+        fun create(
                 vertex: ShaderScript,
                 fragment: ShaderScript,
                 tessellation: ShaderScript? = null,

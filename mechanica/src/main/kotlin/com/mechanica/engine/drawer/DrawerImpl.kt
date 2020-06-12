@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer
 
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
@@ -87,8 +88,14 @@ class DrawerImpl(private val data: DrawData) :
         data.draw(polygon)
     }
 
-    override fun model(model: Model) {
-        data.colorPassthrough = true
+    override fun model(model: Model, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
+        data.blend = blend
+        data.alphaBlend = alphaBlend
+        data.colorPassthrough = colorPassthrough
         data.draw(model)
+    }
+
+    override fun shader(shader: DrawerShader, model: Model?, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
+        TODO("not implemented")
     }
 }

@@ -5,6 +5,7 @@ import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
+import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
@@ -23,7 +24,8 @@ class DrawData {
     private var projectionMatrix: Matrix4f = Game.matrices.projection
 
     private val renderer = DrawerRenderer()
-    private val transformation = Matrix4f().identity()
+    private val defaultTransformation = Matrix4f().identity()
+    var transformation: Matrix4f? = null
 
     private val translation: Vector3f = Vector3f()
     private val pivot: Vector3f = Vector3f()
@@ -32,6 +34,9 @@ class DrawData {
     private var rx = 0f
     private var ry = 0f
     private var rz = 0f
+
+    private var skewX = 0f
+    private var skewY = 0f
 
     val scaleX get() = scale.x
     val scaleY get() = scale.y
@@ -96,21 +101,24 @@ class DrawData {
         scale.set(scale.x*x, scale.y*y, 0f)
     }
 
+    fun setSkew(x: Float, y: Float) {
+        skewX = x
+        skewY = y
+    }
+
     fun setDepth(z: Float) {
         translation.set(translateX, translateY, translation.z-z)
     }
 
     fun getTransformationMatrix(matrix: Matrix4f): Matrix4f {
+        addSkewToMatrix(matrix)
         matrix.translate(translation)
 
         if (rz != 0f)
             matrix.rotate(rz, zAxis)
 
-        if (modelOrigin.x != 0.0 || modelOrigin.y != 0.0) {
-            val pivotX = modelOrigin.x.toFloat()*scale.x
-            val pivotY = modelOrigin.y.toFloat()*scale.y
-            matrix.translate(-pivotX, -pivotY, 0f)
-        }
+        addModelOriginToMatrix(matrix)
+
 
         matrix.scale(scale)
         pivot.set(0f, 0f, 0f)
@@ -121,11 +129,32 @@ class DrawData {
         renderer.color = fillColor
         renderer.radius = radius
 
-        getTransformationMatrix(transformation)
-        renderer.render(model, transformation, viewMatrix, projectionMatrix)
+        getTransformationMatrix(defaultTransformation)
+        transformation?.let { defaultTransformation.mul(it) }
+
+        renderer.render(model, defaultTransformation, viewMatrix, projectionMatrix)
 
         if (!noReset) {
             rewind()
+        }
+    }
+
+    private fun addModelOriginToMatrix(matrix: Matrix4f) {
+        if (modelOrigin.x != 0.0 || modelOrigin.y != 0.0) {
+            val pivotX = modelOrigin.x.toFloat()*scale.x
+            val pivotY = modelOrigin.y.toFloat()*scale.y
+            matrix.translate(-pivotX, -pivotY, 0f)
+        }
+    }
+
+    private fun addSkewToMatrix(matrix: Matrix4f) {
+        if (skewX != 0f) {
+            matrix.rotationZ(skewX)
+            matrix.m01(matrix.m10() + matrix.m01())
+        }
+        if (skewY != 0f) {
+            matrix.rotationZ(skewY)
+            matrix.m10(matrix.m10() + matrix.m01())
         }
     }
 
@@ -133,6 +162,8 @@ class DrawData {
         rz = 0f
         translation.set(0f, 0f, 0f)
         scale.set(1f, 1f, 1f)
+        skewX = 0f
+        skewY = 0f
 
         radius = 0f
         noReset = false
@@ -144,7 +175,8 @@ class DrawData {
         strokeColorWasSet = false
         fillColorWasSet = false
 
-        transformation.identity()
+        defaultTransformation.identity()
+        transformation = null
         renderer.rewind()
         modelOrigin.reset()
     }

@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.shader.vars.ShaderVariable
-import com.mechanica.engine.shader.vars.uniforms.vars.UniformVar
+import com.mechanica.engine.shader.uniforms.vars.UniformVar
 
 class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariable> {
     private val variables = ArrayList<ShaderVariable>()

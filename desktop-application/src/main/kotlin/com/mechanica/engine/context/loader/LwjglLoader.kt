@@ -24,7 +24,12 @@ class LwjglLoader : GLLoader {
     override fun createElementArray() = LwjglElementArrayType()
 
     override fun defaultShader(vertex: ShaderScript, fragment: ShaderScript, tessellation: ShaderScript?, geometry: ShaderScript?): Shader {
-        return object : Shader(vertex, fragment, tessellation, geometry) {
+        return object : Shader() {
+            override val vertex = vertex
+            override val fragment = fragment
+            override val tessellation = tessellation
+            override val geometry = geometry
+
             private val loader: ShaderLoader by lazy { ShaderLoader(vertex, fragment, tessellation, geometry) }
 
             override val id: Int get() = loader.id

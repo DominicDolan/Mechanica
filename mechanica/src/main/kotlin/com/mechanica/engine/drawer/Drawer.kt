@@ -1,6 +1,7 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
 import com.mechanica.engine.drawer.subclasses.layout.LayoutDrawer
@@ -90,7 +91,9 @@ interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathD
 
     fun polygon(polygon: PolygonModel)
 
-    fun model(model: Model)
+    fun model(model: Model, blend: Float = 0f, alphaBlend: Float = 0f, colorPassthrough: Boolean = true)
+
+    fun shader(shader: DrawerShader, model: Model?, blend: Float = 0f, alphaBlend: Float = 0f, colorPassthrough: Boolean = true)
 
     fun radius(r: Number): Drawer
 

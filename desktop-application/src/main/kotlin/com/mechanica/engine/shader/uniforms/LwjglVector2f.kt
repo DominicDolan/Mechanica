@@ -1,7 +1,7 @@
-package com.mechanica.engine.shader.vars.uniforms
+package com.mechanica.engine.shader.uniforms
 
 import com.mechanica.engine.shader.qualifiers.Qualifier
-import com.mechanica.engine.shader.vars.uniforms.vars.UniformVector2f
+import com.mechanica.engine.shader.uniforms.vars.UniformVector2f
 import org.lwjgl.opengl.GL20.glUniform2f
 
 class LwjglVector2f(

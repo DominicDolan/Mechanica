@@ -3,13 +3,15 @@ package com.mechanica.engine.unit.angle
 import kotlin.math.PI
 
 inline class Degree(private val degrees: Double) : Angle {
-    override fun toDegrees() = asDouble().degrees
+    override fun toDegrees() = toDouble().degrees
 
-    override fun toRadians() = (this.asDouble()*PI /180.0).radians
+    override fun toRadians() = (this.toDouble()*PI /180.0).radians
 
-    override fun asDouble() = degrees
+    override fun toDouble() = degrees
+
+    override fun toFloat() = degrees.toFloat()
 
     override fun toString(): String {
-        return asDouble().toString()
+        return toDouble().toString()
     }
 }

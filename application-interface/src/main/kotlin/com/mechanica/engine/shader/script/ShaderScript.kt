@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.models.Bindable
-import com.mechanica.engine.shader.vars.uniforms.vars.UniformVar
+import com.mechanica.engine.shader.uniforms.vars.UniformVar
 
 abstract class ShaderScript : ShaderDeclarations("autoVal") {
     val script: String

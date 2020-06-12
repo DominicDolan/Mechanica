@@ -1,7 +1,7 @@
-package com.mechanica.engine.shader.vars.uniforms
+package com.mechanica.engine.shader.uniforms
 
 import com.mechanica.engine.shader.qualifiers.Qualifier
-import com.mechanica.engine.shader.vars.uniforms.vars.UniformMatrix4f
+import com.mechanica.engine.shader.uniforms.vars.UniformMatrix4f
 import org.joml.Matrix4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20.glUniformMatrix4fv

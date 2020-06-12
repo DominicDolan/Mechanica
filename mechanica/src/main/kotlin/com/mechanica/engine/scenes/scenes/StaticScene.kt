@@ -1,12 +1,11 @@
 package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.game.view.DynamicView
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 
-abstract class StaticScene(final override val view: View, priority: Int = 0) : Scene(priority) {
+abstract class StaticScene(final override val view: View, order: Int = 0) : Scene(order) {
     constructor(
             x: Double = 0.0,
             y: Double = 0.0,

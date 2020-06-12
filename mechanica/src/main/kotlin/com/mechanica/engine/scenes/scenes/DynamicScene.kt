@@ -4,14 +4,13 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.DynamicView
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
 
 abstract class DynamicScene(
         x: Double = 0.0,
         y: Double = 0.0,
         width: Double = 1.0,
         height: Double = 1.0,
-        priority: Int = 0) : Scene(priority) {
+        order: Int = 0) : Scene(order) {
 
     constructor(
             view: View,
