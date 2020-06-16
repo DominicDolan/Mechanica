@@ -20,7 +20,15 @@ fun JsonObject.toStringValueMap(): Map<String, Any> {
             it.key to value
         } else null
 
-    }.toMap()
+    }.toHashMap()
+}
+
+fun List<Pair<String, Any>>.toHashMap(): HashMap<String, Any> {
+    val map = HashMap<String, Any>()
+    for (p in this) {
+        map[p.first] = p.second
+    }
+    return map
 }
 
 fun <V> JsonObjectBuilder.addSupportedType(key: String, value: V) {

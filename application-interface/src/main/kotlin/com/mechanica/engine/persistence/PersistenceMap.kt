@@ -15,7 +15,6 @@ class PersistenceMap private constructor(private val path: String, private val m
     fun store() {
         val json = Json(JsonConfiguration.Stable)
         val string = json.stringify(serializer, map)
-
         val file = ExternalResource(path, true)
         file.write(string)
     }
@@ -28,7 +27,6 @@ class PersistenceMap private constructor(private val path: String, private val m
         } catch (ex: FileNotFoundException) {
             "{}"
         }
-
 
         val map = Json.parse(serializer, string)
         map.forEach {

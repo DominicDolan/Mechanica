@@ -32,14 +32,14 @@ class PersistentVariable<T:Any>(
     }
 
     private fun Map<*, *>.retrieveInstancedValue(instance: String, name: String): T {
-        val subMap = subMap(instance) ?: return defaultValue
+        val subMap = subMap(name) ?: return defaultValue
 
-        return subMap.retrieveSingleValue(name)
+        return subMap.retrieveSingleValue(instance)
     }
 
-    private fun Map<*, *>.subMap(instance: String) : HashMap<String, Any>? {
+    private fun Map<*, *>.subMap(name: String) : HashMap<String, Any>? {
         @Suppress("UNCHECKED_CAST")
-        return this[instance] as? HashMap<String, Any>
+        return this[name] as? HashMap<String, Any>
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
@@ -48,7 +48,7 @@ class PersistentVariable<T:Any>(
         if (instance == null) {
             map.put(name, value)
         } else {
-            map.subMap(instance)?.put(name, value)
+            map.subMap(name)?.put(instance, value) ?: map.put(name, HashMap<String, Any>().also { it[instance] = value })
         }
     }
 

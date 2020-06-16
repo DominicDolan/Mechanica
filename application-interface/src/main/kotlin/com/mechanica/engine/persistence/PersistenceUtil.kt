@@ -1,6 +1,6 @@
 package com.mechanica.engine.persistence
 
-private val map = PersistenceMap("res/data/persistence.txt")
+private val map = PersistenceMap("res/data/persistence.json")
 
 fun persist(default: Boolean, instance: String? = null) = PersistentVariable(map, default, instance)
 
