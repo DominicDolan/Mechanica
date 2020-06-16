@@ -2,6 +2,7 @@ package com.mechanica.engine.resources
 
 import com.mechanica.engine.context.loader.GLLoader
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URI
@@ -39,7 +40,7 @@ interface Resource : GenericResource {
 
         operator fun invoke(file: String): Resource {
             val fileForURL = file.replace("\\", "/")
-            val url = getResourceURL(fileForURL) ?: throw IllegalStateException("Resource not found at $fileForURL")
+            val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
 
             return ResourceImpl(url)
         }

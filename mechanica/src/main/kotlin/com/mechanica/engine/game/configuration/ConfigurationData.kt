@@ -20,7 +20,6 @@ interface ConfigurationData {
     val viewHeight: Double?
     val viewX: Double?
     val viewY: Double?
-    val saveData: Array<Any>?
     val fullscreen: Boolean?
     val startingScene: (() -> MainScene)?
     val windowConfiguration: (Window.() -> Unit)?

@@ -42,10 +42,6 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.startingScene = scene
     }
 
-    override fun setSaveData(vararg savedata: Any) {
-        _data.saveData = arrayOf(*savedata)
-    }
-
     override fun configureWindow(configuration: Window.() -> Unit) {
         _data.windowConfiguration = configuration
     }

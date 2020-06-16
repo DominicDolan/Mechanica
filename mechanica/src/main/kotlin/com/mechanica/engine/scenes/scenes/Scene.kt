@@ -76,25 +76,6 @@ abstract class Scene(order: Int = 0) : Process(order), SceneNode {
         super.destructNodes()
     }
 
-    /**
-     * This does the same as [exclusivelyActiveProcesses][com.mechanica.engine.scenes.processes.Process.exclusivelyActiveProcesses] but it adds
-     * scenes to the parent instead of processes
-     *
-     * @param scenes the set of scenes that will be added as children to this scene and only one can be
-     *                  set to active at a time
-     * @return An ExclusiveProcessMap which can have more processes added at a later stage
-     */
-    protected fun <P: Scene> exclusivelyActiveScenes(vararg scenes: P): ExclusiveActivationMap<P> {
-        return ExclusiveSceneMap(*scenes)
-    }
-
-    private inner class ExclusiveSceneMap<P: Scene>(vararg scenes: P) : ExclusiveActivationMap<P>(*scenes) {
-        override fun <R : P> addProcess(process: R): R {
-            this@Scene.addScene(process)
-            return super.addProcess(process)
-        }
-    }
-
     @Suppress("PropertyName")
     @PublishedApi
     internal val `access$childScenes`: List<SceneNode>

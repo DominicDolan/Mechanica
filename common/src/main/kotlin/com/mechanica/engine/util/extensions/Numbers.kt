@@ -3,6 +3,7 @@ package com.mechanica.engine.util.extensions
 
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.sign
 
 fun Number.isHigher(other: Number): Boolean {
     return this.toDouble() > other.toDouble()
@@ -55,8 +56,29 @@ fun Number.isLower(other1: Number, other2: Number, other3: Number, vararg others
 }
 
 fun Double.constrain(lower: Double, higher: Double): Double {
-    val restrainLower = max(this, lower)
-    return min(restrainLower, higher)
+    val sign = sign(higher - lower)
+    if (sign == 0.0) return lower
+
+    val restrainLower = max(sign*this, sign*lower)
+    return sign*min(restrainLower, sign*higher)
+}
+
+fun Double.constrainLooped(lower: Double, higher: Double): Double {
+    val diff = (higher - lower)
+    val sign = sign(diff)
+
+    if (sign == 0.0) return lower
+
+    return when {
+        sign*this < sign*lower -> higher + sign * (sign * this - lower) % diff
+        sign*this > sign*higher -> lower + sign * (sign * this - higher) % diff
+        else -> this
+    }
+}
+
+fun main() {
+    val num = (7.0).constrain(5.0, 5.0)
+    println(num)
 }
 
 fun Int.constrain(lower: Int, higher: Int): Int {

@@ -55,10 +55,8 @@ class TextModel(text: Text,
     }
 
     fun setText(text: Text) {
-        if (text.string != this.string || textHolder != text) {
-            this.textHolder = text
-            updateTextHolder(text)
-        }
+        this.textHolder = text
+        updateTextHolder(text)
     }
 
     private fun updateTextHolder(text: Text) {

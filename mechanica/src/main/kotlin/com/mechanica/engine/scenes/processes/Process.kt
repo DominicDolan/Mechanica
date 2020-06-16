@@ -1,6 +1,9 @@
 package com.mechanica.engine.scenes.processes
 
+import com.mechanica.engine.animation.AnimationFormula
+import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
+import com.mechanica.engine.util.extensions.fori
 
 abstract class Process(override val order: Int = 0) : ProcessNode {
 
@@ -16,6 +19,7 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         }
 
     private val childProcesses: List<ProcessNode> = ArrayList()
+    private val leafProcesses: List<Updateable> = ArrayList()
 
     private var callbacksInitialized = false
 
@@ -47,31 +51,80 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         }
     }
 
-    final override fun <P:ProcessNode> addProcess(process: P): P {
+    final override fun <P:Updateable> addProcess(process: P): P {
+        if (process is ProcessNode) {
+            addProcessNode(process)
+        } else {
+            addUpdateable(process)
+        }
+        return process
+    }
+
+    private fun addProcessNode(process: ProcessNode) {
         val processes = (childProcesses as ArrayList)
 
         if (!processes.contains(process)) {
             processes.add(process)
             processes.sortBy { it.order }
         }
-        return process
     }
 
-    final override fun removeProcess(process: ProcessNode): Boolean {
+    private fun addUpdateable(updateable: Updateable) {
+        val processes = (leafProcesses as ArrayList)
+
+        if (!processes.contains(updateable)) {
+            processes.add(updateable)
+        }
+    }
+
+    final override fun removeProcess(process: Updateable): Boolean {
+        return if (process is ProcessNode) {
+            removeProcessNode(process)
+        } else {
+            removeUpdateable(process)
+        }
+    }
+
+    private fun removeProcessNode(process: ProcessNode): Boolean {
         process.destructNodes()
         return (childProcesses as ArrayList).remove(process)
     }
 
-    final override fun <P:ProcessNode> replaceProcess(old: P, new: P): P {
+    private fun removeUpdateable(updateable: Updateable): Boolean {
+        return (leafProcesses as ArrayList).remove(updateable)
+    }
+
+    final override fun <P:Updateable> replaceProcess(old: P, new: P): P {
+        val success = if (old is ProcessNode && new is ProcessNode) {
+            replaceProcessNode(old, new)
+        } else {
+            replaceUpdateable(old, new)
+        }
+
+        return if (success) new else old
+    }
+
+    private fun replaceProcessNode(old: ProcessNode, new: ProcessNode): Boolean {
         val processes = (childProcesses as ArrayList)
         val index = processes.indexOf(old)
         if (index != -1) {
             removeProcess(processes[index])
             processes.add(index, new)
             processes.sortBy { it.order }
-            return new
+            return true
         }
-        return old
+        return false
+    }
+
+    private fun replaceUpdateable(old: Updateable, new: Updateable): Boolean {
+        val processes = (leafProcesses as ArrayList)
+        val index = processes.indexOf(old)
+        if (index != -1) {
+            removeProcess(processes[index])
+            processes.add(index, new)
+            return true
+        }
+        return false
     }
 
     inline fun forEachProcess(operation: (ProcessNode)-> Unit) {
@@ -84,6 +137,7 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         if (!callbacksInitialized) runActivationCallbacks(active)
 
         val index = updateNodesFor(delta) { it.order < 0 }
+        updateLeaves(delta)
         this.update(delta)
         updateNodesFor(delta, index) { it.order >= 0 }
     }
@@ -106,6 +160,12 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         return i
     }
 
+    private fun updateLeaves(delta: Double) {
+        leafProcesses.fori {
+            it.update(delta)
+        }
+    }
+
     override fun destructNodes() {
         for (i in childProcesses.indices) {
             childProcesses[i].destructNodes()
@@ -113,28 +173,6 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         destructor()
     }
 
-    /**
-     * Sets the [processes] in which only one process can be active at once. This exclusivity is automatically enforced
-     *
-     * Usage:
-     * ```
-     * val currentlyActiveProcess by exclusivelyActiveProcesses(Process1(), Process2(), Process3())
-     * ```
-     *
-     * @param processes the set of processes that will be added as children to this process and only one can be
-     *                  set to active at a time
-     * @return An ExclusiveProcessMap which can have more processes added at a later stage
-     */
-    protected fun <P: Process> exclusivelyActiveProcesses(vararg processes: P): ExclusiveActivationMap<P> {
-        return ExclusiveProcessMap(*processes)
-    }
-
-    private inner class ExclusiveProcessMap<P: Process>(vararg processes: P) : ExclusiveActivationMap<P>(*processes) {
-        override fun <R : P> addProcess(process: R): R {
-            this@Process.addProcess(process)
-            return super.addProcess(process)
-        }
-    }
 
     override fun destructor() { }
 

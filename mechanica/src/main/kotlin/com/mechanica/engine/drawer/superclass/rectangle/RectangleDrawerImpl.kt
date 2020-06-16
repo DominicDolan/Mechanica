@@ -13,7 +13,7 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = Attribute(0).vec3().createUnitQuad()
+        val position = Attribute.location(0).vec3().createUnitQuad()
 
         val disableTexCoords = object : Bindable {
             override fun bind() {

@@ -13,7 +13,7 @@ import com.mechanica.engine.vertices.FloatBufferMaker
 import org.joml.Vector3f
 import org.joml.Vector4f
 
-class Attribute(
+class Attribute internal constructor(
         override val location: Int,
         private val variables: ScriptVariables? = null) : AttributeQualifier, AttributeVars {
 
@@ -81,8 +81,19 @@ class Attribute(
     }
 
     companion object {
-        operator fun invoke(location: Int): AttributeVars {
-            return Attribute(location)
+        private val attributeLocations = Array<Attribute?>(20) { null}
+
+        fun location(location: Int): AttributeVars {
+            return if (location > attributeLocations.lastIndex) {
+                Attribute(location)
+            } else {
+                val nullable = attributeLocations[location]
+                if (nullable == null) {
+                    val attribute = Attribute(location)
+                    attributeLocations[location] = attribute
+                    attribute
+                } else nullable
+            }
         }
     }
 }

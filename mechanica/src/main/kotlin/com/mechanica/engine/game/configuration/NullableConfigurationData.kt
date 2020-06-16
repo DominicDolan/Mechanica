@@ -21,9 +21,7 @@ class NullableConfigurationData : ConfigurationData {
     
     override var viewX: Double? = null
     override var viewY: Double? = null
-    
-    override var saveData: Array<Any>? = null
-    
+
     override var fullscreen: Boolean? = null
 
     override var startingScene: (() -> MainScene)? = null

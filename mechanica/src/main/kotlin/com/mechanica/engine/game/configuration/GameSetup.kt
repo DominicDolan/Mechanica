@@ -23,7 +23,6 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val viewHeight: Double
     override val viewX: Double = data.viewX ?: 0.0
     override val viewY: Double = data.viewX ?: 0.0
-    override val saveData: Array<Any> = data.saveData ?: emptyArray()
     override val fullscreen: Boolean = data.fullscreen ?: false
     override val startingScene: (() -> MainScene)? = data.startingScene
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }

@@ -11,8 +11,8 @@ class ImageDrawerImpl(
     private val model: ImageModel
 
     init {
-        val position = Attribute(0).vec3().createUnitQuad()
-        val textureCoords = Attribute(1).vec2().createInvertedUnitQuad()
+        val position = Attribute.location(0).vec3().createUnitQuad()
+        val textureCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
 
         model = ImageModel(Image(0), position, textureCoords)
     }

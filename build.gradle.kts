@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val lwjglVersion = "3.2.3"
 val lwjglNatives = "natives-windows"
 
-val kotlinVersion = "1.3.50"
+val kotlinVersion = "1.3.70"
 
 buildscript {
     repositories {
@@ -18,7 +18,8 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
+    kotlin("plugin.serialization") version "1.3.70"
     `java-library`
     maven
 }
@@ -28,6 +29,7 @@ val commonDependencies: DependencyHandlerScope.() -> Unit = {
 
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")

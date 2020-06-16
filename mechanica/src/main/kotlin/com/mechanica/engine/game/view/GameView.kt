@@ -61,11 +61,11 @@ class GameView(data: GameSetup): DynamicView {
     @Suppress("SetterBackingFieldAssignment")
     override var center: DynamicVector = object : DynamicVector {
         override var x: Double
-            get() = this@GameView.x + width/2.0
-            set(value) {this@GameView.x = value - width/2.0}
+            get() = this@GameView.x
+            set(value) {this@GameView.x = value}
         override var y: Double
-            get() = this@GameView.y + height/2.0
-            set(value) { this@GameView.y = value - height/2.0}
+            get() = this@GameView.y
+            set(value) { this@GameView.y = value}
     }
         set(value) {
             x = value.x

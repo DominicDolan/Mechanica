@@ -16,8 +16,6 @@ interface GameConfiguration {
 
     fun setStartingState(scene: () -> MainScene)
 
-    fun setSaveData(vararg savedata: Any)
-
     fun setMultisampling(samples: Int)
 
     fun configureWindow(configuration: (Window.() -> Unit))

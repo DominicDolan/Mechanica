@@ -27,7 +27,7 @@ fun main() {
         setMultisampling(0)
     }
 
-    Attribute(0).vec3().createBuffer(emptyArray<Vector>())
+    Attribute.location(0).vec3().createBuffer(emptyArray<Vector>())
     val vertex = object : ShaderScript() {
 
         val position = attribute(0).vec4()
@@ -77,7 +77,7 @@ fun main() {
             vec(0.85, 0.95)
     )
 
-    val square = Attribute(0).vec2().createBuffer(squareArray)
+    val square = Attribute.location(0).vec2().createBuffer(squareArray)
 
     val colorArray = arrayOf(
             hex(0xFF00FFFF),

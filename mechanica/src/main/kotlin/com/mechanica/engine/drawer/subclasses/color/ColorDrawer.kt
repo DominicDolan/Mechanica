@@ -16,27 +16,27 @@ interface ColorDrawer : Drawer, Color {
 
     operator fun invoke(hex: Long): ColorDrawer = invoke(hex(hex))
 
-    fun alpha(alpha: Double): Drawer {
+    fun alpha(alpha: Double): ColorDrawer {
         this.invoke(com.mechanica.engine.color.rgba(r, g, b, alpha))
         return this
     }
 
-    fun rgba(r: Double = this.r, g: Double = this.g, b: Double = this.b, a: Double = this.a): Drawer {
+    fun rgba(r: Double = this.r, g: Double = this.g, b: Double = this.b, a: Double = this.a): ColorDrawer {
         this.invoke(com.mechanica.engine.color.rgba(r, g, b, a))
         return this
     }
 
-    fun hue(hue: Angle): Drawer {
+    fun hue(hue: Angle): ColorDrawer {
         this.invoke(hsl(hue, saturation, lightness))
         return this
     }
 
-    fun lightness(lightness: Double): Drawer {
+    fun lightness(lightness: Double): ColorDrawer {
         this.invoke(hsl(hue, saturation, lightness))
         return this
     }
 
-    fun saturation(saturation: Double): Drawer {
+    fun saturation(saturation: Double): ColorDrawer {
         this.invoke(hsl(hue, saturation, lightness))
         return this
     }

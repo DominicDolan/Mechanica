@@ -11,9 +11,9 @@ interface ProcessNode : Updateable {
         get() = 0
     val active: Boolean
         get() = true
-    fun <P:ProcessNode> addProcess(process: P): P
-    fun removeProcess(process: ProcessNode): Boolean
-    fun <P:ProcessNode> replaceProcess(old: P, new: P): P
+    fun <P:Updateable> addProcess(process: P): P
+    fun removeProcess(process: Updateable): Boolean
+    fun <P:Updateable> replaceProcess(old: P, new: P): P
     fun updateNodes(delta: Double)
     fun destructor()
     fun destructNodes()

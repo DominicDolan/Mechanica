@@ -6,8 +6,6 @@ import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.context.GLContext
-import com.mechanica.engine.persistence.loadData
-import com.mechanica.engine.persistence.saveData
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.view.GameMatrices
@@ -16,6 +14,8 @@ import com.mechanica.engine.game.view.View
 import com.mechanica.engine.context.GLInitializer
 import com.mechanica.engine.context.loader.LwjglLoader
 import com.mechanica.engine.matrix.Matrices
+import com.mechanica.engine.persistence.populateData
+import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Process
 import com.mechanica.engine.scenes.scenes.*
@@ -144,15 +144,11 @@ object Game {
     }
 
     private fun loadPersistenceData() {
-        for (saveData in data.saveData) {
-            loadData(saveData)
-        }
+        populateData()
     }
 
     private fun savePersistenceData() {
-        for (saveData in data.saveData) {
-            saveData(saveData)
-        }
+        storeData()
     }
 
     private class UIView : View {
@@ -173,7 +169,7 @@ object Game {
             width = view.width/scale.x
             height = view.height/scale.y
             wh = vec(width, height)
-            center = vec(width/2.0, height/2.0)
+            center = vec(0.0, 0.0)
         }
     }
 }

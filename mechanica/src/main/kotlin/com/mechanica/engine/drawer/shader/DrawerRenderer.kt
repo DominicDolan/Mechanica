@@ -74,7 +74,7 @@ class DrawerRenderer {
 
     }
 
-    private val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
+    val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -115,7 +115,7 @@ class DrawerRenderer {
 
     var strokeWidth = 0.0
 
-    fun render(model: Model, transformation: Matrix4f, view: Matrix4f, projection: Matrix4f) {
+    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
         shader.render(model, transformation, projection, view)
     }
 

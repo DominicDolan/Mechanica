@@ -30,12 +30,12 @@ abstract class DynamicScene(
 
         override var x: Double
             get() {
-                return center.x - width/2.0
+                return center.x
             }
-            set(value) { center.x = value + width/2.0}
+            set(value) { center.x = value}
         override var y: Double
-            get() = center.y - height/2.0
-            set(value) {center.y = value + height/2.0}
+            get() = center.y
+            set(value) {center.y = value}
 
         @Suppress("SetterBackingFieldAssignment")
         override var center: DynamicVector = object : DynamicVector by position {}

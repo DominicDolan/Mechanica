@@ -1,5 +1,7 @@
 package com.mechanica.engine.drawer
 
+import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
@@ -22,9 +24,12 @@ import com.mechanica.engine.drawer.superclass.rectangle.RectangleDrawerImpl
 import com.mechanica.engine.drawer.superclass.text.TextDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
+import com.mechanica.engine.shader.qualifiers.Attribute
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
 
 class DrawerImpl(private val data: DrawData) :
         RectangleDrawer by RectangleDrawerImpl(data),
@@ -34,6 +39,15 @@ class DrawerImpl(private val data: DrawData) :
         PathDrawer by PathDrawerImpl(data),
         Drawer
 {
+
+    private val model: Model
+
+    init {
+        val position = Attribute.location(0).vec3().createUnitQuad()
+        val texCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
+
+        model = Model(position, texCoords, draw = GLLoader.graphicsLoader::drawArrays)
+    }
 
     private val colorDrawer = ColorDrawerImpl(this, data)
     override val color: ColorDrawer
@@ -95,7 +109,7 @@ class DrawerImpl(private val data: DrawData) :
         data.draw(model)
     }
 
-    override fun shader(shader: DrawerShader, model: Model?, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
-        TODO("not implemented")
+    override fun shader(shader: AbstractDrawerShader, model: Model?) {
+        data.draw(model ?: this.model, shader)
     }
 }

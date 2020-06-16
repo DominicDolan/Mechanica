@@ -42,10 +42,8 @@ abstract class AbstractDrawerShader : Shader() {
                 projection ?: Game.matrices.projection,
                 view ?: Game.matrices.view
         )
-        load()
 
-        model.bind()
-        model.draw()
+        render(model)
     }
 
     private fun loadMatrixUniforms(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {

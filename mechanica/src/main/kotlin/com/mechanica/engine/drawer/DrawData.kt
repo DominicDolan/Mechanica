@@ -1,7 +1,9 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.DynamicColor
+import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
@@ -125,14 +127,14 @@ class DrawData {
         return matrix
     }
 
-    fun draw(model: Model) {
+    fun draw(model: Model, shader: AbstractDrawerShader = renderer.shader) {
         renderer.color = fillColor
         renderer.radius = radius
 
         getTransformationMatrix(defaultTransformation)
         transformation?.let { defaultTransformation.mul(it) }
 
-        renderer.render(model, defaultTransformation, viewMatrix, projectionMatrix)
+        shader.render(model, defaultTransformation, projectionMatrix, viewMatrix)
 
         if (!noReset) {
             rewind()

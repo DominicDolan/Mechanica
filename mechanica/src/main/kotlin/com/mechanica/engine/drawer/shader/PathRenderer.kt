@@ -15,7 +15,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
 
-class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute(0).vec3()) {
+class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0).vec3()) {
 
     private val vertex = object : DrawerScript() {
 
