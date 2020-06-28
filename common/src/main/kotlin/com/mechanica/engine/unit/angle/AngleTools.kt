@@ -1,5 +1,7 @@
 package com.mechanica.engine.unit.angle
 
+import kotlin.math.PI
+
 inline val Number.degrees: Degree
     get() = Degree(this.toDouble())
 
@@ -42,4 +44,9 @@ operator fun Degree.times(other: Number): Degree {
 
 operator fun Radian.times(other: Number): Radian {
     return (this.toDouble() * other.toDouble()).radians
+}
+
+fun minimumDifference(angle1: Radian, angle2: Radian): Radian {
+    val diff = angle2 - angle1
+    return ((diff.toDouble() + PI) % (2.0* PI) - PI).radians
 }

@@ -2,8 +2,8 @@ package com.mechanica.engine.drawer.superclass.text
 
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.text.Text
 import com.mechanica.engine.models.TextModel
+import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.vec
 
@@ -41,7 +41,6 @@ class TextDrawerImpl(
 
         origin.set(oX*width, oY*height - bottomRight.y)
         data.draw(model)
-        origin.set(oX, oY)
     }
 
 

@@ -2,10 +2,10 @@ package com.mechanica.engine.drawer.subclasses.color
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.LightweightColor
-import com.mechanica.engine.color.hsl
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.color.hsl
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.unit.angle.Angle
+import com.mechanica.engine.unit.angle.Degree
 
 interface ColorDrawer : Drawer, Color {
     fun get(): Color
@@ -26,7 +26,7 @@ interface ColorDrawer : Drawer, Color {
         return this
     }
 
-    fun hue(hue: Angle): ColorDrawer {
+    fun hue(hue: Degree): ColorDrawer {
         this.invoke(hsl(hue, saturation, lightness))
         return this
     }

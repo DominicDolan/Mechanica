@@ -73,6 +73,6 @@ class FrameAnimation(private val frames: List<Image>, frameRate : Double,
 
     companion object {
         fun loadAnimation(directory: ResourceDirectory, frameRate: Double = 24.0)
-                = FrameAnimation(directory.map { loadImage(it) }, frameRate)
+                = FrameAnimation(directory.resources.map { loadImage(it) }, frameRate)
     }
 }

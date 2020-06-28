@@ -3,16 +3,15 @@ package com.mechanica.engine.drawer
 import com.mechanica.engine.color.DynamicColor
 import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
-import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
-import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
 import org.joml.Vector3f
+import kotlin.math.tan
 
 class DrawData {
 
@@ -27,6 +26,7 @@ class DrawData {
 
     private val renderer = DrawerRenderer()
     private val defaultTransformation = Matrix4f().identity()
+    private val spareTransformation = Matrix4f().identity()
     var transformation: Matrix4f? = null
 
     private val translation: Vector3f = Vector3f()
@@ -113,14 +113,13 @@ class DrawData {
     }
 
     fun getTransformationMatrix(matrix: Matrix4f): Matrix4f {
-        addSkewToMatrix(matrix)
         matrix.translate(translation)
 
         if (rz != 0f)
             matrix.rotate(rz, zAxis)
 
+        addSkewToMatrix(matrix)
         addModelOriginToMatrix(matrix)
-
 
         matrix.scale(scale)
         pivot.set(0f, 0f, 0f)
@@ -150,13 +149,19 @@ class DrawData {
     }
 
     private fun addSkewToMatrix(matrix: Matrix4f) {
-        if (skewX != 0f) {
-            matrix.rotationZ(skewX)
-            matrix.m01(matrix.m10() + matrix.m01())
-        }
-        if (skewY != 0f) {
-            matrix.rotationZ(skewY)
-            matrix.m10(matrix.m10() + matrix.m01())
+//        if (skewX != 0f) {
+//            matrix.rotationZ(skewX)
+//            matrix.m01(matrix.m10() + matrix.m01())
+//        }
+//        if (skewY != 0f) {
+//            matrix.rotationZ(skewY)
+//            matrix.m10(matrix.m10() + matrix.m01())
+//        }
+        if (skewX != 0f || skewY != 0f) {
+            spareTransformation.m10(tan(-skewX))
+            spareTransformation.m01(tan(skewY))
+
+            matrix.mul(spareTransformation)
         }
     }
 

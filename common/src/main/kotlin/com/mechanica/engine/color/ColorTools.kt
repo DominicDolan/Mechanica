@@ -2,9 +2,9 @@
 
 package com.mechanica.engine.color
 
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.angle.Angle
 import com.mechanica.engine.unit.angle.Degree
+import com.mechanica.engine.unit.angle.Radian
+import com.mechanica.engine.unit.angle.degrees
 import org.joml.Vector4f
 import kotlin.math.abs
 import kotlin.math.max
@@ -182,14 +182,22 @@ fun rgb2Lightness(r: Double, g: Double, b: Double): Double {
     return (max + min)/2.0
 }
 
-fun hsl(hue: Angle, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+    return hsl(hue.toDouble(), saturation, lightness, alpha)
+}
+
+fun hsl(hue: Radian, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+    return hsl(hue.toDegrees().toDouble(), saturation, lightness, alpha)
+}
+
+fun hsl(hue: Double, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
     fun f(n: Int, h: Double, s: Double, l: Double): Double {
         val a = s* min(l, 1.0-l)
         val k = (n + h/30.0)%12
         return (l - a* max(min(min(k-3.0, 9.0-k), 1.0),-1.0))
     }
 
-    val h = (hue.toDegrees().toDouble() + 360.0)%360.0
+    val h = (hue + 360.0)%360.0
     val s = saturation
     val l = lightness
 
