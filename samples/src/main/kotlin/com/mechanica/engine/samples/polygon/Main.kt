@@ -9,7 +9,7 @@ import com.mechanica.engine.geometry.lines.LineSegmentImpl
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.PolygonModel
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.vec
 
 fun main() {
@@ -34,7 +34,7 @@ fun main() {
     }
 }
 
-private class StartMain : MainScene() {
+private class StartMain : WorldScene() {
     val pathRenderer = PathRenderer()
 
     val points = arrayOf(

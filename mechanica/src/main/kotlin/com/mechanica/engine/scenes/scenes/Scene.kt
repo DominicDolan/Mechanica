@@ -2,7 +2,6 @@ package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 import com.mechanica.engine.scenes.processes.Process
 
 abstract class Scene(order: Int = 0) : Process(order), SceneNode {
@@ -75,6 +74,8 @@ abstract class Scene(order: Int = 0) : Process(order), SceneNode {
         }
         super.destructNodes()
     }
+
+    override fun render(draw: Drawer) { }
 
     @Suppress("PropertyName")
     @PublishedApi

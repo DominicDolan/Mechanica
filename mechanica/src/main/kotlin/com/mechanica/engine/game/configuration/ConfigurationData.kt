@@ -1,15 +1,14 @@
 package com.mechanica.engine.game.configuration
 
+import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
-import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.MainScene
-import com.mechanica.engine.scenes.scenes.LoadScene
-import org.joml.Matrix4f
 import com.mechanica.engine.state.LoadState
 import com.mechanica.engine.state.State
+import org.joml.Matrix4f
 
 interface ConfigurationData {
     val monitor: Monitor?

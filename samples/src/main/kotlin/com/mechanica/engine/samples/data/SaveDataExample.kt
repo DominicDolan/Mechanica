@@ -5,7 +5,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Key
 import com.mechanica.engine.input.KeyIDs
 import com.mechanica.engine.persistence.persist
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.text.Text
 
 fun main() {
@@ -17,7 +17,7 @@ fun main() {
     Game.run()
 }
 
-class SaveDataExample : MainScene() {
+class SaveDataExample : WorldScene() {
     private var count by persist(0)
 
     private val upKey = Key(KeyIDs.W, KeyIDs.UP, KeyIDs.SCROLL_UP)

@@ -2,33 +2,31 @@ package com.mechanica.engine.game
 
 import com.mechanica.engine.config.BackendDebugConfiguration
 import com.mechanica.engine.context.ALContext
-import com.mechanica.engine.context.GLFWContext
-import com.mechanica.engine.display.Monitor
-import com.mechanica.engine.display.Window
 import com.mechanica.engine.context.GLContext
+import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.context.GLInitializer
+import com.mechanica.engine.context.loader.LwjglLoader
+import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.game.view.GameView
-import com.mechanica.engine.game.view.View
-import com.mechanica.engine.context.GLInitializer
-import com.mechanica.engine.context.loader.LwjglLoader
+import com.mechanica.engine.game.view.UIView
+import com.mechanica.engine.game.view.WorldView
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Process
-import com.mechanica.engine.scenes.scenes.*
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
 
 object Game {
     private val configuration = GameConfigurationImpl()
     private val data by lazy { configuration.data }
 
-    val view: GameView by lazy { GameView(data) }
-    val ui: View by lazy { UIView() }
+    val view: WorldView by lazy { WorldView(data) }
+    val ui: UIView by lazy { UIView() }
     val window: Window by lazy { data.window }
 
     val debug by lazy { data.debugConfig }
@@ -151,25 +149,4 @@ object Game {
         storeData()
     }
 
-    private class UIView : View {
-        private val scale: Vector
-        override val width: Double
-        override val height: Double
-        override val x: Double = 0.0
-        override val y: Double = 0.0
-        override val xy: Vector = vec(0.0, 0.0)
-        override val wh: Vector
-        override val center: Vector
-        override val ratio: Double
-            get() = view.ratio*(scale.y/scale.x)
-
-        init {
-            val contentScale = Monitor.getPrimaryMonitor().contentScale
-            scale = vec(contentScale.xScale, contentScale.yScale)
-            width = view.width/scale.x
-            height = view.height/scale.y
-            wh = vec(width, height)
-            center = vec(0.0, 0.0)
-        }
-    }
 }

@@ -2,10 +2,10 @@ package com.mechanica.engine.samples.text
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.input.TextInput
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.input.TextInput
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.vec
 import org.joml.Matrix4f
 import kotlin.math.max
@@ -25,7 +25,7 @@ fun main() {
 }
 
 
-private class StartText : MainScene() {
+private class StartText : WorldScene() {
     val renderer = FontRenderer()
 
     val transformation = Matrix4f()

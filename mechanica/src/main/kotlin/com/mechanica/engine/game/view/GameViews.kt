@@ -1,12 +1,37 @@
 package com.mechanica.engine.game.view
 
+import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 
-class GameView(data: GameSetup): DynamicView {
+sealed class GameView : View
+
+class UIView internal constructor() : GameView() {
+    private val scale: Vector
+    override val width: Double
+    override val height: Double
+    override val x: Double = 0.0
+    override val y: Double = 0.0
+    override val xy: Vector = vec(0.0, 0.0)
+    override val wh: Vector
+    override val center: Vector
+    override val ratio: Double
+        get() = Game.view.ratio*(scale.y/scale.x)
+
+    init {
+        val contentScale = Monitor.getPrimaryMonitor().contentScale
+        scale = vec(contentScale.xScale, contentScale.yScale)
+        width = Game.view.width/scale.x
+        height = Game.view.height/scale.y
+        wh = vec(width, height)
+        center = vec(0.0, 0.0)
+    }
+}
+
+class WorldView internal constructor(data: GameSetup): GameView(), DynamicView {
     private var _width: Double = data.viewWidth
     override var width: Double
         get() = _width
@@ -47,11 +72,11 @@ class GameView(data: GameSetup): DynamicView {
     @Suppress("SetterBackingFieldAssignment")
     override var xy: DynamicVector = object : DynamicVector {
         override var x: Double
-            get() = this@GameView.x
-            set(value) {this@GameView.x = value}
+            get() = this@WorldView.x
+            set(value) {this@WorldView.x = value}
         override var y: Double
-            get() = this@GameView.y
-            set(value) { this@GameView.y = value}
+            get() = this@WorldView.y
+            set(value) { this@WorldView.y = value}
     }
         set(value) {
             x = value.x
@@ -61,11 +86,11 @@ class GameView(data: GameSetup): DynamicView {
     @Suppress("SetterBackingFieldAssignment")
     override var center: DynamicVector = object : DynamicVector {
         override var x: Double
-            get() = this@GameView.x
-            set(value) {this@GameView.x = value}
+            get() = this@WorldView.x
+            set(value) {this@WorldView.x = value}
         override var y: Double
-            get() = this@GameView.y
-            set(value) { this@GameView.y = value}
+            get() = this@WorldView.y
+            set(value) { this@WorldView.y = value}
     }
         set(value) {
             x = value.x
@@ -75,11 +100,11 @@ class GameView(data: GameSetup): DynamicView {
     @Suppress("SetterBackingFieldAssignment")
     override var wh: DynamicVector = object : DynamicVector {
         override var x: Double
-            get() = this@GameView.width
-            set(value) {this@GameView.width = value }
+            get() = this@WorldView.width
+            set(value) {this@WorldView.width = value }
         override var y: Double
-            get() = this@GameView.height
-            set(value) { this@GameView.height = value}
+            get() = this@WorldView.height
+            set(value) { this@WorldView.height = value}
     }
         set(value) {
             x = value.x

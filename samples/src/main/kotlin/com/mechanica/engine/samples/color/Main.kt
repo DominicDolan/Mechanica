@@ -3,7 +3,7 @@ package com.mechanica.engine.samples.color
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 
 fun main() {
     Game.configure {
@@ -16,7 +16,7 @@ fun main() {
 }
 
 
-private class StartMain : MainScene() {
+private class StartMain : WorldScene() {
     override fun update(delta: Double) {
 
     }

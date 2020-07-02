@@ -1,11 +1,11 @@
 package com.mechanica.engine.util
 
-abstract class GameBoolean {
-    fun update(delta: Double) {
+open class EventBoolean(private val condition: () -> Boolean) {
+    fun update() {
         isTrue = condition()
     }
 
-    abstract fun condition() : Boolean
+    fun condition() : Boolean = condition.invoke()
 
     var isTrue: Boolean = false
         private set(value) {

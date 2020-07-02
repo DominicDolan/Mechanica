@@ -28,7 +28,7 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
         pixelUIScale = calculatePixelSize(projection, uiView, Game.window.height)
     }
 
-    fun updateView(viewData: GameView) {
+    fun updateView(viewData: WorldView) {
         updateView(viewData.x, viewData.y, viewData.height)
     }
 

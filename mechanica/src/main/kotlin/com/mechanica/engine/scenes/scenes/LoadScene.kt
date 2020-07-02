@@ -2,7 +2,7 @@ package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
 
-abstract class LoadScene : MainScene() {
+abstract class LoadScene : WorldScene() {
     private val waitTime = 0.2f
     private val minLoops = 2
 

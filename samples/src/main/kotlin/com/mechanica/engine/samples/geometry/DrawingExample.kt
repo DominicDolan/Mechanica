@@ -6,7 +6,7 @@ import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.distanceTo
 import com.mechanica.engine.unit.vector.vec
@@ -21,7 +21,7 @@ fun main() {
     Game.run()
 }
 
-class DrawingExample : MainScene() {
+class DrawingExample : WorldScene() {
     private val renderer = PathRenderer()
 
     private val transformation = Matrix4f()

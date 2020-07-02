@@ -7,14 +7,13 @@ import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_STENCIL_TEST
 import org.lwjgl.opengl.GL11.glEnable
-import kotlin.math.tan
 
 
 fun main() {
@@ -25,7 +24,7 @@ fun main() {
     Game.run()
 }
 
-private class StartMain : MainScene() {
+private class StartMain : WorldScene() {
     private val transformation = Matrix4f()
 
     val image: Image

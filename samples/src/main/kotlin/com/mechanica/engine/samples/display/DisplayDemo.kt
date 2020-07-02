@@ -2,7 +2,7 @@ package com.mechanica.engine.samples.display
 
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.WorldScene
 
 fun main() {
     Game.configure {
@@ -13,7 +13,7 @@ fun main() {
     Game.run()
 }
 
-class DisplayTestState : MainScene() {
+class DisplayTestState : WorldScene() {
     override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {

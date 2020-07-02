@@ -2,7 +2,10 @@ package com.mechanica.engine.text
 
 import com.mechanica.engine.resources.Resource
 import com.mechanica.engine.unit.vector.DynamicVector
-import org.lwjgl.stb.*
+import org.lwjgl.stb.STBTTAlignedQuad
+import org.lwjgl.stb.STBTTFontinfo
+import org.lwjgl.stb.STBTTPackedchar
+import org.lwjgl.stb.STBTruetype
 import org.lwjgl.stb.STBTruetype.stbtt_GetCodepointKernAdvance
 import org.lwjgl.system.MemoryStack
 import java.nio.ByteBuffer
@@ -25,7 +28,6 @@ class LwjglStandardFont(resource: Resource, initializer: FontAtlasConfiguration.
     override val atlas = FontAtlas(data, config)
 
     private val metrics = FontMetrics(data.info, data.scale)
-
 
     override fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<DynamicVector>, texCoords: Array<DynamicVector>) {
         val c = cursor.currentChar

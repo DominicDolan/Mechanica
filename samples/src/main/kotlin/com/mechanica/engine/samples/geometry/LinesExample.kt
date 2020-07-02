@@ -2,6 +2,7 @@ package com.mechanica.engine.samples.geometry
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game
@@ -9,10 +10,9 @@ import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.lines.LineSegmentImpl
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.debug.ScreenLog
-import com.mechanica.engine.scenes.scenes.MainScene
 
 fun main() {
     Game.configure {
@@ -23,7 +23,7 @@ fun main() {
     Game.run()
 }
 
-class LinesDemo : MainScene() {
+class LinesDemo : WorldScene() {
     private val stroke = 0.05f
 
     private val renderer = PathRenderer()
