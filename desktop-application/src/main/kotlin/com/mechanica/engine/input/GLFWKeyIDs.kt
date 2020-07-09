@@ -12,7 +12,7 @@ class GLFWKeyIDs : KeyIDs {
     override val M6 = GLFWKey(GLFW_MOUSE_BUTTON_6)
     override val M7 = GLFWKey(GLFW_MOUSE_BUTTON_7)
     override val M8 = GLFWKey(GLFW_MOUSE_BUTTON_8)
-    override val SPACE = GLFWKey(GLFW_KEY_SPACE)
+    override val SPACE = GLFWKey(GLFW_KEY_SPACE, "SPACE")
     override val APOSTROPHE = GLFWKey(GLFW_KEY_APOSTROPHE)
     override val COMMA = GLFWKey(GLFW_KEY_COMMA)
     override val MINUS = GLFWKey(GLFW_KEY_MINUS)

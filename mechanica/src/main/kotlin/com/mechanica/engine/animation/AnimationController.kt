@@ -6,6 +6,8 @@ interface AnimationController : Updateable {
 
     val startTime: Double
     val endTime: Double
+    val length: Double
+        get() = endTime - startTime
 
     val time: Double
 
@@ -19,7 +21,10 @@ interface AnimationController : Updateable {
 
     fun restart() {
         goTo(startTime)
+        val pauseState = paused
+        paused = false
         update(0.0)
+        paused = pauseState
     }
 
     fun pause() {
@@ -28,7 +33,7 @@ interface AnimationController : Updateable {
 
     fun play() {
         paused = false
-        if (time == endTime) {
+        if (looped && time == endTime) {
             restart()
         }
     }

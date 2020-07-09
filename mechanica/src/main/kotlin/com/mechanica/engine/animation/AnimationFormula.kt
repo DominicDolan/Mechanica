@@ -13,6 +13,9 @@ class AnimationFormula(
         private set
     override var endTime: Double = endTime
         private set
+    override var length: Double
+        get() = super.length
+        set(value) = length(value)
 
     override var looped = false
     override var paused = false
@@ -25,6 +28,9 @@ class AnimationFormula(
             field = if (looped) {
                 value.constrainLooped(startTime, endTime)
             } else {
+                if (value >= endTime) {
+                    paused = true
+                }
                 value.constrain(startTime, endTime)
             }
         }
