@@ -1,8 +1,8 @@
-###Mechanica, a 2D Game Engine in Kotlin
+### Mechanica, a 2D Game Engine in Kotlin
 A powerful 2D Game Engine written in Kotlin. This project is still under development and it is not 
 thoroughly tested or documented but feel free to try it out nonetheless
 
-###Setting up the project with Gradle
+### Setting up the project with Gradle
 Clone or download the repository and build with gradle
 
 Create a new Project with gradle. In the `settings.gradle` file add:
