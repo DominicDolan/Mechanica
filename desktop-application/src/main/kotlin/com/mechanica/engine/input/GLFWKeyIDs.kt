@@ -4,8 +4,8 @@ import org.lwjgl.glfw.GLFW.*
 
 class GLFWKeyIDs : KeyIDs {
     override val UNKNOWN = GLFWKey(GLFW_KEY_UNKNOWN)
-    override val M1 = GLFWKey(GLFW_MOUSE_BUTTON_1)
-    override val M2 = GLFWKey(GLFW_MOUSE_BUTTON_2)
+    override val M1 = GLFWKey(GLFW_MOUSE_BUTTON_1, "LEFT CLICK")
+    override val M2 = GLFWKey(GLFW_MOUSE_BUTTON_2, "RIGHT CLICK")
     override val M3 = GLFWKey(GLFW_MOUSE_BUTTON_3)
     override val M4 = GLFWKey(GLFW_MOUSE_BUTTON_4)
     override val M5 = GLFWKey(GLFW_MOUSE_BUTTON_5)
@@ -123,7 +123,7 @@ class GLFWKeyIDs : KeyIDs {
     override val KP_ADD = GLFWKey(GLFW_KEY_KP_ADD)
     override val KP_ENTER = GLFWKey(GLFW_KEY_KP_ENTER)
     override val KP_EQUAL = GLFWKey(GLFW_KEY_KP_EQUAL)
-    override val LSHIFT = GLFWKey(GLFW_KEY_LEFT_SHIFT)
+    override val LSHIFT = GLFWKey(GLFW_KEY_LEFT_SHIFT, "SHIFT")
     override val LCTRL = GLFWKey(GLFW_KEY_LEFT_CONTROL)
     override val LALT = GLFWKey(GLFW_KEY_LEFT_ALT)
     override val LEFT_SUPER = GLFWKey(GLFW_KEY_LEFT_SUPER)

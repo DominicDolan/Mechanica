@@ -35,6 +35,28 @@ class Events(description: RenderDescription<Style>) : Event(description) {
         if (wasClicked) action()
     }
 
+    private var trackClicked = false
+    val clickedAndReleased: Boolean
+        get() {
+            if (wasClicked) trackClicked = true
+
+            if (click.hasBeenFalse) {
+                val trackClicked = trackClicked
+                this.trackClicked = false
+                if (trackClicked) {
+                    return hoverEvent()
+                }
+            }
+
+            return false
+        }
+
+    inline fun ifClickedAndReleased(action: () -> Unit) {
+        if (clickedAndReleased) {
+            action()
+        }
+    }
+
 
     inner class UIEventBoolean(condition: () -> Boolean) : EventBoolean(condition) {
         init {

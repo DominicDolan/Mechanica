@@ -1,9 +1,9 @@
 package com.mechanica.engine.drawer.superclass.path
 
 import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.unit.vector.VectorArray
 import org.joml.Matrix4f
 
@@ -45,11 +45,7 @@ class PathDrawerImpl(private val data: DrawData): PathDrawer {
 
     private fun draw() {
         data.getTransformationMatrix(transformation)
-        if (!data.strokeColorWasSet && data.fillColorWasSet) {
-            renderer.color = data.fillColor
-        } else {
-            renderer.color = data.strokeColor
-        }
+        renderer.color = data.fillColor
         renderer.stroke = data.strokeWidth.toFloat()
         renderer.render(transformation)
     }

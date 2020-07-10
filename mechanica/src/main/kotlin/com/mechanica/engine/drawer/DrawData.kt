@@ -149,14 +149,6 @@ class DrawData {
     }
 
     private fun addSkewToMatrix(matrix: Matrix4f) {
-//        if (skewX != 0f) {
-//            matrix.rotationZ(skewX)
-//            matrix.m01(matrix.m10() + matrix.m01())
-//        }
-//        if (skewY != 0f) {
-//            matrix.rotationZ(skewY)
-//            matrix.m10(matrix.m10() + matrix.m01())
-//        }
         if (skewX != 0f || skewY != 0f) {
             spareTransformation.m10(tan(-skewX))
             spareTransformation.m01(tan(skewY))
@@ -167,6 +159,7 @@ class DrawData {
 
     fun rewind() {
         rz = 0f
+        fillColor.a = 1.0
         translation.set(0f, 0f, 0f)
         scale.set(1f, 1f, 1f)
         skewX = 0f
