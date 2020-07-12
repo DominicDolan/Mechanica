@@ -37,7 +37,12 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0)
         override val main: String = """
             layout (lines) in;
             layout (triangle_strip, max_vertices = 4) out;
-                        
+                       
+            out GS_OUT
+            {
+                vec2 v_TexCoord;
+            } gs_out;
+             
             void main() {
                 vec2 p1 = gl_in[0].gl_Position.xy;
                 vec2 p2 = gl_in[1].gl_Position.xy;
