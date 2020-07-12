@@ -11,7 +11,7 @@ import com.mechanica.engine.unit.vector.*
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { BezierCurve() }
+        setStartingScene { BezierCurve() }
     }
 
     Game.run()

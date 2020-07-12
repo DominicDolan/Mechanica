@@ -14,7 +14,7 @@ import kotlin.math.min
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { StartText() }
+        setStartingScene { StartText() }
         configureDebugMode {
             constructionDraws = true
         }

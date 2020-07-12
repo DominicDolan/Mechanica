@@ -80,7 +80,6 @@ internal class SceneManager : Scene() {
     }
 
     fun updateScenes(): Double {
-
         if (!pause || frameAdvance) {
             updateScene()
             frameAdvance = false

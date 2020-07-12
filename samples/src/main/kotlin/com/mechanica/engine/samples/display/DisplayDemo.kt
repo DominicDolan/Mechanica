@@ -7,7 +7,7 @@ import com.mechanica.engine.scenes.scenes.WorldScene
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { DisplayTestState() }
+        setStartingScene { DisplayTestState() }
     }
 
     Game.run()

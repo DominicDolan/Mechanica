@@ -24,7 +24,11 @@ open class Model(vararg inputs: Bindable,
 
     fun bind() {
         for (vbo in inputs) {
-            vbo.bind()
+            if (vbo is VertexBuffer<*>) {
+                vbo.safeBind()
+            } else {
+                vbo.bind()
+            }
         }
     }
 

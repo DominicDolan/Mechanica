@@ -21,6 +21,7 @@ abstract class LoadScene : WorldScene() {
         currentWait += delta
         currentLoops++
         startLoading = currentWait > waitTime && currentLoops > minLoops
+
         if (finishedLoading) onFinish()
 
     }

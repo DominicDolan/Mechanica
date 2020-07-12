@@ -13,7 +13,7 @@ interface GameConfiguration {
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
 
-    fun setStartingState(scene: () -> MainScene)
+    fun setStartingScene(scene: () -> MainScene)
 
     fun setMultisampling(samples: Int)
 

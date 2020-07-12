@@ -9,7 +9,7 @@ fun main() {
     Game.configure {
         setViewport(height = 10.0)
         setResolution(2000, 2000)
-        setStartingState { StartMain() }
+        setStartingScene { StartMain() }
     }
 
     Game.run()

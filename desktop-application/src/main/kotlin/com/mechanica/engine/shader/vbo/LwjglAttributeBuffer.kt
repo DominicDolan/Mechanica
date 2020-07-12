@@ -8,7 +8,7 @@ import com.mechanica.engine.vertices.AttributeArray
 import org.joml.Vector3f
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL11.GL_FLOAT
-import org.lwjgl.opengl.GL15.*
+import org.lwjgl.opengl.GL15.glBufferSubData
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL40
 import java.nio.ByteBuffer
@@ -36,7 +36,7 @@ class LwjglAttributeBuffer(
         GL40.glEnableVertexAttribArray(location)
     }
 
-    override fun disable() {
+    override fun unbind() {
         GL20.glDisableVertexAttribArray(location)
     }
 

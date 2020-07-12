@@ -37,7 +37,7 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.viewY = y
     }
 
-    override fun setStartingState(scene: () -> MainScene) {
+    override fun setStartingScene(scene: () -> MainScene) {
         _data.startingScene = scene
     }
 

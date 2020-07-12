@@ -17,7 +17,7 @@ import com.mechanica.engine.unit.vector.vec
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { LinesDemo() }
+        setStartingScene { LinesDemo() }
     }
 
     Game.run()

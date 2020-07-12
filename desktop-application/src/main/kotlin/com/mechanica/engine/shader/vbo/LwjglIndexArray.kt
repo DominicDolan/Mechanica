@@ -16,6 +16,10 @@ class LwjglIndexArray(array: ShortArray) : LwjglVertexBuffer<ShortArray>(array.s
         GL40.glBufferData(bufferTarget, array, GL20.GL_STATIC_DRAW)
     }
 
+    override fun unbind() {
+        GL40.glBindBuffer(bufferTarget, 0)
+    }
+
     override fun subData(offset: Long, array: ShortArray) = glBufferSubData(bufferTarget, offset, array)
 
     override fun set(array: ShortArray, from: Int, length: Int) {

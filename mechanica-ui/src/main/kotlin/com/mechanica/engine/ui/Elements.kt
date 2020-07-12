@@ -59,7 +59,7 @@ class TextElementRenderer(var string: String) : ElementDrawer() {
     override fun RenderDescription<Style>.draw(draw: Drawer) {
         this@TextElementRenderer.font = this.style.font
         val text = getText()
-        draw.ui.color(style.textColor).layout.origin(0.0, 1.0).text(text, style.fontSize, x, y)
+        draw.ui.color(style.textColor).origin.relative(0.0, 1.0).text(text, style.fontSize, x, y)
     }
 
     private fun getText(): Text {

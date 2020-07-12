@@ -15,7 +15,7 @@ import org.joml.Matrix4f
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { DrawingExample() }
+        setStartingScene { DrawingExample() }
     }
 
     Game.run()

@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11.glEnable
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { StartMain() }
+        setStartingScene { StartMain() }
     }
     Game.run()
 }

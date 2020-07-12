@@ -11,7 +11,7 @@ import com.mechanica.engine.text.Text
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { SaveDataExample() }
+        setStartingScene { SaveDataExample() }
     }
 
     Game.run()

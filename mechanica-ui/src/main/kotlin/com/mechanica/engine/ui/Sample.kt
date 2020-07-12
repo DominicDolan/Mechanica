@@ -8,7 +8,7 @@ import com.mechanica.engine.scenes.scenes.MainUIScene
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { object : MainUIScene() { init {
+        setStartingScene { object : MainUIScene() { init {
             addScene(GUI())
         }} }
     }

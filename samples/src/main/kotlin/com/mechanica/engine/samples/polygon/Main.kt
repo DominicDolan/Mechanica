@@ -15,7 +15,7 @@ import com.mechanica.engine.unit.vector.vec
 fun main() {
     Game.configure {
         setViewport(height = 1.5)
-        setStartingState { StartMain() }
+        setStartingScene { StartMain() }
         setResolution(1500, 1500)
         configureDebugMode {
             printWarnings = true

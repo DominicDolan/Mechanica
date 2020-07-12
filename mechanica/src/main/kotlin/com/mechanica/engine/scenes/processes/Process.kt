@@ -1,8 +1,5 @@
 package com.mechanica.engine.scenes.processes
 
-import com.mechanica.engine.animation.AnimationFormula
-import com.mechanica.engine.animation.AnimationFormulas
-import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 import com.mechanica.engine.util.extensions.fori
 
 abstract class Process(override val order: Int = 0) : ProcessNode {
@@ -148,16 +145,16 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
     open fun whileInactive(delta: Double) { }
 
     private inline fun updateNodesFor(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
-        var i = from
+        var inverseI = childProcesses.lastIndex - from
         do {
-            val process = childProcesses.getOrNull(i++) ?: break
+            val process = childProcesses.getOrNull(childProcesses.lastIndex - (inverseI--)) ?: break
             if (process.active) {
                 process.updateNodes(delta)
             } else if (process is Process) {
                 process.whileInactive(delta)
             }
         } while (condition(process))
-        return i
+        return childProcesses.lastIndex - inverseI
     }
 
     private fun updateLeaves(delta: Double) {
