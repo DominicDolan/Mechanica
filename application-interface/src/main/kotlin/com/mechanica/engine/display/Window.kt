@@ -1,7 +1,6 @@
 package com.mechanica.engine.display
 
 import com.mechanica.engine.context.loader.DisplayLoader
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.resources.Resource
 import java.nio.ByteBuffer
 
@@ -26,14 +25,16 @@ interface Window {
     val size: Dimension
     val isResizing: Boolean
     var shouldClose: Boolean
+    val isFullscreen: Boolean
 
     fun addRefreshCallback(callback: (Window) -> Unit)
     fun requestAttention()
     fun setIcon(resource: Resource)
     fun setIcon(width: Int, height: Int, imageBuffer: ByteBuffer)
+    fun setFullscreen()
     fun setFullscreen(monitor: Monitor)
     fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int = 60)
-    fun exitFullscreen()
+    fun exitFullscreen(width: Int = -1, height: Int = -1)
     fun destroy()
     fun update(): Boolean
 

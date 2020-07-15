@@ -3,6 +3,7 @@ package com.mechanica.engine.ui
 import com.dubulduke.ui.event.Event
 import com.dubulduke.ui.render.RenderDescription
 import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.ui.style.Style
 import com.mechanica.engine.util.EventBoolean
 
 class Events(description: RenderDescription<Style>) : Event(description) {

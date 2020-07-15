@@ -1,6 +1,7 @@
 package com.mechanica.engine.samples.polygon
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game

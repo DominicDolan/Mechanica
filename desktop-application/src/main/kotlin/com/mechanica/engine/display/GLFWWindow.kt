@@ -3,12 +3,12 @@ package com.mechanica.engine.display
 import com.mechanica.engine.context.GLContext
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.context.callbacks.EventCallbacks
+import com.mechanica.engine.resources.Resource
 import com.mechanica.engine.utils.ImageData
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.system.MemoryUtil
-import com.mechanica.engine.resources.Resource
 import java.nio.ByteBuffer
 
 
@@ -64,6 +64,8 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
             }
             field = value
         }
+    override val isFullscreen: Boolean
+        get() = monitor != null
 
     private var finished = false
 
@@ -230,6 +232,10 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         glfwSetWindowIcon(id, imagebf)
     }
 
+    override fun setFullscreen() {
+        setFullscreen(Monitor.getPrimaryMonitor())
+    }
+
     override fun setFullscreen(monitor: Monitor) {
         val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
         glfwSetWindowMonitor(id, monitor.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
@@ -239,11 +245,30 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         glfwSetWindowMonitor(id, monitor.id, 0, 0, width, height, refreshRate)
     }
 
-    override fun exitFullscreen() {
+    override fun exitFullscreen(width: Int, height: Int) {
         if (this.monitor != null) {
             val vidMode = GLFWMonitor.getPrimaryMonitor().currentVideoMode
-            glfwSetWindowMonitor(id, MemoryUtil.NULL, 0, 0, vidMode.width(), vidMode.height(), 0)
+            val screenWidth = vidMode.width()
+            val screenHeight = vidMode.height()
+
+            if (width < 0 || height < 0) {
+                setDefaultWindowDimensions(screenWidth, screenHeight)
+            } else {
+                val x = screenWidth - width/2
+                val y = screenHeight - height/2
+                glfwSetWindowMonitor(id, MemoryUtil.NULL, x, y, width, height, vidMode.refreshRate())
+
+            }
         }
+    }
+
+    private fun setDefaultWindowDimensions(screenWidth: Int, screenHeight: Int) {
+        val windowWidth = (0.75*screenWidth).toInt()
+        val windowHeight = (0.75*screenHeight).toInt()
+        val x = screenWidth/2 - windowWidth/2
+        val y = screenHeight/2 - windowHeight/2
+        glfwSetWindowMonitor(id, MemoryUtil.NULL, x, y, windowWidth, windowHeight, 0)
+
     }
 
     inner class PositionImpl : Window.Position {

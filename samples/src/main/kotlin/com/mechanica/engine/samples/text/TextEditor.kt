@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.text
 
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.TextInput

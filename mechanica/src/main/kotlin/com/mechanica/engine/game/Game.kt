@@ -1,11 +1,8 @@
 package com.mechanica.engine.game
 
 import com.mechanica.engine.config.BackendDebugConfiguration
-import com.mechanica.engine.context.ALContext
-import com.mechanica.engine.context.GLContext
-import com.mechanica.engine.context.GLFWContext
-import com.mechanica.engine.context.GLInitializer
-import com.mechanica.engine.context.loader.LwjglLoader
+import com.mechanica.engine.configuration.Configurable
+import com.mechanica.engine.context.Application
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
@@ -21,8 +18,13 @@ import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
 
-object Game {
+object Game : Configurable<GameConfiguration> {
+    private var _application: Application? = null
+    val application: Application
+        get() = _application ?: throw IllegalStateException("Cannot access this application object because the game context has not been initialized.\nCall Game.configureAs() before using this object")
+
     private val configuration = GameConfigurationImpl()
+
     private val data by lazy { configuration.data }
 
     val view: WorldView by lazy { WorldView(data) }
@@ -50,7 +52,9 @@ object Game {
         sceneManager.addScene(scene)
     }
 
-    fun configure(setup: GameConfiguration.() -> Unit) {
+    override fun configureAs(application: Application, setup: GameConfiguration.() -> Unit) {
+        this._application = application
+        loadPersistenceData()
         setup(configuration)
         if (configuration.initalize) start()
         BackendDebugConfiguration.set(debug)
@@ -59,14 +63,11 @@ object Game {
     fun start(block: () -> Unit = {}) {
         try {
             if (!hasStarted) {
-                GLContext.initialize(window)
-                val callbacks = GLInitializer.initialize(LwjglLoader())
-                GLContext.setCallbacks(window, callbacks)
-                ALContext.initialize()
+                application.initialize(window)
+
                 window.addRefreshCallback { refreshView(it) }
 
                 Timer
-                loadPersistenceData()
                 sceneManager.setStartingScene(data)
 
                 hasStarted = true
@@ -93,7 +94,7 @@ object Game {
     private fun loop() {
         try {
             while (!hasFinished) {
-                GLContext.startFrame()
+                application.startFrame()
 
                 gameMatrices.updateMatrices()
 
@@ -118,9 +119,7 @@ object Game {
     fun terminate() {
         savePersistenceData()
         hasFinished = true
-        GLContext.free()
-        GLFWContext.terminate()
-        ALContext.destroy()
+        application.terminate()
     }
 
     fun setMainScene(setter: () -> MainScene?) {

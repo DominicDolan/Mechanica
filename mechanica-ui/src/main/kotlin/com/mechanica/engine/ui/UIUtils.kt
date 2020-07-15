@@ -6,6 +6,7 @@ import com.dubulduke.ui.Window
 import com.dubulduke.ui.element.ElementData
 import com.dubulduke.ui.render.RenderDescription
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.ui.style.Style
 
 fun createUI(view: View): MechanicaUI {
 

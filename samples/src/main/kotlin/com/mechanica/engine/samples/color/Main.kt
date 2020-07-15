@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.color
 
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse

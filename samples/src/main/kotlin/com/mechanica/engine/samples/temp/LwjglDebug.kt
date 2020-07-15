@@ -1,18 +1,18 @@
 package com.mechanica.engine.samples.temp
 
-import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.shader.script.ShaderScript
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.utils.loadImage
-import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.shader.script.Shader
+import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.utils.loadImage
 import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL11.GL_TRIANGLES
+import org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT
 import org.lwjgl.opengl.GL32.glDrawElementsBaseVertex
 
 fun main() {
@@ -64,10 +64,6 @@ fun main() {
     val image = loadImage(Res.image["testImage"])
 
     val inputs = arrayOf(pos, tc, image, indices)
-
-    val model = TextModel("")
-
-    val draw = Drawer.create()
 
     Game.run {
         shader.render(inputs) {

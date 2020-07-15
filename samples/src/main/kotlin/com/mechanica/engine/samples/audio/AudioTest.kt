@@ -1,12 +1,11 @@
 package com.mechanica.engine.samples.audio
 
 import com.mechanica.engine.audio.Listener
-import com.mechanica.engine.audio.SoundSource
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.resources.Res
-import org.joml.Vector3f
 
 fun main() {
     Game.configure {

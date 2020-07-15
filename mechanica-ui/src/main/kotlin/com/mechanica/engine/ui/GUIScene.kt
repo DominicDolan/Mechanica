@@ -1,10 +1,10 @@
 package com.mechanica.engine.ui
 
-import com.dubulduke.ui.element.Element
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.ui.elements.DrawerElement
 
 abstract class GUIScene(final override val view: View = Game.ui, order: Int = 10) : Scene(order) {
     val ui = createUI(view)
@@ -13,6 +13,6 @@ abstract class GUIScene(final override val view: View = Game.ui, order: Int = 10
         ui(draw) { ui(draw) }
     }
 
-    abstract fun Element<Style, Events>.ui(draw: Drawer)
+    abstract fun DrawerElement.ui(draw: Drawer)
 
 }

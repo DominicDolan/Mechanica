@@ -2,15 +2,15 @@ package com.mechanica.engine.persistence
 
 private val map = PersistenceMap("res/data/persistence.json")
 
-fun persist(default: Boolean, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: Boolean, instance: String? = null) = PersistentVariable(map, default, instance)
 
-fun persist(default: Int, instance: String? = null) = PersistentVariable(map, default, instance)
-fun persist(default: Long, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: Int, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: Long, instance: String? = null) = PersistentVariable(map, default, instance)
 
-fun persist(default: Float, instance: String? = null) = PersistentVariable(map, default, instance)
-fun persist(default: Double, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: Float, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: Double, instance: String? = null) = PersistentVariable(map, default, instance)
 
-fun persist(default: String, instance: String? = null) = PersistentVariable(map, default, instance)
+fun persistent(default: String, instance: String? = null) = PersistentVariable(map, default, instance)
 
 fun storeData() {
     map.store()

@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.renderer
 
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard

@@ -2,6 +2,7 @@ package com.mechanica.engine.samples.geometry
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.shader.PathRenderer
