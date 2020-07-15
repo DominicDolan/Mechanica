@@ -9,6 +9,7 @@ class Style {
     var text: String = ""
     var fontSize: Double = 1.0
     var font: Font? = null
+    var radius: Double = 0.0
 
     fun add(styleSetter: StyleSetter) {
         styleSetter.set(this)

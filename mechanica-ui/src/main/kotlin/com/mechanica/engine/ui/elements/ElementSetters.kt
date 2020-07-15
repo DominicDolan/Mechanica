@@ -2,6 +2,7 @@ package com.mechanica.engine.ui.elements
 
 import com.dubulduke.ui.layout.EditLayout
 import com.dubulduke.ui.layout.Layout
+import com.mechanica.engine.models.Image
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
 
@@ -15,6 +16,11 @@ fun DrawerElement.text(string: String, layout: EditLayout.(p: Layout, s: Layout)
     val text = addChildElement { TextElement(Text(string, this.style.font ?: Font.defaultFont), context) }
     text.layout.edit(layout)
     text.copyStyle(this.style)
+}
+
+fun DrawerElement.image(image: Image, layout: EditLayout.(p: Layout, s: Layout) -> Unit = {_, _ -> }) {
+    val element = addChildRenderer { ImageElementRenderer(image) }
+    element.layout.edit(layout)
 }
 
 inline fun DrawerElement.listItem(height: Double = 1.0, block: DrawerElement.() -> Unit) {

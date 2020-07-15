@@ -4,6 +4,7 @@ import com.dubulduke.ui.UIContext
 import com.dubulduke.ui.render.ElementRenderer
 import com.dubulduke.ui.render.RenderDescription
 import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.models.Image
 import com.mechanica.engine.text.Text
 import com.mechanica.engine.ui.Events
 import com.mechanica.engine.ui.style.Style
@@ -40,35 +41,18 @@ class TextElementRenderer(private var text: Text) : ElementDrawer {
     override fun RenderDescription<Style>.draw(draw: Drawer) {
         draw.ui.color(style.textColor).origin.relative(0.0, 1.0).text(text, style.fontSize, x, y)
     }
-//
-//    private fun getText(): Text {
-//        val text = text
-//        val font = font
-//        val newText = when {
-//            text == null -> createText(string)
-//            font != null && text.font !== font -> createText(string)
-//            text.string != string -> {
-//                text.string = string
-//                text
-//            }
-//            else -> text
-//        }
-//        this.text = newText
-//        return newText
-//    }
-//
-//    private fun createText(string: String): Text {
-//        val font = this.font
-//        val text = if (font != null) {
-//            Text(string, font)
-//        } else {
-//            Text(string)
-//        }
-//        this.text = text
-//        return text
-//    }
 
     override fun createElement(context: UIContext<Style, Events>): DrawerElement {
         return TextElement(context, this)
+    }
+}
+
+class ImageElementRenderer(private val image: Image): ElementDrawer {
+    override fun createElement(context: UIContext<Style, Events>): DrawerElement {
+        return DrawerElement(context, this)
+    }
+
+    override fun RenderDescription<Style>.draw(draw: Drawer) {
+        draw.ui.image(image, x, y + height, width, -height)
     }
 }
