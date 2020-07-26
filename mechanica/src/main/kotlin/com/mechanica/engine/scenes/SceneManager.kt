@@ -4,13 +4,14 @@ import com.mechanica.engine.debug.DebugDrawer
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.game.configuration.ConfigurationData
 import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
 
-internal class SceneManager : Scene() {
+internal class SceneManager(private val data: ConfigurationData) : Scene() {
     override val view: View
         get() = Game.view
 
@@ -94,7 +95,7 @@ internal class SceneManager : Scene() {
     }
 
     private fun updateScene() {
-        updateDuration = Timer.now - startOfLoop
+        updateDuration = data.deltaConfiguration?.invoke(startOfLoop, Timer.now) ?: 0.017
         startOfLoop = Timer.now
 
         updateNodes(updateDuration)
@@ -119,6 +120,7 @@ internal class SceneManager : Scene() {
 
     private fun checkStateChange() {
         if (scheduleSceneChange) {
+            currentScene?.destructNodes()
             currentScene = sceneSetter()
             scheduleSceneChange = false
         }

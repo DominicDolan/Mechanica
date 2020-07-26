@@ -21,5 +21,5 @@ interface ConfigurationData {
     val windowConfiguration: (Window.() -> Unit)?
     val debugConfiguration: (GameDebugConfiguration.() -> Unit)?
     val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)?
-
+    val deltaConfiguration: ((timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double)?
 }

@@ -56,4 +56,8 @@ internal class GameConfigurationImpl : GameConfiguration {
     override fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit) {
         _data.projectionMatrixConfiguration = configuration
     }
+
+    override fun configureDeltaCalculation(configuration: (timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double) {
+        _data.deltaConfiguration = configuration
+    }
 }

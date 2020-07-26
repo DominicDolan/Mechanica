@@ -21,4 +21,6 @@ interface GameConfiguration {
     fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit)
 
     fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)
+
+    fun configureDeltaCalculation(configuration: (timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double)
 }

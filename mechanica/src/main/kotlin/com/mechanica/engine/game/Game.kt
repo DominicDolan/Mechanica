@@ -13,7 +13,7 @@ import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
-import com.mechanica.engine.scenes.processes.Process
+import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
@@ -37,14 +37,15 @@ object Game : Configurable<GameConfiguration> {
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
-    internal val sceneManager = SceneManager()
+    internal val sceneManager by lazy { SceneManager(data) }
+
     val scene: Scene
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
     private var hasFinished = false
 
-    fun addProcess(process: Process) {
+    fun addProcess(process: Updateable) {
         sceneManager.addProcess(process)
     }
 

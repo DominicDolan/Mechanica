@@ -27,6 +27,8 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
             = data.projectionMatrixConfiguration ?: GameMatrices.Companion::defaultProjectionMatrix
+    override val deltaConfiguration: ((timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double)
+            = data.deltaConfiguration ?: { lastFrame, thisFrame -> thisFrame - lastFrame }
 
     val ratio: Double
 

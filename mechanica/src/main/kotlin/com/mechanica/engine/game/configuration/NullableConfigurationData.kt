@@ -28,4 +28,6 @@ class NullableConfigurationData : ConfigurationData {
     override var windowConfiguration: (Window.() -> Unit)? = null
     override var debugConfiguration: (GameDebugConfiguration.() -> Unit)? = null
     override var projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)? = null
+
+    override var deltaConfiguration: ((timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double)? = null
 }
