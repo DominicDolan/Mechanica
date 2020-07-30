@@ -19,4 +19,12 @@ object BackendDebugConfiguration : DebugConfiguration {
         get() = configuration?.printWarnings ?: false
     override val lwjglDebug: Boolean
         get() = configuration?.lwjglDebug ?: false
+
+    override fun pauseUpdates(pause: Boolean) {
+        configuration?.pauseUpdates(pause)
+    }
+
+    override fun frameAdvance() {
+        configuration?.frameAdvance()
+    }
 }

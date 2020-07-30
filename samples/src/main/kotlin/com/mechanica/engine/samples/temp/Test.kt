@@ -1,21 +1,22 @@
 package com.mechanica.engine.samples.temp
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.text.Text
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Bindable
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.shader.script.ShaderScript
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.utils.loadImage
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.shader.script.Shader
+import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.utils.loadImage
 import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
@@ -27,7 +28,7 @@ fun main() {
         setMultisampling(0)
     }
 
-    Attribute(0).vec3().createBuffer(emptyArray<Vector>())
+    Attribute.location(0).vec3().createBuffer(emptyArray<Vector>())
     val vertex = object : ShaderScript() {
 
         val position = attribute(0).vec4()
@@ -77,7 +78,7 @@ fun main() {
             vec(0.85, 0.95)
     )
 
-    val square = Attribute(0).vec2().createBuffer(squareArray)
+    val square = Attribute.location(0).vec2().createBuffer(squareArray)
 
     val colorArray = arrayOf(
             hex(0xFF00FFFF),
@@ -115,7 +116,7 @@ fun main() {
         draw.image(image, -1, 0)
         shader.render(textModel)
         if (Keyboard.enter.hasBeenPressed) {
-            textModel.text = "Enter Pressed"
+            textModel.string = "Enter Pressed"
         }
         draw.text(text)
     }

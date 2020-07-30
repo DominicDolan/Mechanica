@@ -1,14 +1,13 @@
 package com.mechanica.engine.samples.text
 
-import com.mechanica.engine.color.hex
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.state.State
+import com.mechanica.engine.input.TextInput
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.util.extensions.constrain
 import org.joml.Matrix4f
 import kotlin.math.max
 import kotlin.math.min
@@ -16,25 +15,27 @@ import kotlin.math.min
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { StartText() }
+        setStartingScene { StartText() }
         configureDebugMode {
             constructionDraws = true
         }
     }
+//    val font = LwjglSDFFont(Res.font["freebooterscript.ttf"])
 
     Game.run()
 }
 
 
-private class StartText : State() {
+private class StartText : WorldScene() {
     val renderer = FontRenderer()
 
-    val model = Model()
     val transformation = Matrix4f()
 
     val startPosition = vec(-Game.view.width.toFloat()/2f, Game.view.height.toFloat()/2f - renderer.fontSize)
 
     var cursor = 0
+
+    private val sb = StringBuilder()
 
     init {
         renderer.text = ""
@@ -45,20 +46,17 @@ private class StartText : State() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            Game.view.x = startPosition.x + Game.view.width/2.0
-            Game.view.y = startPosition.y + 1.0 - Game.view.height/2.0
+            view.x = startPosition.x + Game.view.width/2.0
+            view.y = startPosition.y + 1.0 - Game.view.height/2.0
         }
-        if (Mouse.scrollDown.hasBeenPressed) {
-            Game.view.height *= 1.0 + Mouse.scrollDown.distance/10.0
-            setViewPosition()
-        }
-        if (Mouse.scrollUp.hasBeenPressed) {
-            Game.view.height /= 1.0 + Mouse.scrollUp.distance/10.0
+
+        if (Mouse.scroll.hasBeenPressed) {
+            view.height /= 1.0 + Mouse.scroll.distance/10.0
             setViewPosition()
         }
 
-        if (Keyboard.textInput.hasBeenInput.isNotEmpty()) {
-            addLetter(cursor, Keyboard.textInput.inputText)
+        if (TextInput.hasTextInput) {
+            addLetterFromKeyboard()
         }
 
         if (Keyboard.backspace.hasBeenPressed) {
@@ -67,11 +65,13 @@ private class StartText : State() {
                 cursor--
             }
         }
+
         if (Keyboard.delete.hasBeenPressed) {
-            removeLetter(cursor+1)
+            removeLetter(cursor + 1)
         }
         if (Keyboard.enter.hasBeenPressed) {
-            addLetter(cursor, "\n")
+            addLetter('\n', cursor)
+            cursor++
         }
 
         if (Keyboard.left.hasBeenPressed) {
@@ -96,40 +96,31 @@ private class StartText : State() {
     }
 
     override fun render(draw: Drawer) {
-        draw.color(hex(0xC0C0C0FF)).background()
+        draw.black.background()
 
         val pos = renderer.from(cursor).getPosition()
         draw.blue.rectangle(pos.x, pos.y - 0.1*renderer.fontSize, 0.05, 0.75*renderer.fontSize)
         renderer.render(transformation)
     }
 
-    fun addLetter(index: Int, str: String) {
-        val fullText = renderer.text
-        val safeIndex = index.constrain(0, fullText.length)
+    fun updateText() {
+        renderer.text = sb.toString()
+    }
 
-        val before = if (index <= 0) ""
-            else fullText.substring(0 until safeIndex)
+    fun addLetterFromKeyboard() {
+        val changed = TextInput.getCodepoints(sb, cursor)
+        cursor += changed
+        updateText()
+    }
 
-        val after = if (index >= fullText.length) ""
-                    else fullText.substring(safeIndex until fullText.length)
-
-        renderer.text = before + str + after
-        cursor++
-
+    fun addLetter(char: Char, index: Int) {
+        sb.insert(index, char)
+        updateText()
     }
 
     fun removeLetter(index: Int) {
-        val fullText = renderer.text
-        val safeIndex = index.constrain(0, fullText.length)
-
-        val before = if (index <= 0) ""
-        else fullText.substring(0 until max(0,safeIndex-1))
-
-        val after = if (index >= fullText.length) ""
-        else fullText.substring(safeIndex until fullText.length)
-
-        renderer.text = before + after
+        sb.delete(index-1, index)
+        updateText()
     }
-
 }
 

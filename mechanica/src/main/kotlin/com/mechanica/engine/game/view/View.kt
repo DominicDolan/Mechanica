@@ -7,6 +7,8 @@ interface View {
     val height: Double
     val x: Double
     val y: Double
+    val xy: Vector
+    val wh: Vector
 
     val bottom: Double
         get() = y - height/2.0
@@ -20,4 +22,12 @@ interface View {
     val center: Vector
 
     val ratio: Double
+        get() = width/height
+
+    companion object {
+        fun create(x: Double = 0.0,
+                   y: Double = 0.0,
+                   width: Double = 1.0,
+                   height: Double = 1.0): View = StaticView(x, y, width, height)
+    }
 }

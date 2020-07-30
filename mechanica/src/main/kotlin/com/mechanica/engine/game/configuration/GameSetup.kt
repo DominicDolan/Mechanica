@@ -1,21 +1,18 @@
 package com.mechanica.engine.game.configuration
 
+import com.mechanica.engine.context.GLInitializer
+import com.mechanica.engine.context.loader.LwjglDisplayLoader
+import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
-import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.ResolutionConverter
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
-import com.mechanica.engine.input.KeyboardHandler
-import com.mechanica.engine.input.MouseHandler
+import com.mechanica.engine.scenes.scenes.MainScene
 import org.joml.Matrix4f
-import org.lwjgl.glfw.GLFW
-import com.mechanica.engine.state.LoadState
-import com.mechanica.engine.state.State
 
 class GameSetup(data: NullableConfigurationData) : ConfigurationData {
-    override val monitor = Monitor.getPrimaryMonitor()
+    override val monitor by lazy { Monitor.getPrimaryMonitor() }
     
     override val title: String = data.title ?: "Mechanica"
     override val resolutionWidth: Int
@@ -24,11 +21,8 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val viewHeight: Double
     override val viewX: Double = data.viewX ?: 0.0
     override val viewY: Double = data.viewX ?: 0.0
-    override val saveData: Array<Any> = data.saveData ?: emptyArray()
-    override val controlsMap: ControlsMap = data.controlsMap ?: object : ControlsMap() { }
     override val fullscreen: Boolean = data.fullscreen ?: false
-    override val startingState: (() -> State)? = data.startingState
-    override val loadState: (() -> LoadState)? = data.loadState
+    override val startingScene: (() -> MainScene)? = data.startingScene
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }
     override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
@@ -42,6 +36,7 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     val resolutionConverter: ResolutionConverter
 
     init {
+        GLInitializer.initializeDisplay(LwjglDisplayLoader())
 
         val resolutionWasSet = data.resolutionWidth != null && data.resolutionHeight != null
 
@@ -52,7 +47,6 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
         ratio = resolutionHeight.toDouble()/resolutionWidth.toDouble()
 
         window = setWindow(resolutionWasSet)
-        setCallbacks(window)
 
         resolutionConverter = ResolutionConverter(resolutionWidth, resolutionHeight, data.viewWidth, data.viewHeight)
 
@@ -75,25 +69,14 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
 
     private fun centerWindow(window: Window) {
         val monitor = Monitor.getPrimaryMonitor()
-        val screenWidth = monitor.currentVideoMode.width()
-        val screenHeight = monitor.currentVideoMode.height()
+        val screenWidth = monitor.width
+        val screenHeight = monitor.height
         window.position.set((screenWidth - window.width)/2, (screenHeight - window.height)/2)
     }
 
-    private fun setCallbacks(window: Window) {
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        GLFW.glfwSetKeyCallback(window.id, KeyboardHandler.KeyHandler())
-        GLFW.glfwSetCharCallback(window.id, KeyboardHandler.TextHandler())
-
-        GLFW.glfwSetMouseButtonCallback(window.id, MouseHandler.ButtonHandler())
-        GLFW.glfwSetCursorPosCallback(window.id, MouseHandler.CursorHandler())
-        GLFW.glfwSetScrollCallback(window.id, MouseHandler.ScrollHandler())
-
-    }
-
     private fun setResolution(resolutionWasSet: Boolean, data: NullableConfigurationData): Pair<Int, Int> {
-        val defaultResolutionWidth = (monitor.currentVideoMode.width()*0.75).toInt()
-        val defaultResolutionHeight = (monitor.currentVideoMode.height()*0.75).toInt()
+        val defaultResolutionWidth = (monitor.width*0.75).toInt()
+        val defaultResolutionHeight = (monitor.height*0.75).toInt()
 
         return Pair(
                 if (resolutionWasSet) data.resolutionWidth ?: defaultResolutionWidth

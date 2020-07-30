@@ -1,9 +1,10 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
+import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
-import com.mechanica.engine.drawer.subclasses.layout.LayoutDrawer
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawer
 import com.mechanica.engine.drawer.subclasses.transformation.TransformationDrawer
 import com.mechanica.engine.drawer.superclass.circle.CircleDrawer
@@ -15,9 +16,9 @@ import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
 
 interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathDrawer {
-    val layout: LayoutDrawer
+    val origin: OriginDrawer
     val centered: Drawer
-        get() = layout.origin(0.5, 0.5)
+        get() = origin.relative(0.5, 0.5)
 
     val color: ColorDrawer
 
@@ -90,7 +91,9 @@ interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathD
 
     fun polygon(polygon: PolygonModel)
 
-    fun model(model: Model)
+    fun model(model: Model, blend: Float = 0f, alphaBlend: Float = 0f, colorPassthrough: Boolean = true)
+
+    fun shader(shader: AbstractDrawerShader, model: Model? = null)
 
     fun radius(r: Number): Drawer
 

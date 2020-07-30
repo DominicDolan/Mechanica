@@ -8,7 +8,8 @@ object GLFWContext : Version {
     override val minorVersion: Int
     override val version: Double
 
-    private var initialized = false
+    var initialized = false
+        private set
 
     private var _samples = 4
     val samples: Int

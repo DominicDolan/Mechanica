@@ -47,10 +47,8 @@ class ShaderLoader(
                 val log = GL20.glGetProgramInfoLog(programId, GL20.GL_INFO_LOG_LENGTH)
                 val script = getShaderScriptFromLog(log, vertex, fragment, tessellation, geometry)
 
-                System.err.println(errorMessage(script))
-                System.err.println(log)
                 cleanUp()
-                exitProcess(-1)
+                throw IllegalStateException(errorMessage(script) + "\n" + log)
             }
         }
 
@@ -60,9 +58,6 @@ class ShaderLoader(
         GL20.glValidateProgram(id)
         checkProgram(id, GL20.GL_VALIDATE_STATUS) { "Shader validating failed" }
 
-        vertex.loadProgram(id)
-        geometry?.loadProgram(id)
-        fragment.loadProgram(id)
     }
 
     private fun loadShader(script: String, type: Int): Int {

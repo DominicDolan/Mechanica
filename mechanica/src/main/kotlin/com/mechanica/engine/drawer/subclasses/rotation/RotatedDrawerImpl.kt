@@ -9,9 +9,9 @@ import com.mechanica.engine.unit.vector.Vector
 
 internal class RotatedDrawerImpl(drawer: Drawer, private val data: DrawData): RotatedDrawer, Drawer by drawer {
 
-    override fun invoke(angle: Degree) = rotate(angle.toRadians().asDouble())
+    override fun invoke(angle: Degree) = rotate(angle.toRadians().toDouble())
 
-    override fun invoke(angle: Radian) = rotate(angle.asDouble())
+    override fun invoke(angle: Radian) = rotate(angle.toDouble())
 
     override fun about(pivotX: Number, pivotY: Number): Drawer {
         data.modelOrigin.set(pivotX.toDouble(), pivotY.toDouble())

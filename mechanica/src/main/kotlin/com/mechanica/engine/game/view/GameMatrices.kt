@@ -3,7 +3,6 @@ package com.mechanica.engine.game.view
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.GameSetup
-import com.mechanica.engine.input.Mouse
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.matrix.Matrices.Companion.calculatePixelSize
 import com.mechanica.engine.matrix.Matrices.Companion.getYScale
@@ -29,10 +28,8 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
         pixelUIScale = calculatePixelSize(projection, uiView, Game.window.height)
     }
 
-    fun updateView(viewData: GameView) {
+    fun updateView(viewData: WorldView) {
         updateView(viewData.x, viewData.y, viewData.height)
-
-        Mouse.refreshCursor()
     }
 
     private fun updateView(x: Double, y: Double, height: Double) {

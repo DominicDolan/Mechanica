@@ -15,7 +15,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20
 
-class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute(0).vec3()) {
+class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0).vec3()) {
 
     private val vertex = object : DrawerScript() {
 
@@ -37,7 +37,12 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute(0).vec3()) 
         override val main: String = """
             layout (lines) in;
             layout (triangle_strip, max_vertices = 4) out;
-                        
+                       
+            out GS_OUT
+            {
+                vec2 v_TexCoord;
+            } gs_out;
+             
             void main() {
                 vec2 p1 = gl_in[0].gl_Position.xy;
                 vec2 p2 = gl_in[1].gl_Position.xy;

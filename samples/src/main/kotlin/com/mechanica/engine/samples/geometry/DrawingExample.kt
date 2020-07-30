@@ -1,12 +1,13 @@
 package com.mechanica.engine.samples.geometry
 
 import com.mechanica.engine.color.rgba
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.state.State
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.distanceTo
 import com.mechanica.engine.unit.vector.vec
@@ -15,13 +16,13 @@ import org.joml.Matrix4f
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { DrawingExample() }
+        setStartingScene { DrawingExample() }
     }
 
     Game.run()
 }
 
-class DrawingExample : State() {
+class DrawingExample : WorldScene() {
     private val renderer = PathRenderer()
 
     private val transformation = Matrix4f()

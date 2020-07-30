@@ -8,8 +8,10 @@ object ScreenLog {
     internal fun render(draw: Drawer) {
         val v = Game.ui
         val fontSize = v.height*0.02
-        draw.ui.layout.origin(0, 1).green.alpha(0.5).text(sb.toString(), fontSize, v.left, v.top)
-        sb.clear()
+        if (sb.isNotEmpty()) {
+            draw.ui.origin.relative(0, 1).green.alpha(0.5).text(sb.toString(), fontSize, v.left, v.top)
+            sb.clear()
+        }
     }
 
     fun addLine(text: String) {

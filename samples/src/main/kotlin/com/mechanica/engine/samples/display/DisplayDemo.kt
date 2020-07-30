@@ -1,19 +1,20 @@
 package com.mechanica.engine.samples.display
 
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.state.State
+import com.mechanica.engine.scenes.scenes.WorldScene
 
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { DisplayTestState() }
+        setStartingScene { DisplayTestState() }
     }
 
     Game.run()
 }
 
-class DisplayTestState : State() {
+class DisplayTestState : WorldScene() {
     override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {

@@ -1,37 +1,35 @@
 package com.mechanica.engine.game
 
 import com.mechanica.engine.config.BackendDebugConfiguration
-import com.mechanica.engine.context.GLFWContext
-import com.mechanica.engine.display.Monitor
+import com.mechanica.engine.configuration.Configurable
+import com.mechanica.engine.context.Application
 import com.mechanica.engine.display.Window
-import com.mechanica.engine.context.GLContext
-import com.mechanica.engine.persistence.loadData
-import com.mechanica.engine.persistence.saveData
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
-import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.game.view.GameView
-import com.mechanica.engine.game.view.View
-import com.mechanica.engine.context.GLInitializer
-import com.mechanica.engine.context.loader.LwjglLoader
+import com.mechanica.engine.game.view.UIView
+import com.mechanica.engine.game.view.WorldView
 import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.state.State
-import com.mechanica.engine.state.StateManager
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.persistence.populateData
+import com.mechanica.engine.persistence.storeData
+import com.mechanica.engine.scenes.SceneManager
+import com.mechanica.engine.scenes.processes.Process
+import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
-import org.lwjgl.glfw.GLFW
 
-object Game {
+object Game : Configurable<GameConfiguration> {
+    private var _application: Application? = null
+    val application: Application
+        get() = _application ?: throw IllegalStateException("Cannot access this application object because the game context has not been initialized.\nCall Game.configureAs() before using this object")
+
     private val configuration = GameConfigurationImpl()
+
     private val data by lazy { configuration.data }
 
-    val view: GameView by lazy { GameView(data) }
-    val ui: View by lazy { UIView() }
+    val view: WorldView by lazy { WorldView(data) }
+    val ui: UIView by lazy { UIView() }
     val window: Window by lazy { data.window }
-
-    internal val controls by lazy { data.controlsMap }
 
     val debug by lazy { data.debugConfig }
 
@@ -39,12 +37,24 @@ object Game {
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
-    private val stateManager = StateManager()
+    internal val sceneManager = SceneManager()
+    val scene: Scene
+        get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
     private var hasFinished = false
 
-    fun configure(setup: GameConfiguration.() -> Unit) {
+    fun addProcess(process: Process) {
+        sceneManager.addProcess(process)
+    }
+
+    fun addScene(scene: Scene) {
+        sceneManager.addScene(scene)
+    }
+
+    override fun configureAs(application: Application, setup: GameConfiguration.() -> Unit) {
+        this._application = application
+        loadPersistenceData()
         setup(configuration)
         if (configuration.initalize) start()
         BackendDebugConfiguration.set(debug)
@@ -53,13 +63,12 @@ object Game {
     fun start(block: () -> Unit = {}) {
         try {
             if (!hasStarted) {
-                GLContext.initialize(window)
-                GLInitializer.initialize(LwjglLoader())
+                application.initialize(window)
+
                 window.addRefreshCallback { refreshView(it) }
 
                 Timer
-                loadPersistenceData()
-                setStartingState(data)
+                sceneManager.setStartingScene(data)
 
                 hasStarted = true
             }
@@ -71,17 +80,25 @@ object Game {
         }
     }
 
-    fun run(update: () -> Unit = { }) {
+    fun run() {
         start()
+        loop()
+    }
+
+    fun run(update: (Double) -> Unit) {
+        start()
+        sceneManager.updateVar = update
+        loop()
+    }
+
+    private fun loop() {
         try {
             while (!hasFinished) {
-                GLContext.startFrame()
+                application.startFrame()
 
                 gameMatrices.updateMatrices()
 
-                stateManager.updateState()
-
-                update()
+                sceneManager.updateScenes()
 
                 if (!window.update()) {
                     return
@@ -102,29 +119,11 @@ object Game {
     fun terminate() {
         savePersistenceData()
         hasFinished = true
-        GLContext.free()
-        GLFWContext.terminate()
+        application.terminate()
     }
 
-    fun setCurrentState(setter: () -> State?) {
-        stateManager.setCurrentState(setter)
-    }
-
-    private fun setStartingState(data: GameSetup) {
-        val state = data.startingState
-        val loadState = data.loadState?.invoke()
-
-        if (loadState != null) {
-            loadState.onFinish = {
-                setCurrentState { state?.invoke() }
-            }
-            setCurrentState {
-                loadState.preLoad()
-                loadState
-            }
-        } else {
-            setCurrentState { state?.invoke() }
-        }
+    fun setMainScene(setter: () -> MainScene?) {
+        sceneManager.setMainScene(setter)
     }
 
     private fun refreshView(window: Window) {
@@ -142,32 +141,11 @@ object Game {
     }
 
     private fun loadPersistenceData() {
-        for (saveData in data.saveData) {
-            loadData(saveData)
-        }
+        populateData()
     }
 
     private fun savePersistenceData() {
-        for (saveData in data.saveData) {
-            saveData(saveData)
-        }
+        storeData()
     }
 
-    private class UIView : View {
-        private val scale: Vector
-        override val width: Double
-        override val height: Double
-        override val x: Double = 0.0
-        override val y: Double = 0.0
-        override val center: Vector = vec(0.0, 0.0)
-        override val ratio: Double
-            get() = view.ratio*(scale.y/scale.x)
-
-        init {
-            val contentScale = Monitor.getPrimaryMonitor().contentScale
-            scale = vec(contentScale.xScale, contentScale.yScale)
-            width = view.width/scale.x
-            height = view.height/scale.y
-        }
-    }
 }

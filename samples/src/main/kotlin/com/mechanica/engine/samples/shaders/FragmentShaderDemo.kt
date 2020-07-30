@@ -1,7 +1,8 @@
 package com.mechanica.engine.samples.shaders
 
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
+import com.mechanica.engine.input.keyboard.Keyboard
 
 fun main() {
     Game.configure {

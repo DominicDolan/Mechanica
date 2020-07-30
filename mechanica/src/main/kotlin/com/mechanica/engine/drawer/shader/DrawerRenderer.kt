@@ -41,12 +41,12 @@ class DrawerRenderer {
                     vec4 inColor;
                     if ($blend > 0.0 || $alphaBlend > 0.0) {
                         vec4 texColor = texture(samp, tc);
-                        inColor = vec4(mix($color.rgb, texColor.rgb, $blend), mix($color.a, texColor.a, $alphaBlend));
+                        inColor = vec4(mix($color.rgb, texColor.rgb, $blend), $color.a*texColor.a);
                     } else {
                         inColor = $color;
                     }
                     
-                    if ($colorPassthrough == 0f) {
+                    if ($colorPassthrough == 0.0) {
                         vec2 st = pos - vec2(0.5);
                         
                         float height = abs($size.y);
@@ -74,7 +74,7 @@ class DrawerRenderer {
 
     }
 
-    private val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
+    val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -115,7 +115,7 @@ class DrawerRenderer {
 
     var strokeWidth = 0.0
 
-    fun render(model: Model, transformation: Matrix4f, view: Matrix4f, projection: Matrix4f) {
+    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
         shader.render(model, transformation, projection, view)
     }
 

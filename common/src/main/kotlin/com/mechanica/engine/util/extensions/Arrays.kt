@@ -118,6 +118,25 @@ fun FloatArray.fill(iterator: Iterator<Vector>) {
     }
 }
 
+
+/**
+ * A version of for each that should be more efficient for lists that
+ * are fast at getting element with random access
+ *
+ * @param action action that should be performed on each element
+ */
+inline fun <E> Array<E>.fori(action: (E) -> Unit) {
+    for (i in this.indices) {
+        action(this[i])
+    }
+}
+
+inline fun <E> Array<E>.foriIndexed(action: (E, Int) -> Unit) {
+    for (i in this.indices) {
+        action(this[i], i)
+    }
+}
+
 fun List<*>.indexLooped(index: Int): Int {
     return when {
         index < 0 -> this.size + index

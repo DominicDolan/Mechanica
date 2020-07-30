@@ -2,8 +2,8 @@ package com.mechanica.engine.drawer.superclass.text
 
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.text.Text
 import com.mechanica.engine.models.TextModel
+import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.vec
 
@@ -11,14 +11,14 @@ class TextDrawerImpl(
         private val data: DrawData) : TextDrawer {
 
     override fun text(text: String) {
-        val model = data.textModel
-        model.text = text
+        val model = data.stringHolderModel
+        model.string = text
         drawText(model)
     }
 
     override fun text(text: Text) {
-        val model = data.textModel
-        data.textModel.setText(text)
+        val model = data.textHolderModel
+        model.setText(text)
         drawText(model)
     }
 
@@ -41,7 +41,6 @@ class TextDrawerImpl(
 
         origin.set(oX*width, oY*height - bottomRight.y)
         data.draw(model)
-        origin.set(oX, oY)
     }
 
 

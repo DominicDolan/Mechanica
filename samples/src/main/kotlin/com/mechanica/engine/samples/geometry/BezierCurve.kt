@@ -1,23 +1,24 @@
 package com.mechanica.engine.samples.geometry
 
 import com.mechanica.engine.color.rgba
+import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.Keyboard
-import com.mechanica.engine.input.Mouse
-import com.mechanica.engine.state.State
+import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.*
 
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
-        setStartingState { BezierCurve() }
+        setStartingScene { BezierCurve() }
     }
 
     Game.run()
 }
 
-class BezierCurve : State() {
+class BezierCurve : WorldScene() {
 
     private val maxVertices = 1000
     private val minLineLength = 0.1

@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val lwjglVersion = "3.2.3"
 val lwjglNatives = "natives-windows"
 
-val kotlinVersion = "1.3.50"
+val kotlinVersion = "1.3.70"
 
 buildscript {
     repositories {
@@ -18,7 +18,8 @@ buildscript {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
+    kotlin("plugin.serialization") version "1.3.70"
     `java-library`
     maven
 }
@@ -28,6 +29,7 @@ val commonDependencies: DependencyHandlerScope.() -> Unit = {
 
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
@@ -69,6 +71,16 @@ allprojects {
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies(commonDependencies)
+    val compileKotlin: KotlinCompile by tasks
+    compileKotlin.kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
+        jvmTarget = "12"
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_12
+        targetCompatibility = JavaVersion.VERSION_12
+    }
 }
 
 project(":desktop-application") {
@@ -87,15 +99,4 @@ project(":mechanica") {
 project(":samples") {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     dependencies(coreLwjgl)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
-    jvmTarget = "1.8"
 }

@@ -4,13 +4,13 @@ import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.input.Mouse
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Model
 import org.joml.Matrix4f
 
 class FragmentRenderer {
 
-    private val vbo = Attribute(0).vec3().createUnitQuad()
+    private val vbo = Attribute.location(0).vec3().createUnitQuad()
     private val model = Model(vbo)
 
     private val vertex = object : DrawerScript() {

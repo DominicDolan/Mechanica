@@ -1,18 +1,12 @@
 package com.mechanica.engine.resources
 
 object Res {
-    class SpecificResource(private val prefix: String, private val extension: String) {
-        operator fun get(file: String): Resource {
-            val fileFixed = fixExtension(file)
-            return Resource("$prefix$fileFixed")
-        }
+    class SpecificResource(prefix: String, extension: String): SpecificGenericResource<Resource>(prefix, extension) {
+        override fun returnResource(fixedFile: String) = Resource(fixedFile)
+    }
 
-        private fun fixExtension(file: String): String {
-            val lastSlash = file.lastIndexOf("/")
-            val dotIndex = file.lastIndexOf(".")
-            val hasExtension = (dotIndex > lastSlash) || (lastSlash == -1 && dotIndex != -1)
-            return if (hasExtension) file else "$file.$extension"
-        }
+    class SpecificAudioResource(prefix: String,  extension: String) : SpecificGenericResource<AudioResource>(prefix, extension) {
+        override fun returnResource(fixedFile: String) = AudioResource(fixedFile)
     }
 
     class SpecificResourceDirectory(private val prefix: String) {
@@ -23,7 +17,8 @@ object Res {
 
     val svg = SpecificResource("res/svg/", "svg")
     val image = SpecificResource("res/images/", "png")
-    val font = SpecificResource("res/fonts/", "png")
+    val font = SpecificResource("res/fonts/", "ttf")
+    val audio = SpecificAudioResource("res/audio/", "ogg")
     val animations = SpecificResourceDirectory("/res/animations/")
 
     fun external(path: String, createIfAbsent: Boolean = false): ExternalResource {
@@ -32,6 +27,10 @@ object Res {
     }
 
     operator fun get(file: String): Resource {
+        return invoke(file)
+    }
+
+    operator fun invoke(file: String): Resource {
         return Resource("res/$file")
     }
 }

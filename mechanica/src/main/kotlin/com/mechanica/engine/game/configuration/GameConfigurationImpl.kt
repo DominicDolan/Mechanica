@@ -1,14 +1,11 @@
 package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.context.GLFWContext
-import com.mechanica.engine.display.Window
 import com.mechanica.engine.debug.GameDebugConfiguration
-import com.mechanica.engine.game.Game
+import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.input.ControlsMap
+import com.mechanica.engine.scenes.scenes.MainScene
 import org.joml.Matrix4f
-import com.mechanica.engine.state.LoadState
-import com.mechanica.engine.state.State
 
 internal class GameConfigurationImpl : GameConfiguration {
     private val _data = NullableConfigurationData()
@@ -40,20 +37,8 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.viewY = y
     }
 
-    override fun setStartingState(state: () -> State) {
-        _data.startingState = state
-    }
-
-    override fun setLoader(loader: () -> LoadState) {
-        _data.loadState = loader
-    }
-
-    override fun setControlMapping(controlsMap: ControlsMap) {
-        _data.controlsMap = controlsMap
-    }
-
-    override fun setSaveData(vararg savedata: Any) {
-        _data.saveData = arrayOf(*savedata)
+    override fun setStartingScene(scene: () -> MainScene) {
+        _data.startingScene = scene
     }
 
     override fun configureWindow(configuration: Window.() -> Unit) {

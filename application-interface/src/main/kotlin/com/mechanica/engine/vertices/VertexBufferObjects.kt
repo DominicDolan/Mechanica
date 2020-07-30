@@ -13,6 +13,16 @@ interface VertexBuffer<T> : Bindable {
     val vertexCount: Int
     val T.valueCount: Int
 
+    fun safeBind() {
+        if (vertexCount > 0) {
+            bind()
+        } else {
+            unbind()
+        }
+    }
+
+    fun unbind()
+
     fun set(array: T, from: Int = 0, length: Int = array.valueCount)
 }
 
@@ -21,7 +31,6 @@ interface AttributeArray : VertexBuffer<FloatArray> {
     fun set(array: Array<Vector3f>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<Vector4f>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<out Color>, from: Int = 0, length: Int = array.size)
-    fun disable()
 }
 
 interface IndexArray : VertexBuffer<ShortArray> {

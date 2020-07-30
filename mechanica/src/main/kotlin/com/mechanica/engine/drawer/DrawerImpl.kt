@@ -1,11 +1,13 @@
 package com.mechanica.engine.drawer
 
+import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
+import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
+import com.mechanica.engine.drawer.subclasses.layout.OriginDrawerImpl
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawerImpl
-import com.mechanica.engine.drawer.subclasses.layout.LayoutDrawer
-import com.mechanica.engine.drawer.subclasses.layout.LayoutDrawerImpl
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawer
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawerImpl
 import com.mechanica.engine.drawer.subclasses.transformation.TransformationDrawer
@@ -23,6 +25,7 @@ import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
+import com.mechanica.engine.shader.qualifiers.Attribute
 import org.lwjgl.opengl.GL11
 
 class DrawerImpl(private val data: DrawData) :
@@ -33,6 +36,15 @@ class DrawerImpl(private val data: DrawData) :
         PathDrawer by PathDrawerImpl(data),
         Drawer
 {
+
+    private val model: Model
+
+    init {
+        val position = Attribute.location(0).vec3().createUnitQuad()
+        val texCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
+
+        model = Model(position, texCoords, draw = GLLoader.graphicsLoader::drawArrays)
+    }
 
     private val colorDrawer = ColorDrawerImpl(this, data)
     override val color: ColorDrawer
@@ -46,8 +58,8 @@ class DrawerImpl(private val data: DrawData) :
     override val rotated: RotatedDrawer
         get() = rotatedDrawer
 
-    private val layoutDrawer = LayoutDrawerImpl(this, data)
-    override val layout: LayoutDrawer
+    private val layoutDrawer = OriginDrawerImpl(this, data)
+    override val origin: OriginDrawer
         get() = layoutDrawer
 
     private val transformationDrawer = TransformationDrawerImpl(this, data)
@@ -87,8 +99,14 @@ class DrawerImpl(private val data: DrawData) :
         data.draw(polygon)
     }
 
-    override fun model(model: Model) {
-        data.colorPassthrough = true
+    override fun model(model: Model, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
+        data.blend = blend
+        data.alphaBlend = alphaBlend
+        data.colorPassthrough = colorPassthrough
         data.draw(model)
+    }
+
+    override fun shader(shader: AbstractDrawerShader, model: Model?) {
+        data.draw(model ?: this.model, shader)
     }
 }

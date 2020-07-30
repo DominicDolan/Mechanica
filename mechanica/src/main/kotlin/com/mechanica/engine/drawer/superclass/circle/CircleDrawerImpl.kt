@@ -14,7 +14,7 @@ class CircleDrawerImpl(
     private val model: Model
 
     init {
-        val position = Attribute(0).vec3().createUnitQuad()
+        val position = Attribute.location(0).vec3().createUnitQuad()
 
         val disableTexCoords = object : Bindable {
             override fun bind() {
@@ -24,7 +24,7 @@ class CircleDrawerImpl(
         model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
     }
 
-    override fun circle() {
+    private fun drawCircle() {
         val radius = if (data.radius > 0.0) data.radius
         else {
             data.radius = 0.5f
@@ -44,14 +44,10 @@ class CircleDrawerImpl(
         data.draw(model)
     }
 
-    override fun circle(x: Number, y: Number) {
-        data.setTranslate(x.toFloat(), y.toFloat())
-        circle()
-    }
-
     override fun circle(x: Number, y: Number, radius: Number) {
         data.radius = radius.toFloat()
-        circle(x, y)
+        data.setTranslate(x.toFloat(), y.toFloat())
+        drawCircle()
     }
 
     override fun ellipse(x: Number, y: Number, width: Number, height: Number) {

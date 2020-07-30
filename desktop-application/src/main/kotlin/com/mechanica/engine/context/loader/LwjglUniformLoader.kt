@@ -1,8 +1,7 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.context.loader.UniformLoader
 import com.mechanica.engine.shader.qualifiers.Qualifier
-import com.mechanica.engine.shader.vars.uniforms.*
+import com.mechanica.engine.shader.uniforms.*
 import org.joml.Matrix4f
 
 class LwjglUniformLoader(override val qualifier: Qualifier): UniformLoader {
