@@ -5,12 +5,12 @@ thoroughly tested or documented but feel free to try it out nonetheless
 ### Setting up the project with Gradle
 Clone or download the repository and build with gradle
 
-Create a new Project with gradle. In the `settings.gradle` file add:
+Create a new Project with gradle. In the `settings.gradle.kts` file add:
 
 ```kotlin
 includeBuild("C:/path/to/mechanica")
 ```
-And in the `build.gradle` file add a dependency on the project:
+And in the `build.gradle.kts` file add a dependency on the project:
 ```kotlin
 dependencies {
     implementation("com.mechanica.engine:mechanica:1.0")

@@ -9,6 +9,4 @@
 
 rootProject.name = "Mechanica"
 
-includeBuild("E:/Src/General/DukeUI")
-
 include("common", "desktop-application", "application-interface", "mechanica", "samples", "mechanica-ui")
