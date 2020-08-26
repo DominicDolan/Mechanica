@@ -13,6 +13,9 @@ class AnimationSequence(private vararg val animations: AnimationController): Ani
 
     override var paused = false
         set(value) {
+            animations.fori {
+                it.paused = value
+            }
             field = value
         }
 

@@ -8,6 +8,7 @@ import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.util.extensions.constrain
 import org.joml.Matrix4f
 import kotlin.math.max
 import kotlin.math.min
@@ -20,7 +21,6 @@ fun main() {
             constructionDraws = true
         }
     }
-//    val font = LwjglSDFFont(Res.font["freebooterscript.ttf"])
 
     Game.run()
 }
@@ -90,7 +90,7 @@ private class StartText : WorldScene() {
         }
 
         if (Mouse.MB1.hasBeenPressed) {
-            cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex()
+            cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex().constrain(0, renderer.text.length)
         }
 
     }
@@ -119,7 +119,7 @@ private class StartText : WorldScene() {
     }
 
     fun removeLetter(index: Int) {
-        sb.delete(index-1, index)
+        sb.delete(max(0, index-1), index)
         updateText()
     }
 }

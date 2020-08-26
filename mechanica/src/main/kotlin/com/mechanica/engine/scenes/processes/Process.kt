@@ -91,7 +91,7 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         return (leafProcesses as ArrayList).remove(updateable)
     }
 
-    final override fun <P:Updateable> replaceProcess(old: P, new: P): P {
+    final override fun <P : Updateable> replaceProcess(old: P, new: P): P {
         val success = if (old is ProcessNode && new is ProcessNode) {
             replaceProcessNode(old, new)
         } else {
@@ -138,6 +138,8 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         this.update(delta)
         updateNodesFor(delta, index) { it.order >= 0 }
     }
+
+    override fun update(delta: Double) { }
 
     /**
      * A function to be overridden which will run while [active] is set to false

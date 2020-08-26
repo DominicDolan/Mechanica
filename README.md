@@ -3,9 +3,13 @@ A powerful 2D Game Engine written in Kotlin. This project is still under develop
 thoroughly tested or documented but feel free to try it out nonetheless
 
 ### Setting up the project with Gradle
-Clone or download the repository and build with gradle
+Clone or download the repository and build with gradle.
 
-Create a new Project with gradle. In the `settings.gradle.kts` file add:
+Building it will require java 12 or later and note that later versions of Java require the latest version of Gradle.
+
+Try and run one of the samples in the samples module to check that everything is working.
+
+To create a new project using this repository, create a new Gradle project and In the `settings.gradle.kts` file add:
 
 ```kotlin
 includeBuild("C:/path/to/mechanica")

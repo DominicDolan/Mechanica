@@ -10,3 +10,13 @@
 rootProject.name = "Mechanica"
 
 include("common", "desktop-application", "application-interface", "mechanica", "samples", "mechanica-ui")
+
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id.startsWith("org.jetbrains.kotlin.")) {
+                useVersion("1.4.0")
+            }
+        }
+    }
+}

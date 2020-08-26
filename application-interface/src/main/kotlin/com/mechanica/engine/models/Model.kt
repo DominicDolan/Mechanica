@@ -1,6 +1,8 @@
 package com.mechanica.engine.models
 
 import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.VertexBuffer
 
@@ -44,5 +46,21 @@ open class Model(vararg inputs: Bindable,
             } else {
                 GLLoader.graphicsLoader::drawArrays
             }
+
+        fun createUnitSquare(): Model {
+            val position = Attribute.location(0).vec3().createUnitQuad()
+            val tc = Attribute.location(1).vec2().createInvertedUnitQuad()
+            return Model(position, tc)
+        }
+
+        fun createFromFloatArray(array: FloatArray): Model {
+            val position = Attribute.location(0).vec3().createBuffer(array)
+            return Model(position)
+        }
+
+        fun createFromVecArray(array: Array<Vector>): Model {
+            val position = Attribute.location(0).vec3().createBuffer(array)
+            return Model(position)
+        }
     }
 }

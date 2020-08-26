@@ -5,7 +5,6 @@ package com.mechanica.engine.util.extensions
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
-import java.nio.FloatBuffer
 
 /**
  * Created by domin on 02/11/2017.
@@ -134,6 +133,12 @@ inline fun <E> Array<E>.fori(action: (E) -> Unit) {
 inline fun <E> Array<E>.foriIndexed(action: (E, Int) -> Unit) {
     for (i in this.indices) {
         action(this[i], i)
+    }
+}
+
+inline fun <E> withEach(array: Array<E>, operation: E.() -> Unit) {
+    for (i in array.indices) {
+        operation(array[i])
     }
 }
 

@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val lwjglVersion = "3.2.3"
 val lwjglNatives = "natives-windows"
 
-val kotlinVersion = "1.3.70"
+val kotlinVersion: String? = "1.4.0"
 
 buildscript {
     repositories {
@@ -18,8 +18,8 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.70"
-    kotlin("plugin.serialization") version "1.3.70"
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     `java-library`
     maven
 }
@@ -74,6 +74,7 @@ allprojects {
     val compileKotlin: KotlinCompile by tasks
     compileKotlin.kotlinOptions {
         freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
+        languageVersion = "1.4"
         jvmTarget = "12"
     }
 

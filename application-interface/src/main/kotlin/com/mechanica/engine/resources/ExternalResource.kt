@@ -4,7 +4,6 @@ import com.mechanica.engine.util.calculateIsJar
 import java.io.*
 import java.net.URI
 import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 class ExternalResource(filePath: String, createIfAbsent: Boolean = false) : Resource {
     private val absoluteFile: File
@@ -31,13 +30,15 @@ class ExternalResource(filePath: String, createIfAbsent: Boolean = false) : Reso
 
     fun write(content: String) {
         try {
+            absoluteFile.absoluteFile.parentFile.mkdirs()
             val fw = FileWriter(absoluteFile.absoluteFile)
             val bw = BufferedWriter(fw)
             bw.write(content)
             bw.close()
         } catch (e: IOException) {
-            e.printStackTrace()
-            exitProcess(-1)
+            System.err.println("Error handling persistence file for: $absoluteFile")
+        } catch (e: FileNotFoundException) {
+            System.err.println("Error handling persistence file for: $absoluteFile, it is possible that access was denied")
         }
     }
 

@@ -1,7 +1,7 @@
 package com.mechanica.engine.scenes.exclusiveScenes
 
-import com.mechanica.engine.scenes.processes.ProcessNode
 import com.mechanica.engine.scenes.processes.Process
+import com.mechanica.engine.scenes.processes.ProcessNode
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -25,6 +25,15 @@ open class ExclusiveActivationMap<P : Process>(vararg processes: P) : ReadOnlyPr
         processes.add(process)
         process.addActivationCallback()
         return process
+    }
+
+    fun activateNext() {
+        if (activeIndex < processes.size - 1 && activeIndex >= 0) {
+            activeIndex++
+        } else {
+            activeIndex = 0
+        }
+        processes[activeIndex].active = true
     }
 
     private fun P.addActivationCallback() {
