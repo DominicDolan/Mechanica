@@ -42,10 +42,15 @@ fun Element.text(text: Text) {
 
 inline fun Element.div(block: Element.() -> Unit) {
     e {
-        layout.edit { p, s ->
-            top = s.bottom
-            block()
-        }
+        layout.edit { _, s -> top = s.bottom }
+        block()
+    }
+}
+
+inline fun Element.span(block: Element.() -> Unit) {
+    e {
+        layout.edit { _, s -> left = s.right }
+        block()
     }
 }
 

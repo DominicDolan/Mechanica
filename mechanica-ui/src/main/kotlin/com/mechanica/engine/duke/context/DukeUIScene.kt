@@ -10,11 +10,11 @@ import com.mechanica.engine.duke.defaultDraw
 import com.mechanica.engine.duke.elements.Element
 import com.mechanica.engine.duke.elements.ElementDrawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.game.view.UIView
+import com.mechanica.engine.scenes.scenes.MainUIScene
 import com.mechanica.engine.util.extensions.fori
 
-abstract class DukeUIScene(final override val view: View = Game.ui) : Scene() {
+abstract class DukeUIScene(final override val view: UIView = Game.ui) : MainUIScene() {
     private val context: DukeUI
     internal val firstNode: NodeData
         get() = context.firstElement
