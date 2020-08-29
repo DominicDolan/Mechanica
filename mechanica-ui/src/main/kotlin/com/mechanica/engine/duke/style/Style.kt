@@ -1,15 +1,12 @@
 package com.mechanica.engine.duke.style
 
-import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.DynamicColor
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 
 class Style {
-    var color: Color = DynamicColor(1.0, 1.0, 1.0, 0.0)
-        set(value) {
-            (field as DynamicColor).set(value)
-        }
+    val color: DynamicColor = DynamicColor(1.0, 1.0, 1.0, 0.0)
+
     var isVisible: Boolean = true
 
     val textFormat = TextFormat()
@@ -21,10 +18,8 @@ class Style {
     }
 
     class TextFormat {
-        var color: Color = DynamicColor(0.7, 0.7, 0.7, 1.0)
-            set(value) {
-                (field as DynamicColor).set(value)
-            }
+        val color: DynamicColor = DynamicColor(0.7, 0.7, 0.7, 1.0)
+
         var size: Double = 1.0
 
         val alignment: DynamicVector = DynamicVector.create(0.0, 0.0)

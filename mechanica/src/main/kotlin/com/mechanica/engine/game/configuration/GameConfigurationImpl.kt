@@ -3,6 +3,7 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.MainScene
 import org.joml.Matrix4f
@@ -57,7 +58,7 @@ internal class GameConfigurationImpl : GameConfiguration {
         _data.projectionMatrixConfiguration = configuration
     }
 
-    override fun configureDeltaCalculation(configuration: (timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double) {
-        _data.deltaConfiguration = configuration
+    override fun setDeltaTimeCalculator(calculator: DeltaCalculator) {
+
     }
 }

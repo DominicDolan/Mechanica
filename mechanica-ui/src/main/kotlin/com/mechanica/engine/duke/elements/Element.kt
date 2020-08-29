@@ -33,9 +33,21 @@ abstract class Element(val scene: DukeUIScene) {
         return new
     }
 
-    inline fun addChild(block: Element.() -> Unit) {
+    inline fun <reified E : Element> switchElement(initializer: (DukeUIScene) -> E, operation: E.() -> Unit) {
+        val new = switchElement(initializer)
+        operation(new)
+        node = new.node
+    }
+
+    inline fun <reified E : Element> switchElementAndAddChild(content: Element.() -> Unit, initializer: (DukeUIScene) -> E) {
+        switchElement(initializer) {
+            addChild(content)
+        }
+    }
+
+    inline fun addChild(content: Element.() -> Unit) {
         val oldNode = updateForNextNode(node)
-        block(this)
+        content(this)
         node.renderOnce()
         this.node = oldNode
     }

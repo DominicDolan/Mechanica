@@ -99,7 +99,7 @@ object Game : Configurable<GameConfiguration> {
 
                 gameMatrices.updateMatrices()
 
-                sceneManager.updateScenes()
+                sceneManager.updateAndRender()
 
                 if (!window.update()) {
                     return

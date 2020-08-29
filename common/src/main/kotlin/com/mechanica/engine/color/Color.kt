@@ -28,9 +28,9 @@ interface Color {
     fun toLong(): Long
 
     companion object {
-        fun rgba(r: Double, g: Double, b: Double, a: Double): Color = com.mechanica.engine.color.rgba(r, g, b, a)
-        fun hex(hex: Long): Color = com.mechanica.engine.color.hex(hex)
-        fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): Color
+        fun rgba(r: Double, g: Double, b: Double, a: Double): LightweightColor = com.mechanica.engine.color.rgba(r, g, b, a)
+        fun hex(hex: Long): LightweightColor = com.mechanica.engine.color.hex(hex)
+        fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor
                 = com.mechanica.engine.color.hsl(hue, saturation, lightness, alpha)
 
         val red = rgba(1.0, 0.0, 0.0, 1.0)

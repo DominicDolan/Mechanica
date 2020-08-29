@@ -6,14 +6,18 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.ConfigurationData
 import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.game.delta.Updater
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.Timer
 
-internal class SceneManager(private val data: ConfigurationData) : Scene() {
-    override val view: View
-        get() = Game.view
+internal class SceneManager(
+        private val data: ConfigurationData) : SceneNode, Updater {
+
+    private val scenes = ChildScenes()
 
     var updateVar: ((Double) -> Unit)? = null
 
@@ -80,34 +84,29 @@ internal class SceneManager(private val data: ConfigurationData) : Scene() {
         scheduleSceneChange = true
     }
 
-    fun updateScenes(): Double {
+    fun updateAndRender() {
+        val now = Timer.now
+        val lastFrame = startOfLoop
+        startOfLoop = now
+        data.deltaCalculator?.updateAndRender(lastFrame, now, this)
+
+        checkStateChange()
+    }
+
+    override fun update(delta: Double) {
         if (!pause || frameAdvance) {
-            updateScene()
+            updateVar?.invoke(delta)
+            scenes.updateNodes(delta)
             frameAdvance = false
         } else {
             updatePaused()
         }
 
-        render()
-        checkStateChange()
-
-        return updateDuration
     }
 
-    private fun updateScene() {
-        updateDuration = data.deltaConfiguration?.invoke(startOfLoop, Timer.now) ?: 0.017
-        startOfLoop = Timer.now
-
-        updateNodes(updateDuration)
-    }
-
-    override fun update(delta: Double) {
-        updateVar?.invoke(delta)
-    }
-
-    private fun render() {
-        if (currentScene != null || childScenes.isNotEmpty()) {
-            renderNodes(getDrawer())
+    override fun render() {
+        if (currentScene != null || scenes.hasChildren) {
+            scenes.renderNodes(getDrawer())
         }
 
         if (Game.debug.screenLog)
@@ -115,8 +114,6 @@ internal class SceneManager(private val data: ConfigurationData) : Scene() {
         if (Game.debug.constructionDraws)
             DebugDrawer.render(getDrawer())
     }
-
-    override fun render(draw: Drawer) { }
 
     private fun checkStateChange() {
         if (scheduleSceneChange) {
@@ -141,5 +138,27 @@ internal class SceneManager(private val data: ConfigurationData) : Scene() {
         startOfLoop = Timer.now
     }
 
+    //Methods delegated to ChildScenes
+    override val view: View
+        get() = scenes.view
+    override fun <S : SceneNode> addScene(scene: S): S = scenes.addScene(scene)
+    override fun removeScene(scene: SceneNode) = scenes.removeScene(scene)
+    override fun <S : SceneNode> replaceScene(old: S, new: S): S = scenes.replaceScene(old, new)
+    override fun renderNodes(draw: Drawer) = scenes.renderNodes(draw)
+    override fun <P : Updateable> addProcess(process: P): P = scenes.addProcess(process)
+    override fun removeProcess(process: Updateable): Boolean = scenes.removeProcess(process)
+    override fun <P : Updateable> replaceProcess(old: P, new: P): P = scenes.replaceProcess(old, new)
+    override fun updateNodes(delta: Double) = scenes.updateNodes(delta)
+    override fun destructor() = scenes.destructor()
+    override fun destructNodes() = scenes.destructNodes()
+    override fun render(draw: Drawer) { }
+
+    class ChildScenes : Scene() {
+        override val view: View
+            get() = Game.view
+
+        val hasChildren: Boolean
+            get() = childScenes.isNotEmpty()
+    }
 
 }

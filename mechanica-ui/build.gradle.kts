@@ -9,6 +9,5 @@ dependencies {
     implementation(project(":mechanica"))
 
     api(files("libs/DukeUI-0.1.jar"))
-    api(files("libs/DukeUI-0.1-old.jar"))
 
 }

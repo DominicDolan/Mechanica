@@ -2,6 +2,7 @@ package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.MainScene
 import org.joml.Matrix4f
@@ -22,5 +23,5 @@ interface GameConfiguration {
 
     fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)
 
-    fun configureDeltaCalculation(configuration: (timeAtLastFrame: Double, timeOfThisFrame: Double) -> Double)
+    fun setDeltaTimeCalculator(calculator: DeltaCalculator)
 }
