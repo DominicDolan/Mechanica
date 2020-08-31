@@ -1,33 +1,63 @@
 package com.mechanica.engine.game.delta
 
+import com.mechanica.engine.util.Timer
+import com.mechanica.engine.util.ValueStatistics
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+
 internal class DefaultDeltaCalculator : DeltaCalculator {
+
+    private val frameTimes = ValueStatistics(0.017, 100.0)
+    private val updateTimes = ValueStatistics(0.006, 100.0)
+
+    private var dt = 1.0/120.0
+
+    private var accumulator = 0.0
+
+    private val frameRate = FrameRateCounter()
+
     override fun Updater.updateAndRender(lastFrame: Double, thisFrame: Double) {
-        update(thisFrame - lastFrame)
+        var frameDelta = (thisFrame - lastFrame)
+
+        frameRate.update()
+        frameRate.screenLog()
+
+        frameTimes.add(frameDelta)
+
+        val updatesRequiredPerFrame = max(1.0, frameTimes.average/dt)
+
+        for (i in 1..updatesRequiredPerFrame.roundToInt()) {
+            val updateTime = update()
+
+            if (!checkUpdateTime(updateTime)) { break }
+
+            frameDelta -= dt
+        }
+
+        accumulator += frameDelta
+
         render()
+
     }
 
+    private fun Updater.update(): Double {
+        val preUpdate = Timer.now
+        update(dt)
+        val updateTime = Timer.now - preUpdate
 
-//    var accumulator = 0.0
-//    val dt = 1.0/300.0
-//    private fun updateScene() {
-//        val now = Timer.now
-//        updateDuration = now - startOfLoop
-//        startOfLoop = Timer.now
-//
-//        accumulator += updateDuration
-//
-////        println("update scene")
-//        var count = 0
-//        while (accumulator >= dt) {
-//            count++
-//            println(count)
-////            println("update nodes")
-//            updateNodes(dt)
-//            accumulator -= dt
-//        }
-//
-//        println(accumulator)
-//    }
+        updateTimes.add(updateTime)
+        return updateTime
+    }
 
+    private fun checkUpdateTime(updateTime: Double): Boolean {
+        if (updateTime > dt) {
+            if (updateTimes.average > 0.7*dt) {
+                dt = min(2 * dt, frameTimes.average)
+            }
+            return false
+        }
+        return true
+    }
 
 }

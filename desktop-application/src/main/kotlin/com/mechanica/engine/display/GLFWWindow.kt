@@ -237,12 +237,16 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     }
 
     override fun setFullscreen(monitor: Monitor) {
+        val vSync = vSync
         val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
         glfwSetWindowMonitor(id, monitor.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
+        this.vSync = vSync
     }
 
     override fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int) {
+        val vSync = vSync
         glfwSetWindowMonitor(id, monitor.id, 0, 0, width, height, refreshRate)
+        this.vSync = vSync
     }
 
     override fun exitFullscreen(width: Int, height: Int) {
