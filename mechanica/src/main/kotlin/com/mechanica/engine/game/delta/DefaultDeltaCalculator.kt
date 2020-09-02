@@ -22,7 +22,6 @@ internal class DefaultDeltaCalculator : DeltaCalculator {
 
         frameRate.update()
         frameRate.screenLog()
-
         frameTimes.add(frameDelta)
 
         val updatesRequiredPerFrame = max(1.0, frameTimes.average/dt)
