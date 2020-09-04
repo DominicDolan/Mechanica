@@ -2,6 +2,7 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
+import com.mechanica.engine.graphics.GLDraw
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.script.Shader
@@ -121,6 +122,22 @@ abstract class DrawerShader : Shader() {
                 override val fragment: DrawerScript = fragment
                 override val tessellation: DrawerScript? = tessellation
                 override val geometry: DrawerScript? = geometry
+            }
+        }
+
+        fun create(vertex: DrawerScript,
+                   fragment: DrawerScript,
+                   tessellation: DrawerScript? = null,
+                   geometry: DrawerScript? = null, draw: GLDraw.(model: Model) -> Unit): DrawerShader {
+            return object : DrawerShader() {
+                override val vertex: DrawerScript = vertex
+                override val fragment: DrawerScript = fragment
+                override val tessellation: DrawerScript? = tessellation
+                override val geometry: DrawerScript? = geometry
+
+                override fun GLDraw.draw(model: Model) {
+                    draw.invoke(this, model)
+                }
             }
         }
     }

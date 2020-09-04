@@ -1,6 +1,5 @@
 package com.mechanica.engine.drawer
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
@@ -43,7 +42,7 @@ class DrawerImpl(private val data: DrawData) :
         val position = Attribute.location(0).vec3().createUnitQuad()
         val texCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
 
-        model = Model(position, texCoords, draw = GLLoader.graphicsLoader::drawArrays)
+        model = Model(position, texCoords)
     }
 
     private val colorDrawer = ColorDrawerImpl(this, data)

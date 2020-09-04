@@ -6,12 +6,25 @@ import com.mechanica.engine.models.Model
 import java.nio.IntBuffer
 
 class GLDraw {
-    val glDraw = GLDrawCommands()
+    private val glDrawer = GLLoader.graphicsLoader.glDrawer
+
+    val glDraw by lazy { GLDrawCommands(glDrawer) }
+    val glDrawPoints by lazy { GLDrawCommands(GLLoader.graphicsLoader.glPointDrawer) }
+    val glDrawLines by lazy { GLDrawCommands(GLLoader.graphicsLoader.glLinesDrawer) }
+    val glDrawLineLoop by lazy { GLDrawCommands(GLLoader.graphicsLoader.glLineLoopDrawer) }
+    val glDrawLineStrip by lazy { GLDrawCommands(GLLoader.graphicsLoader.glLineStripDrawer) }
+
+    fun drawModel(model: Model) {
+        if (model.hasIndexArray) {
+            glDrawer.drawElements(model)
+        } else {
+            glDrawer.drawArrays(model)
+        }
+    }
+
 }
 
-class GLDrawCommands : MultiDrawCommands {
-
-    private val glDrawCommands = GLLoader.graphicsLoader.glDrawer
+class GLDrawCommands(private val glDrawCommands: GLDrawerLoader) : MultiDrawCommands {
 
     private val instancedDraw = DrawInstanced(glDrawCommands)
     private val baseVertexDraw = DrawBaseVertex(glDrawCommands)

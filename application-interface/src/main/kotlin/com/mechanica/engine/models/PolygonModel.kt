@@ -1,6 +1,5 @@
 package com.mechanica.engine.models
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.geometry.triangulation.GrahamScanTriangulator
 import com.mechanica.engine.geometry.triangulation.Triangulator
 import com.mechanica.engine.shader.qualifiers.Attribute
@@ -14,9 +13,7 @@ open class PolygonModel(vertices: Array<out Vector>,
 : Model(
         positionAttribute.createBuffer(vertices),
         IndexArray.create(*triangulator.triangulate()),
-    draw = {
-        GLLoader.graphicsLoader.drawElements(it)
-    })
+    )
 {
 
     constructor(vertices: List<Vector>) : this(vertices.toTypedArray())

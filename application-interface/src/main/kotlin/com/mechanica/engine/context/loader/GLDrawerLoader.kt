@@ -4,7 +4,6 @@ import com.mechanica.engine.models.Model
 import java.nio.IntBuffer
 
 interface GLDrawerLoader {
-
     /**
      * Defines a sequence of geometric primitives using [model]'s
      * elements, whose indices are stored in the buffer bound to the

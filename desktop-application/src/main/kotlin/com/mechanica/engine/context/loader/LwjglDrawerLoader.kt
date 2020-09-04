@@ -4,7 +4,8 @@ import com.mechanica.engine.models.Model
 import org.lwjgl.opengl.GL42.*
 import java.nio.IntBuffer
 
-class LwjglDrawerLoader : GLDrawerLoader {
+class LwjglDrawerLoader(val mode: Int, val type: Int) : GLDrawerLoader {
+
     override fun drawElements(model: Model) {
         model.isValid {
             glDrawElements(mode, model.vertexCount, type, 0)
@@ -97,10 +98,5 @@ class LwjglDrawerLoader : GLDrawerLoader {
         if (vertexCount > 0) {
             action()
         }
-    }
-
-    companion object {
-        const val type = GL_UNSIGNED_SHORT
-        const val mode = GL_TRIANGLES
     }
 }

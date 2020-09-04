@@ -1,6 +1,5 @@
 package com.mechanica.engine.drawer.superclass.circle
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
@@ -21,7 +20,7 @@ class CircleDrawerImpl(
                 GL20.glDisableVertexAttribArray(1)
             }
         }
-        model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
+        model = Model(position, disableTexCoords)
     }
 
     private fun drawCircle() {

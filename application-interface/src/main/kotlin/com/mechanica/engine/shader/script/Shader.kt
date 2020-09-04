@@ -52,7 +52,7 @@ abstract class Shader {
     }
 
     protected open fun GLDraw.draw(model: Model) {
-        glDraw.model(model)
+        drawModel(model)
     }
 
     private fun findLocations() {
