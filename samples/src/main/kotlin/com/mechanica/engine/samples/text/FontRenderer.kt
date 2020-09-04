@@ -2,18 +2,18 @@ package com.mechanica.engine.samples.text
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
+import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
-import com.mechanica.engine.text.Font
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
-import com.mechanica.engine.debug.ScreenLog
-import com.mechanica.engine.input.mouse.Mouse
 import org.joml.Matrix4f
 import kotlin.math.ceil
 import kotlin.math.max
@@ -73,7 +73,7 @@ class FontRenderer {
 
     }
 
-    private val shader = DrawerShader(vertex, fragment)
+    private val shader = DrawerShader.create(vertex, fragment)
 
     var text: String = ""
         set(value) {

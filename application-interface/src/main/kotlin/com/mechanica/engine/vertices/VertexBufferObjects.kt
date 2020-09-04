@@ -7,7 +7,6 @@ import com.mechanica.engine.utils.createIndicesArrayForQuads
 import org.joml.Vector3f
 import org.joml.Vector4f
 
-
 interface VertexBuffer<T> : Bindable {
     val id: Int
     val vertexCount: Int

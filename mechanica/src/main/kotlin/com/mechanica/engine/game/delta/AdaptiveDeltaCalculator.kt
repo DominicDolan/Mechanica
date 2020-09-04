@@ -6,12 +6,12 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-internal class DefaultDeltaCalculator : DeltaCalculator {
+internal class AdaptiveDeltaCalculator(frameTime: Double, updateTime: Double) : DeltaCalculator {
 
-    private val frameTimes = ValueStatistics(0.017, 100.0)
-    private val updateTimes = ValueStatistics(0.006, 100.0)
+    private val frameTimes = ValueStatistics(frameTime, 100.0)
 
-    private var dt = 1.0/120.0
+    private var dt = updateTime
+    private val updateTimes = ValueStatistics(dt, 100.0)
 
     private var accumulator = 0.0
 

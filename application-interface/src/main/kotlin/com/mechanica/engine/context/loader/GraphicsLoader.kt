@@ -6,6 +6,8 @@ import com.mechanica.engine.resources.Resource
 
 interface GraphicsLoader {
 
+    val glDrawer: GLDrawerLoader
+
     fun loadImage(id: Int): Image
     fun loadImage(res: Resource): Image
 

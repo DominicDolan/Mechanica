@@ -5,6 +5,7 @@ import com.mechanica.engine.context.loader.LwjglDisplayLoader
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.BasicVariableCalculator
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.ResolutionConverter
@@ -28,7 +29,7 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
             = data.projectionMatrixConfiguration ?: GameMatrices.Companion::defaultProjectionMatrix
-    override val deltaCalculator: DeltaCalculator = data.deltaCalculator ?: com.mechanica.engine.game.delta.DefaultDeltaCalculator()
+    override val deltaCalculator: DeltaCalculator = data.deltaCalculator ?: BasicVariableCalculator()
 
     val ratio: Double
 

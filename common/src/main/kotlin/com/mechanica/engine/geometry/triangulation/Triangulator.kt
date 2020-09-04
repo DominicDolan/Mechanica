@@ -3,9 +3,10 @@ package com.mechanica.engine.geometry.triangulation
 import com.mechanica.engine.geometry.triangulation.iterators.TriangulatorIterable
 import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.indexLooped
 
-abstract class Triangulator(path: Array<LightweightVector>) {
+abstract class Triangulator(path: Array<out Vector>) {
 
     val ccw: Boolean
     val vertices = ArrayList<Node>()
@@ -37,12 +38,12 @@ abstract class Triangulator(path: Array<LightweightVector>) {
     }
 
 
-    private fun addAllFromPath(path: Array<LightweightVector>):  Boolean {
+    private fun addAllFromPath(path: Array<out Vector>):  Boolean {
         var totalArea = 0.0
         for (i in 1 until path.size) {
             Node(path[i])
 
-            if (i > 0) totalArea += calculateLineArea(path[i - 1], path[i])
+            if (i > 0) totalArea += calculateLineArea(vec(path[i - 1]), vec(path[i]))
         }
         return totalArea < 0.0
     }

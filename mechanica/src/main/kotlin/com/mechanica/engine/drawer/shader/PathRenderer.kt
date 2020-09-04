@@ -2,12 +2,12 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.utils.enableAlphaBlending
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
+import com.mechanica.engine.utils.enableAlphaBlending
 import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.FloatBufferMaker
 import org.intellij.lang.annotations.Language
@@ -145,8 +145,8 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0)
             """
     }
 
-    private val lineShader = DrawerShader(vertex, fragment, geometry = lineGeometry)
-    private val circleShader = DrawerShader(vertex, fragment, geometry = circleGeometry)
+    private val lineShader = DrawerShader.create(vertex, fragment, geometry = lineGeometry)
+    private val circleShader = DrawerShader.create(vertex, fragment, geometry = circleGeometry)
 
     var color: Color
         get() = fragment.color.value.toColor()

@@ -74,7 +74,7 @@ class DrawerRenderer {
 
     }
 
-    val shader: DrawerShader by lazy { DrawerShader(vertex, fragment) }
+    val shader: DrawerShader by lazy { DrawerShader.create(vertex, fragment) }
 
     var color: Color
         get() = fragment.color.value.toColor()

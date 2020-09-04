@@ -1,8 +1,8 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
@@ -126,7 +126,7 @@ class DrawData {
         return matrix
     }
 
-    fun draw(model: Model, shader: AbstractDrawerShader = renderer.shader) {
+    fun draw(model: Model, shader: DrawerShader = renderer.shader) {
         renderer.color = fillColor
         renderer.radius = radius
 

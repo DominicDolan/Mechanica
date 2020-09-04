@@ -4,9 +4,10 @@ import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.triangulation.iterators.ConcaveVertexIterable
 import com.mechanica.engine.geometry.triangulation.iterators.TriangulatorIterable
 import com.mechanica.engine.geometry.triangulation.iterators.VertexLoopIterable
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.Vector
 
-class GrahamScanTriangulator(path: Array<LightweightVector>) : Triangulator(path) {
+// From: "The Graham scan triangulates simple polygons" Pattern Recognition Letters, 1990. Kong, X., H. Everett, and G.T. Toussaint
+class GrahamScanTriangulator(path: Array<out Vector>) : Triangulator(path) {
     override val indices = ShortArray(500)
     override var indexCount = 0
     var current: Node? = null

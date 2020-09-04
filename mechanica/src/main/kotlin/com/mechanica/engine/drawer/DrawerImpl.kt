@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.context.loader.GLLoader
-import com.mechanica.engine.drawer.shader.AbstractDrawerShader
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
 import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
@@ -106,7 +106,7 @@ class DrawerImpl(private val data: DrawData) :
         data.draw(model)
     }
 
-    override fun shader(shader: AbstractDrawerShader, model: Model?) {
+    override fun shader(shader: DrawerShader, model: Model?) {
         data.draw(model ?: this.model, shader)
     }
 }

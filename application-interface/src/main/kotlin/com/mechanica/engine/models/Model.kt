@@ -24,6 +24,19 @@ open class Model(vararg inputs: Bindable,
 
     private val draw: ((Model) -> Unit) by lazy { draw ?: defaultDraw(this) }
 
+    val hasIndexArray: Boolean
+
+    init {
+        var hasElementArrayBuffer = false
+        for (input in inputs) {
+            if (input is IndexArray) {
+                hasElementArrayBuffer = true
+            }
+        }
+
+        this.hasIndexArray = hasElementArrayBuffer
+    }
+
     fun bind() {
         for (vbo in inputs) {
             if (vbo is VertexBuffer<*>) {
