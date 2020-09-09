@@ -7,14 +7,13 @@ import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.game.view.UIView
-import com.mechanica.engine.game.view.WorldView
+import com.mechanica.engine.game.view.UICamera
+import com.mechanica.engine.game.view.WorldCamera
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Updateable
-import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
 
@@ -27,13 +26,13 @@ object Game : Configurable<GameConfiguration> {
 
     private val data by lazy { configuration.data }
 
-    val view: WorldView by lazy { WorldView(data) }
-    val ui: UIView by lazy { UIView() }
+    val world: WorldCamera by lazy { WorldCamera(data) }
+    val ui: UICamera by lazy { UICamera() }
     val window: Window by lazy { data.window }
 
     val debug by lazy { data.debugConfig }
 
-    val matrices: Matrices by lazy { GameMatrices(data, view) }
+    val matrices: Matrices by lazy { GameMatrices(data, world) }
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
@@ -123,22 +122,22 @@ object Game : Configurable<GameConfiguration> {
         application.terminate()
     }
 
-    fun setMainScene(setter: () -> MainScene?) {
+    fun setMainScene(setter: () -> Scene?) {
         sceneManager.setMainScene(setter)
     }
 
     private fun refreshView(window: Window) {
         val converter = data.resolutionConverter
         if (converter.viewHeight != null) {
-            converter.viewHeight = view.height
+            converter.viewHeight = world.height
         }
         if (converter.viewWidth != null) {
-            converter.viewWidth = view.width
+            converter.viewWidth = world.width
         }
         converter.resolutionWidth = window.width
         converter.resolutionHeight = window.height
         converter.calculate()
-        view.width = converter.viewWidthOut
+        world.width = converter.viewWidthOut
     }
 
     private fun loadPersistenceData() {

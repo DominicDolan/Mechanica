@@ -23,9 +23,9 @@ private class StartMain : WorldScene() {
     }
 
     override fun render(draw: Drawer) {
-        val mouseX = Mouse.ui.x/Game.view.width + 0.5
-        val mouseY = Mouse.ui.y/ Game.view.height + 0.5
-        draw.black.text("x: $mouseX, y: $mouseY", 0.1, Game.view.left, Game.view.top - 0.13)
+        val mouseX = Mouse.ui.x/Game.world.width + 0.5
+        val mouseY = Mouse.ui.y/ Game.world.height + 0.5
+        draw.black.text("x: $mouseX, y: $mouseY", 0.1, Game.world.left, Game.world.top - 0.13)
         draw.black.rectangle(0, 0, 1, 1)
         draw.yellow.rectangle(-0.1, 0.5, 0.6, 0.6)
     }

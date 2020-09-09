@@ -41,7 +41,7 @@ abstract class DrawerShader : Shader() {
 
         loadMatrixUniforms(transformation,
                 projection ?: Game.matrices.projection,
-                view ?: Game.matrices.view
+                view ?: Game.matrices.worldView
         )
 
         render(model)
@@ -62,7 +62,7 @@ abstract class DrawerShader : Shader() {
         for (loader in matrixLoaders) {
             loader.matrixType.value = 1f
             if (projection === Game.matrices.projection) {
-                if (view === Game.matrices.view) {
+                if (view === Game.matrices.worldView) {
                     loader.matrixType.value = 0f
                     loader.pvMatrix.set((Game.matrices as GameMatrices).pvMatrix)
                     this.pixelSize.value = (Game.matrices as GameMatrices).pixelScale

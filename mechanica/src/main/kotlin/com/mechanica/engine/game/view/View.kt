@@ -19,8 +19,6 @@ interface View {
     val right: Double
         get() = x + width/2.0
 
-    val center: Vector
-
     val ratio: Double
         get() = width/height
 

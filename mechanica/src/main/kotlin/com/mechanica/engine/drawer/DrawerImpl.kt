@@ -57,9 +57,9 @@ class DrawerImpl(private val data: DrawData) :
     override val rotated: RotatedDrawer
         get() = rotatedDrawer
 
-    private val layoutDrawer = OriginDrawerImpl(this, data)
+    private val originDrawer = OriginDrawerImpl(this, data)
     override val origin: OriginDrawer
-        get() = layoutDrawer
+        get() = originDrawer
 
     private val transformationDrawer = TransformationDrawerImpl(this, data)
     override val transformed: TransformationDrawer
@@ -73,7 +73,7 @@ class DrawerImpl(private val data: DrawData) :
         }
     override val world: Drawer
         get() {
-            data.viewMatrix = Game.matrices.view
+            data.viewMatrix = Game.matrices.worldView
             return this
         }
 

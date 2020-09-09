@@ -7,9 +7,8 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.ConfigurationData
 import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.delta.Updater
-import com.mechanica.engine.game.view.View
+import com.mechanica.engine.game.view.Camera
 import com.mechanica.engine.scenes.processes.Updateable
-import com.mechanica.engine.scenes.scenes.MainScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.Timer
@@ -21,8 +20,8 @@ internal class SceneManager(
 
     var updateVar: ((Double) -> Unit)? = null
 
-    private var sceneSetter: () -> MainScene? = { null }
-    var currentScene: MainScene? = null
+    private var sceneSetter: () -> Scene? = { null }
+    var currentScene: Scene? = null
         private set(value) {
             val scene = currentScene
 
@@ -79,7 +78,7 @@ internal class SceneManager(
         setMainScene { state?.invoke() }
     }
 
-    fun setMainScene(setter: () -> MainScene?) {
+    fun setMainScene(setter: () -> Scene?) {
         sceneSetter = setter
         scheduleSceneChange = true
     }
@@ -138,9 +137,8 @@ internal class SceneManager(
         startOfLoop = Timer.now
     }
 
-    //Methods delegated to ChildScenes
-    override val view: View
-        get() = scenes.view
+    override val camera: Camera
+        get() = currentScene?.camera ?: Game.world
     override fun <S : SceneNode> addScene(scene: S): S = scenes.addScene(scene)
     override fun removeScene(scene: SceneNode) = scenes.removeScene(scene)
     override fun <S : SceneNode> replaceScene(old: S, new: S): S = scenes.replaceScene(old, new)
@@ -154,9 +152,6 @@ internal class SceneManager(
     override fun render(draw: Drawer) { }
 
     class ChildScenes : Scene() {
-        override val view: View
-            get() = Game.view
-
         val hasChildren: Boolean
             get() = childScenes.isNotEmpty()
     }

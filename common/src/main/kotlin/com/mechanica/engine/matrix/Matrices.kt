@@ -6,7 +6,7 @@ import kotlin.math.min
 
 interface Matrices {
     val projection: Matrix4f
-    val view: Matrix4f
+    val worldView: Matrix4f
     val uiView: Matrix4f
 
     companion object {

@@ -41,7 +41,7 @@ fun main() {
 
     Game.run {
         val rotation = (mouse.x*20.0).degrees
-        val radius = ((mouse.y + Game.view.height/2.0)/5.0)
+        val radius = ((mouse.y + Game.world.height/2.0)/5.0)
         ScreenLog { "Radius: $radius" }
 
         draw.red.radius(radius).circle()

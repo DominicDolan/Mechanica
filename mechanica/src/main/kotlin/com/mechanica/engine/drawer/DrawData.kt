@@ -17,7 +17,7 @@ class DrawData {
 
     var viewMatrixWasSet = false
         private set
-    var viewMatrix: Matrix4f = Game.matrices.view
+    var viewMatrix: Matrix4f = Game.matrices.worldView
         set(value) {
             viewMatrixWasSet = true
             field = value
@@ -67,7 +67,8 @@ class DrawData {
             return field
         }
 
-    val modelOrigin = OriginVector()
+    val relativeOrigin = OriginVector()
+    val absoluteOrigin = OriginVector()
 
     var radius: Float = 0f
 
@@ -141,9 +142,9 @@ class DrawData {
     }
 
     private fun addModelOriginToMatrix(matrix: Matrix4f) {
-        if (modelOrigin.x != 0.0 || modelOrigin.y != 0.0) {
-            val pivotX = modelOrigin.x.toFloat()*scale.x
-            val pivotY = modelOrigin.y.toFloat()*scale.y
+        if (relativeOrigin.wasSet || absoluteOrigin.wasSet) {
+            val pivotX = relativeOrigin.x.toFloat()*scale.x + absoluteOrigin.x.toFloat()
+            val pivotY = relativeOrigin.y.toFloat()*scale.y + absoluteOrigin.y.toFloat()
             matrix.translate(-pivotX, -pivotY, 0f)
         }
     }
@@ -168,7 +169,7 @@ class DrawData {
         radius = 0f
         noReset = false
 
-        viewMatrix = Game.matrices.view
+        viewMatrix = Game.matrices.worldView
         viewMatrixWasSet = false
         projectionMatrix = Game.matrices.projection
 
@@ -178,7 +179,8 @@ class DrawData {
         defaultTransformation.identity()
         transformation = null
         renderer.rewind()
-        modelOrigin.reset()
+        relativeOrigin.reset()
+        absoluteOrigin.reset()
     }
 
     inner class OriginVector : Vector {

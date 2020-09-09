@@ -23,7 +23,7 @@ class FontRenderer {
 
     private val transformation = Matrix4f().identity()
     private val projection = Game.matrices.projection
-    private val view = Game.matrices.view
+    private val view = Game.matrices.worldView
 
     private val vertex = object : DrawerScript() {
         //language=GLSL
@@ -107,7 +107,7 @@ class FontRenderer {
         }
 
     fun render(transformation: Matrix4f ) {
-        fragment.mouse.value = (Mouse.world.x/Game.view.width).toFloat() + 0.5f
+        fragment.mouse.value = (Mouse.world.x/Game.world.width).toFloat() + 0.5f
         if (transformation == this.transformation) {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
             transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)

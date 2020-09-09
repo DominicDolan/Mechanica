@@ -67,7 +67,7 @@ class LinesDemo : WorldScene() {
     }
 
     override fun render(draw: Drawer) {
-        val v = Game.view
+        val v = Game.world
 
         draw.darkGrey.centered.rectangle(0, 0, v.width, stroke)
         draw.darkGrey.centered.rectangle(0, 0, stroke, v.height)

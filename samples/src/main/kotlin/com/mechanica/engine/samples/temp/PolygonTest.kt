@@ -20,7 +20,7 @@ fun main() {
         val position = attribute(0).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
-        val transformation = uniform.mat4(Game.matrices.view)
+        val transformation = uniform.mat4(Game.matrices.worldView)
 
         @Language("GLSL")
         override val main: String = """

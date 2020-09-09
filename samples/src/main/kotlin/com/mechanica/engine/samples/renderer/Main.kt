@@ -70,22 +70,22 @@ private class StartMain : WorldScene() {
             score--
         }
         if (Keyboard.A()) {
-            Game.view.x -= 3.0 * delta
+            Game.world.x -= 3.0 * delta
         }
         if (Keyboard.D()) {
-            Game.view.x += 3.0 * delta
+            Game.world.x += 3.0 * delta
         }
         if (Keyboard.W()) {
-            Game.view.y += 3.0 * delta
+            Game.world.y += 3.0 * delta
         }
         if (Keyboard.S()) {
-            Game.view.y -= 3.0 * delta
+            Game.world.y -= 3.0 * delta
         }
     }
 
     override fun render(draw: Drawer) {
 
-        val cursorFraction = ((Mouse.ui.x / Game.view.width) + 0.5)
+        val cursorFraction = ((Mouse.ui.x / Game.world.width) + 0.5)
         val blend = (cursorFraction*360).degrees
 
         draw.stroke(0.1).transformed.scale(cursorFraction*3.0).blue.polygon(polygon)

@@ -27,7 +27,7 @@ fun main() {
         val texCoords = attribute(1).vec2()
 
         val transformation = uniform.mat4(Matrix4f().identity())
-        val view = uniform.mat4(Game.matrices.view)
+        val view = uniform.mat4(Game.matrices.worldView)
         val projection = uniform.mat4(Game.matrices.projection)
 
         @Language("GLSL")

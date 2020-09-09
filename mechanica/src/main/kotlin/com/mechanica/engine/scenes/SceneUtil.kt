@@ -4,6 +4,7 @@ import com.mechanica.engine.animation.AnimationController
 import com.mechanica.engine.animation.AnimationFormula
 import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.animation.AnimationSequence
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivationMap
 import com.mechanica.engine.scenes.processes.Process
 import com.mechanica.engine.scenes.processes.ProcessNode
@@ -36,7 +37,7 @@ fun ProcessNode.addAnimationSequence(vararg animations: AnimationController): An
  *                  set to active at a time
  * @return An ExclusiveProcessMap which can have more processes added at a later stage
  */
-fun <P: Process> ProcessNode.exclusivelyActiveProcesses(vararg processes: P): ExclusiveActivationMap<P> {
+fun <P: Process> ProcessNode.addExclusivelyActiveProcesses(vararg processes: P): ExclusiveActivationMap<P> {
     val parent = this
     return object : ExclusiveActivationMap<P>(*processes) {
         override fun <R : P> addProcess(process: R): R {
@@ -47,14 +48,14 @@ fun <P: Process> ProcessNode.exclusivelyActiveProcesses(vararg processes: P): Ex
 }
 
 /**
- * This does the same as [exclusivelyActiveProcesses][com.mechanica.engine.scenes.exclusivelyActiveProcesses] but it adds
+ * This does the same as [exclusivelyActiveProcesses][com.mechanica.engine.scenes.addExclusivelyActiveProcesses] but it adds
  * scenes to the parent instead of processes
  *
  * @param scenes the set of scenes that will be added as children to this scene and only one can be
  *                  set to active at a time
  * @return An ExclusiveProcessMap which can have more processes added at a later stage
  */
-fun <P: Scene> SceneNode.exclusivelyActiveScenes(vararg scenes: P): ExclusiveActivationMap<P> {
+fun <P: Scene> SceneNode.addExclusivelyActiveScenes(vararg scenes: P): ExclusiveActivationMap<P> {
     val parent = this
     return object : ExclusiveActivationMap<P>(*scenes) {
         override fun <R : P> addProcess(process: R): R {
@@ -63,5 +64,8 @@ fun <P: Scene> SceneNode.exclusivelyActiveScenes(vararg scenes: P): ExclusiveAct
         }
     }
 }
+
+@Suppress("unused")
+fun SceneNode.setNewMainScene(setter: () -> Scene?) = Game.setMainScene(setter)
 
 

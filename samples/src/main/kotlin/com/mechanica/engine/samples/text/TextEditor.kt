@@ -31,7 +31,7 @@ private class StartText : WorldScene() {
 
     val transformation = Matrix4f()
 
-    val startPosition = vec(-Game.view.width.toFloat()/2f, Game.view.height.toFloat()/2f - renderer.fontSize)
+    val startPosition = vec(-Game.world.width.toFloat()/2f, Game.world.height.toFloat()/2f - renderer.fontSize)
 
     var cursor = 0
 
@@ -46,12 +46,12 @@ private class StartText : WorldScene() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            view.x = startPosition.x + Game.view.width/2.0
-            view.y = startPosition.y + 1.0 - Game.view.height/2.0
+            camera.x = startPosition.x + Game.world.width/2.0
+            camera.y = startPosition.y + 1.0 - Game.world.height/2.0
         }
 
         if (Mouse.scroll.hasBeenPressed) {
-            view.height /= 1.0 + Mouse.scroll.distance/10.0
+            camera.height /= 1.0 + Mouse.scroll.distance/10.0
             setViewPosition()
         }
 

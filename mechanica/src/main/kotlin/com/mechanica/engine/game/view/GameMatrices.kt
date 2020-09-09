@@ -10,7 +10,7 @@ import org.joml.Matrix4f
 
 internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
     override val projection: Matrix4f = Matrix4f().identity()// = Matrix4f()
-    override val view: Matrix4f = Matrix4f().identity()
+    override val worldView: Matrix4f = Matrix4f().identity()
     override val uiView = Matrix4f()
 
     val pvMatrix = Matrix4f()
@@ -24,29 +24,29 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
         updateView(data.viewX, data.viewY, data.viewHeight)
         setUiView(data.viewHeight)
 
-        pixelScale = calculatePixelSize(projection, view, Game.window.height)
+        pixelScale = calculatePixelSize(projection, worldView, Game.window.height)
         pixelUIScale = calculatePixelSize(projection, uiView, Game.window.height)
     }
 
-    fun updateView(viewData: WorldView) {
+    fun updateView(viewData: WorldCamera) {
         updateView(viewData.x, viewData.y, viewData.height)
     }
 
     private fun updateView(x: Double, y: Double, height: Double) {
         val cameraZ = height*getYScale(projection)/2f
-        view.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
-        pixelScale = calculatePixelSize(projection, view, Game.window.height)
+        worldView.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
+        pixelScale = calculatePixelSize(projection, worldView, Game.window.height)
     }
 
     private fun setUiView(height: Double) {
         val cameraZ = height*getYScale(projection)/(2f* Monitor.getPrimaryMonitor().contentScale.yScale)
         uiView.setTranslation(0f, 0f, -cameraZ.toFloat())
-        pixelUIScale = calculatePixelSize(projection, view, Game.window.height)
+        pixelUIScale = calculatePixelSize(projection, worldView, Game.window.height)
     }
 
     fun updateMatrices() {
         pvMatrix.set(projection)
-        pvMatrix.mul(view)
+        pvMatrix.mul(worldView)
 
         pvUiMatrix.set(projection)
         pvUiMatrix.mul(uiView)

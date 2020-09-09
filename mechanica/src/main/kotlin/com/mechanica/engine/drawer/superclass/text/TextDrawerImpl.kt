@@ -35,7 +35,7 @@ class TextDrawerImpl(
         val height = bottomRight.y - topLeft.y
         val width = bottomRight.x - topLeft.x
 
-        val origin = data.modelOrigin
+        val origin = data.relativeOrigin
         val oX = origin.x
         val oY = origin.y
 
