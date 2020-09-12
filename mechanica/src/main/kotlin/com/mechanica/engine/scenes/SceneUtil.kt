@@ -78,7 +78,7 @@ fun <P: Process> ProcessNode.addExclusivelyActiveProcesses(vararg processes: P):
  *                  set to active at a time
  * @return An ExclusiveProcessMap which can have more processes added at a later stage
  */
-fun <P: Scene> SceneNode.addNonOrOneActiveScenes(vararg scenes: P): NoneOrOneActivationMap<P> {
+fun <P: Scene> SceneNode.addNoneOrOneActiveScenes(vararg scenes: P): NoneOrOneActivationMap<P> {
     val parent = this
     return object : NoneOrOneActivationMap<P>(*scenes) {
         override fun <R : P> addProcess(process: R): R {
