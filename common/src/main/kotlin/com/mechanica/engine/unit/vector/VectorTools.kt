@@ -1,8 +1,10 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package com.mechanica.engine.unit.vector
 
-import com.mechanica.engine.unit.angle.Angle
-import kotlin.math.*
+import com.mechanica.engine.unit.angle.Degree
+import com.mechanica.engine.unit.angle.Radian
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 /**
@@ -17,9 +19,15 @@ fun vec(x: Number, y: Number): LightweightVector {
     return LightweightVector(xyBits)
 }
 
-fun vec(r: Number, theta: Angle): LightweightVector {
+fun vec(r: Number, theta: Degree): LightweightVector {
     val x = r.toDouble()*cos(theta.toRadians().toDouble())
     val y = r.toDouble()*sin(theta.toRadians().toDouble())
+    return vec(x, y)
+}
+
+fun vec(r: Number, theta: Radian): LightweightVector {
+    val x = r.toDouble()*cos(theta.toDouble())
+    val y = r.toDouble()*sin(theta.toDouble())
     return vec(x, y)
 }
 

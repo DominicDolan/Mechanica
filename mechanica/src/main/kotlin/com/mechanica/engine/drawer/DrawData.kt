@@ -67,8 +67,8 @@ class DrawData {
             return field
         }
 
+    val normalizedOrigin = OriginVector()
     val relativeOrigin = OriginVector()
-    val absoluteOrigin = OriginVector()
 
     var radius: Float = 0f
 
@@ -142,9 +142,9 @@ class DrawData {
     }
 
     private fun addModelOriginToMatrix(matrix: Matrix4f) {
-        if (relativeOrigin.wasSet || absoluteOrigin.wasSet) {
-            val pivotX = relativeOrigin.x.toFloat()*scale.x + absoluteOrigin.x.toFloat()
-            val pivotY = relativeOrigin.y.toFloat()*scale.y + absoluteOrigin.y.toFloat()
+        if (normalizedOrigin.wasSet || relativeOrigin.wasSet) {
+            val pivotX = normalizedOrigin.x.toFloat()*scale.x + relativeOrigin.x.toFloat()
+            val pivotY = normalizedOrigin.y.toFloat()*scale.y + relativeOrigin.y.toFloat()
             matrix.translate(-pivotX, -pivotY, 0f)
         }
     }
@@ -179,8 +179,8 @@ class DrawData {
         defaultTransformation.identity()
         transformation = null
         renderer.rewind()
+        normalizedOrigin.reset()
         relativeOrigin.reset()
-        absoluteOrigin.reset()
     }
 
     inner class OriginVector : Vector {

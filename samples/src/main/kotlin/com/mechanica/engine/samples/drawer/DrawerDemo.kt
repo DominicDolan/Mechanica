@@ -49,7 +49,7 @@ fun main() {
         draw.radius(0.2).blue.rectangle(0, -1, 2.0, 1.0)
         draw.depth(radius*2).radius(0.2).image(image, 3, 3)
         draw.radius(0.2).image(image, 3, 3)
-        draw.origin.relative(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
+        draw.origin.normalized(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
         draw.transformed.scale(3, 3).translate(4, -2).cyan.polygon(polygonModel)
         draw.color.strokeColor(hex(0xD0F045FF), strokeWidth = 0.05).path(points)
         draw.cyan.ellipse(-3, -3, 2, 1)

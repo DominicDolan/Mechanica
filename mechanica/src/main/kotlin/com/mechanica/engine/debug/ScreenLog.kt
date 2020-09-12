@@ -9,7 +9,7 @@ object ScreenLog {
         val v = Game.ui
         val fontSize = v.height*0.02
         if (sb.isNotEmpty()) {
-            draw.ui.origin.relative(0, 1).green.alpha(0.5).text(sb.toString(), fontSize, v.left, v.top)
+            draw.ui.origin.normalized(0, 1).green.alpha(0.5).text(sb.toString(), fontSize, v.left, v.top)
             sb.clear()
         }
     }

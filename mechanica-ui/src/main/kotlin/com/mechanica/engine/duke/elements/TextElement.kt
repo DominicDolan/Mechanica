@@ -18,7 +18,7 @@ class TextElement(scene: DukeUIScene) : Element(scene) {
     override val elementDrawer = ElementDrawer { draw, style ->
         with(style.textFormat) {
             draw.ui.color(color)
-                .origin.relative(alignment.x, 1.0 - alignment.y)
+                .origin.normalized(alignment.x, 1.0 - alignment.y)
                 .text(text, size, x + alignment.x*width, y + alignment.y*height)
         }
     }

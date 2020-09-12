@@ -18,7 +18,7 @@ import com.mechanica.engine.models.PolygonModel
 interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathDrawer {
     val origin: OriginDrawer
     val centered: Drawer
-        get() = origin.relative(0.5, 0.5)
+        get() = origin.normalized(0.5, 0.5)
 
     val color: ColorDrawer
 

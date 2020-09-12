@@ -14,14 +14,18 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
                 runActivationCallbacks(value)
             }
         }
-
+    override var paused: Boolean = false
     private val childProcesses: List<ProcessNode> = ArrayList()
     private val leafProcesses: List<Updateable> = ArrayList()
 
     private var callbacksInitialized = false
 
     init {
-        addActivationChangedListener(0) { _active = it }
+        addActivationChangedListener(0) {
+            _active = it
+            if (it) activated()
+            else deactivated()
+        }
     }
 
     /**
@@ -146,11 +150,21 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
      */
     open fun whileInactive(delta: Double) { }
 
+    /**
+     * Function to be overriden that will be called immediately after [active] has been set to true
+     */
+    open fun activated() { }
+
+    /**
+     * Function to be overriden that will be called immediately after [active] has been set to false
+     */
+    open fun deactivated() { }
+
     private inline fun updateNodesFor(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
         var inverseI = childProcesses.lastIndex - from
         do {
             val process = childProcesses.getOrNull(childProcesses.lastIndex - (inverseI--)) ?: break
-            if (process.active) {
+            if (process.active && !process.paused) {
                 process.updateNodes(delta)
             } else if (process is Process) {
                 process.whileInactive(delta)

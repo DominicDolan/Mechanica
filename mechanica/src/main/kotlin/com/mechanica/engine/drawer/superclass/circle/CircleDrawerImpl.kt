@@ -35,7 +35,7 @@ class CircleDrawerImpl(
         data.setScale(diameter.toFloat(), diameter.toFloat())
         data.cornerSize.set(diameter, diameter)
 
-        val origin = data.relativeOrigin
+        val origin = data.normalizedOrigin
         if (!origin.wasSet) {
             origin.set(0.5, 0.5)
         }

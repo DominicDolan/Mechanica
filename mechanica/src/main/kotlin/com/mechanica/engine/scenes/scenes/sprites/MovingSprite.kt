@@ -1,6 +1,5 @@
 package com.mechanica.engine.scenes.scenes.sprites
 
-import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.MovingViewable
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.Scene
@@ -16,8 +15,6 @@ abstract class MovingSprite(x: Double = 0.0,
 
     override val position = DynamicVector.create(x + width/2.0, y + height/2.0)
     override val view: View by lazy { MovingView(width, height) }
-
-    abstract override fun render(draw: Drawer)
 
     inner class MovingView(
             override val width: Double,
