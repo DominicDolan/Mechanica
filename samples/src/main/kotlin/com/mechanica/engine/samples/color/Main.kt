@@ -13,7 +13,7 @@ fun main() {
         setStartingScene { StartMain() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 

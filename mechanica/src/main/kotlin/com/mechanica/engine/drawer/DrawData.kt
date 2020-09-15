@@ -17,7 +17,7 @@ class DrawData {
 
     var viewMatrixWasSet = false
         private set
-    var viewMatrix: Matrix4f = Game.matrices.worldView
+    var viewMatrix: Matrix4f = Game.matrices.worldCamera
         set(value) {
             viewMatrixWasSet = true
             field = value
@@ -169,7 +169,7 @@ class DrawData {
         radius = 0f
         noReset = false
 
-        viewMatrix = Game.matrices.worldView
+        viewMatrix = Game.matrices.worldCamera
         viewMatrixWasSet = false
         projectionMatrix = Game.matrices.projection
 

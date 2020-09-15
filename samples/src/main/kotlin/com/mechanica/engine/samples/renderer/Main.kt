@@ -22,7 +22,7 @@ fun main() {
         setViewport(height = 10.0)
         setStartingScene { StartMain() }
     }
-    Game.run()
+    Game.loop()
 }
 
 private class StartMain : WorldScene() {

@@ -39,7 +39,7 @@ fun main() {
     val polygonModel = PolygonModel(points)
 
 
-    Game.run {
+    Game.loop {
         val rotation = (mouse.x*20.0).degrees
         val radius = ((mouse.y + Game.world.height/2.0)/5.0)
         ScreenLog { "Radius: $radius" }

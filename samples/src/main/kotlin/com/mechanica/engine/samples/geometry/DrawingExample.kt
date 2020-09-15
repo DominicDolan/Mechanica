@@ -19,7 +19,7 @@ fun main() {
         setStartingScene { DrawingExample() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class DrawingExample : WorldScene() {

@@ -68,12 +68,12 @@ class DrawerImpl(private val data: DrawData) :
 
     override val ui: Drawer
         get() {
-            data.viewMatrix = Game.matrices.uiView
+            data.viewMatrix = Game.matrices.uiCamera
             return this
         }
     override val world: Drawer
         get() {
-            data.viewMatrix = Game.matrices.worldView
+            data.viewMatrix = Game.matrices.worldCamera
             return this
         }
 

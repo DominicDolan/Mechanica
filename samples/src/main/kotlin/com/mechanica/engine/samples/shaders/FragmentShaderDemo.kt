@@ -18,7 +18,7 @@ fun main() {
 
     val renderer = FragmentRenderer()
 
-    Game.run {
+    Game.loop {
         if (Keyboard.esc.hasBeenPressed) {
             Game.close()
         }

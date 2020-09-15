@@ -42,6 +42,7 @@ object Game : Configurable<GameConfiguration> {
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
+    private var hasLoadedPersistence = false
     private var hasFinished = false
 
     fun addProcess(process: Updateable) {
@@ -56,8 +57,17 @@ object Game : Configurable<GameConfiguration> {
         this._application = application
         loadPersistenceData()
         setup(configuration)
-        if (configuration.initalize) start()
         BackendDebugConfiguration.set(debug)
+        if (configuration.initalize) {
+            start()
+        }
+    }
+
+    fun initializeAs(application: Application) {
+        this._application = application
+        loadPersistenceData()
+        configuration.initalize = false
+        start()
     }
 
     fun start(block: () -> Unit = {}) {
@@ -80,26 +90,13 @@ object Game : Configurable<GameConfiguration> {
         }
     }
 
-    fun run() {
-        start()
-        loop()
-    }
-
-    fun run(update: (Double) -> Unit) {
+    fun loop(update: ((Double) -> Unit)? = null) {
         start()
         sceneManager.updateVar = update
-        loop()
-    }
 
-    private fun loop() {
         try {
             while (!hasFinished) {
-                application.startFrame()
-
-                gameMatrices.updateMatrices()
-
-                sceneManager.updateAndRender()
-
+                updateFrame()
                 if (!window.update()) {
                     return
                 }
@@ -110,6 +107,14 @@ object Game : Configurable<GameConfiguration> {
             window.destroy()
             terminate()
         }
+    }
+
+    private fun updateFrame() {
+        application.startFrame()
+
+        gameMatrices.updateMatrices()
+
+        sceneManager.updateAndRender()
     }
 
     fun close() {
@@ -141,7 +146,10 @@ object Game : Configurable<GameConfiguration> {
     }
 
     private fun loadPersistenceData() {
-        populateData()
+        if (!hasLoadedPersistence) {
+            populateData()
+            hasLoadedPersistence = true
+        }
     }
 
     private fun savePersistenceData() {

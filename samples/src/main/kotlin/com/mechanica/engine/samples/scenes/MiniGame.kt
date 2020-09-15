@@ -27,7 +27,7 @@ fun main() {
         setStartingScene { PlayScene() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class PlayScene : WorldScene() {

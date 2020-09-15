@@ -27,7 +27,7 @@ fun main() {
         val texCoords = attribute(1).vec2()
 
         val transformation = uniform.mat4(Matrix4f().identity())
-        val view = uniform.mat4(Game.matrices.worldView)
+        val view = uniform.mat4(Game.matrices.worldCamera)
         val projection = uniform.mat4(Game.matrices.projection)
 
         @Language("GLSL")
@@ -65,7 +65,7 @@ fun main() {
 
     val inputs = arrayOf(pos, tc, image, indices)
 
-    Game.run {
+    Game.loop {
         shader.render(inputs) {
             glDrawElementsBaseVertex(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, 0, 0)
         }

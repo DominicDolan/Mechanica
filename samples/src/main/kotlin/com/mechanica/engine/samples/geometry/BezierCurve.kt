@@ -15,7 +15,7 @@ fun main() {
         setStartingScene { BezierCurve() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class BezierCurve : WorldScene() {

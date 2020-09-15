@@ -14,7 +14,7 @@ fun main() {
 
     val source = Res.audio("radar3").createSource()
 
-    Game.run {
+    Game.loop {
         if (Keyboard.space.hasBeenPressed) {
             source.play()
         }

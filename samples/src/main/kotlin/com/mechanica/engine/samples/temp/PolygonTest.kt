@@ -20,7 +20,7 @@ fun main() {
         val position = attribute(0).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
-        val transformation = uniform.mat4(Game.matrices.worldView)
+        val transformation = uniform.mat4(Game.matrices.worldCamera)
 
         @Language("GLSL")
         override val main: String = """
@@ -60,7 +60,7 @@ fun main() {
 
     val model = PolygonModel(points)
 
-    Game.run {
+    Game.loop {
         shader.render(model)
     }
 }

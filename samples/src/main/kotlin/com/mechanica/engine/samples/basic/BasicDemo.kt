@@ -11,7 +11,7 @@ fun main() {
 
     val draw = Drawer.create()
 
-    Game.run {
+    Game.loop {
         draw.centered.grey.text("Hello, Mechanica")
     }
 }

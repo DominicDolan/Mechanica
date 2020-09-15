@@ -23,7 +23,7 @@ class FontRenderer {
 
     private val transformation = Matrix4f().identity()
     private val projection = Game.matrices.projection
-    private val view = Game.matrices.worldView
+    private val view = Game.matrices.worldCamera
 
     private val vertex = object : DrawerScript() {
         //language=GLSL

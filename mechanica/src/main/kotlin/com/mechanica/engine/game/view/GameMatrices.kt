@@ -4,14 +4,14 @@ import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.matrix.Matrices.Companion.calculatePixelSize
-import com.mechanica.engine.matrix.Matrices.Companion.getYScale
+import com.mechanica.engine.matrix.calculatePixelSize
+import com.mechanica.engine.matrix.yScale
 import org.joml.Matrix4f
 
-internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
-    override val projection: Matrix4f = Matrix4f().identity()// = Matrix4f()
-    override val worldView: Matrix4f = Matrix4f().identity()
-    override val uiView = Matrix4f()
+internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matrices {
+    override val projection: Matrix4f = Matrix4f().identity()
+    override val worldCamera: Matrix4f = Matrix4f().identity()
+    override val uiCamera = Matrix4f()
 
     val pvMatrix = Matrix4f()
     val pvUiMatrix = Matrix4f()
@@ -21,46 +21,53 @@ internal class GameMatrices(data: GameSetup, viewPort: View) : Matrices {
 
     init {
         data.projectionMatrixConfiguration(projection, viewPort)
-        updateView(data.viewX, data.viewY, data.viewHeight)
+
+        updateView(viewPort)
         setUiView(data.viewHeight)
 
-        pixelScale = calculatePixelSize(projection, worldView, Game.window.height)
-        pixelUIScale = calculatePixelSize(projection, uiView, Game.window.height)
+        pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
+        pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
     }
 
-    fun updateView(viewData: WorldCamera) {
-        updateView(viewData.x, viewData.y, viewData.height)
-    }
+    fun updateView(view: View) {
+        val height = view.height
+        val x = view.x
+        val y = view.y
 
-    private fun updateView(x: Double, y: Double, height: Double) {
-        val cameraZ = height*getYScale(projection)/2f
-        worldView.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
-        pixelScale = calculatePixelSize(projection, worldView, Game.window.height)
+        val cameraZ = height*projection.yScale/2f
+        worldCamera.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
+
+        data.projectionMatrixConfiguration(projection, view)
+
+        pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
     }
 
     private fun setUiView(height: Double) {
-        val cameraZ = height*getYScale(projection)/(2f* Monitor.getPrimaryMonitor().contentScale.yScale)
-        uiView.setTranslation(0f, 0f, -cameraZ.toFloat())
-        pixelUIScale = calculatePixelSize(projection, worldView, Game.window.height)
+        val cameraZ = height*projection.yScale/(2f* Monitor.getPrimaryMonitor().contentScale.yScale)
+        uiCamera.setTranslation(0f, 0f, -cameraZ.toFloat())
+        pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
     }
 
     fun updateMatrices() {
         pvMatrix.set(projection)
-        pvMatrix.mul(worldView)
+        pvMatrix.mul(worldCamera)
 
         pvUiMatrix.set(projection)
-        pvUiMatrix.mul(uiView)
+        pvUiMatrix.mul(uiCamera)
     }
 
     companion object {
-        const val farPlane: Float = 1000f
-        const val nearPlane: Float = 0.1f
-        const val fov = 70f
+        private const val fov = 70f
+        private val fovRadian: Float
+            get() = Math.toRadians(fov.toDouble()).toFloat()
 
         fun defaultProjectionMatrix(matrix: Matrix4f, view: View) {
             val aspectRatio = view.ratio.toFloat()
-            val fov = Math.toRadians(fov.toDouble()).toFloat()
-            matrix.setPerspective(fov, aspectRatio, nearPlane, farPlane, false)
+
+            matrix.setPerspective(fovRadian, aspectRatio, 0f, 1f, false)
+
+            matrix._m22(-1f)
+            matrix._m32(0f)
 //
 //            matrix.zero()
 //            val yScale = (1f / tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()

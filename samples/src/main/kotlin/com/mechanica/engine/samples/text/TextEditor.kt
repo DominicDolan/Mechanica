@@ -22,7 +22,7 @@ fun main() {
         }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 

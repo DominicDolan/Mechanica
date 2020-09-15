@@ -21,7 +21,7 @@ fun main() {
         setStartingScene { LinesDemo() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class LinesDemo : WorldScene() {

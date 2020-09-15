@@ -28,7 +28,7 @@ fun main() {
     Game.world.x = 0.5
     Game.world.y = 0.5
 
-    Game.run {
+    Game.loop {
         if (Keyboard.esc.hasBeenPressed) {
             Game.close()
         }

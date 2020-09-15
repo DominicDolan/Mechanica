@@ -13,7 +13,7 @@ fun main() {
         setStartingScene { SceneDemo() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class SceneDemo : Scene(), Inputs by Inputs.create() {

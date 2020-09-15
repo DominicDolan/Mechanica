@@ -14,7 +14,7 @@ fun main() {
         setStartingScene { SceneDemo1() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class SceneDemo1 : UIScene(), Inputs by Inputs.create() {

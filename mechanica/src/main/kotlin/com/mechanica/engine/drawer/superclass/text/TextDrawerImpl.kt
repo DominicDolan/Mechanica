@@ -27,7 +27,7 @@ class TextDrawerImpl(
         data.alphaBlend = 1f
         data.colorPassthrough = true
 
-        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiView
+        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiCamera
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)

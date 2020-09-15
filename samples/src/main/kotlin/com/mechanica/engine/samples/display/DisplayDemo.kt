@@ -11,7 +11,7 @@ fun main() {
         setStartingScene { DisplayTestState() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class DisplayTestState : WorldScene() {

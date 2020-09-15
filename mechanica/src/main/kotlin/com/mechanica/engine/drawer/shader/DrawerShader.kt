@@ -3,7 +3,7 @@ package com.mechanica.engine.drawer.shader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.graphics.GLDraw
-import com.mechanica.engine.matrix.Matrices
+import com.mechanica.engine.matrix.calculatePixelSize
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderLoader
@@ -41,7 +41,7 @@ abstract class DrawerShader : Shader() {
 
         loadMatrixUniforms(transformation,
                 projection ?: Game.matrices.projection,
-                view ?: Game.matrices.worldView
+                view ?: Game.matrices.worldCamera
         )
 
         render(model)
@@ -62,18 +62,18 @@ abstract class DrawerShader : Shader() {
         for (loader in matrixLoaders) {
             loader.matrixType.value = 1f
             if (projection === Game.matrices.projection) {
-                if (view === Game.matrices.worldView) {
+                if (view === Game.matrices.worldCamera) {
                     loader.matrixType.value = 0f
                     loader.pvMatrix.set((Game.matrices as GameMatrices).pvMatrix)
                     this.pixelSize.value = (Game.matrices as GameMatrices).pixelScale
-                } else if (view === Game.matrices.uiView) {
+                } else if (view === Game.matrices.uiCamera) {
                     loader.matrixType.value = 0f
                     loader.pvMatrix.set((Game.matrices as GameMatrices).pvUiMatrix)
                     this.pixelSize.value = (Game.matrices as GameMatrices).pixelUIScale
                 }
             }
             if (loader.matrixType.value == 1f) {
-                this.pixelSize.value = Matrices.calculatePixelSize(projection, view, Game.window.height)
+                this.pixelSize.value = calculatePixelSize(projection, view, Game.window.height)
             }
         }
     }
