@@ -11,21 +11,33 @@ sealed class Camera : View
 
 class UICamera internal constructor() : Camera() {
     private val scale: Vector
+
+    internal var _width: Double
     override val width: Double
+        get() = _width
+
+    internal var _height: Double
     override val height: Double
+        get() = _height
+
     override val x: Double = 0.0
     override val y: Double = 0.0
     override val xy: Vector = vec(0.0, 0.0)
-    override val wh: Vector
+    override val wh: Vector = object : Vector {
+        override val x: Double
+            get() = width
+        override val y: Double
+            get() = height
+
+    }
     override val ratio: Double
         get() = Game.world.ratio*(scale.y/scale.x)
 
     init {
         val contentScale = Monitor.getPrimaryMonitor().contentScale
         scale = vec(contentScale.xScale, contentScale.yScale)
-        width = Game.world.width/scale.x
-        height = Game.world.height/scale.y
-        wh = vec(width, height)
+        _width = Game.world.width/scale.x
+        _height = Game.world.height/scale.y
     }
 }
 

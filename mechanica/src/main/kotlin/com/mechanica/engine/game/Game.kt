@@ -133,16 +133,14 @@ object Game : Configurable<GameConfiguration> {
 
     private fun refreshView(window: Window) {
         val converter = data.resolutionConverter
-        if (converter.viewHeight != null) {
-            converter.viewHeight = world.height
-        }
-        if (converter.viewWidth != null) {
-            converter.viewWidth = world.width
-        }
-        converter.resolutionWidth = window.width
-        converter.resolutionHeight = window.height
-        converter.calculate()
+
+        converter.calculate(world, window)
         world.width = converter.viewWidthOut
+
+        converter.calculate(ui, window)
+        ui._width = converter.viewWidthOut
+        ui._height = converter.viewHeightOut
+        gameMatrices.setUiView(ui._height)
     }
 
     private fun loadPersistenceData() {

@@ -23,7 +23,7 @@ internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matri
         data.projectionMatrixConfiguration(projection, viewPort)
 
         updateView(viewPort)
-        setUiView(data.viewHeight)
+        setUiView(data.viewHeight/Monitor.getPrimaryMonitor().contentScale.yScale)
 
         pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
         pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
@@ -42,8 +42,8 @@ internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matri
         pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
     }
 
-    private fun setUiView(height: Double) {
-        val cameraZ = height*projection.yScale/(2f* Monitor.getPrimaryMonitor().contentScale.yScale)
+    fun setUiView(height: Double) {
+        val cameraZ = height*projection.yScale/(2f)
         uiCamera.setTranslation(0f, 0f, -cameraZ.toFloat())
         pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
     }
