@@ -1,9 +1,8 @@
 package com.mechanica.engine.color
 
-import com.mechanica.engine.unit.angle.Angle
 import com.mechanica.engine.unit.angle.Degree
 
-inline class LightweightColor(private val hex: Long): Color {
+inline class InlineColor(private val hex: Long): Color {
     override val a: Double
         get() = hex2Alpha(hex)
     override val r: Double

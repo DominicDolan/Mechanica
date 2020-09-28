@@ -1,6 +1,6 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 
 interface Line {
@@ -9,7 +9,7 @@ interface Line {
     val n: Double
     val c: Double
 
-    fun intersect(other: Line): LightweightVector {
+    fun intersect(other: Line): InlineVector {
         val x = if (n != 0.0 && other.n !=0.0) (other.b - b) / (m - other.m)
         else if (n == 0.0) c
         else other.c

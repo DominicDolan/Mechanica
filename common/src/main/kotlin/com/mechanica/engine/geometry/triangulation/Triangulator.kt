@@ -1,7 +1,7 @@
 package com.mechanica.engine.geometry.triangulation
 
 import com.mechanica.engine.geometry.triangulation.iterators.TriangulatorIterable
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.indexLooped
@@ -25,13 +25,13 @@ abstract class Triangulator(path: Array<out Vector>) {
         ccw = addAllFromPath(path)
     }
 
-    fun add(vector: LightweightVector): Node {
+    fun add(vector: InlineVector): Node {
         val n = Node(vector)
         rewind()
         return n
     }
 
-    fun add(index: Int, vector: LightweightVector): Node {
+    fun add(index: Int, vector: InlineVector): Node {
         val n = Node(vector, index)
         rewind()
         return n

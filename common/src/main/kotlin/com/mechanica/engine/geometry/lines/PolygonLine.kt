@@ -1,7 +1,7 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.LightweightVector
 import com.mechanica.engine.geometry.triangulation.Triangulator
+import com.mechanica.engine.unit.vector.InlineVector
 
 class PolygonLine(private val list: ArrayList<Triangulator.Node>, val listIndex: Int) :  LineSegment() {
 
@@ -14,14 +14,14 @@ class PolygonLine(private val list: ArrayList<Triangulator.Node>, val listIndex:
         this.hasChanged = hasChange
     }
 
-    fun setP1(vec: LightweightVector, previous: PolygonLine? = null) {
+    fun setP1(vec: InlineVector, previous: PolygonLine? = null) {
         p1.x = vec.x
         p1.y = vec.y
         hasChanged = true
         previous?.hasChanged(true)
     }
 
-    fun setP2(vec: LightweightVector, next: PolygonLine? = null) {
+    fun setP2(vec: InlineVector, next: PolygonLine? = null) {
         p2.x = vec.x
         p2.y = vec.y
         hasChanged = true

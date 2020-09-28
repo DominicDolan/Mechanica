@@ -150,10 +150,10 @@ class InvisibilityState(player: Player) : PlayerState(player) {
 }
 
 class Enemy : MovingSprite() {
-    private val startingPosition: LightweightVector
+    private val startingPosition: InlineVector
     private val direction: Degree
 
-    private val speedVector: LightweightVector
+    private val speedVector: InlineVector
     private val travelDistance = 15.0
 
     init {

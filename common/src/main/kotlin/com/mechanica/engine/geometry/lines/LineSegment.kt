@@ -1,6 +1,6 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import kotlin.math.max
 import kotlin.math.min
@@ -25,7 +25,7 @@ abstract class LineSegment() : Line {
     abstract val p1: Vector
     abstract val p2: Vector
 
-    fun isInBoundingBox(point: LightweightVector): Boolean {
+    fun isInBoundingBox(point: InlineVector): Boolean {
         val xBoolean = point.x in min(p1.x, p2.x)..max(p1.x, p2.x)
         val yBoolean = point.y in min(p1.y,p2.y)..max(p2.y, p1.y)
         return xBoolean && yBoolean

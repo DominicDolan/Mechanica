@@ -5,19 +5,19 @@ import com.mechanica.engine.unit.angle.Degree
 import com.mechanica.engine.unit.angle.Radian
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.angle.radians
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
 
 interface TransformationDrawer : Drawer {
     fun translate(x: Number, y: Number): TransformationDrawer
     
-    fun translate(translation: LightweightVector) = translate(translation.x, translation.y)
+    fun translate(translation: InlineVector) = translate(translation.x, translation.y)
     fun translate(translation: Vector) = translate(translation.x, translation.y)
     
     fun scale(x: Number, y: Number): TransformationDrawer
     
-    fun scale(scale: LightweightVector) = scale(scale.x, scale.y)
+    fun scale(scale: InlineVector) = scale(scale.x, scale.y)
     fun scale(scale: Vector) = scale(scale.x, scale.y)
     fun scale(scale: Double) = scale(scale, scale)
 

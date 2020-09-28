@@ -7,7 +7,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -206,7 +206,7 @@ class DrawData {
             this.y = vector.y
         }
 
-        fun set(vector: LightweightVector) {
+        fun set(vector: InlineVector) {
             this.x = vector.x
             this.y = vector.y
         }

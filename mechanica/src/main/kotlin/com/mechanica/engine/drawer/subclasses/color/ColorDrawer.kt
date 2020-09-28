@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer.subclasses.color
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.LightweightColor
+import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.color.hex
 import com.mechanica.engine.color.hsl
 import com.mechanica.engine.drawer.Drawer
@@ -12,7 +12,7 @@ interface ColorDrawer : Drawer, Color {
 
     operator fun invoke(color: Color): ColorDrawer
 
-    operator fun invoke(color: LightweightColor): ColorDrawer
+    operator fun invoke(color: InlineColor): ColorDrawer
 
     operator fun invoke(hex: Long): ColorDrawer = invoke(hex(hex))
 
@@ -41,9 +41,9 @@ interface ColorDrawer : Drawer, Color {
         return this
     }
 
-    fun strokeColor(color: LightweightColor, strokeWidth: Double = -1.0): ColorDrawer
+    fun strokeColor(color: InlineColor, strokeWidth: Double = -1.0): ColorDrawer
     fun strokeColor(color: Color, strokeWidth: Double = -1.0): ColorDrawer
 
-    fun fillColor(color: LightweightColor): ColorDrawer
+    fun fillColor(color: InlineColor): ColorDrawer
     fun fillColor(color: Color): ColorDrawer
 }

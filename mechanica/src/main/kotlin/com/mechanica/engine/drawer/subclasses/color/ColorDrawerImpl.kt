@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer.subclasses.color
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.LightweightColor
+import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.drawer.Drawer
 
@@ -14,7 +14,7 @@ internal class ColorDrawerImpl(drawer: Drawer, private val data: DrawData): Colo
         return this
     }
 
-    override fun invoke(color: LightweightColor): ColorDrawer {
+    override fun invoke(color: InlineColor): ColorDrawer {
         data.fillColor.set(color)
         return this
     }
@@ -24,7 +24,7 @@ internal class ColorDrawerImpl(drawer: Drawer, private val data: DrawData): Colo
         return this
     }
 
-    override fun fillColor(color: LightweightColor): ColorDrawer {
+    override fun fillColor(color: InlineColor): ColorDrawer {
         invoke(color)
         return this
     }
@@ -37,7 +37,7 @@ internal class ColorDrawerImpl(drawer: Drawer, private val data: DrawData): Colo
         return this
     }
 
-    override fun strokeColor(color: LightweightColor, strokeWidth: Double): ColorDrawer {
+    override fun strokeColor(color: InlineColor, strokeWidth: Double): ColorDrawer {
         if (strokeWidth >= 0.0) {
             data.strokeWidth = strokeWidth
         }

@@ -19,7 +19,7 @@ interface Vector {
             override fun toString() = Companion.toString(this)
         }
 
-        fun create(vector: LightweightVector) = object : Vector {
+        fun create(vector: InlineVector) = object : Vector {
             override val x = vector.x
             override val y = vector.y
             override fun toString() = Companion.toString(this)

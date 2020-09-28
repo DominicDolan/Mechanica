@@ -4,7 +4,7 @@ import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.unit.angle.Degree
 import com.mechanica.engine.unit.angle.Radian
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 
 internal class RotatedDrawerImpl(drawer: Drawer, private val data: DrawData): RotatedDrawer, Drawer by drawer {
@@ -18,7 +18,7 @@ internal class RotatedDrawerImpl(drawer: Drawer, private val data: DrawData): Ro
         return this
     }
 
-    override fun about(point: LightweightVector) = about(point.x, point.y)
+    override fun about(point: InlineVector) = about(point.x, point.y)
     override fun about(point: Vector) = about(point.x, point.y)
 
     private fun rotate(radians: Double): RotatedDrawer {

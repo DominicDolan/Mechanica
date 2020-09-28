@@ -4,7 +4,7 @@ import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.text.Text
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 
 class TextDrawerImpl(
@@ -59,7 +59,7 @@ class TextDrawerImpl(
         data.setScale(size.toFloat(), size.toFloat())
     }
 
-    private fun bottomRight(model: TextModel): LightweightVector {
+    private fun bottomRight(model: TextModel): InlineVector {
         val lc = model.lineCount
         val y = lc.toDouble()
         var longest = 0.0

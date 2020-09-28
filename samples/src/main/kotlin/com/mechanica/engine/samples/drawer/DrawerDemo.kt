@@ -9,7 +9,7 @@ import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
 
@@ -56,5 +56,5 @@ fun main() {
     }
 }
 
-val mouse: LightweightVector
+val mouse: InlineVector
     get() = vec(Mouse.world.x, Mouse.world.y)

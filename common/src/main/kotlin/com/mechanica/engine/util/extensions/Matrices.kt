@@ -1,10 +1,10 @@
 package com.mechanica.engine.util.extensions
 
 import com.mechanica.engine.memory.SimulatedStack
+import com.mechanica.engine.unit.vector.InlineVector
+import com.mechanica.engine.unit.vector.vec
 import org.joml.Matrix4f
 import org.joml.Vector3f
-import com.mechanica.engine.unit.vector.LightweightVector
-import com.mechanica.engine.unit.vector.vec
 
 private val stack = SimulatedStack { Vector3f() }
 
@@ -20,7 +20,7 @@ val Matrix4f.scaleY: Float
         it.y
     }
 
-val Matrix4f.scaleXY: LightweightVector
+val Matrix4f.scaleXY: InlineVector
     get() = getProperty2f {
         getScale(it)
         vec(it.x, it.y)
@@ -44,7 +44,7 @@ val Matrix4f.translateY: Float
         it.y
     }
 
-val Matrix4f.translateXY: LightweightVector
+val Matrix4f.translateXY: InlineVector
     get() = getProperty2f {
         getTranslation(it)
         vec(it.x, it.y)
@@ -63,7 +63,7 @@ private inline fun getProperty(getter: (Vector3f) -> Float): Float {
     return value
 }
 
-private inline fun getProperty2f(getter: (Vector3f) -> LightweightVector): LightweightVector {
+private inline fun getProperty2f(getter: (Vector3f) -> InlineVector): InlineVector {
     val vec = stack.allocate()
     val value = getter(vec)
     stack.freeMemory(vec)
