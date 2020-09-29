@@ -51,16 +51,16 @@ interface Window {
     }
 
     companion object {
-        fun create(title: String, width: Int, height: Int): Window {
-            return DisplayLoader.createWindow(title, width, height)
+        fun create(title: String, width: Int, height: Int, sharedWith: Window? = null): Window {
+            return DisplayLoader.createWindow(title, width, height, sharedWith)
         }
 
-        fun create(title: String, monitor: Monitor): Window {
-            return DisplayLoader.createWindow(title, monitor)
+        fun create(title: String, monitor: Monitor, sharedWith: Window? = null): Window {
+            return DisplayLoader.createWindow(title, monitor, sharedWith)
         }
 
-        fun create(title: String, width: Int, height: Int, monitor: Monitor): Window {
-            return DisplayLoader.createWindow(title, width, height, monitor)
+        fun create(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window? = null): Window {
+            return DisplayLoader.createWindow(title, width, height, monitor, sharedWith)
         }
     }
 }

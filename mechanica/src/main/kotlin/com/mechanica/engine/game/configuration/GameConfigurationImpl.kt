@@ -59,6 +59,6 @@ internal class GameConfigurationImpl : GameConfiguration {
     }
 
     override fun setDeltaTimeCalculator(calculator: DeltaCalculator) {
-
+        _data.deltaCalculator = calculator
     }
 }

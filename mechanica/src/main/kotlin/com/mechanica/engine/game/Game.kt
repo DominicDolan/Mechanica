@@ -143,7 +143,7 @@ object Game : Configurable<GameConfiguration> {
         gameMatrices.setUiView(ui._height)
     }
 
-    private fun loadPersistenceData() {
+    fun loadPersistenceData() {
         if (!hasLoadedPersistence) {
             populateData()
             hasLoadedPersistence = true

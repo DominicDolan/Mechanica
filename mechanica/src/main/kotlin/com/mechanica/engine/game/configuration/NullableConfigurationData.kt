@@ -30,5 +30,5 @@ class NullableConfigurationData : ConfigurationData {
     override var debugConfiguration: (GameDebugConfiguration.() -> Unit)? = null
     override var projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)? = null
 
-    override val deltaCalculator: DeltaCalculator? = null
+    override var deltaCalculator: DeltaCalculator? = null
 }

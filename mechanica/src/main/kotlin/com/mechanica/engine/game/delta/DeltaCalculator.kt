@@ -33,16 +33,13 @@ interface DeltaCalculator {
 
         /**
          * Works similarly to [multiUpdateCalculator] however it is possible that the value passed in to update()
-         * might change from the value of [updateTimeApprox]
-         * if the given value is not suitable, it is likely to not change often.
+         * might change from the value of [frameTimeApprox] if the given value is not suitable.
+         * It is likely to not change often.
          *
          * @param frameTimeApprox The approximate/estimated time to do one frame loop, the default is 1.0/60.0
-         * @param updateTimeApprox The approximate time to pass into update(), This refers to the simulated time not the real
-         * time that it would take to update. The default is 1.0/120.0, meaning that update() should be called twice if the frame time
-         * is 1.0/60.0
          */
-        fun adaptiveCalculator(frameTimeApprox: Double = 1.0/60.0, updateTimeApprox: Double = 1.0/120.0): DeltaCalculator {
-            return AdaptiveDeltaCalculator(frameTimeApprox, updateTimeApprox)
+        fun adaptiveCalculator(frameTimeApprox: Double = 1.0/60.0): DeltaCalculator {
+            return AdaptiveDeltaCalculator(frameTimeApprox)
         }
     }
 }

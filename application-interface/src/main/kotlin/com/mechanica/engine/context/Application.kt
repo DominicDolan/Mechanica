@@ -4,10 +4,12 @@ import com.mechanica.engine.display.Window
 
 interface Application {
 
-    fun initialize(window: Window)
+    fun initialize(mainWindow: Window)
 
     fun terminate()
 
     fun startFrame()
+
+    fun activateContext(window: Window?)
 
 }
