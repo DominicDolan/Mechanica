@@ -53,7 +53,7 @@ object GLContext : Version {
         initialized = true
     }
 
-    private fun initContext(windowId: Long) {
+    fun initContext(windowId: Long) {
         GLFW.glfwMakeContextCurrent(windowId)
         GL.createCapabilities()
     }

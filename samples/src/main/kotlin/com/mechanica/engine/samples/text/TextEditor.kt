@@ -8,6 +8,7 @@ import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.util.extensions.constrain
 import org.joml.Matrix4f
 import kotlin.math.max
 import kotlin.math.min
@@ -20,9 +21,8 @@ fun main() {
             constructionDraws = true
         }
     }
-//    val font = LwjglSDFFont(Res.font["freebooterscript.ttf"])
 
-    Game.run()
+    Game.loop()
 }
 
 
@@ -31,7 +31,7 @@ private class StartText : WorldScene() {
 
     val transformation = Matrix4f()
 
-    val startPosition = vec(-Game.view.width.toFloat()/2f, Game.view.height.toFloat()/2f - renderer.fontSize)
+    val startPosition = vec(-Game.world.width.toFloat()/2f, Game.world.height.toFloat()/2f - renderer.fontSize)
 
     var cursor = 0
 
@@ -46,12 +46,12 @@ private class StartText : WorldScene() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            view.x = startPosition.x + Game.view.width/2.0
-            view.y = startPosition.y + 1.0 - Game.view.height/2.0
+            camera.x = startPosition.x + Game.world.width/2.0
+            camera.y = startPosition.y + 1.0 - Game.world.height/2.0
         }
 
         if (Mouse.scroll.hasBeenPressed) {
-            view.height /= 1.0 + Mouse.scroll.distance/10.0
+            camera.height /= 1.0 + Mouse.scroll.distance/10.0
             setViewPosition()
         }
 
@@ -90,7 +90,7 @@ private class StartText : WorldScene() {
         }
 
         if (Mouse.MB1.hasBeenPressed) {
-            cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex()
+            cursor = renderer.from(Mouse.world.x, Mouse.world.y).getIndex().constrain(0, renderer.text.length)
         }
 
     }
@@ -119,7 +119,7 @@ private class StartText : WorldScene() {
     }
 
     fun removeLetter(index: Int) {
-        sb.delete(index-1, index)
+        sb.delete(max(0, index-1), index)
         updateText()
     }
 }

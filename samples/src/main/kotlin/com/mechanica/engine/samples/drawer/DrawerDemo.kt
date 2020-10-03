@@ -9,7 +9,7 @@ import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
 
@@ -39,9 +39,9 @@ fun main() {
     val polygonModel = PolygonModel(points)
 
 
-    Game.run {
+    Game.loop {
         val rotation = (mouse.x*20.0).degrees
-        val radius = ((mouse.y + Game.view.height/2.0)/5.0)
+        val radius = ((mouse.y + Game.world.height/2.0)/5.0)
         ScreenLog { "Radius: $radius" }
 
         draw.red.radius(radius).circle()
@@ -49,12 +49,12 @@ fun main() {
         draw.radius(0.2).blue.rectangle(0, -1, 2.0, 1.0)
         draw.depth(radius*2).radius(0.2).image(image, 3, 3)
         draw.radius(0.2).image(image, 3, 3)
-        draw.origin.relative(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
+        draw.origin.normalized(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
         draw.transformed.scale(3, 3).translate(4, -2).cyan.polygon(polygonModel)
         draw.color.strokeColor(hex(0xD0F045FF), strokeWidth = 0.05).path(points)
         draw.cyan.ellipse(-3, -3, 2, 1)
     }
 }
 
-val mouse: LightweightVector
+val mouse: InlineVector
     get() = vec(Mouse.world.x, Mouse.world.y)

@@ -1,42 +1,20 @@
 package com.mechanica.engine.scenes.scenes
 
-import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.scenes.processes.LoadProcess
 
-abstract class LoadScene : WorldScene() {
-    private val waitTime = 0.2f
-    private val minLoops = 2
+abstract class LoadScene(order: Int = 0, waitTime: Float = 0.2f, waitLoops: Int = 2) : Scene(order) {
 
-    private var currentLoops = 0
-    private var currentWait = 0.0
-    private var startLoading = false
-    private var finishedLoading = false
+    init {
+        addProcess(object : LoadProcess(order = -1, waitTime, waitLoops) {
+            override fun load() {
+                this@LoadScene.load()
+            }
 
-    private var hasPreLoaded = false
-
-    override fun update(delta: Double) {
-        if (!hasPreLoaded) {
-            hasPreLoaded = true
-            preLoad()
-        }
-        currentWait += delta
-        currentLoops++
-        startLoading = currentWait > waitTime && currentLoops > minLoops
-
-        if (finishedLoading) onFinish()
-
+            override fun onFinish() {
+                this@LoadScene.onFinish()
+            }
+        })
     }
-
-    override fun render(draw: Drawer) {
-        renderLoadScreen(draw)
-        if (startLoading && !finishedLoading) {
-            load()
-            finishedLoading = true
-        }
-
-    }
-
-    abstract fun preLoad()
-    abstract fun renderLoadScreen(draw: Drawer)
 
     abstract fun load()
 

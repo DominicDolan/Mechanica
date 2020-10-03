@@ -18,7 +18,7 @@ fun main() {
         val texCoords = attribute(1).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
-        val transformation = uniform.mat4(Game.matrices.view)
+        val transformation = uniform.mat4(Game.matrices.worldCamera)
 
         @Language("GLSL")
         override val main: String = """
@@ -47,7 +47,7 @@ fun main() {
 
     val model = TextModel("Hello\nworld")
 
-    Game.run {
+    Game.loop {
         shader.render(model)
     }
 }

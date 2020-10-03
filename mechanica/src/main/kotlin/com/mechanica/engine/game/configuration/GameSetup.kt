@@ -5,10 +5,12 @@ import com.mechanica.engine.context.loader.LwjglDisplayLoader
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.BasicVariableCalculator
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.ResolutionConverter
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.Scene
 import org.joml.Matrix4f
 
 class GameSetup(data: NullableConfigurationData) : ConfigurationData {
@@ -22,11 +24,12 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
     override val viewX: Double = data.viewX ?: 0.0
     override val viewY: Double = data.viewX ?: 0.0
     override val fullscreen: Boolean = data.fullscreen ?: false
-    override val startingScene: (() -> MainScene)? = data.startingScene
+    override val startingScene: (() -> Scene)? = data.startingScene
     override val windowConfiguration: (Window.() -> Unit) = data.windowConfiguration ?: { }
     override val debugConfiguration: (GameDebugConfiguration.() -> Unit) = data.debugConfiguration ?: { }
     override val projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)
             = data.projectionMatrixConfiguration ?: GameMatrices.Companion::defaultProjectionMatrix
+    override val deltaCalculator: DeltaCalculator = data.deltaCalculator ?: BasicVariableCalculator()
 
     val ratio: Double
 

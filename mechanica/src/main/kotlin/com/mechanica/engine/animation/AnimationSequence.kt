@@ -1,5 +1,6 @@
 package com.mechanica.engine.animation
 
+import com.mechanica.engine.util.extensions.constrainLooped
 import com.mechanica.engine.util.extensions.fori
 
 class AnimationSequence(private vararg val animations: AnimationController): AnimationController {
@@ -9,10 +10,19 @@ class AnimationSequence(private vararg val animations: AnimationController): Ani
     override var looped: Boolean = false
 
     override var time: Double = 0.0
-        private set
+        private set(value) {
+            field = if (looped) {
+                value.constrainLooped(startTime, endTime)
+            } else {
+                value
+            }
+        }
 
     override var paused = false
         set(value) {
+            animations.fori {
+                it.paused = value
+            }
             field = value
         }
 
@@ -58,7 +68,6 @@ class AnimationSequence(private vararg val animations: AnimationController): Ani
         if (!paused) {
             animations.fori {
                 it.goTo(time)
-                it.update(delta)
             }
             time += delta
         }

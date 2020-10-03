@@ -1,17 +1,16 @@
 package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.game.view.View
+import com.mechanica.engine.game.Game
+import com.mechanica.engine.game.view.Camera
 import com.mechanica.engine.scenes.processes.Process
 
 abstract class Scene(order: Int = 0) : Process(order), SceneNode {
 
     protected val childScenes: List<SceneNode> = ArrayList()
 
-    protected val Drawer.inScene: Drawer
-        get() = drawInScene(this, view)
-
-    protected open fun drawInScene(draw: Drawer, view: View): Drawer = draw.transformed.translate(view.x, view.y)
+    override val camera: Camera
+        get() = Game.world
 
     final override fun <S:SceneNode> addScene(scene: S): S {
         addProcess(scene)

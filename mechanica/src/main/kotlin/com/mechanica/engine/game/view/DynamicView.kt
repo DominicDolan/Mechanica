@@ -8,9 +8,8 @@ interface DynamicView : View {
     override var width: Double
     override var height: Double
 
-    override var xy: DynamicVector
-    override var wh: DynamicVector
-    override var center: DynamicVector
+    override val xy: DynamicVector
+    override val wh: DynamicVector
 
     companion object {
         fun create(x: Double = 0.0,

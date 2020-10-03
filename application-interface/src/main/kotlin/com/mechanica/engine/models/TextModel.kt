@@ -1,13 +1,12 @@
 package com.mechanica.engine.models
 
+import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
-import com.mechanica.engine.context.loader.GLLoader
-import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.utils.createIndicesArrayForQuads
 import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.FloatBufferMaker
+import com.mechanica.engine.vertices.IndexArray
 import kotlin.math.max
 
 class TextModel(text: Text,
@@ -17,9 +16,6 @@ class TextModel(text: Text,
         texCoordsBufferMaker.createBuffer(text.texCoords),
         IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
         Image.invoke(text.font.atlas.id),
-        draw = { model ->
-            GLLoader.graphicsLoader.drawElements(model)
-        }
 ) {
     private val positionAttribute = inputs[0] as AttributeArray
     private val texCoordsAttribute = inputs[1] as AttributeArray

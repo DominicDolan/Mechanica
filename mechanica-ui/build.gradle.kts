@@ -1,4 +1,3 @@
-
 plugins {
     kotlin("jvm")
     `java-library`
@@ -9,6 +8,6 @@ dependencies {
     implementation(project(":desktop-application"))
     implementation(project(":mechanica"))
 
-    api("com.dubulduke.ui:DukeUI:0.1")
+    api(files("libs/DukeUI-0.1.jar"))
 
 }

@@ -7,14 +7,13 @@ import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.game.view.UIView
-import com.mechanica.engine.game.view.WorldView
+import com.mechanica.engine.game.view.UICamera
+import com.mechanica.engine.game.view.WorldCamera
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
-import com.mechanica.engine.scenes.processes.Process
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.Timer
 
@@ -27,24 +26,26 @@ object Game : Configurable<GameConfiguration> {
 
     private val data by lazy { configuration.data }
 
-    val view: WorldView by lazy { WorldView(data) }
-    val ui: UIView by lazy { UIView() }
+    val world: WorldCamera by lazy { WorldCamera(data) }
+    val ui: UICamera by lazy { UICamera() }
     val window: Window by lazy { data.window }
 
     val debug by lazy { data.debugConfig }
 
-    val matrices: Matrices by lazy { GameMatrices(data, view) }
+    val matrices: Matrices by lazy { GameMatrices(data, world) }
     private val gameMatrices: GameMatrices
         get() = matrices as GameMatrices
 
-    internal val sceneManager = SceneManager()
+    internal val sceneManager by lazy { SceneManager(data) }
+
     val scene: Scene
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
+    private var hasLoadedPersistence = false
     private var hasFinished = false
 
-    fun addProcess(process: Process) {
+    fun addProcess(process: Updateable) {
         sceneManager.addProcess(process)
     }
 
@@ -56,8 +57,17 @@ object Game : Configurable<GameConfiguration> {
         this._application = application
         loadPersistenceData()
         setup(configuration)
-        if (configuration.initalize) start()
         BackendDebugConfiguration.set(debug)
+        if (configuration.initalize) {
+            start()
+        }
+    }
+
+    fun initializeAs(application: Application) {
+        this._application = application
+        loadPersistenceData()
+        configuration.initalize = false
+        start()
     }
 
     fun start(block: () -> Unit = {}) {
@@ -80,26 +90,13 @@ object Game : Configurable<GameConfiguration> {
         }
     }
 
-    fun run() {
-        start()
-        loop()
-    }
-
-    fun run(update: (Double) -> Unit) {
+    fun loop(update: ((Double) -> Unit)? = null) {
         start()
         sceneManager.updateVar = update
-        loop()
-    }
 
-    private fun loop() {
         try {
             while (!hasFinished) {
-                application.startFrame()
-
-                gameMatrices.updateMatrices()
-
-                sceneManager.updateScenes()
-
+                updateFrame()
                 if (!window.update()) {
                     return
                 }
@@ -112,6 +109,14 @@ object Game : Configurable<GameConfiguration> {
         }
     }
 
+    private fun updateFrame() {
+        application.startFrame()
+
+        gameMatrices.updateMatrices()
+
+        sceneManager.updateAndRender()
+    }
+
     fun close() {
         window.shouldClose = true
     }
@@ -122,26 +127,27 @@ object Game : Configurable<GameConfiguration> {
         application.terminate()
     }
 
-    fun setMainScene(setter: () -> MainScene?) {
+    fun setMainScene(setter: () -> Scene?) {
         sceneManager.setMainScene(setter)
     }
 
     private fun refreshView(window: Window) {
         val converter = data.resolutionConverter
-        if (converter.viewHeight != null) {
-            converter.viewHeight = view.height
-        }
-        if (converter.viewWidth != null) {
-            converter.viewWidth = view.width
-        }
-        converter.resolutionWidth = window.width
-        converter.resolutionHeight = window.height
-        converter.calculate()
-        view.width = converter.viewWidthOut
+
+        converter.calculate(world, window)
+        world.width = converter.viewWidthOut
+
+        converter.calculate(ui, window)
+        ui._width = converter.viewWidthOut
+        ui._height = converter.viewHeightOut
+        gameMatrices.setUiView(ui._height)
     }
 
-    private fun loadPersistenceData() {
-        populateData()
+    fun loadPersistenceData() {
+        if (!hasLoadedPersistence) {
+            populateData()
+            hasLoadedPersistence = true
+        }
     }
 
     private fun savePersistenceData() {

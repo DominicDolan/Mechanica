@@ -35,7 +35,7 @@ fun main() {
         val color = attribute(1).vec4()
 
         val transformation = uniform.mat4()
-        val view = uniform.mat4(Game.matrices.view)
+        val view = uniform.mat4(Game.matrices.worldCamera)
         val projection = uniform.mat4(Game.matrices.projection)
 
         @Language("GLSL")
@@ -95,7 +95,7 @@ fun main() {
 
     val textModel = TextModel("")
     val text = Text("Hello, text")
-    Game.run {
+    Game.loop {
         transformation.identity()
         val mouse = vec(Mouse.world.x/5.0, Mouse.world.y/5.0)
         transformation.scale(5.0f, 5.0f, 1.0f)

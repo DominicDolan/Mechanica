@@ -20,8 +20,8 @@ class AnimationFormula(
     override var looped = false
     override var paused = false
 
-    var value = formula(formulas, 0.0)
-        private set
+    val value: Double
+        get() = formula(formulas, relativeTime)
 
     override var time = startTime
         private set(value) {
@@ -58,7 +58,6 @@ class AnimationFormula(
     override fun update(delta: Double) {
         if (!paused) {
             time += delta
-            value = formula(formulas, relativeTime)
         }
     }
 

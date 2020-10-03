@@ -1,9 +1,9 @@
 package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.view.WorldView
+import com.mechanica.engine.game.view.WorldCamera
 
-abstract class WorldScene(order: Int = 0) : MainScene(order) {
-    override val view: WorldView
-        get() = Game.view
+abstract class WorldScene(order: Int = 0) : Scene(order) {
+    final override val camera: WorldCamera
+        get() = Game.world
 }

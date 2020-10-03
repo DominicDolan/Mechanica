@@ -1,12 +1,12 @@
 @file:Suppress("unused") // There will be many functions here that go unused most of the time
 package com.mechanica.engine.debug
 
+import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.unit.angle.Angle
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.plus
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.game.Game
 
 object DebugDrawer {
     private val drawings = ArrayList<(Drawer) -> Unit>()
@@ -33,6 +33,6 @@ object DebugDrawer {
     }
 
     fun drawVector(position: Vector, r: Number, theta: Angle) {
-        drawVector(position, vec(r, theta))
+        drawVector(position, vec(r, theta.toRadians()))
     }
 }

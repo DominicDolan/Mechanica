@@ -3,11 +3,12 @@ package com.mechanica.engine.utils
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.resources.Resource
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.GL_RGBA
-import org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT
+import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.GL30
+import org.lwjgl.opengl.GL40
 import org.lwjgl.stb.STBImage
-import java.lang.UnsupportedOperationException
 import java.nio.ByteBuffer
 
 
@@ -36,6 +37,8 @@ fun loadImage(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, form
 
     setMipmapping(buffer, width, height, levels, format)
 
+    check(GL11.glIsTexture(image)) { "Unable to load texture" }
+
     return Image(image)
 }
 
@@ -59,7 +62,7 @@ class ImageData(resource: Resource) {
         val heightBuffer = BufferUtils.createIntBuffer(1)
         val componentsBuffer = BufferUtils.createIntBuffer(1)
 
-        data = STBImage.stbi_load_from_memory(resource.buffer as ByteBuffer, widthBuffer, heightBuffer, componentsBuffer, 4)
+        data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
         width = widthBuffer.get()
         height = heightBuffer.get()
     }

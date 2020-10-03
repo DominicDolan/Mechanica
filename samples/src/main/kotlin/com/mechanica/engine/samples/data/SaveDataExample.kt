@@ -15,7 +15,7 @@ fun main() {
         setStartingScene { SaveDataExample() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class SaveDataExample : WorldScene() {

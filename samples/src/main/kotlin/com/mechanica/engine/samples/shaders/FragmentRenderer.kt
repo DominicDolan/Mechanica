@@ -3,9 +3,9 @@ package com.mechanica.engine.samples.shaders
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.qualifiers.Attribute
 import org.joml.Matrix4f
 
 class FragmentRenderer {
@@ -42,7 +42,7 @@ class FragmentRenderer {
 
     }
 
-    private val shader = DrawerShader(vertex, fragment)
+    private val shader = DrawerShader.create(vertex, fragment)
     private val startTime = System.currentTimeMillis()
 
     private val transformation = Matrix4f().also { it.identity() }

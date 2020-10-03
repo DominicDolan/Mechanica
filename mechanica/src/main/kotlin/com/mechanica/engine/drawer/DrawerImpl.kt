@@ -1,7 +1,6 @@
 package com.mechanica.engine.drawer
 
-import com.mechanica.engine.context.loader.GLLoader
-import com.mechanica.engine.drawer.shader.AbstractDrawerShader
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
 import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
@@ -43,7 +42,7 @@ class DrawerImpl(private val data: DrawData) :
         val position = Attribute.location(0).vec3().createUnitQuad()
         val texCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
 
-        model = Model(position, texCoords, draw = GLLoader.graphicsLoader::drawArrays)
+        model = Model(position, texCoords)
     }
 
     private val colorDrawer = ColorDrawerImpl(this, data)
@@ -58,9 +57,9 @@ class DrawerImpl(private val data: DrawData) :
     override val rotated: RotatedDrawer
         get() = rotatedDrawer
 
-    private val layoutDrawer = OriginDrawerImpl(this, data)
+    private val originDrawer = OriginDrawerImpl(this, data)
     override val origin: OriginDrawer
-        get() = layoutDrawer
+        get() = originDrawer
 
     private val transformationDrawer = TransformationDrawerImpl(this, data)
     override val transformed: TransformationDrawer
@@ -69,12 +68,12 @@ class DrawerImpl(private val data: DrawData) :
 
     override val ui: Drawer
         get() {
-            data.viewMatrix = Game.matrices.uiView
+            data.viewMatrix = Game.matrices.uiCamera
             return this
         }
     override val world: Drawer
         get() {
-            data.viewMatrix = Game.matrices.view
+            data.viewMatrix = Game.matrices.worldCamera
             return this
         }
 
@@ -106,7 +105,7 @@ class DrawerImpl(private val data: DrawData) :
         data.draw(model)
     }
 
-    override fun shader(shader: AbstractDrawerShader, model: Model?) {
+    override fun shader(shader: DrawerShader, model: Model?) {
         data.draw(model ?: this.model, shader)
     }
 }

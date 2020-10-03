@@ -1,10 +1,9 @@
 package com.mechanica.engine.drawer.superclass.circle
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.models.Bindable
-import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.qualifiers.Attribute
 import org.lwjgl.opengl.GL20
 import kotlin.math.min
 
@@ -21,7 +20,7 @@ class CircleDrawerImpl(
                 GL20.glDisableVertexAttribArray(1)
             }
         }
-        model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
+        model = Model(position, disableTexCoords)
     }
 
     private fun drawCircle() {
@@ -36,7 +35,7 @@ class CircleDrawerImpl(
         data.setScale(diameter.toFloat(), diameter.toFloat())
         data.cornerSize.set(diameter, diameter)
 
-        val origin = data.modelOrigin
+        val origin = data.normalizedOrigin
         if (!origin.wasSet) {
             origin.set(0.5, 0.5)
         }
@@ -45,7 +44,9 @@ class CircleDrawerImpl(
     }
 
     override fun circle(x: Number, y: Number, radius: Number) {
-        data.radius = radius.toFloat()
+        if (radius.toFloat() > 0.0) {
+            data.radius = radius.toFloat()
+        }
         data.setTranslate(x.toFloat(), y.toFloat())
         drawCircle()
     }

@@ -4,7 +4,7 @@ import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.text.Text
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 
 class TextDrawerImpl(
@@ -27,7 +27,7 @@ class TextDrawerImpl(
         data.alphaBlend = 1f
         data.colorPassthrough = true
 
-        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiView
+        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiCamera
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)
@@ -35,7 +35,7 @@ class TextDrawerImpl(
         val height = bottomRight.y - topLeft.y
         val width = bottomRight.x - topLeft.x
 
-        val origin = data.modelOrigin
+        val origin = data.normalizedOrigin
         val oX = origin.x
         val oY = origin.y
 
@@ -59,7 +59,7 @@ class TextDrawerImpl(
         data.setScale(size.toFloat(), size.toFloat())
     }
 
-    private fun bottomRight(model: TextModel): LightweightVector {
+    private fun bottomRight(model: TextModel): InlineVector {
         val lc = model.lineCount
         val y = lc.toDouble()
         var longest = 0.0

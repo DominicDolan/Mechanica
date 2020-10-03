@@ -54,6 +54,11 @@ open class Key (label: String, private val condition: () -> Boolean) {
             keysToBoolean(*keys)
     )
 
+    init {
+        hasBeenPressed
+        hasBeenReleased
+    }
+
     override fun toString(): String {
         return label
     }

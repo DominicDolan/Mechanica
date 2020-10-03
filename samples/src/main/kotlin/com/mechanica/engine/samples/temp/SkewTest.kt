@@ -17,7 +17,7 @@ fun main() {
     var skewY = Mouse.ui.theta
     var skewX = 0.radians
 
-    Game.run {
+    Game.loop {
         if (Mouse.MB1()) {
             skewX = Mouse.ui.theta
         } else {

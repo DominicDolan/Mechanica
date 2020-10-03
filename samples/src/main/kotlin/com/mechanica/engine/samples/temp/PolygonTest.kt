@@ -5,6 +5,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import org.intellij.lang.annotations.Language
 
@@ -19,7 +20,7 @@ fun main() {
         val position = attribute(0).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
-        val transformation = uniform.mat4(Game.matrices.view)
+        val transformation = uniform.mat4(Game.matrices.worldCamera)
 
         @Language("GLSL")
         override val main: String = """
@@ -43,7 +44,7 @@ fun main() {
     val shader = Shader(vertex, fragment)
 
 
-    val points = arrayOf(
+    val points: Array<Vector> = arrayOf(
             vec(0, 0),
             vec(0.5, 0.1),
             vec(1.0, 0.0),
@@ -59,7 +60,7 @@ fun main() {
 
     val model = PolygonModel(points)
 
-    Game.run {
+    Game.loop {
         shader.render(model)
     }
 }

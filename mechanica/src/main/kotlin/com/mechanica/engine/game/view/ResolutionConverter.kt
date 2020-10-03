@@ -1,5 +1,7 @@
 package com.mechanica.engine.game.view
 
+import com.mechanica.engine.display.Window
+
 class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
                           var viewWidth: Double? = null, var viewHeight: Double? = null) {
 
@@ -34,6 +36,18 @@ class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
             viewWidthOut = viewWidth
             viewHeightOut = viewHeight
         }
+    }
+
+    fun calculate(camera: Camera, window: Window) {
+        if (viewHeight != null) {
+            viewHeight = camera.height
+        }
+        if (viewWidth != null) {
+            viewWidth = camera.width
+        }
+        resolutionWidth = window.width
+        resolutionHeight = window.height
+        calculate()
     }
 
 }

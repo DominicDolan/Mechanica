@@ -18,7 +18,14 @@ abstract class Font {
 
     companion object {
 
-        val defaultFont = GLLoader.fontLoader.defaultFont
+        val defaultFont by lazy { defaults.regular(false) }
+
+        val defaults: FontSet
+            get() = CachedFontSet("roboto/Roboto") {
+                width = 1024
+                height = 1024
+                characterSize = 175f
+            }
 
         fun create(resource: Resource, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
             return GLLoader.fontLoader.font(resource, configureAtlas)

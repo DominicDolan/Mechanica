@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader.uniforms.vars
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.LightweightColor
+import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.vars.ShaderType
 import org.joml.Vector4f
@@ -25,7 +25,7 @@ abstract class UniformVector4f (
         value.w = color.a.toFloat()
     }
 
-    fun set(color: LightweightColor) {
+    fun set(color: InlineColor) {
         value.x = color.r.toFloat()
         value.y = color.g.toFloat()
         value.z = color.b.toFloat()

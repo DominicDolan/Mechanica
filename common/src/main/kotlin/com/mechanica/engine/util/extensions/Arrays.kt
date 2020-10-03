@@ -2,10 +2,9 @@
 
 package com.mechanica.engine.util.extensions
 
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
-import java.nio.FloatBuffer
 
 /**
  * Created by domin on 02/11/2017.
@@ -97,14 +96,14 @@ fun FloatArray.fill(array: VectorArray, start: Int = 0, end: Int = (array.size +
     }
 }
 
-fun FloatArray.fill(arrayList: Array<LightweightVector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+fun FloatArray.fill(arrayList: Array<InlineVector>, start: Int = 0, end: Int = (arrayList.size + start)) {
     for (i in start until end) {
         this[i*3] = arrayList[i].x.toFloat()
         this[i*3 + 1] = arrayList[i].y.toFloat()
     }
 }
 
-fun FloatArray.fillLightWeight(iterator: Iterator<LightweightVector>) {
+fun FloatArray.fillLightWeight(iterator: Iterator<InlineVector>) {
     for ((i, v) in iterator.withIndex()) {
         this[i*3] = v.x.toFloat()
         this[i*3 + 1] = v.y.toFloat()
@@ -134,6 +133,12 @@ inline fun <E> Array<E>.fori(action: (E) -> Unit) {
 inline fun <E> Array<E>.foriIndexed(action: (E, Int) -> Unit) {
     for (i in this.indices) {
         action(this[i], i)
+    }
+}
+
+inline fun <E> withEach(array: Array<E>, operation: E.() -> Unit) {
+    for (i in array.indices) {
+        operation(array[i])
     }
 }
 

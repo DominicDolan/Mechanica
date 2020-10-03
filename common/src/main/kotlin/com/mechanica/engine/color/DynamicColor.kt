@@ -17,7 +17,7 @@ class DynamicColor(
         set(color.r, color.g, color.b, color.a)
     }
 
-    fun set(color: LightweightColor) {
+    fun set(color: InlineColor) {
         set(color.r, color.g, color.b, color.a)
     }
 

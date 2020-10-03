@@ -6,16 +6,16 @@ import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
 
 class LwjglDisplayLoader : DisplayLoader {
-    override fun createWindow(title: String, width: Int, height: Int): Window {
-        return GLFWWindow.create(title, width, height)
+    override fun createWindow(title: String, width: Int, height: Int, sharedWith: Window?): Window {
+        return GLFWWindow.create(title, width, height, sharedWith)
     }
 
-    override fun createWindow(title: String, monitor: Monitor): Window {
-        return GLFWWindow.create(title, monitor)
+    override fun createWindow(title: String, monitor: Monitor, sharedWith: Window?): Window {
+        return GLFWWindow.create(title, monitor, sharedWith)
     }
 
-    override fun createWindow(title: String, width: Int, height: Int, monitor: Monitor): Window {
-        return GLFWWindow.create(title, width, height, monitor)
+    override fun createWindow(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window?): Window {
+        return GLFWWindow.create(title, width, height, monitor, sharedWith)
     }
 
     override val allMonitors: Array<out Monitor>

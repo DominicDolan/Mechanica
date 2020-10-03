@@ -2,17 +2,18 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.utils.enableAlphaBlending
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
+import com.mechanica.engine.utils.enableAlphaBlending
 import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.FloatBufferMaker
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH
+import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL20
 
 class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0).vec3()) {
@@ -145,8 +146,24 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0)
             """
     }
 
-    private val lineShader = DrawerShader(vertex, fragment, geometry = lineGeometry)
-    private val circleShader = DrawerShader(vertex, fragment, geometry = circleGeometry)
+    private val lineShader = DrawerShader.create(vertex, fragment, geometry = lineGeometry) {
+        prepareStencil()
+
+        glDrawLineStrip.arrays(it)
+
+        glDisable(GL_POLYGON_SMOOTH)
+
+        GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
+    }
+    private val circleShader = DrawerShader.create(vertex, fragment, geometry = circleGeometry) {
+        prepareStencil()
+
+        glDrawPoints.arrays(it)
+
+        enableAlphaBlending()
+
+        GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
+    }
 
     var color: Color
         get() = fragment.color.value.toColor()
@@ -166,41 +183,18 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0)
     private val vbo: AttributeArray
     private val model: Model
 
-    private var isCircle = false
-        set(value) {
-            if (value) {
-                fragment.mode.value = 1f
-            } else {
-                fragment.mode.value = 0f
-            }
-            field = value
-        }
-
     init {
         val initialVertices = 300
         floats = FloatArray(initialVertices*3)
         vbo = positionBufferMaker.createBuffer(floats) as AttributeArray
-        model = Model(vbo) {
-            GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
-            GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
-            GL20.glStencilMask(0xFF)
-            if (!isCircle) {
-                glDrawArrays(GL_LINE_STRIP, 0, it.vertexCount)
-                glDisable(GL_POLYGON_SMOOTH)
-            } else {
-                glDrawArrays(GL_POINTS, 0, it.vertexCount)
-                enableAlphaBlending()
-            }
-
-            GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
-        }
+        model = Model(vbo)
     }
 
     fun render(transformation: Matrix4f) {
         GL20.glClear(GL20.GL_STENCIL_BUFFER_BIT)
-        isCircle = false
+        fragment.mode.value = 0f
         lineShader.render(this.model, transformation)
-        isCircle = true
+        fragment.mode.value = 1f
         circleShader.render(this.model, transformation)
     }
 
@@ -227,6 +221,12 @@ class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0)
         if (pathSize*3 >= floats.size) {
             floats = FloatArray(pathSize*3*2)
         }
+    }
+
+    private fun prepareStencil() {
+        GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
+        GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
+        GL20.glStencilMask(0xFF)
     }
 
 

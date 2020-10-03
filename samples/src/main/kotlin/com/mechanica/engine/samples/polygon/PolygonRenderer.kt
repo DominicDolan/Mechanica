@@ -37,7 +37,7 @@ class PolygonRenderer() {
 
     }
 
-    private val shader = DrawerShader(vertex, fragment)
+    private val shader = DrawerShader.create(vertex, fragment)
 
     var color: Color
         get() = fragment.color.value.toColor()

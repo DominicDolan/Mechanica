@@ -1,11 +1,11 @@
 package com.mechanica.engine.geometry.triangulation
 
-import com.mechanica.engine.unit.vector.LightweightVector
-import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.rectangleArea
+import com.mechanica.engine.unit.vector.InlineVector
+import com.mechanica.engine.unit.vector.Vector
 
-fun calculateLineArea(p1: LightweightVector, p2: LightweightVector): Double {
+fun calculateLineArea(p1: InlineVector, p2: InlineVector): Double {
     return (p2.x - p1.x)*(p2.y + p1.y)
 }
 

@@ -12,8 +12,8 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 
-class GLFWWindow private constructor(width: Int, height: Int, override val title: String, monitor: Monitor?) : Window {
-    override val id: Long= glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, MemoryUtil.NULL)
+class GLFWWindow private constructor(width: Int, height: Int, override val title: String, monitor: Monitor?, sharedWith: Window?) : Window {
+    override val id: Long
     var hasInitialized = false
         private set
 
@@ -117,6 +117,11 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     private val callbackList = ArrayList<((Window) -> Unit)>()
 
     init {
+        if (sharedWith != null) {
+            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
+        }
+        id = glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, sharedWith?.id ?: MemoryUtil.NULL)
+
         if (id == MemoryUtil.NULL)
             throw RuntimeException("Failed to create the GLFW window")
         hasInitialized = true
@@ -237,12 +242,16 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     }
 
     override fun setFullscreen(monitor: Monitor) {
+        val vSync = vSync
         val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
         glfwSetWindowMonitor(id, monitor.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
+        this.vSync = vSync
     }
 
     override fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int) {
+        val vSync = vSync
         glfwSetWindowMonitor(id, monitor.id, 0, 0, width, height, refreshRate)
+        this.vSync = vSync
     }
 
     override fun exitFullscreen(width: Int, height: Int) {
@@ -302,12 +311,12 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
             var isChanging: Boolean) : Window.Dimension
 
     companion object {
-        fun create(title: String, width: Int, height: Int): Window {
+        fun create(title: String, width: Int, height: Int, sharedWith: Window? = null): Window {
             GLFWContext.initialize()
-            return GLFWWindow(width, height, title, null)
+            return GLFWWindow(width, height, title, null, sharedWith)
         }
 
-        fun create(title: String, monitor: Monitor): Window {
+        fun create(title: String, monitor: Monitor, sharedWith: Window? = null): Window {
             GLFWContext.initialize()
             val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to create window")
             val width = vidMode.width()
@@ -317,12 +326,12 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
             glfwWindowHint(GLFW_BLUE_BITS, vidMode.blueBits())
             glfwWindowHint(GLFW_REFRESH_RATE, vidMode.refreshRate())
 
-            return GLFWWindow(width, height, title, monitor)
+            return GLFWWindow(width, height, title, monitor, sharedWith)
         }
 
-        fun create(title: String, width: Int, height: Int, monitor: Monitor): Window {
+        fun create(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window? = null): Window {
             GLFWContext.initialize()
-            return GLFWWindow(width, height, title, monitor)
+            return GLFWWindow(width, height, title, monitor, sharedWith)
         }
 
     }

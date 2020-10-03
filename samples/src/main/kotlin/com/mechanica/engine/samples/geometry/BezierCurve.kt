@@ -15,7 +15,7 @@ fun main() {
         setStartingScene { BezierCurve() }
     }
 
-    Game.run()
+    Game.loop()
 }
 
 class BezierCurve : WorldScene() {
@@ -55,7 +55,7 @@ class BezierCurve : WorldScene() {
         draw.color.strokeColor(rgba(0.5, 0.5, 0.5, 1.0), 0.05).path(vertices, count = index)
     }
 
-    private fun bezier(p1: LightweightVector, p2: LightweightVector, p3: LightweightVector) {
+    private fun bezier(p1: InlineVector, p2: InlineVector, p3: InlineVector) {
         val p12 = p2 - p1
         val p23 = p3 - p2
         val p13 = p3 - p1

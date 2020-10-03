@@ -1,20 +1,23 @@
 package com.mechanica.engine.geometry.path
 
-import com.mechanica.engine.unit.vector.*
+import com.mechanica.engine.unit.vector.DynamicVector
+import com.mechanica.engine.unit.vector.InlineVector
+import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.vec
 import kotlin.math.sqrt
 
 fun Iterable<DynamicVector>.moveToOrigin() {
-    val minX = (this.minBy { it.x } ?: vec(0.0, 0.0)).x
-    val minY = (this.minBy { it.y } ?: vec(0.0, 0.0)).y
+    val minX = (this.minByOrNull { it.x } ?: vec(0.0, 0.0)).x
+    val minY = (this.minByOrNull { it.y } ?: vec(0.0, 0.0)).y
     this.forEach { vec ->
         vec.x -= minX
         vec.y -= minY
     }
 }
 
-fun List<LightweightVector>.moveToOrigin(): List<LightweightVector> {
-    val minX = (this.minBy { it.x } ?: vec(0.0, 0.0)).x
-    val minY = (this.minBy { it.y } ?: vec(0.0, 0.0)).y
+fun List<InlineVector>.moveToOrigin(): List<InlineVector> {
+    val minX = (this.minByOrNull { it.x } ?: vec(0.0, 0.0)).x
+    val minY = (this.minByOrNull { it.y } ?: vec(0.0, 0.0)).y
     return this.map { vec(it.x - minX, it.y - minY) }
 }
 
@@ -27,14 +30,14 @@ fun Iterable<DynamicVector>.scale(scaleX: Double, scaleY: Double) {
     }
 }
 
-fun List<LightweightVector>.scale(scale: Double) = scale(scale, scale)
+fun List<InlineVector>.scale(scale: Double) = scale(scale, scale)
 
-fun List<LightweightVector>.scale(scaleX: Double, scaleY: Double): List<LightweightVector> {
+fun List<InlineVector>.scale(scaleX: Double, scaleY: Double): List<InlineVector> {
     return this.map { vec(it.x*scaleX, it.y*scaleY) }
 }
 
 
-fun Iterable<Vector>.centroid(): LightweightVector {
+fun Iterable<Vector>.centroid(): InlineVector {
     var xAverage = 0.0
     var yAverage = 0.0
     this.forEachIndexed { i, vec ->
@@ -65,17 +68,17 @@ fun Iterable<DynamicVector>.flipVertically() {
     }
 }
 
-fun Iterable<LightweightVector>.flipVertically() = this.map { vec(it.x, -it.y) }
+fun Iterable<InlineVector>.flipVertically() = this.map { vec(it.x, -it.y) }
 
 fun Iterable<DynamicVector>.xRange(): Double {
-    val max = this.maxBy { it.x } ?: vec(0.0, 0.0)
-    val min = this.minBy { it.x } ?: vec(0.0, 0.0)
+    val max = this.maxByOrNull { it.x } ?: vec(0.0, 0.0)
+    val min = this.minByOrNull { it.x } ?: vec(0.0, 0.0)
     return max.x - min.x
 }
 
 fun Iterable<DynamicVector>.yRange(): Double {
-    val max = this.maxBy { it.y } ?: vec(0.0, 0.0)
-    val min = this.minBy { it.y } ?: vec(0.0, 0.0)
+    val max = this.maxByOrNull { it.y } ?: vec(0.0, 0.0)
+    val min = this.minByOrNull { it.y } ?: vec(0.0, 0.0)
     return max.y - min.y
 }
 

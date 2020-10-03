@@ -2,8 +2,9 @@ package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.Scene
 import org.joml.Matrix4f
 
 interface GameConfiguration {
@@ -13,7 +14,7 @@ interface GameConfiguration {
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
 
-    fun setStartingScene(scene: () -> MainScene)
+    fun setStartingScene(scene: () -> Scene)
 
     fun setMultisampling(samples: Int)
 
@@ -21,4 +22,6 @@ interface GameConfiguration {
     fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit)
 
     fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)
+
+    fun setDeltaTimeCalculator(calculator: DeltaCalculator)
 }

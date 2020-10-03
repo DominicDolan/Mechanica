@@ -1,6 +1,5 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
@@ -20,7 +19,7 @@ internal class RectangleDrawerImpl(
                 glDisableVertexAttribArray(1)
             }
         }
-        model = Model(position, disableTexCoords, draw = GLLoader.graphicsLoader::drawArrays)
+        model = Model(position, disableTexCoords)
 
     }
 

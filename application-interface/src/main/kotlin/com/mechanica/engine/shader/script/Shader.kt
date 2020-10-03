@@ -1,18 +1,21 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.graphics.GLDraw
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.util.extensions.fori
 
 abstract class Shader {
     abstract val id: Int
-
     abstract val vertex: ShaderScript
     abstract val fragment: ShaderScript
     open val tessellation: ShaderScript? = null
     open val geometry: ShaderScript? = null
 
     private var locationsFound = false
+
+    private val glDraw = GLDraw()
 
     protected fun load() {
         loadProgram(id)
@@ -32,12 +35,12 @@ abstract class Shader {
 
     abstract fun loadUniformLocation(name: String): Int
 
-    open fun render(inputs: Array<Bindable>, draw: () -> Unit) {
+    open fun render(inputs: Array<Bindable>, draw: GLDraw.() -> Unit) {
         load()
 
-        inputs.forEach { it.bind() }
+        inputs.fori { it.bind() }
 
-        draw()
+        draw(glDraw)
     }
 
     open fun render(model: Model) {
@@ -45,7 +48,11 @@ abstract class Shader {
 
         model.bind()
 
-        model.draw()
+        glDraw.draw(model)
+    }
+
+    protected open fun GLDraw.draw(model: Model) {
+        drawModel(model)
     }
 
     private fun findLocations() {

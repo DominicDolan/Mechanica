@@ -9,6 +9,14 @@
 
 rootProject.name = "Mechanica"
 
-includeBuild("E:/Src/General/DukeUI")
-
 include("common", "desktop-application", "application-interface", "mechanica", "samples", "mechanica-ui")
+
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id.startsWith("org.jetbrains.kotlin.")) {
+                useVersion("1.4.0")
+            }
+        }
+    }
+}

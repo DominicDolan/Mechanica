@@ -25,10 +25,10 @@ fun main() {
 //            isDecorated = false
         }
     }
-    Game.view.x = 0.5
-    Game.view.y = 0.5
+    Game.world.x = 0.5
+    Game.world.y = 0.5
 
-    Game.run {
+    Game.loop {
         if (Keyboard.esc.hasBeenPressed) {
             Game.close()
         }

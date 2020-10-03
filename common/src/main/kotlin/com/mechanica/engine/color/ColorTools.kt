@@ -10,11 +10,11 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-fun hex(color: Long) = LightweightColor(color)
+fun hex(color: Long) = InlineColor(color)
 
-fun rgba(r: Double, g: Double, b: Double, a: Double) = LightweightColor(rgba2Hex(r, g, b, a))
+fun rgba(r: Double, g: Double, b: Double, a: Double) = InlineColor(rgba2Hex(r, g, b, a))
 
-fun Color.linearBlend(p: Double, other: Color): LightweightColor {
+fun Color.linearBlend(p: Double, other: Color): InlineColor {
     val (r0, g0, b0, a0) = this
     val (r1, g1, b1, a1) = other
 
@@ -25,7 +25,7 @@ fun Color.linearBlend(p: Double, other: Color): LightweightColor {
     val green = blend(g0, g1, p)
     val blue = blend(b0, b1, p)
 
-    return LightweightColor(rgba2Hex(red, green, blue, alpha))
+    return InlineColor(rgba2Hex(red, green, blue, alpha))
 }
 
 fun Color.logBlend(percent: Double, other: Color): Color {
@@ -42,11 +42,11 @@ fun Color.logBlend(percent: Double, other: Color): Color {
     val green = blend(g0, g1, p)
     val blue = blend(b0, b1, p)
 
-    return LightweightColor(rgba2Hex(red, green, blue, alpha))
+    return InlineColor(rgba2Hex(red, green, blue, alpha))
 }
 
 
-fun Color.alphaBlend(src: Color): LightweightColor {
+fun Color.alphaBlend(src: Color): InlineColor {
 
     val alpha = src.a + a*(1 - src.a)
     val red = alphaBlendComponent(0, src, this)
@@ -62,7 +62,7 @@ private fun alphaBlendComponent(index: Int, src: Color, dst: Color): Double {
     return srcComponent*alpha + dstComponent*(1 - alpha)
 }
 
-fun LightweightColor.alphaBlend(src: LightweightColor): LightweightColor {
+fun InlineColor.alphaBlend(src: InlineColor): InlineColor {
 
     val alpha = src.a + a*(1 - src.a)
     val red = alphaBlendComponent(0, src, this)
@@ -71,7 +71,7 @@ fun LightweightColor.alphaBlend(src: LightweightColor): LightweightColor {
     return rgba(red, green, blue, alpha)
 }
 
-private fun alphaBlendComponent(index: Int, src: LightweightColor, dst: LightweightColor): Double {
+private fun alphaBlendComponent(index: Int, src: InlineColor, dst: InlineColor): Double {
     val srcComponent = src[index]
     val dstComponent = dst[index]
     val alpha = src.a
@@ -79,11 +79,11 @@ private fun alphaBlendComponent(index: Int, src: LightweightColor, dst: Lightwei
 }
 
 fun Color.lighten(amount: Int): Color {
-    return LightweightColor(adjustShade(this.toLong(), amount))
+    return InlineColor(adjustShade(this.toLong(), amount))
 }
 
 fun Color.darken(amount: Int): Color {
-    return LightweightColor(adjustShade(this.toLong(), -amount))
+    return InlineColor(adjustShade(this.toLong(), -amount))
 }
 
 private fun adjustShade(hex: Long, amount: Int): Long {
@@ -103,15 +103,15 @@ private fun adjustShade(hex: Long, amount: Int): Long {
 }
 
 
-fun Color.lightness(level: Double): LightweightColor {
+fun Color.lightness(level: Double): InlineColor {
     return hsl(hue, saturation, level)
 }
 
-fun Color.hue(level: Degree): LightweightColor {
+fun Color.hue(level: Degree): InlineColor {
     return hsl(level, saturation, lightness)
 }
 
-fun Color.saturation(level: Double): LightweightColor {
+fun Color.saturation(level: Double): InlineColor {
     return hsl(hue, level, lightness)
 }
 
@@ -182,15 +182,15 @@ fun rgb2Lightness(r: Double, g: Double, b: Double): Double {
     return (max + min)/2.0
 }
 
-fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): InlineColor {
     return hsl(hue.toDouble(), saturation, lightness, alpha)
 }
 
-fun hsl(hue: Radian, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+fun hsl(hue: Radian, saturation: Double, lightness: Double, alpha: Double = 1.0): InlineColor {
     return hsl(hue.toDegrees().toDouble(), saturation, lightness, alpha)
 }
 
-fun hsl(hue: Double, saturation: Double, lightness: Double, alpha: Double = 1.0): LightweightColor {
+fun hsl(hue: Double, saturation: Double, lightness: Double, alpha: Double = 1.0): InlineColor {
     fun f(n: Int, h: Double, s: Double, l: Double): Double {
         val a = s* min(l, 1.0-l)
         val k = (n + h/30.0)%12
@@ -204,7 +204,7 @@ fun hsl(hue: Double, saturation: Double, lightness: Double, alpha: Double = 1.0)
     return rgba(f(0, h, s, l), f(8, h, s, l), f(4, h, s, l), alpha)
 }
 
-fun FloatArray.toColor(): LightweightColor {
+fun FloatArray.toColor(): InlineColor {
     fun getComponent(i: Int) = if (this.size > i) this[i].toDouble() else 0.0
     val r = getComponent(0)
     val g = getComponent(1)
@@ -213,7 +213,7 @@ fun FloatArray.toColor(): LightweightColor {
     return rgba(r, g, b, a)
 }
 
-fun Vector4f.toColor(): LightweightColor {
+fun Vector4f.toColor(): InlineColor {
     val r = this.x().toDouble()
     val g = this.y().toDouble()
     val b = this.z().toDouble()

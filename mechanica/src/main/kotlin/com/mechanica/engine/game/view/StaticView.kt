@@ -22,13 +22,6 @@ class StaticView(
             get() = this@StaticView.height
     }
 
-    override val center: Vector = object : Vector {
-        override val x: Double
-            get() = this@StaticView.x
-        override val y: Double
-            get() = this@StaticView.y
-    }
-
     override val ratio: Double
         get() = height/width
 }

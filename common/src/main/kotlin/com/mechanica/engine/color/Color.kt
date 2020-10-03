@@ -1,6 +1,5 @@
 package com.mechanica.engine.color
 
-import com.mechanica.engine.unit.angle.Angle
 import com.mechanica.engine.unit.angle.Degree
 
 interface Color {
@@ -27,4 +26,18 @@ interface Color {
     }
 
     fun toLong(): Long
+
+    companion object {
+        fun rgba(r: Double, g: Double, b: Double, a: Double): InlineColor = com.mechanica.engine.color.rgba(r, g, b, a)
+        fun hex(hex: Long): InlineColor = com.mechanica.engine.color.hex(hex)
+        fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): InlineColor
+                = com.mechanica.engine.color.hsl(hue, saturation, lightness, alpha)
+
+        val red = rgba(1.0, 0.0, 0.0, 1.0)
+        val green = rgba(0.0, 1.0, 0.0, 1.0)
+        val blue = rgba(0.0, 0.0, 1.0, 1.0)
+
+        val black = rgba(0.0, 0.0, 0.0, 1.0)
+        val white = rgba(1.0, 1.0, 1.0, 1.0)
+    }
 }

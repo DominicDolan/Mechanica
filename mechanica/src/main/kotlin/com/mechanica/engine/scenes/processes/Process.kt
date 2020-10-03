@@ -14,14 +14,18 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
                 runActivationCallbacks(value)
             }
         }
-
+    override var paused: Boolean = false
     private val childProcesses: List<ProcessNode> = ArrayList()
     private val leafProcesses: List<Updateable> = ArrayList()
 
     private var callbacksInitialized = false
 
     init {
-        addActivationChangedListener(0) { _active = it }
+        addActivationChangedListener(0) {
+            _active = it
+            if (it) activated()
+            else deactivated()
+        }
     }
 
     /**
@@ -91,7 +95,7 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         return (leafProcesses as ArrayList).remove(updateable)
     }
 
-    final override fun <P:Updateable> replaceProcess(old: P, new: P): P {
+    final override fun <P : Updateable> replaceProcess(old: P, new: P): P {
         val success = if (old is ProcessNode && new is ProcessNode) {
             replaceProcessNode(old, new)
         } else {
@@ -139,16 +143,28 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
         updateNodesFor(delta, index) { it.order >= 0 }
     }
 
+    override fun update(delta: Double) { }
+
     /**
      * A function to be overridden which will run while [active] is set to false
      */
     open fun whileInactive(delta: Double) { }
 
+    /**
+     * Function to be overriden that will be called immediately after [active] has been set to true
+     */
+    open fun activated() { }
+
+    /**
+     * Function to be overriden that will be called immediately after [active] has been set to false
+     */
+    open fun deactivated() { }
+
     private inline fun updateNodesFor(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
         var inverseI = childProcesses.lastIndex - from
         do {
             val process = childProcesses.getOrNull(childProcesses.lastIndex - (inverseI--)) ?: break
-            if (process.active) {
+            if (process.active && !process.paused) {
                 process.updateNodes(delta)
             } else if (process is Process) {
                 process.whileInactive(delta)

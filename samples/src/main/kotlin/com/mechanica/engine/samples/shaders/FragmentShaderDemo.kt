@@ -13,12 +13,12 @@ fun main() {
         }
     }
 
-    Game.view.x = Game.view.width/2f
-    Game.view.y = Game.view.height/2f
+    Game.world.x = Game.world.width/2f
+    Game.world.y = Game.world.height/2f
 
     val renderer = FragmentRenderer()
 
-    Game.run {
+    Game.loop {
         if (Keyboard.esc.hasBeenPressed) {
             Game.close()
         }

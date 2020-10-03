@@ -3,8 +3,9 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.scenes.scenes.MainScene
+import com.mechanica.engine.scenes.scenes.Scene
 import org.joml.Matrix4f
 
 class NullableConfigurationData : ConfigurationData {
@@ -23,9 +24,11 @@ class NullableConfigurationData : ConfigurationData {
 
     override var fullscreen: Boolean? = null
 
-    override var startingScene: (() -> MainScene)? = null
+    override var startingScene: (() -> Scene)? = null
 
     override var windowConfiguration: (Window.() -> Unit)? = null
     override var debugConfiguration: (GameDebugConfiguration.() -> Unit)? = null
     override var projectionMatrixConfiguration: (Matrix4f.(View) -> Unit)? = null
+
+    override var deltaCalculator: DeltaCalculator? = null
 }

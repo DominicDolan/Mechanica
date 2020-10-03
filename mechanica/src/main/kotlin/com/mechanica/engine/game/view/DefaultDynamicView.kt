@@ -36,20 +36,6 @@ class DefaultDynamicView(
             y = value.y
         }
 
-    @Suppress("SetterBackingFieldAssignment")
-    override var center: DynamicVector = object : DynamicVector {
-        override var x: Double
-            get() = this@DefaultDynamicView.x
-            set(value) {this@DefaultDynamicView.x = value }
-        override var y: Double
-            get() = this@DefaultDynamicView.y + height/2.0
-            set(value) { this@DefaultDynamicView.y = value }
-    }
-        set(value) {
-            x = value.x
-            y = value.y
-        }
-
     override val ratio: Double
         get() = height/width
 }

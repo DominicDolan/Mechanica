@@ -1,13 +1,13 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.drawer.shader.AbstractDrawerShader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
+import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.LightweightVector
+import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -17,7 +17,7 @@ class DrawData {
 
     var viewMatrixWasSet = false
         private set
-    var viewMatrix: Matrix4f = Game.matrices.view
+    var viewMatrix: Matrix4f = Game.matrices.worldCamera
         set(value) {
             viewMatrixWasSet = true
             field = value
@@ -67,7 +67,8 @@ class DrawData {
             return field
         }
 
-    val modelOrigin = OriginVector()
+    val normalizedOrigin = OriginVector()
+    val relativeOrigin = OriginVector()
 
     var radius: Float = 0f
 
@@ -126,7 +127,7 @@ class DrawData {
         return matrix
     }
 
-    fun draw(model: Model, shader: AbstractDrawerShader = renderer.shader) {
+    fun draw(model: Model, shader: DrawerShader = renderer.shader) {
         renderer.color = fillColor
         renderer.radius = radius
 
@@ -141,9 +142,9 @@ class DrawData {
     }
 
     private fun addModelOriginToMatrix(matrix: Matrix4f) {
-        if (modelOrigin.x != 0.0 || modelOrigin.y != 0.0) {
-            val pivotX = modelOrigin.x.toFloat()*scale.x
-            val pivotY = modelOrigin.y.toFloat()*scale.y
+        if (normalizedOrigin.wasSet || relativeOrigin.wasSet) {
+            val pivotX = normalizedOrigin.x.toFloat()*scale.x + relativeOrigin.x.toFloat()
+            val pivotY = normalizedOrigin.y.toFloat()*scale.y + relativeOrigin.y.toFloat()
             matrix.translate(-pivotX, -pivotY, 0f)
         }
     }
@@ -168,7 +169,7 @@ class DrawData {
         radius = 0f
         noReset = false
 
-        viewMatrix = Game.matrices.view
+        viewMatrix = Game.matrices.worldCamera
         viewMatrixWasSet = false
         projectionMatrix = Game.matrices.projection
 
@@ -178,7 +179,8 @@ class DrawData {
         defaultTransformation.identity()
         transformation = null
         renderer.rewind()
-        modelOrigin.reset()
+        normalizedOrigin.reset()
+        relativeOrigin.reset()
     }
 
     inner class OriginVector : Vector {
@@ -204,7 +206,7 @@ class DrawData {
             this.y = vector.y
         }
 
-        fun set(vector: LightweightVector) {
+        fun set(vector: InlineVector) {
             this.x = vector.x
             this.y = vector.y
         }

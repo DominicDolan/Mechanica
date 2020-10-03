@@ -12,4 +12,25 @@ interface Vector {
 
     val theta get() = atan2(this.y, this.x).radians
 
+    companion object {
+        fun create(x: Double = 0.0, y: Double = 0.0) = object : Vector {
+            override val x = x
+            override val y = y
+            override fun toString() = Companion.toString(this)
+        }
+
+        fun create(vector: InlineVector) = object : Vector {
+            override val x = vector.x
+            override val y = vector.y
+            override fun toString() = Companion.toString(this)
+        }
+
+        fun create(vector: Vector) = object : Vector {
+            override val x = vector.x
+            override val y = vector.y
+            override fun toString() = Companion.toString(this)
+        }
+
+        fun toString(vector: Vector) = "(${vector.x}, ${vector.y})"
+    }
 }

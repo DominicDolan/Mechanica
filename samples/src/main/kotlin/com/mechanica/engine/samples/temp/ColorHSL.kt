@@ -12,7 +12,7 @@ fun main() {
     }
     val draw = Drawer.create()
 
-    Game.run {
+    Game.loop {
         val color = rgba(0.5, 0.5, 0.5, 1.0)
         draw.centered.cyan.rectangle(x = 2.5, width = 5.0, height = 5.0)
         draw.centered.color(color).lightness(Mouse.normalized.x).saturation(Mouse.normalized.y).rectangle(width = 5.0, height = 5.0)

@@ -11,6 +11,8 @@ interface ProcessNode : Updateable {
         get() = 0
     val active: Boolean
         get() = true
+    val paused: Boolean
+        get() = false
     fun <P:Updateable> addProcess(process: P): P
     fun removeProcess(process: Updateable): Boolean
     fun <P:Updateable> replaceProcess(old: P, new: P): P
