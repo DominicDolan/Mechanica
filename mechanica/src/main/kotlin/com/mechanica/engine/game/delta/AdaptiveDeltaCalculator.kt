@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-class AdaptiveDeltaCalculator(frameTime: Double) : DeltaCalculator {
+internal class AdaptiveDeltaCalculator(frameTime: Double) : DeltaCalculator {
     private var targetUpdateCount = 1.0
     private var dt = frameTime/targetUpdateCount
 

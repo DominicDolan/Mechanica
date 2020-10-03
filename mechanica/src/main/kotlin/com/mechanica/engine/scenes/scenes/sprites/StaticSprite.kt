@@ -11,7 +11,7 @@ abstract class StaticSprite(override val view: View, order: Int = 0) : Scene(ord
             y: Double = 0.0,
             width: Double = 1.0,
             height: Double = 1.0,
-            priority: Int = 0) : this(View.create(x, y, width, height), priority)
+            order: Int = 0) : this(View.create(x, y, width, height), order)
 
     abstract override fun render(draw: Drawer)
 }

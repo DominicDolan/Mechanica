@@ -1,12 +1,11 @@
 package com.mechanica.engine.text
 
-import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.util.extensions.constrain
 import kotlin.math.abs
 import kotlin.math.max
 
-class Text(text: String, font: Font = GLLoader.fontLoader.defaultFont) {
+class Text(text: String, font: Font = Font.defaultFont) {
 
     var string = text
         set(value) {

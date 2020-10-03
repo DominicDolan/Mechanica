@@ -2,7 +2,7 @@ package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.scenes.processes.LoadProcess
 
-abstract class LoadScene(waitTime: Float = 0.2f, waitLoops: Int = 2) : Scene() {
+abstract class LoadScene(order: Int = 0, waitTime: Float = 0.2f, waitLoops: Int = 2) : Scene(order) {
 
     init {
         addProcess(object : LoadProcess(order = -1, waitTime, waitLoops) {
