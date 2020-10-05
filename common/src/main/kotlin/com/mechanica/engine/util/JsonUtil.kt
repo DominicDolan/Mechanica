@@ -57,14 +57,14 @@ fun Decoder.toJsonObject(): JsonObject {
 }
 
 
-class StringMapSerializer : DeserializationStrategy<Map<String, Any>>, SerializationStrategy<Map<String, Any>> {
+class StringMapSerializer(private val objectName: String) : DeserializationStrategy<Map<String, Any>>, SerializationStrategy<Map<String, Any>> {
 
     override val descriptor = SerialDescriptor("PersistenceMap")
 
     override fun deserialize(decoder: Decoder) = decoder.toJsonObject().toStringValueMap()
 
     override fun serialize(encoder: Encoder, value: Map<String, Any>) {
-        JsonElementSerializer.serialize(encoder, value.toJson())
+        JsonElementSerializer.serialize(encoder, json { objectName to value.toJson() })
     }
 
     override fun patch(decoder: Decoder, old: Map<String, Any>): Map<String, Any> =

@@ -15,7 +15,7 @@ object ScreenLog {
     }
 
     fun addLine(text: String) {
-        sb.appendln(text)
+        sb.appendLine(text)
     }
 
     inline operator fun invoke(text: () -> String) {

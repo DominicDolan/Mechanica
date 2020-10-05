@@ -5,7 +5,7 @@ import com.mechanica.engine.models.Image
 
 class ImageElement(scene: DukeUIScene) : Element(scene) {
     var image: Image? = null
-    override val elementDrawer = ElementDrawer { draw, style ->
+    override val elementDrawer = ElementDrawer { draw, _ ->
         val image = this@ImageElement.image
         if (image != null) {
             draw.ui.image(image, x, y + height, width, -height)

@@ -5,12 +5,15 @@ import com.mechanica.engine.util.StringMapSerializer
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonDecodingException
+import java.io.File
 import java.io.FileNotFoundException
 
 class PersistenceMap private constructor(private val path: String, private val map: HashMap<String, Any>) : Map<String, Any> by map {
     constructor(path: String) : this(path, HashMap())
 
-    private val serializer = StringMapSerializer()
+    private val instance = File(".").absolutePath
+    private val serializer = StringMapSerializer(instance)
 
     fun store() {
         val json = Json(JsonConfiguration.Stable)
@@ -28,10 +31,18 @@ class PersistenceMap private constructor(private val path: String, private val m
             "{}"
         }
 
-        val map = Json.parse(serializer, string)
-        map.forEach {
-            this.map[it.key] = it.value
+        try {
+            val jsonContent: String? = Json.parseJson(string).jsonObject[instance].toString()
+            if (jsonContent != null && jsonContent != "null") {
+                val map = Json.parse(serializer, jsonContent)
+                map.forEach {
+                    this.map[it.key] = it.value
+                }
+            }
+        } catch (jde: JsonDecodingException) {
+            System.err.println("Unable to read persistence file")
         }
+
     }
 
     fun put(name: String, value: Any) {

@@ -10,9 +10,9 @@ class FontMetrics(info: STBTTFontinfo, scale: Float = STBTruetype.stbtt_ScaleFor
     val lineGap: Float
 
     init {
-        var ascent = 0
-        var descent = 0
-        var lineGap = 0
+        var ascent: Int
+        var descent: Int
+        var lineGap: Int
 
         MemoryStack.stackPush().use { stack ->
             val ascentBuffer = stack.mallocInt(1)

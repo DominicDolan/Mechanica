@@ -7,7 +7,6 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URI
 import java.net.URL
-import java.nio.Buffer
 import java.nio.ByteBuffer
 import kotlin.streams.toList
 
@@ -23,7 +22,7 @@ interface Resource : GenericResource {
         get() {
             val sb = StringBuilder()
             lines.forEach {
-                sb.appendln(it)
+                sb.appendLine(it)
             }
             return sb.toString()
         }
@@ -41,7 +40,6 @@ interface Resource : GenericResource {
         operator fun invoke(file: String): Resource {
             val fileForURL = file.replace("\\", "/")
             val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
-
             return ResourceImpl(url)
         }
 

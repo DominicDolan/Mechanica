@@ -13,8 +13,8 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
 
     private fun generateScript(): String {
         val sb = StringBuilder(header)
-        sb.appendln(declarations)
-        sb.appendln(main.trimIndent())
+        sb.appendLine(declarations)
+        sb.appendLine(main.trimIndent())
 
         return sb.toString()
     }

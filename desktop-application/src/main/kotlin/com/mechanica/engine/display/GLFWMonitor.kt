@@ -37,8 +37,8 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
 
     override val size: Monitor.Size
         get() {
-            var width = -1
-            var height = -1
+            var width: Int
+            var height: Int
             MemoryStack.stackPush().use { stack ->
                 val widthBuffer = stack.ints(0)
                 val heightBuffer = stack.ints(0)
@@ -51,8 +51,8 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
 
     override val contentScale: Monitor.ContentScale
         get() {
-            var xScale = 1f
-            var yScale = 1f
+            var xScale: Float
+            var yScale: Float
             MemoryStack.stackPush().use { stack ->
                 val xBuffer = stack.floats(0f)
                 val yBuffer = stack.floats(0f)

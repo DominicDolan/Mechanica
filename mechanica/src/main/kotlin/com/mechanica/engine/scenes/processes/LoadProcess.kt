@@ -12,12 +12,21 @@ abstract class LoadProcess(order: Int = 0, private val waitTime: Float = 0.2f, p
     private var currentLoops = 0
     private var currentWait = 0.0
 
+    private var exception: Throwable? = null
+
     override fun updateNodes(delta: Double) {
         when (stage) {
             Stage.WAIT -> wait(delta)
             Stage.FINISHED_WAIT -> startLoading()
             Stage.LOADING -> whileLoading (delta)
-            Stage.FINISHED_LOADING -> onFinish()
+            Stage.FINISHED_LOADING -> {
+                val exception = this.exception
+                if (exception != null) {
+                    this.exception = null
+                    throw exception
+                }
+                onFinish()
+            }
         }
         super.updateNodes(delta)
     }
@@ -33,13 +42,17 @@ abstract class LoadProcess(order: Int = 0, private val waitTime: Float = 0.2f, p
     private fun startLoading() {
         val runnable = Runnable {
             Game.application.activateContext(loadingContext)
-            load()
-            stage = Stage.FINISHED_LOADING
+            try {
+                load()
+            } finally {
+                stage = Stage.FINISHED_LOADING
+            }
         }
 
         val thread = Thread(runnable)
 
         stage = Stage.LOADING
+        thread.setUncaughtExceptionHandler { _, e -> exception = e }
         thread.start()
     }
 
