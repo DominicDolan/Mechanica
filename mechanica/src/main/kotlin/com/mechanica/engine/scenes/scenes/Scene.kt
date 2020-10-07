@@ -42,6 +42,10 @@ abstract class Scene(order: Int = 0) : Process(order), SceneNode {
         return old
     }
 
+    override fun hasScene(scene: SceneNode): Boolean {
+        return childScenes.contains(scene)
+    }
+
     inline fun forEachScene(operation: (SceneNode)-> Unit) {
         for (i in `access$childScenes`.indices) {
             operation(`access$childScenes`[i])
@@ -49,19 +53,22 @@ abstract class Scene(order: Int = 0) : Process(order), SceneNode {
     }
 
     override fun renderNodes(draw: Drawer) {
-        val index = renderNodesFor(draw) { it.order < 0}
+        val index = renderNodesWhile(draw) { it.order < 0}
         this.render(draw)
-        renderNodesFor(draw, index) { it.order >= 0 }
+        renderNodesWhile(draw, index) { it.order >= 0 }
     }
 
-    private inline fun renderNodesFor(draw: Drawer, from: Int = 0, condition: (SceneNode) -> Boolean): Int {
+    private inline fun renderNodesWhile(draw: Drawer, from: Int = 0, condition: (SceneNode) -> Boolean): Int {
         var i = from
         do {
-            val scene = childScenes.getOrNull(i++) ?: break
-            if (scene.active) {
-                scene.renderNodes(draw)
+            val scene = childScenes.getOrNull(i) ?: break
+            if (condition(scene)) {
+                if (scene.active) scene.renderNodes(draw)
+            } else {
+                break
             }
-        } while (condition(scene))
+            i++
+        } while (true)
         return i
     }
 

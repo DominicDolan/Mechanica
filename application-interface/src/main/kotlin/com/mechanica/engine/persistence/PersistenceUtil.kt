@@ -1,6 +1,9 @@
 package com.mechanica.engine.persistence
 
-private val map = PersistenceMap("res/data/persistence.json")
+import com.mechanica.engine.util.getCallingClass
+
+private val path = getCallingClass().packageName + "/res/data/persistence.json"
+private val map = PersistenceMap(path)
 
 fun persistent(default: Boolean, instance: String? = null) = PersistentVariable(map, default, instance)
 

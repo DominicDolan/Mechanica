@@ -15,7 +15,7 @@ open class MechanicaLoadingIcon(view: View, order: Int = 0) : StaticSprite(view,
     private val rete = Image.loadImage(Res.image("logo/astrolabe-rete"))
     private val rule = Image.loadImage(Res.image("logo/astrolabe-rule"))
 
-    private var buffer = AnimationFormula(-1.5, 0.0) { 1.0 }
+    private var buffer = AnimationFormula(-1.0, 0.0) { 1.0 }
     private var ruleAngle = AnimationFormula(0.0, 2.5, AnimationFormulas.quadraticBump(0.0, 360.0))
     private var reteAngle = AnimationFormula(0.0, 2.5, AnimationFormulas.quadraticAscending(360.0, 0.0))
 

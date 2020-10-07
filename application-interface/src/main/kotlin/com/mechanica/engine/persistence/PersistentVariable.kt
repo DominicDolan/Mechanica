@@ -48,7 +48,14 @@ class PersistentVariable<T:Any>(
         if (instance == null) {
             map.put(name, value)
         } else {
-            map.subMap(name)?.put(instance, value) ?: map.put(name, HashMap<String, Any>().also { it[instance] = value })
+            val subMap = map.subMap(name)
+            if (subMap == null) {
+                val newMap = HashMap<String, Any>()
+                newMap[instance] = value
+                map.put(name, newMap)
+            } else {
+                subMap[instance] = value
+            }
         }
     }
 

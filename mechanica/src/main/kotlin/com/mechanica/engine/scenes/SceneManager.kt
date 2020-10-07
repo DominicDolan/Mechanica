@@ -149,6 +149,8 @@ internal class SceneManager(
     override fun updateNodes(delta: Double) = scenes.updateNodes(delta)
     override fun destructor() = scenes.destructor()
     override fun destructNodes() = scenes.destructNodes()
+    override fun hasScene(scene: SceneNode) = scenes.hasScene(scene)
+
     override fun render(draw: Drawer) { }
 
     class ChildScenes : Scene() {

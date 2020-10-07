@@ -137,10 +137,10 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
     override fun updateNodes(delta: Double) {
         if (!callbacksInitialized) runActivationCallbacks(active)
 
-        val index = updateNodesFor(delta) { it.order < 0 }
+        val index = updateNodesWhile(delta) { it.order < 0 }
         updateLeaves(delta)
         this.update(delta)
-        updateNodesFor(delta, index) { it.order >= 0 }
+        updateNodesWhile(delta, index) { it.order >= 0 }
     }
 
     override fun update(delta: Double) { }
@@ -160,16 +160,19 @@ abstract class Process(override val order: Int = 0) : ProcessNode {
      */
     open fun deactivated() { }
 
-    private inline fun updateNodesFor(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
+    private inline fun updateNodesWhile(delta: Double, from: Int = 0, condition: (ProcessNode) -> Boolean): Int {
         var inverseI = childProcesses.lastIndex - from
         do {
-            val process = childProcesses.getOrNull(childProcesses.lastIndex - (inverseI--)) ?: break
-            if (process.active && !process.paused) {
-                process.updateNodes(delta)
-            } else if (process is Process) {
-                process.whileInactive(delta)
-            }
-        } while (condition(process))
+            val process = childProcesses.getOrNull(childProcesses.lastIndex - (inverseI)) ?: break
+            if (condition(process)) {
+                if (process.active && !process.paused) {
+                    process.updateNodes(delta)
+                } else if (process is Process) {
+                    process.whileInactive(delta)
+                }
+            } else break
+            inverseI--
+        } while (true)
         return childProcesses.lastIndex - inverseI
     }
 

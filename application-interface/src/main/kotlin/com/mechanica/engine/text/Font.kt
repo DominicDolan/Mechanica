@@ -27,6 +27,10 @@ abstract class Font {
                 characterSize = 175f
             }
 
+        fun defaults(config: FontAtlasConfiguration.() -> Unit): FontSet {
+            return FontSet("roboto/Roboto", config)
+        }
+
         fun create(resource: Resource, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
             return GLLoader.fontLoader.font(resource, configureAtlas)
         }

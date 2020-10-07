@@ -22,7 +22,7 @@ class MechanicaStartupScreen(private val textColor: Color = Color.black, order: 
 
     private val logo = addScene(object : MechanicaLoadingIcon(0.0, -0.075*titleSize, 0.37*titleSize, 0.37*titleSize, 1){
         override fun drawInView(draw: Drawer, view: View): Drawer {
-            return super.drawInView(draw, view).ui.color.alpha(logoFadeIn.value)
+            return super.drawInView(draw, view).ui.color.alpha(logoFadeIn.value*alpha)
         }
     })
 
@@ -30,14 +30,16 @@ class MechanicaStartupScreen(private val textColor: Color = Color.black, order: 
     private val logoFadeIn = AnimationFormula(-1.0, 1.0, AnimationFormulas.linear(0.0, 1.0) )
     val sequence = addAnimationSequence(textFadeIn, logoFadeIn, logo.sequence)
 
+    var alpha = 1.0
+
     init {
         logo.sequence.looped = false
         sequence.play()
     }
 
     override fun render(draw: Drawer) {
-        draw.darkGrey.alpha(textFadeIn.value).text(poweredBy, 0.04*titleSize, -0.47*titleSize, 0.225*titleSize)
-        draw.color(textColor).alpha(textFadeIn.value)
+        draw.darkGrey.alpha(textFadeIn.value*alpha).text(poweredBy, 0.04*titleSize, -0.47*titleSize, 0.225*titleSize)
+        draw.color(textColor).alpha(textFadeIn.value*alpha)
         draw.centered.ui.transformed.scale(titleSize).model(title, 0f, 1f, true)
     }
 }

@@ -15,7 +15,7 @@ fun calculateResourceDirectory(): String {
     return path
 }
 
-private fun getCallingClass(): Class<*> {
+fun getCallingClass(): Class<*> {
     val stack = Exception().stackTrace
     return Class.forName(stack.last().className)
 }

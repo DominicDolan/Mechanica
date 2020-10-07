@@ -10,4 +10,5 @@ interface SceneNode : ProcessNode, Drawable {
     fun removeScene(scene: SceneNode): Boolean
     fun <S:SceneNode> replaceScene(old: S, new: S): S
     fun renderNodes(draw: Drawer)
+    fun hasScene(scene: SceneNode): Boolean
 }
