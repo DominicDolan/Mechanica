@@ -38,12 +38,6 @@ inline fun Element.span(content: Element.() -> Unit) {
     }
 }
 
-fun Element.custom(drawer: ElementDrawer) {
-    val e = switchElement { CustomElement(it) }
-    e.elementDrawer = drawer
-    node = e.node
-}
-
 val nodeDataToDrawer = NodeDataToDrawer()
 
 inline fun Element.drawer(content: RenderDescription.(draw: Drawer) -> Unit) {

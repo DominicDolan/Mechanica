@@ -115,6 +115,10 @@ fun Color.saturation(level: Double): InlineColor {
     return hsl(hue, level, lightness)
 }
 
+fun Color.alpha(value: Double): InlineColor {
+    return rgba(r, g, b, value)
+}
+
 fun rgba2Hex(red: Double, green: Double, blue: Double, alpha: Double): Long {
     val a = (alpha*255).toLong()
     val b = (blue*255).toLong() shl 8
