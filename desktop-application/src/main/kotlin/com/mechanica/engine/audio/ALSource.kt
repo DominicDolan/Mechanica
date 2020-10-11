@@ -3,6 +3,8 @@ package com.mechanica.engine.audio
 import com.mechanica.engine.memory.useMemoryStack
 import org.joml.Vector3f
 import org.lwjgl.openal.AL10.*
+import org.lwjgl.openal.EXTOffset.AL_SAMPLE_OFFSET
+import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 class ALSource(override var sound: Sound) : ALAudioObject(), SoundSource {
@@ -15,6 +17,23 @@ class ALSource(override var sound: Sound) : ALAudioObject(), SoundSource {
     override var rolloff: Float by properties.createProperty(AL_ROLLOFF_FACTOR)
     override var maxDistance: Float by properties.createProperty(AL_MAX_DISTANCE)
     override var referenceDistance: Float by properties.createProperty(AL_REFERENCE_DISTANCE)
+    override var looped: Boolean
+        get() = alGetSourcei(id, AL_LOOPING) == 1
+        set(value) {
+            val boolean = if (value) 1 else 0
+            alSourcei(id, AL_LOOPING, boolean)
+        }
+
+    override val isPlaying: Boolean
+        get() {
+            val state = alGetSourcei(id, AL_SOURCE_STATE)
+            return state == AL_PLAYING
+        }
+    override var progress: Float
+        get() = alGetSourcei(id, AL_SAMPLE_OFFSET).toFloat()/sound.sampleRate.toFloat()
+        set(value) {
+            alSourcei(id, AL_SAMPLE_OFFSET, (value*sound.sampleRate).roundToInt())
+        }
 
     init {
         alSourcei(id, AL_BUFFER, sound.id)

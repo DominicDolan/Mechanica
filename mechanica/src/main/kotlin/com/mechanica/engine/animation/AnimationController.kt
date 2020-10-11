@@ -33,8 +33,10 @@ interface AnimationController : Updateable {
 
     fun play() {
         paused = false
-        if (looped && time == endTime) {
-            restart()
-        }
+    }
+
+    fun playFromStart() {
+        restart()
+        play()
     }
 }

@@ -14,7 +14,7 @@ class PersistenceMap private constructor(private val path: String, private val m
     private val serializer = StringMapSerializer()
 
     fun store() {
-        val json = Json(JsonConfiguration.Stable)
+        val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))
         val string = json.stringify(serializer, map)
         val file = ExternalResource(path, true)
         file.write(string)

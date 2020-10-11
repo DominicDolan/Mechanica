@@ -23,9 +23,11 @@ class AnimationFormula(
     val value: Double
         get() = formula(formulas, relativeTime)
 
+    private var formulaTime: Double = startTime
     override var time = startTime
         private set(value) {
-            field = if (looped) {
+            field = value
+            formulaTime = if (looped) {
                 value.constrainLooped(startTime, endTime)
             } else {
                 if (value >= endTime) {
@@ -35,9 +37,7 @@ class AnimationFormula(
             }
         }
     private val relativeTime: Double
-        get() = time - startTime
-
-    constructor(length: Double, formula: AnimationFormulas.(Double) -> Double) : this(0.0, length, formula)
+        get() = formulaTime - startTime
 
     override fun goTo(time: Double) {
         this.time = time

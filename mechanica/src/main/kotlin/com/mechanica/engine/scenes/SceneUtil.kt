@@ -13,12 +13,8 @@ import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.scenes.scenes.SceneNode
 
 
-fun ProcessNode.addAnimation(start: Double, end: Double, formula: AnimationFormulas.(Double) -> Double): AnimationFormula {
-    return addProcess(AnimationFormula(start, end, formula))
-}
-
 fun ProcessNode.addAnimation(length: Double, formula: AnimationFormulas.(Double) -> Double): AnimationFormula {
-    return addProcess(AnimationFormula(length, formula))
+    return addProcess(AnimationFormula(0.0, length, formula))
 }
 
 fun ProcessNode.addAnimationSequence(vararg animations: AnimationController): AnimationSequence {

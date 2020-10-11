@@ -57,7 +57,7 @@ fun Decoder.toJsonObject(): JsonObject {
 }
 
 
-class StringMapSerializer() : DeserializationStrategy<Map<String, Any>>, SerializationStrategy<Map<String, Any>> {
+class StringMapSerializer : DeserializationStrategy<Map<String, Any>>, SerializationStrategy<Map<String, Any>> {
 
     override val descriptor = SerialDescriptor("PersistenceMap")
 

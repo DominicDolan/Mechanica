@@ -10,6 +10,9 @@ interface SoundSource : AudioObject {
     var rolloff: Float
     var maxDistance: Float
     var referenceDistance: Float
+    val isPlaying: Boolean
+    var looped: Boolean
+    var progress: Float
     fun play()
     fun pause()
     fun stop()
@@ -18,4 +21,5 @@ interface SoundSource : AudioObject {
     companion object {
         fun create(res: AudioResource) = GLLoader.audioLoader.source(res.sound)
     }
+
 }

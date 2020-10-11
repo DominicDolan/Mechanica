@@ -13,7 +13,7 @@ fun main() {
     }
 
     val source = Res.audio("radar3").createSource()
-
+    Listener.position.set(0f, 0f, 0f)
     Game.loop {
         if (Keyboard.space.hasBeenPressed) {
             source.play()
@@ -30,7 +30,15 @@ fun main() {
         if (Keyboard.down.hasBeenPressed) {
             source.pitch -= 0.1f
         }
+        if (Keyboard.left.hasBeenPressed) {
+            source.gain /= 1.1f
+            println(source.gain)
+        }
+        if (Keyboard.right.hasBeenPressed) {
+            source.gain *= 1.1f
+            println(source.gain)
+        }
 
-        Listener.position.set(Mouse.world.x.toFloat()/5f, 0f, Mouse.world.y.toFloat()/2f)
+        source.position.set(Mouse.world.x.toFloat()*3f, 0f, Mouse.world.y.toFloat()*3f)
     }
 }
