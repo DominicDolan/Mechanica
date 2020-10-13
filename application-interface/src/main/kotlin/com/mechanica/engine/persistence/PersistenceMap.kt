@@ -44,30 +44,6 @@ class PersistenceMap private constructor(private val path: String, private val m
         map[name] = value
     }
 
-    fun getDouble(name: String, default: Double = 0.0): Double {
-        return map[name] as? Double ?: default
-    }
-
-    fun getFloat(name: String, default: Float = 0f): Float {
-        return map[name] as? Float ?: default
-    }
-
-    fun getBoolean(name: String, default: Boolean = false): Boolean {
-        return map[name] as? Boolean ?: default
-    }
-
-    fun getInt(name: String, default: Int = 0): Int {
-        return map[name] as? Int ?: default
-    }
-
-    fun getLong(name: String, default: Long = 0): Long {
-        return map[name] as? Long ?: default
-    }
-
-    fun getString(name: String, default: String = ""): String {
-        return map[name] as? String ?: default
-    }
-
     override fun toString() = map.toString()
 
 }

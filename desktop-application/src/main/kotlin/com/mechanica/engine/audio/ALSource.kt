@@ -35,26 +35,35 @@ class ALSource(override var sound: Sound) : ALAudioObject(), SoundSource {
             alSourcei(id, AL_SAMPLE_OFFSET, (value*sound.sampleRate).roundToInt())
         }
 
+    private var isDeleted = false
+
     init {
         alSourcei(id, AL_BUFFER, sound.id)
     }
 
     override fun play() {
-        alSourcePlay(id)
+        if (!isDeleted) alSourcePlay(id)
     }
 
     override fun pause() {
-        alSourcePause(id)
+        if (!isDeleted) alSourcePause(id)
     }
 
     override fun stop() {
-        alSourceStop(id)
+        if (!isDeleted) alSourceStop(id)
     }
 
     override fun destroy() {
-        alDeleteSources(id)
+        if (!isDeleted) {
+            isDeleted = true
+            alSourcei(id, AL_BUFFER, 0)
+            alDeleteSources(id)
+        }
     }
 
+    protected fun finalize() {
+        destroy()
+    }
 
     override fun getVector3f(property: Int, vec: Vector3f) {
         useMemoryStack {
