@@ -3,50 +3,54 @@ package com.mechanica.engine.game.view
 import com.mechanica.engine.display.Window
 
 class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
-                          var viewWidth: Double? = null, var viewHeight: Double? = null) {
+                          var cameraWidth: Double? = null, var cameraHeight: Double? = null) {
 
 
-    var viewWidthOut: Double = 1.0
+    var cameraWidthOut: Double = 1.0
         private set
-    var viewHeightOut: Double = 1.0
+    var cameraHeightOut: Double = 1.0
         private set
 
-    val ratio get() = resolutionHeight.toDouble()/resolutionWidth.toDouble()
+    val ratio: Double
+        get() = if (resolutionWidth != 0 && resolutionHeight != 0) {
+            resolutionHeight.toDouble()/resolutionWidth.toDouble()
+        } else 1.0
 
     init {
         calculate()
     }
 
     fun calculate() {
-        val viewWidth = this.viewWidth
-        val viewHeight = this.viewHeight
+        val viewWidth = this.cameraWidth
+        val viewHeight = this.cameraHeight
 
         if ((viewWidth == null)&&(viewHeight == null)){
-            viewWidthOut = resolutionWidth.toDouble()
-            viewHeightOut = resolutionHeight.toDouble()
+            cameraWidthOut = resolutionWidth.toDouble()
+            cameraHeightOut = resolutionHeight.toDouble()
         }else if ((viewWidth == null)||(viewHeight == null)) {
             if (viewWidth != null) {
-                viewWidthOut = viewWidth
-                viewHeightOut = viewWidth*ratio
+                cameraWidthOut = viewWidth
+                cameraHeightOut = viewWidth*ratio
             } else if (viewHeight != null) {
-                viewHeightOut = viewHeight
-                viewWidthOut = viewHeight/ratio
+                cameraHeightOut = viewHeight
+                cameraWidthOut = viewHeight/ratio
             }
         } else {
-            viewWidthOut = viewWidth
-            viewHeightOut = viewHeight
+            cameraWidthOut = viewWidth
+            cameraHeightOut = viewHeight
         }
     }
 
     fun calculate(camera: Camera, window: Window) {
-        if (viewHeight != null) {
-            viewHeight = camera.height
+        if (cameraHeight != null) {
+            cameraHeight = camera.height
         }
-        if (viewWidth != null) {
-            viewWidth = camera.width
+        if (cameraWidth != null) {
+            cameraWidth = camera.width
         }
         resolutionWidth = window.width
         resolutionHeight = window.height
+
         calculate()
     }
 

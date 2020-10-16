@@ -39,6 +39,9 @@ class AnimationFormula(
     private val relativeTime: Double
         get() = formulaTime - startTime
 
+    val normalizedTime: Double
+        get() = (time - startTime)/length
+
     override fun goTo(time: Double) {
         this.time = time
     }

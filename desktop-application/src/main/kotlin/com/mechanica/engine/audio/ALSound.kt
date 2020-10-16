@@ -1,5 +1,6 @@
 package com.mechanica.engine.audio
 
+import com.mechanica.engine.resources.Resource
 import org.lwjgl.openal.AL10.*
 
 class ALSound(file: AudioFile) : Sound, AudioFile by file {
@@ -7,7 +8,7 @@ class ALSound(file: AudioFile) : Sound, AudioFile by file {
     override val frequency: Int
         get() = alGetBufferi(id, AL_FREQUENCY)
 
-    constructor(file: String) : this(OggAudioFile(file))
+    constructor(res: Resource) : this(OggAudioFile(res))
 
     init {
         alBufferData(id, format, buffer, sampleRate)

@@ -1,13 +1,14 @@
 package com.mechanica.engine.audio
 
 import com.mechanica.engine.memory.useMemoryStack
+import com.mechanica.engine.resources.Resource
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL10
 import org.lwjgl.stb.STBVorbis
 import org.lwjgl.system.libc.LibCStdlib
 import java.nio.ShortBuffer
 
-class OggAudioFile(fileName: String) : AudioFile {
+class OggAudioFile(res: Resource) : AudioFile {
     override val channels: Int
     override val sampleRate: Int
     override val buffer: ShortBuffer
@@ -25,12 +26,12 @@ class OggAudioFile(fileName: String) : AudioFile {
         useMemoryStack {
             val channelBuffer = ints(0)
             val sampleRateBuffer = ints(0)
-            ogg = STBVorbis.stb_vorbis_decode_filename(fileName.removePrefix("/"), channelBuffer, sampleRateBuffer)
+            ogg = STBVorbis.stb_vorbis_decode_memory(res.buffer, channelBuffer, sampleRateBuffer)
             channels = channelBuffer[0]
             sampleRate = sampleRateBuffer[0]
         }
 
-        this.buffer = convertToGCBuffer(ogg) ?: throw IllegalStateException("Unable to load audio file: $fileName")
+        this.buffer = convertToGCBuffer(ogg) ?: throw IllegalStateException("Unable to load audio file: ${res.path}")
 
         this.channels = channels
         this.sampleRate = sampleRate

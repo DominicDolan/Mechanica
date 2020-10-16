@@ -49,8 +49,16 @@ object Game : Configurable<GameConfiguration> {
         sceneManager.addProcess(process)
     }
 
+    fun removeProcess(process: Updateable) {
+        sceneManager.removeProcess(process)
+    }
+
     fun addScene(scene: Scene) {
         sceneManager.addScene(scene)
+    }
+
+    fun removeScene(scene: Scene) {
+        sceneManager.removeScene(scene)
     }
 
     override fun configureAs(application: Application, setup: GameConfiguration.() -> Unit) {
@@ -135,11 +143,11 @@ object Game : Configurable<GameConfiguration> {
         val converter = data.resolutionConverter
 
         converter.calculate(world, window)
-        world.width = converter.viewWidthOut
+        world.width = converter.cameraWidthOut
 
         converter.calculate(ui, window)
-        ui._width = converter.viewWidthOut
-        ui._height = converter.viewHeightOut
+        ui._width = converter.cameraWidthOut
+        ui._height = converter.cameraHeightOut
         gameMatrices.setUiView(ui._height)
     }
 

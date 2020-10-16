@@ -22,7 +22,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     override val height: Int
         get() = resolution.height
     override val aspectRatio: Double
-        get() = width.toDouble()/height.toDouble()
+        get() = if (width != 0 && height != 0) width.toDouble()/height.toDouble() else 1.0
     override var isFocused: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FOCUSED) == GLFW_TRUE
         set(value) { if (value) glfwFocusWindow(id) }

@@ -8,7 +8,7 @@ import java.nio.ShortBuffer
 
 class AudioResource(res: Resource, val sound: Sound) : GenericResource by res, AudioFile by sound {
 
-    constructor(res: Resource) : this(res, GLLoader.audioLoader.sound(res.path))
+    constructor(res: Resource) : this(res, GLLoader.audioLoader.sound(res))
     constructor(file: String) : this(Resource(file))
 
     override val buffer: ShortBuffer

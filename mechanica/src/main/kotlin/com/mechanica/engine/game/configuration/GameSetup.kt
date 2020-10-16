@@ -53,8 +53,8 @@ class GameSetup(data: NullableConfigurationData) : ConfigurationData {
 
         resolutionConverter = ResolutionConverter(resolutionWidth, resolutionHeight, data.viewWidth, data.viewHeight)
 
-        viewWidth = resolutionConverter.viewWidthOut
-        viewHeight = resolutionConverter.viewHeightOut
+        viewWidth = resolutionConverter.cameraWidthOut
+        viewHeight = resolutionConverter.cameraHeightOut
 
         windowConfiguration(window)
         debugConfiguration(debugConfig)
