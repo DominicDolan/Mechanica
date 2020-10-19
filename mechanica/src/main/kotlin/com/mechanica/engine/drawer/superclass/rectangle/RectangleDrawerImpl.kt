@@ -4,6 +4,7 @@ import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 
 internal class RectangleDrawerImpl(
@@ -12,7 +13,7 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = Attribute.location(0).vec3().createUnitQuad()
+        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
 
         val disableTexCoords = object : Bindable {
             override fun bind() {

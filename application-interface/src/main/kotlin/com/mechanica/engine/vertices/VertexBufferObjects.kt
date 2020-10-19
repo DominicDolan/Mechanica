@@ -1,7 +1,9 @@
 package com.mechanica.engine.vertices
 
 import com.mechanica.engine.color.Color
+import com.mechanica.engine.context.loader.GLLoader
 import com.mechanica.engine.models.Bindable
+import com.mechanica.engine.shader.vars.attributes.AttributeDefinition
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.utils.createIndicesArrayForQuads
 import org.joml.Vector3f
@@ -30,6 +32,27 @@ interface AttributeArray : VertexBuffer<FloatArray> {
     fun set(array: Array<Vector3f>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<Vector4f>, from: Int = 0, length: Int = array.size)
     fun set(array: Array<out Color>, from: Int = 0, length: Int = array.size)
+
+    companion object {
+        fun createFrom(attribute: AttributeDefinition): FloatArrayMaker {
+            return FloatArrayMakerImpl(attribute)
+        }
+    }
+}
+
+private class FloatArrayMakerImpl(val attribute: AttributeDefinition) : FloatArrayMaker {
+
+    override fun createBuffer(array: FloatArray) = createBuffer(array.size) { set(array) }
+    override fun createArray(array: Array<out Vector>) = createBuffer(array.size) { set(array) }
+    override fun createArray(array: Array<Vector3f>) = createBuffer(array.size) { set(array) }
+    override fun createArray(array: Array<Vector4f>) = createBuffer(array.size) { set(array) }
+    override fun createArray(array: Array<out Color>) = createBuffer(array.size) { set(array) }
+
+    private inline fun createBuffer(size: Int, setter: AttributeArray.() -> Unit): AttributeArray {
+        val v = GLLoader.attributeLoader.createAttributeArray(size, attribute)
+        setter(v)
+        return v
+    }
 }
 
 interface IndexArray : VertexBuffer<ShortArray> {

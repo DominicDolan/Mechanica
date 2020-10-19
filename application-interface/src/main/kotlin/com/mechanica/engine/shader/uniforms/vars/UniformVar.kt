@@ -2,12 +2,11 @@ package com.mechanica.engine.shader.uniforms.vars
 
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.vars.ShaderType
-import com.mechanica.engine.shader.vars.ShaderVariable
-import kotlin.properties.ReadOnlyProperty
+import com.mechanica.engine.shader.vars.ShaderVariableDefinition
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class UniformVar<T> : ShaderVariable, ReadWriteProperty<Any, T> {
+abstract class UniformVar<T> : ShaderVariableDefinition, ReadWriteProperty<Any, T> {
     abstract val value: T
     abstract override val name: String
     abstract override val qualifier: Qualifier

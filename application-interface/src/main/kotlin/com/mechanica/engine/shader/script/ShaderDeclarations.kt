@@ -1,15 +1,15 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.shader.uniforms.UniformVars
 import com.mechanica.engine.shader.qualifiers.Qualifier
 import com.mechanica.engine.shader.qualifiers.Uniform
-import com.mechanica.engine.shader.vars.ShaderVariable
+import com.mechanica.engine.shader.uniforms.UniformVars
+import com.mechanica.engine.shader.vars.ShaderVariableDefinition
 import com.mechanica.engine.shader.vars.attributes.AttributeVars
 
 abstract class ShaderDeclarations(variableName: String = "autoVal") {
     private val variables = ScriptVariables(variableName)
-    protected val iterator: Iterator<ShaderVariable>
+    protected val iterator: Iterator<ShaderVariableDefinition>
         get() = variables.iterator()
 
     val declarations: String

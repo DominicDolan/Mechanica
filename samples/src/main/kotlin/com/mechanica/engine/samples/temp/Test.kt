@@ -17,6 +17,7 @@ import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
+import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
@@ -28,7 +29,6 @@ fun main() {
         setMultisampling(0)
     }
 
-    Attribute.location(0).vec3().createBuffer(emptyArray<Vector>())
     val vertex = object : ShaderScript() {
 
         val position = attribute(0).vec4()
@@ -78,14 +78,14 @@ fun main() {
             vec(0.85, 0.95)
     )
 
-    val square = Attribute.location(0).vec2().createBuffer(squareArray)
+    val square = AttributeArray.createFrom(Attribute.location(0).vec2()).createArray(squareArray)
 
     val colorArray = arrayOf(
             hex(0xFF00FFFF),
             hex(0xFFFF00FF),
             hex(0x0000FFFF),
             hex(0x00FF00FF))
-    val colors = vertex.color.createBuffer(colorArray)
+    val colors = AttributeArray.createFrom(vertex.color).createArray(colorArray)
 
     val shader = Shader(vertex, fragment)
     val inputs: Array<Bindable> = arrayOf(square, colors, indices)

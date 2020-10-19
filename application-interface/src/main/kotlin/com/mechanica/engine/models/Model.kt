@@ -2,6 +2,7 @@ package com.mechanica.engine.models
 
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.VertexBuffer
 
@@ -46,20 +47,26 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
     override fun iterator() = inputs.iterator()
 
     companion object {
+        fun create(vararg bindables: Bindable) = Model(*bindables)
 
         fun createUnitSquare(): Model {
-            val position = Attribute.location(0).vec3().createUnitQuad()
-            val tc = Attribute.location(1).vec2().createInvertedUnitQuad()
-            return Model(position, tc)
+            val positionAttribute = Attribute.location(0).vec3()
+            val positionArray = AttributeArray.createFrom(positionAttribute).createUnitQuad()
+
+            val textureAttribute = Attribute.location(1).vec2()
+            val tc = AttributeArray.createFrom(textureAttribute).createInvertedUnitQuad()
+            return Model(positionArray, tc)
         }
 
         fun createFromFloatArray(array: FloatArray): Model {
-            val position = Attribute.location(0).vec3().createBuffer(array)
+            val positionAttribute = Attribute.location(0).vec3()
+            val position = AttributeArray.createFrom(positionAttribute).createBuffer(array)
             return Model(position)
         }
 
         fun createFromVecArray(array: Array<Vector>): Model {
-            val position = Attribute.location(0).vec3().createBuffer(array)
+            val positionAttribute = Attribute.location(0).vec3()
+            val position = AttributeArray.createFrom(positionAttribute).createArray(array)
             return Model(position)
         }
     }

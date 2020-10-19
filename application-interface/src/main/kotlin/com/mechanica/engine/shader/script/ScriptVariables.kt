@@ -1,10 +1,10 @@
 package com.mechanica.engine.shader.script
 
-import com.mechanica.engine.shader.vars.ShaderVariable
 import com.mechanica.engine.shader.uniforms.vars.UniformVar
+import com.mechanica.engine.shader.vars.ShaderVariableDefinition
 
-class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariable> {
-    private val variables = ArrayList<ShaderVariable>()
+class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariableDefinition> {
+    private val variables = ArrayList<ShaderVariableDefinition>()
     private val functions = ArrayList<String>()
 
     val scriptHead: String
@@ -25,7 +25,7 @@ class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariable>
         return "$placeHolder${variableIncrement++}"
     }
 
-    fun addVariable(v: ShaderVariable): ShaderVariable {
+    fun addVariable(v: ShaderVariableDefinition): ShaderVariableDefinition {
         val existingVariable = variables.byName(v.name)
         return if (existingVariable != null) {
             existingVariable
@@ -46,14 +46,14 @@ class ScriptVariables(private val placeHolder: String): Iterable<ShaderVariable>
         return false
     }
 
-    private fun ArrayList<ShaderVariable>.byName(name: String): ShaderVariable? {
+    private fun ArrayList<ShaderVariableDefinition>.byName(name: String): ShaderVariableDefinition? {
         for (v in this) {
             if (v.name == name) return v
         }
         return null
     }
 
-    override fun iterator(): Iterator<ShaderVariable> {
+    override fun iterator(): Iterator<ShaderVariableDefinition> {
         return variables.iterator()
     }
 

@@ -8,6 +8,7 @@ import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
+import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
@@ -57,8 +58,8 @@ fun main() {
 
     val square = arrayOf(*createUnitSquare(), *(createUnitSquare()).map { vec(it.x + 2.0, it.y) }.toTypedArray())
     val invertedSquare = arrayOf(*createInvertedSquare(), *createInvertedSquare())
-    val tc = vertex.texCoords.createBuffer(invertedSquare)
-    val pos = vertex.position.createBuffer(square)
+    val tc = AttributeArray.createFrom(vertex.texCoords).createArray(invertedSquare)
+    val pos = AttributeArray.createFrom(vertex.position).createArray(square)
     val indices = IndexArray.createIndicesForQuads(2)
 
     val image = loadImage(Res.image["testImage"])

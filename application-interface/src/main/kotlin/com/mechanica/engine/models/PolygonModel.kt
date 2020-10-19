@@ -4,14 +4,15 @@ import com.mechanica.engine.geometry.triangulation.GrahamScanTriangulator
 import com.mechanica.engine.geometry.triangulation.Triangulator
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.vertices.FloatBufferMaker
+import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.vertices.FloatArrayMaker
 import com.mechanica.engine.vertices.IndexArray
 
 open class PolygonModel(vertices: Array<out Vector>,
-                        positionAttribute: FloatBufferMaker = Attribute(0).vec2(),
+                        positionAttribute: FloatArrayMaker = AttributeArray.createFrom(Attribute(0).vec2()),
                         triangulator: Triangulator = GrahamScanTriangulator(vertices))
 : Model(
-        positionAttribute.createBuffer(vertices),
+        positionAttribute.createArray(vertices),
         IndexArray.create(*triangulator.triangulate()),
     )
 {

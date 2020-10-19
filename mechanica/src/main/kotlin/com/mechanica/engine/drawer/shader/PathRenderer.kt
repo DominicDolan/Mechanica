@@ -9,14 +9,14 @@ import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
 import com.mechanica.engine.utils.enableAlphaBlending
 import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.FloatBufferMaker
+import com.mechanica.engine.vertices.FloatArrayMaker
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH
 import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL20
 
-class PathRenderer(positionBufferMaker: FloatBufferMaker = Attribute.location(0).vec3()) {
+class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute.position)) {
 
     private val vertex = object : DrawerScript() {
 

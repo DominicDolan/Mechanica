@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader.vbo
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.shader.vars.attributes.AttributeVariable
+import com.mechanica.engine.shader.vars.attributes.AttributeDefinition
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.util.extensions.constrain
 import com.mechanica.engine.vertices.AttributeArray
@@ -15,8 +15,8 @@ import java.nio.ByteBuffer
 
 class LwjglAttributeBuffer(
         size: Int,
-        variable: AttributeVariable)
-    : LwjglVertexBuffer<FloatArray>(size*variable.type.coordinateSize*4, GL40.GL_ARRAY_BUFFER),
+        definition: AttributeDefinition)
+    : LwjglVertexBuffer<FloatArray>(size*definition.type.coordinateSize*4, GL40.GL_ARRAY_BUFFER),
         AttributeArray {
 
     override val FloatArray.valueCount: Int get() = this.size
@@ -24,11 +24,11 @@ class LwjglAttributeBuffer(
 
     override var vertexCount = size
 
-    private val coordinateSize: Int = variable.type.coordinateSize
+    private val coordinateSize: Int = definition.type.coordinateSize
     private val coordinateValues = FloatArray(16)
 
     private val glType = GL_FLOAT
-    private val location = variable.qualifier.location
+    private val location = definition.qualifier.location
 
     override fun bind() {
         super.bind()

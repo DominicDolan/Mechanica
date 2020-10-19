@@ -5,15 +5,15 @@ import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
 import com.mechanica.engine.utils.createIndicesArrayForQuads
 import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.FloatBufferMaker
+import com.mechanica.engine.vertices.FloatArrayMaker
 import com.mechanica.engine.vertices.IndexArray
 import kotlin.math.max
 
 class TextModel(text: Text,
-                positionBufferMaker: FloatBufferMaker = Attribute(0).vec3(),
-                texCoordsBufferMaker: FloatBufferMaker = Attribute(1).vec2()) : Model(
-        positionBufferMaker.createBuffer(text.positions),
-        texCoordsBufferMaker.createBuffer(text.texCoords),
+                positionBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute(0).vec3()),
+                texCoordsBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute(1).vec2())) : Model(
+        positionBufferMaker.createArray(text.positions),
+        texCoordsBufferMaker.createArray(text.texCoords),
         IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
         Image.invoke(text.font.atlas.id),
 ) {

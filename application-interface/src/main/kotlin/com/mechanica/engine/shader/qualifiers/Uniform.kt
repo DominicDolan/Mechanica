@@ -6,7 +6,7 @@ import com.mechanica.engine.shader.script.ScriptVariables
 import com.mechanica.engine.shader.uniforms.UniformVars
 import com.mechanica.engine.shader.uniforms.vars.*
 import com.mechanica.engine.shader.vars.ShaderType
-import com.mechanica.engine.shader.vars.ShaderVariable
+import com.mechanica.engine.shader.vars.ShaderVariableDefinition
 import org.joml.Matrix4f
 import kotlin.reflect.KProperty
 
@@ -66,7 +66,7 @@ class Uniform(private val variables: ScriptVariables) : Qualifier, UniformVars {
         return addVariable(v)
     }
 
-    private inline fun <reified T : ShaderVariable> addVariable(v: T): T {
+    private inline fun <reified T : ShaderVariableDefinition> addVariable(v: T): T {
         val new = variables.addVariable(v)
         return try {
             new as T

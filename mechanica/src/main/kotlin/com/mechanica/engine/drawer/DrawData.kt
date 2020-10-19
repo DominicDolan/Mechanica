@@ -128,8 +128,8 @@ class DrawData {
     }
 
     fun draw(model: Model, shader: DrawerShader = renderer.shader) {
-        renderer.color = fillColor
-        renderer.radius = radius
+        shader.fragment.color.set(fillColor)
+        shader.fragment.radius.value = radius
 
         getTransformationMatrix(defaultTransformation)
         transformation?.let { defaultTransformation.mul(it) }

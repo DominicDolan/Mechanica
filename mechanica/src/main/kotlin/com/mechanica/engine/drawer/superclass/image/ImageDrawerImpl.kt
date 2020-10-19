@@ -4,6 +4,7 @@ import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.ImageModel
 import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.vertices.AttributeArray
 
 class ImageDrawerImpl(
         private val data: DrawData) : ImageDrawer {
@@ -11,8 +12,8 @@ class ImageDrawerImpl(
     private val model: ImageModel
 
     init {
-        val position = Attribute.location(0).vec3().createUnitQuad()
-        val textureCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
+        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
+        val textureCoords = AttributeArray.createFrom(Attribute.textureCoords).createInvertedUnitQuad()
 
         model = ImageModel(Image(0), position, textureCoords)
     }

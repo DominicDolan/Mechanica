@@ -25,6 +25,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL11
 
 class DrawerImpl(private val data: DrawData) :
@@ -39,8 +40,8 @@ class DrawerImpl(private val data: DrawData) :
     private val model: Model
 
     init {
-        val position = Attribute.location(0).vec3().createUnitQuad()
-        val texCoords = Attribute.location(1).vec2().createInvertedUnitQuad()
+        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
+        val texCoords = AttributeArray.createFrom(Attribute.textureCoords).createInvertedUnitQuad()
 
         model = Model(position, texCoords)
     }
