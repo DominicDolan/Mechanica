@@ -12,7 +12,7 @@ interface EventCallbacks {
             MouseHandler.prepare()
         }
 
-        internal fun create(): EventCallbacks = object : EventCallbacks {
+        fun create(): EventCallbacks = object : EventCallbacks {
             override val keyboardHandler = KeyboardHandler.create()
             override val mouseHandler = MouseHandler.create()
         }

@@ -1,16 +1,17 @@
 package com.mechanica.engine.game
 
-import com.mechanica.engine.config.BackendDebugConfiguration
 import com.mechanica.engine.configuration.Configurable
 import com.mechanica.engine.context.Application
+import com.mechanica.engine.context.callbacks.EventCallbacks
+import com.mechanica.engine.debug.DebugConfiguration
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
+import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
 import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.persistence.storeData
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Updateable
@@ -22,27 +23,30 @@ object Game : Configurable<GameConfiguration> {
     val application: Application
         get() = _application ?: throw IllegalStateException("Cannot access this application object because the game context has not been initialized.\nCall Game.configureAs() before using this object")
 
-    private val configuration = GameConfigurationImpl()
+    private lateinit var setup: GameSetup
 
-    private val data by lazy { configuration.data }
+    val world: WorldCamera
+        get() = setup.cameras.world
+    val ui: UICamera
+        get() = setup.cameras.ui
+    val window: Window
+        get() = setup.window
 
-    val world: WorldCamera by lazy { WorldCamera(data) }
-    val ui: UICamera by lazy { UICamera() }
-    val window: Window by lazy { data.window }
+    val debug: DebugConfiguration
+        get() = setup.debugConfig
 
-    val debug by lazy { data.debugConfig }
-
-    val matrices: Matrices by lazy { GameMatrices(data, world) }
+    val matrices: Matrices
+        get() = gameMatrices
     private val gameMatrices: GameMatrices
-        get() = matrices as GameMatrices
+        get() = setup.cameras.matrices
 
-    internal val sceneManager by lazy { SceneManager(data) }
+    internal val sceneManager: SceneManager
+        get() = setup.sceneManager
 
     val scene: Scene
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
-    private var hasLoadedPersistence = false
     private var hasFinished = false
 
     fun addProcess(process: Updateable) {
@@ -61,32 +65,24 @@ object Game : Configurable<GameConfiguration> {
         sceneManager.removeScene(scene)
     }
 
-    override fun configureAs(application: Application, setup: GameConfiguration.() -> Unit) {
+    override fun configureAs(application: Application, configure: GameConfiguration.() -> Unit) {
         this._application = application
-        loadPersistenceData()
-        setup(configuration)
-        BackendDebugConfiguration.set(debug)
+
+        application.load()
+        val configuration = GameConfigurationImpl(configure)
+        this.setup = GameSetup(configuration)
         if (configuration.initalize) {
             start()
         }
     }
 
-    fun initializeAs(application: Application) {
-        this._application = application
-        loadPersistenceData()
-        configuration.initalize = false
-        start()
-    }
-
     fun start(block: () -> Unit = {}) {
         try {
             if (!hasStarted) {
-                application.initialize(window)
-
-                window.addRefreshCallback { refreshView(it) }
+                application.initialize(window, EventCallbacks.create())
 
                 Timer
-                sceneManager.setStartingScene(data)
+                sceneManager.startScene()
 
                 hasStarted = true
             }
@@ -137,25 +133,6 @@ object Game : Configurable<GameConfiguration> {
 
     fun setMainScene(setter: () -> Scene?) {
         sceneManager.setMainScene(setter)
-    }
-
-    private fun refreshView(window: Window) {
-        val converter = data.resolutionConverter
-
-        converter.calculate(world, window)
-        world.width = converter.cameraWidthOut
-
-        converter.calculate(ui, window)
-        ui._width = converter.cameraWidthOut
-        ui._height = converter.cameraHeightOut
-        gameMatrices.setUiView(ui._height)
-    }
-
-    fun loadPersistenceData() {
-        if (!hasLoadedPersistence) {
-            populateData()
-            hasLoadedPersistence = true
-        }
     }
 
     private fun savePersistenceData() {

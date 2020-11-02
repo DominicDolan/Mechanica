@@ -1,13 +1,15 @@
 package com.mechanica.engine.context
 
+import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.context.loader.LwjglLoader
 import com.mechanica.engine.display.Window
 import org.lwjgl.glfw.GLFW
 
 class DesktopApplication : Application {
-    override fun initialize(mainWindow: Window) {
+    override fun createLoader() = LwjglLoader()
+
+    override fun initialize(mainWindow: Window, callbacks: EventCallbacks) {
         GLContext.initialize(mainWindow)
-        val callbacks = GLInitializer.initialize(LwjglLoader())
         GLContext.setCallbacks(mainWindow, callbacks)
         ALContext.initialize()
     }

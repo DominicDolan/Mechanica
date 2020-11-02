@@ -4,8 +4,7 @@ import com.mechanica.engine.debug.DebugDrawer
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.configuration.ConfigurationData
-import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.delta.Updater
 import com.mechanica.engine.game.view.Camera
 import com.mechanica.engine.scenes.processes.Updateable
@@ -14,7 +13,8 @@ import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.Timer
 
 internal class SceneManager(
-        private val data: ConfigurationData) : SceneNode, Updater {
+        private val deltaCalculator: DeltaCalculator,
+        private val sceneStarter: (() -> Scene)) : SceneNode, Updater {
 
     private val scenes = ChildScenes()
 
@@ -54,7 +54,6 @@ internal class SceneManager(
 
     private var pause = false
     private var hasPaused = false
-    private var pausedUpdate = 0.17
 
     private var frameAdvance = false
 
@@ -72,10 +71,9 @@ internal class SceneManager(
         frameAdvance = true
     }
 
-    fun setStartingScene(data: GameSetup) {
-        val state = data.startingScene
+    fun startScene() {
 
-        setMainScene { state?.invoke() }
+        setMainScene { sceneStarter.invoke() }
     }
 
     fun setMainScene(setter: () -> Scene?) {
@@ -87,7 +85,7 @@ internal class SceneManager(
         val now = Timer.now
         val lastFrame = startOfLoop
         startOfLoop = now
-        data.deltaCalculator?.updateAndRender(lastFrame, now, this)
+        deltaCalculator.updateAndRender(lastFrame, now, this)
 
         checkStateChange()
     }

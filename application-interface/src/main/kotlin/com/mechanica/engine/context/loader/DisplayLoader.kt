@@ -13,5 +13,5 @@ interface DisplayLoader {
 
     fun getPrimaryMonitor(): Monitor
 
-    companion object : DisplayLoader by GLInitializer.displayLoader
+    companion object : DisplayLoader by GLInitializer.loader.displayLoader
 }

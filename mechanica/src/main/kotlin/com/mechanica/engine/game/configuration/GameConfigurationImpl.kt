@@ -8,46 +8,44 @@ import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.Scene
 import org.joml.Matrix4f
 
-internal class GameConfigurationImpl : GameConfiguration {
-    private val _data = NullableConfigurationData()
-    val data: GameSetup
-        get() = GameSetup(_data)
+internal class GameConfigurationImpl(private val configure: GameConfiguration.() -> Unit) : GameConfiguration {
+    val data = ConfigurationData()
 
     override var initalize: Boolean = true
 
     override fun setResolution(width: Int, height: Int) {
-        _data.resolutionWidth = width
-        _data.resolutionHeight = height
+        data.resolutionWidth = width
+        data.resolutionHeight = height
     }
 
     override fun setFullscreen(isFullscreen: Boolean) {
-        _data.fullscreen = isFullscreen
+        data.fullscreen = isFullscreen
     }
 
     override fun setViewport(width: Double, height: Double) {
         if (width != 0.0) {
-            _data.viewWidth = width
+            data.viewWidth = width
         }
         if (height != 0.0) {
-            _data.viewHeight = height
+            data.viewHeight = height
         }
     }
 
     override fun setViewLocation(x: Double, y: Double) {
-        _data.viewX = x
-        _data.viewY = y
+        data.viewX = x
+        data.viewY = y
     }
 
     override fun setStartingScene(scene: () -> Scene) {
-        _data.startingScene = scene
+        data.startingScene = scene
     }
 
     override fun configureWindow(configuration: Window.() -> Unit) {
-        _data.windowConfiguration = configuration
+        data.windowConfiguration = configuration
     }
 
     override fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit) {
-        _data.debugConfiguration = configuration
+        data.debugConfiguration = configuration
     }
 
     override fun setMultisampling(samples: Int) {
@@ -55,10 +53,14 @@ internal class GameConfigurationImpl : GameConfiguration {
     }
 
     override fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit) {
-        _data.projectionMatrixConfiguration = configuration
+        data.projectionMatrixConfiguration = configuration
     }
 
     override fun setDeltaTimeCalculator(calculator: DeltaCalculator) {
-        _data.deltaCalculator = calculator
+        data.deltaCalculator = calculator
+    }
+
+    fun configure() {
+        this.configure.invoke(this)
     }
 }

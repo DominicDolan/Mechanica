@@ -1,22 +1,22 @@
 package com.mechanica.engine.game.view
 
-import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 
 sealed class Camera : View
 
-class UICamera internal constructor() : Camera() {
-    private val scale: Vector
+class UICamera internal constructor(
+        private val matrices: GameMatrices,
+        private val world: WorldCamera,
+        private val scale: Vector) : Camera() {
 
-    internal var _width: Double
+    private var _width: Double = world.width/scale.x
     override val width: Double
         get() = _width
 
-    internal var _height: Double
+    private var _height: Double = world.height/scale.y
     override val height: Double
         get() = _height
 
@@ -31,18 +31,17 @@ class UICamera internal constructor() : Camera() {
 
     }
     override val ratio: Double
-        get() = Game.world.ratio*(scale.y/scale.x)
+        get() = world.ratio*(scale.y/scale.x)
 
-    init {
-        val contentScale = Monitor.getPrimaryMonitor().contentScale
-        scale = vec(contentScale.xScale, contentScale.yScale)
-        _width = Game.world.width/scale.x
-        _height = Game.world.height/scale.y
+    fun update(width: Double, height: Double) {
+        _width = width
+        _height = height
+        matrices.setUiView(height)
     }
 }
 
-class WorldCamera internal constructor(data: GameSetup): Camera(), DynamicView {
-    private var _width: Double = data.viewWidth
+class WorldCamera internal constructor(view: View, private val gameMatrices: GameMatrices): Camera(), DynamicView {
+    private var _width: Double = view.width
     override var width: Double
         get() = _width
         set(value) {
@@ -55,7 +54,7 @@ class WorldCamera internal constructor(data: GameSetup): Camera(), DynamicView {
             gameMatrices.updateView(this)
         }
 
-    private var _height: Double = data.viewHeight
+    private var _height: Double = view.height
     override var height: Double
         get() = _height
         set(value) {
@@ -68,12 +67,12 @@ class WorldCamera internal constructor(data: GameSetup): Camera(), DynamicView {
             gameMatrices.updateView(this)
         }
 
-    override var x: Double = data.viewX
+    override var x: Double = view.x
         set(value) {
             field = value
             gameMatrices.updateView(this)
         }
-    override var y: Double = data.viewY
+    override var y: Double = view.y
         set(value) {
             field = value
             gameMatrices.updateView(this)
@@ -115,7 +114,4 @@ class WorldCamera internal constructor(data: GameSetup): Camera(), DynamicView {
             } else field
         }
     var lockRatio = true
-
-    private val gameMatrices: GameMatrices
-        get() = Game.matrices as GameMatrices
 }

@@ -1,14 +1,16 @@
 package com.mechanica.engine.game.view
 
 import com.mechanica.engine.display.Monitor
-import com.mechanica.engine.game.Game
-import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.display.Window
 import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.matrix.calculatePixelSize
 import com.mechanica.engine.matrix.yScale
 import org.joml.Matrix4f
 
-internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matrices {
+internal class GameMatrices(
+        private val window: Window,
+        private val projectionConfiguration: (Matrix4f.(View) -> Unit),
+        viewPort: View) : Matrices {
     override val projection: Matrix4f = Matrix4f().identity()
     override val worldCamera: Matrix4f = Matrix4f().identity()
     override val uiCamera = Matrix4f()
@@ -20,13 +22,13 @@ internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matri
     var pixelUIScale: Float
 
     init {
-        data.projectionMatrixConfiguration(projection, viewPort)
+        projectionConfiguration(projection, viewPort)
 
         updateView(viewPort)
-        setUiView(data.viewHeight/Monitor.getPrimaryMonitor().contentScale.yScale)
+        setUiView(viewPort.height/Monitor.getPrimaryMonitor().contentScale.yScale)
 
-        pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
-        pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
+        pixelScale = calculatePixelSize(projection, worldCamera, window.height)
+        pixelUIScale = calculatePixelSize(projection, uiCamera, window.height)
     }
 
     fun updateView(view: View) {
@@ -37,15 +39,15 @@ internal class GameMatrices(private val data: GameSetup, viewPort: View) : Matri
         val cameraZ = height*projection.yScale/2f
         worldCamera.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
 
-        data.projectionMatrixConfiguration(projection, view)
+        projectionConfiguration(projection, view)
 
-        pixelScale = calculatePixelSize(projection, worldCamera, Game.window.height)
+        pixelScale = calculatePixelSize(projection, worldCamera, window.height)
     }
 
     fun setUiView(height: Double) {
         val cameraZ = height*projection.yScale/(2f)
         uiCamera.setTranslation(0f, 0f, -cameraZ.toFloat())
-        pixelUIScale = calculatePixelSize(projection, uiCamera, Game.window.height)
+        pixelUIScale = calculatePixelSize(projection, uiCamera, window.height)
     }
 
     fun updateMatrices() {

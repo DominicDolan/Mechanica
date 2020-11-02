@@ -2,8 +2,8 @@ package com.mechanica.engine.game.view
 
 import com.mechanica.engine.display.Window
 
-class ResolutionConverter(var resolutionWidth: Int, var resolutionHeight: Int,
-                          var cameraWidth: Double? = null, var cameraHeight: Double? = null) {
+class ResolutionToCameraConverter(var resolutionWidth: Int, var resolutionHeight: Int,
+                                  var cameraWidth: Double? = null, var cameraHeight: Double? = null) {
 
 
     var cameraWidthOut: Double = 1.0
