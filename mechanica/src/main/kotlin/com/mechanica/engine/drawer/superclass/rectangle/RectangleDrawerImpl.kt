@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
@@ -8,7 +9,8 @@ import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 
 internal class RectangleDrawerImpl(
-        private val state: DrawState) : RectangleDrawer {
+        private val state: DrawState,
+        private val renderer: DrawerRenderer) : RectangleDrawer {
 
     private val model: Model
 
@@ -31,9 +33,10 @@ internal class RectangleDrawerImpl(
     }
 
     private fun drawRectangle() {
-        state.cornerSize.x = state.transformation.scale.x.toDouble()
-        state.cornerSize.y = state.transformation.scale.y.toDouble()
-        state.draw(model)
+        val scale = state.transformation.scale.variable
+        state.shader.cornerSize.set(scale.x.toDouble(), scale.y.toDouble())
+        state.setModel(model)
+        renderer.render(state, 0f, 0f, false)
     }
 
 }

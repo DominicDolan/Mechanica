@@ -38,13 +38,13 @@ class PathDrawerImpl(private val state: DrawState): PathDrawer {
         line[1].y = y2.toDouble()
         renderer.fillFloats(line, 2)
         draw()
-        state.rewind()
+        state.reset()
     }
 
     private fun draw() {
         val matrix = state.transformation.getTransformationMatrix()
-        renderer.color = state.fillColor
-        renderer.stroke = state.strokeWidth.toFloat()
+        renderer.color = state.color.fill
+        renderer.stroke = state.shader.strokeWidth.value.toFloat()
         renderer.render(matrix)
     }
 }

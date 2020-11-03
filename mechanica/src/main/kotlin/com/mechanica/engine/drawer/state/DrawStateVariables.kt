@@ -1,12 +1,13 @@
 package com.mechanica.engine.drawer.state
 
+import com.mechanica.engine.color.Color
+import com.mechanica.engine.color.DynamicColor
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.util.extensions.fori
-import org.joml.Matrix4f
 import org.joml.Vector3f
-import kotlin.math.tan
+
 
 class DrawStateVariableList {
     private val list = ArrayList<Resettable?>()
@@ -29,6 +30,18 @@ class DrawStateVariableList {
         return newVariable
     }
 
+    fun addColor(color: DynamicColor = DynamicColor.create(), resetColor: Color? = null): ColorVariable {
+        val newVariable = ColorVariable(this, color, list.size, resetColor)
+        list.add(newVariable)
+        return newVariable
+    }
+
+    fun <T> addVariable(variable: T, resetter: GenericVariable<T>.(T) -> Unit): GenericVariable<T> {
+        val newVariable = GenericVariable(this, variable, list.size, resetter)
+        list.add(newVariable)
+        return newVariable
+    }
+
     fun addDouble(value: Double): DrawStateDouble {
         val newVariable = DrawStateDouble(value, list.size)
         list.add(newVariable)
@@ -43,6 +56,11 @@ class DrawStateVariableList {
         }
         list.add(newVariable)
         return newVariable
+    }
+
+    fun <T : Resettable> add(resetter: T): T {
+        list.add(resetter)
+        return resetter
     }
 
     fun readMode() {
@@ -95,7 +113,7 @@ interface Resettable {
 
 abstract class DrawStateVariable<T>(
         protected val list: DrawStateVariableList,
-        val variable: T,
+        open val variable: T,
         val index: Int) : Resettable {
 
     var wasChanged = true
@@ -113,76 +131,6 @@ abstract class DrawStateVariable<T>(
 
 }
 
-class TransformationState(private val origin: OriginState) : Resettable {
-    private val list = DrawStateVariableList()
-    private val matrix = list.add(Matrix4f().identity()) { it.identity() }
-    var userMatrix: Matrix4f? = null
-
-    val translation = list.addVector3(0f)
-    val scale = list.addVector3(1f)
-
-    private val zAxis = Vector3f(0f, 0f, 1f)
-    var rotation = list.addDouble(0.0)
-
-    private val skewMatrix = Matrix4f().identity()
-    val skew = list.addVector2(0.0)
-
-    fun getTransformationMatrix(): Matrix4f {
-        val matrix = matrix.variable
-        matrix.translate(translation.variable)
-
-        if (rotation.wasChanged)
-            matrix.rotate(rotation.value.toFloat(), zAxis)
-
-        addSkewToMatrix(matrix)
-        addOriginToMatrix(matrix)
-
-        matrix.scale(scale.variable)
-
-        userMatrix?.let { matrix.mul(it) }
-        userMatrix = null
-        return matrix
-    }
-
-    private fun addSkewToMatrix(matrix: Matrix4f) {
-        if (skew.wasChanged) {
-            skewMatrix.m10(tan(-skew.x.toFloat()))
-            skewMatrix.m01(tan(skew.y.toFloat()))
-
-            matrix.mul(skewMatrix)
-        }
-    }
-
-    private fun addOriginToMatrix(matrix: Matrix4f) {
-        if (origin.wasChanged) {
-            val pivotX = origin.normalized.x.toFloat()*scale.x + origin.relative.x.toFloat()
-            val pivotY = origin.normalized.y.toFloat()*scale.y + origin.relative.y.toFloat()
-            matrix.translate(-pivotX, -pivotY, 0f)
-        }
-    }
-
-    fun setDepth(z: Float) {
-        translation.set(z = translation.z-z)
-    }
-
-    override fun reset() {
-        list.reset()
-    }
-}
-
-class OriginState : Resettable {
-    private val list = DrawStateVariableList()
-
-    val normalized = list.addVector2()
-    val relative = list.addVector2()
-
-    val wasChanged: Boolean
-        get() = normalized.wasChanged || relative.wasChanged
-
-    override fun reset() {
-        list.reset()
-    }
-}
 
 class Vector3Variable(list: DrawStateVariableList, index: Int, private val resetValue: Float = 0f)
     : DrawStateVariable<Vector3f>(list, Vector3f(), index) {
@@ -220,35 +168,67 @@ class Vector3Variable(list: DrawStateVariableList, index: Int, private val reset
 }
 
 class Vector2Variable(list: DrawStateVariableList, vector: DynamicVector, index: Int, private val resetValue: Double = 0.0)
-    : DrawStateVariable<DynamicVector>(list, vector, index) {
+    : DrawStateVariable<DynamicVector>(list, vector, index), DynamicVector {
 
-    var x: Double
+    override var x: Double
         get() = variable.x
         set(value) = set(value, y)
-    var y: Double
+    override var y: Double
         get() = variable.y
         set(value) = set(x, value)
-
-    constructor(list: DrawStateVariableList, index: Int, resetValue: Double = 0.0)
-        : this(list, DynamicVector.create(), index, resetValue)
 
     override fun reset() {
         markReset()
         variable.set(resetValue)
     }
 
-    fun set(x: Number = this.x, y: Number = this.y) {
+    override fun set(x: Double, y: Double) {
         markChanged()
-        variable.set(x.toDouble(), y.toDouble())
+        variable.set(x, y)
     }
 
-    fun set(xy: Vector) {
-        markChanged()
-        variable.set(xy)
+}
+
+class ColorVariable(list: DrawStateVariableList, color: DynamicColor, index: Int, private val resetColor: Color? = null)
+    : DrawStateVariable<DynamicColor>(list, color, index), DynamicColor {
+
+    override var r: Double
+        get() = variable.r
+        set(value) = set(red = value)
+    override var g: Double
+        get() = variable.g
+        set(value) = set(green = value)
+    override var b: Double
+        get() = variable.b
+        set(value) = set(blue = value)
+    override var a: Double
+        get() = variable.a
+        set(value) = set(alpha = value)
+
+    override fun reset() {
+        markReset()
+        resetColor?.let { set(it) }
     }
 
-    fun set(xy: InlineVector) {
+    override fun set(red: Double, green: Double, blue: Double, alpha: Double) {
         markChanged()
-        variable.set(xy)
+        variable.set(red, green, blue, alpha)
     }
+
+}
+
+class GenericVariable<T>(list: DrawStateVariableList, variable: T, index: Int, private val resetter: GenericVariable<T>.(T) -> Unit)
+    : DrawStateVariable<T>(list, variable, index) {
+
+    override var variable: T = variable
+        set(value) {
+            field = value
+            markChanged()
+        }
+
+    override fun reset() {
+        resetter(this, variable)
+        markReset()
+    }
+
 }

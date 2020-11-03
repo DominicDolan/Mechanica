@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.superclass.circle
 
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
@@ -9,7 +10,8 @@ import org.lwjgl.opengl.GL20
 import kotlin.math.min
 
 class CircleDrawerImpl(
-        private val state: DrawState): CircleDrawer {
+        private val state: DrawState,
+        private val renderer: DrawerRenderer): CircleDrawer {
 
     private val model: Model
 
@@ -25,28 +27,31 @@ class CircleDrawerImpl(
     }
 
     private fun drawCircle() {
-        val radius = if (state.radius > 0.0) state.radius
+        val radiusState = state.shader.radius
+        val radius = if (radiusState.wasChanged) radiusState.value
         else {
-            state.radius = 0.5f
-            0.5f
+            radiusState.value = 0.5
+            0.5
         }
 
         val diameter = radius*2.0
 
         state.setScale(diameter.toFloat(), diameter.toFloat())
-        state.cornerSize.set(diameter, diameter)
+        state.shader.cornerSize.set(diameter, diameter)
 
         val origin = state.origin.normalized
         if (!origin.wasChanged) {
             origin.set(0.5, 0.5)
         }
 
-        state.draw(model)
+        state.shader.model.variable = model
+
+        renderer.render(state, 0f, 0f, false)
     }
 
     override fun circle(x: Number, y: Number, radius: Number) {
         if (radius.toFloat() > 0.0) {
-            state.radius = radius.toFloat()
+            state.shader.radius.value = radius.toDouble()
         }
         state.setTranslate(x.toFloat(), y.toFloat())
         drawCircle()
@@ -57,9 +62,10 @@ class CircleDrawerImpl(
 
         val minorAxis = min(width.toDouble(), height.toDouble())
         state.setScale(width.toFloat(), height.toFloat())
-        state.radius = (minorAxis/2f).toFloat()
-        state.cornerSize.set(minorAxis, minorAxis)
+        state.shader.radius.value = (minorAxis/2.0)
+        state.shader.cornerSize.set(minorAxis, minorAxis)
 
-        state.draw(model)
+        state.shader.model.variable = model
+        renderer.render(state, 0f, 0f, false)
     }
 }

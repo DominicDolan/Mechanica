@@ -5,7 +5,7 @@ import com.mechanica.engine.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 
 class Style {
-    val color: DynamicColor = DynamicColor(1.0, 1.0, 1.0, 0.0)
+    val color: DynamicColor = DynamicColor.rgba(1.0, 1.0, 1.0, 0.0)
 
     var isVisible: Boolean = true
 
@@ -18,7 +18,7 @@ class Style {
     }
 
     class TextFormat {
-        val color: DynamicColor = DynamicColor(0.7, 0.7, 0.7, 1.0)
+        val color: DynamicColor = DynamicColor.rgba(0.7, 0.7, 0.7, 1.0)
 
         var size: Double = 1.0
 

@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.superclass.text
 
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.TextModel
@@ -8,7 +9,8 @@ import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 
 class TextDrawerImpl(
-        private val state: DrawState) : TextDrawer {
+        private val state: DrawState,
+        private val renderer: DrawerRenderer) : TextDrawer {
 
     override fun text(text: String) {
         val model = state.stringHolderModel
@@ -23,11 +25,7 @@ class TextDrawerImpl(
     }
 
     private fun drawText(model: TextModel) {
-        state.blend = 0f
-        state.alphaBlend = 1f
-        state.colorPassthrough = true
-
-        if (!state.viewMatrixWasSet) state.viewMatrix = Game.matrices.uiCamera
+        if (!state.viewMatrix.wasChanged) state.viewMatrix.variable = Game.matrices.uiCamera
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)
@@ -40,7 +38,9 @@ class TextDrawerImpl(
         val oY = origin.y
 
         origin.set(oX*width, oY*height - bottomRight.y)
-        state.draw(model)
+
+        state.setModel(model)
+        renderer.render(state, 0f, 1f, true)
     }
 
 

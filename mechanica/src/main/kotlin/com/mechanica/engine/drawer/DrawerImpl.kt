@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer
 
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
@@ -29,11 +30,12 @@ import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL11
 
-class DrawerImpl(private val state: DrawState) :
-        RectangleDrawer by RectangleDrawerImpl(state),
-        CircleDrawer by CircleDrawerImpl(state),
-        ImageDrawer by ImageDrawerImpl(state),
-        TextDrawer by TextDrawerImpl(state),
+class DrawerImpl(private val state: DrawState,
+                 private val renderer: DrawerRenderer) :
+        RectangleDrawer by RectangleDrawerImpl(state, renderer),
+        CircleDrawer by CircleDrawerImpl(state, renderer),
+        ImageDrawer by ImageDrawerImpl(state, renderer),
+        TextDrawer by TextDrawerImpl(state, renderer),
         PathDrawer by PathDrawerImpl(state),
         Drawer
 {
@@ -70,22 +72,22 @@ class DrawerImpl(private val state: DrawState) :
 
     override val ui: Drawer
         get() {
-            state.viewMatrix = Game.matrices.uiCamera
+            state.viewMatrix.variable = Game.matrices.uiCamera
             return this
         }
     override val world: Drawer
         get() {
-            state.viewMatrix = Game.matrices.worldCamera
+            state.viewMatrix.variable = Game.matrices.worldCamera
             return this
         }
 
     override fun radius(r: Number): Drawer {
-        state.radius = r.toFloat()
+        state.setRadius(r)
         return this
     }
 
     override fun depth(z: Number): Drawer {
-        state.transformation.setDepth(z.toFloat())
+        state.setDepth(z.toFloat())
         return this
     }
 
@@ -96,18 +98,22 @@ class DrawerImpl(private val state: DrawState) :
     }
 
     override fun polygon(polygon: PolygonModel) {
-        state.colorPassthrough = true
-        state.draw(polygon)
+        state.setModel(polygon)
+        renderer.render(state, 0f, 0f, true)
     }
 
     override fun model(model: Model, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
-        state.blend = blend
-        state.alphaBlend = alphaBlend
-        state.colorPassthrough = colorPassthrough
-        state.draw(model)
+        state.setModel(model)
+        renderer.render(state, blend, alphaBlend, colorPassthrough)
     }
 
     override fun shader(shader: DrawerShader, model: Model?) {
-        state.draw(model ?: this.model, shader)
+        shader.render(
+                model ?: state.shader.model.variable,
+                state.transformation.getTransformationMatrix(),
+                state.projectionMatrix.variable,
+                state.viewMatrix.variable
+        )
+        state.reset()
     }
 }

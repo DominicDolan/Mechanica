@@ -7,15 +7,15 @@ import com.mechanica.engine.drawer.state.DrawState
 
 class StrokeDrawerImpl(drawer: Drawer, private val state: DrawState) : StrokeDrawer, Drawer by drawer {
     override operator fun invoke(stroke: Double): Drawer {
-        state.strokeWidth = stroke
+        state.setStrokeWidth(stroke)
         return this
     }
 
     override fun strokeColor(color: Color) {
-        state.strokeColor.set(color)
+        state.setStrokeColor(color)
     }
 
     override fun strokeColor(color: InlineColor) {
-        state.strokeColor.set(color)
+        state.setStrokeColor(color)
     }
 }

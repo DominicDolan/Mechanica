@@ -4,7 +4,7 @@ interface DynamicVector : Vector {
     override var x: Double
     override var y: Double
 
-    fun set(x: Double, y: Double) {
+    fun set(x: Double = this.x, y: Double = this.y) {
         this.x = x
         this.y = y
     }

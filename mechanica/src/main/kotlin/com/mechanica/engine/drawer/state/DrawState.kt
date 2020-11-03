@@ -1,69 +1,31 @@
 package com.mechanica.engine.drawer.state
 
-import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.drawer.shader.DrawerRenderer
-import com.mechanica.engine.drawer.shader.DrawerShader
+import com.mechanica.engine.color.Color
+import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.TextModel
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
-import org.joml.Matrix4f
 
-class DrawState {
-    var viewMatrixWasSet = false
-        private set
-    var viewMatrix: Matrix4f = Game.matrices.worldCamera
-        set(value) {
-            viewMatrixWasSet = true
-            field = value
-        }
-    private var projectionMatrix: Matrix4f = Game.matrices.projection
+abstract class AbstractDrawState : Resettable {
+    protected val list = DrawStateVariableList()
 
-    private val renderer = DrawerRenderer()
+    override fun reset() {
+        list.reset()
+    }
+}
 
-    val origin = OriginState()
-    val transformation = TransformationState(origin)
+class DrawState : AbstractDrawState() {
 
-    var strokeWidth: Double = 0.0
-        set(value) {
-            field = value
-            renderer.strokeWidth = value
-        }
+    val viewMatrix = list.addVariable(Game.matrices.worldCamera) { variable = Game.matrices.worldCamera}
 
-    var strokeColorWasSet = false
-    val strokeColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
-        get() {
-            strokeColorWasSet = true
-            return field
-        }
+    val projectionMatrix = list.addVariable(Game.matrices.projection) { variable = Game.matrices.projection }
 
-    var fillColorWasSet = false
-    val fillColor = DynamicColor(0.0, 0.0, 0.0, 1.0)
-        get() {
-            fillColorWasSet = true
-            return field
-        }
-
-    var radius: Float = 0f
-
-    var blend: Float
-        get() = renderer.blend
-        set(value) { renderer.blend = value}
-
-    var alphaBlend: Float
-        get() = renderer.alphaBlend
-        set(value) { renderer.alphaBlend = value}
-
-    var colorPassthrough: Boolean
-        get() = renderer.colorPassthrough
-        set(value) { renderer.colorPassthrough = value}
+    val origin: OriginState = list.add(OriginState())
+    val transformation: TransformationState = list.add(TransformationState(origin))
+    val color: ColorState = list.add(ColorState())
+    val shader: ShaderState = list.add(ShaderState())
 
     var noReset = false
-
-    val cornerSize: DynamicVector
-        get() = renderer.size
 
     val stringHolderModel: TextModel = TextModel("")
     val textHolderModel: TextModel = TextModel("")
@@ -92,72 +54,36 @@ class DrawState {
         translation.set(translation.x, translation.y, translation.z-z)
     }
 
-    fun draw(model: Model, shader: DrawerShader = renderer.shader) {
-        shader.fragment.color.set(fillColor)
-        shader.fragment.radius.value = radius
-
-        val matrix = transformation.getTransformationMatrix()
-
-        shader.render(model, matrix, projectionMatrix, viewMatrix)
-
-        if (!noReset) {
-            rewind()
-        }
+    fun setRadius(radius: Number) {
+        shader.radius.value = radius.toDouble()
     }
 
-    fun rewind() {
-        transformation.reset()
-        origin.reset()
-
-        fillColor.a = 1.0
-
-        radius = 0f
-        noReset = false
-
-        viewMatrix = Game.matrices.worldCamera
-        viewMatrixWasSet = false
-        projectionMatrix = Game.matrices.projection
-
-        strokeColorWasSet = false
-        fillColorWasSet = false
-
-        renderer.rewind()
+    fun setModel(model: Model) {
+        shader.model.variable = model
     }
 
-    inner class OriginVector : Vector {
-        var wasSet: Boolean = true
-        override var x: Double = 0.0
-            set(value) {
-                field = value
-                wasSet = true
-            }
-        override var y: Double = 0.0
-            set(value) {
-                field = value
-                wasSet = true
-            }
-
-        fun set(x: Double, y: Double) {
-            this.x = x
-            this.y = y
-        }
-
-        fun set(vector: Vector) {
-            this.x = vector.x
-            this.y = vector.y
-        }
-
-        fun set(vector: InlineVector) {
-            this.x = vector.x
-            this.y = vector.y
-        }
-
-        fun reset() {
-            x = 0.0
-            y = 0.0
-            wasSet = false
-        }
-
+    fun setFillColor(color: Color) {
+        this.color.fill.set(color)
     }
 
+    fun setFillColor(color: InlineColor) {
+        this.color.fill.set(color)
+    }
+
+
+    fun setStrokeColor(color: Color) {
+        this.color.fill.set(color)
+    }
+
+    fun setStrokeColor(color: InlineColor) {
+        this.color.fill.set(color)
+    }
+
+    fun setStrokeWidth(width: Number) {
+        shader.strokeWidth.value = width.toDouble()
+    }
+
+    override fun reset() {
+        if (!noReset) super.reset()
+    }
 }

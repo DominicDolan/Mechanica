@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.superclass.image
 
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.ImageModel
@@ -7,7 +8,8 @@ import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.vertices.AttributeArray
 
 class ImageDrawerImpl(
-        private val state: DrawState) : ImageDrawer {
+        private val state: DrawState,
+        private val renderer: DrawerRenderer) : ImageDrawer {
 
     private val model: ImageModel
 
@@ -30,25 +32,16 @@ class ImageDrawerImpl(
 
     private fun setImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         model.image = image
+        state.setModel(model)
 
         state.setTranslate(x.toFloat(), y.toFloat())
         state.setScale(width.toFloat(), height.toFloat())
 
-        state.cornerSize.x = width.toDouble()
-        state.cornerSize.y = height.toDouble()
-
+        state.shader.cornerSize.set(width.toDouble(), height.toDouble())
     }
 
     private fun drawImage(blend: Float, colorPassthrough: Boolean) {
-        state.blend = blend
-        state.alphaBlend = 1f
-        state.colorPassthrough = colorPassthrough
-
-        state.draw(model)
-
-        state.blend = 0f
-        state.alphaBlend = 0f
-        state.colorPassthrough = false
+        renderer.render(state, blend, 1f, colorPassthrough)
     }
 
 }

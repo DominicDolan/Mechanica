@@ -1,6 +1,7 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
@@ -102,9 +103,10 @@ interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathD
     
     companion object {
         fun create(): Drawer {
-            val data = DrawState()
+            val state = DrawState()
+            val renderer = DrawerRenderer()
 
-            return DrawerImpl(data)
+            return DrawerImpl(state, renderer)
         }
     }
 }

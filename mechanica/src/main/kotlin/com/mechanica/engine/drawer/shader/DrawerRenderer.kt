@@ -2,6 +2,7 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.unit.vector.DynamicVector
 import org.joml.Matrix4f
@@ -118,6 +119,24 @@ class DrawerRenderer {
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
         shader.render(model, transformation, projection, view)
     }
+
+    fun render(state: DrawState, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
+        fragment.blend.value = blend
+        fragment.alphaBlend.value = alphaBlend
+        fragment.colorPassthrough.value = if (colorPassthrough) 1f else 0f
+
+        fragment.radius.value = state.shader.radius.value.toFloat()
+        fragment.size.set(state.shader.cornerSize)
+
+        state.color.assignColorsToFragment(fragment)
+
+        val transformation = state.transformation.getTransformationMatrix()
+        shader.render(state.shader.model.variable, transformation, state.projectionMatrix.variable, state.viewMatrix.variable)
+
+        state.reset()
+    }
+
+
 
     fun rewind() {
         colorPassthrough = false

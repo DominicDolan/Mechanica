@@ -5,17 +5,17 @@ import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.state.DrawState
 
-internal class ColorDrawerImpl(drawer: Drawer, private val state: DrawState): ColorDrawer, Color by state.fillColor, Drawer by drawer {
+internal class ColorDrawerImpl(drawer: Drawer, private val state: DrawState): ColorDrawer, Color by state.color.fill, Drawer by drawer {
 
-    override fun get() = state.fillColor
+    override fun get() = state.color.fill
 
     override fun invoke(color: Color): ColorDrawer {
-        state.fillColor.set(color)
+        state.setFillColor(color)
         return this
     }
 
     override fun invoke(color: InlineColor): ColorDrawer {
-        state.fillColor.set(color)
+        state.setFillColor(color)
         return this
     }
 
@@ -31,17 +31,17 @@ internal class ColorDrawerImpl(drawer: Drawer, private val state: DrawState): Co
 
     override fun strokeColor(color: Color, strokeWidth: Double): ColorDrawer {
         if (strokeWidth >= 0.0) {
-            state.strokeWidth = strokeWidth
+            state.setStrokeWidth(strokeWidth)
         }
-        state.strokeColor.set(color)
+        state.setStrokeColor(color)
         return this
     }
 
     override fun strokeColor(color: InlineColor, strokeWidth: Double): ColorDrawer {
         if (strokeWidth >= 0.0) {
-            state.strokeWidth = strokeWidth
+            state.setStrokeWidth(strokeWidth)
         }
-        state.strokeColor.set(color)
+        state.setStrokeColor(color)
         return this
     }
 }

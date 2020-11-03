@@ -46,7 +46,7 @@ fun main() {
         ScreenLog { "Radius: $radius" }
 
         draw.red.radius(radius).circle()
-        draw.black.alpha(0.5).rotated(rotation).about(0.5, 0.5).rectangle(-2, -2, 2 , 4)
+        draw.black.alpha(0.5).rotated(rotation).about(1, 2).rectangle(-2, -2, 2 , 4)
         draw.radius(0.2).blue.rectangle(0, -1, 2.0, 1.0)
         draw.depth(radius*2).radius(0.2).image(image, 3, 3)
         draw.radius(0.2).image(image, 3, 3)

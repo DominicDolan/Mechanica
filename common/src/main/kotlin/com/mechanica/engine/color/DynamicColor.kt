@@ -1,12 +1,14 @@
 package com.mechanica.engine.color
 
-class DynamicColor(
-        override var r: Double,
-        override var g: Double,
-        override var b: Double,
-        override var a: Double) : Color {
+import com.mechanica.engine.unit.angle.Degree
 
-    fun set(red: Double, green: Double, blue: Double, alpha: Double = 1.0) {
+interface DynamicColor : Color {
+    override var r: Double
+    override var g: Double
+    override var b: Double
+    override var a: Double
+
+    fun set(red: Double = this.r, green: Double = this.g, blue: Double = this.b, alpha: Double = this.a) {
         r = red
         g = green
         b = blue
@@ -31,5 +33,26 @@ class DynamicColor(
 
     override fun toLong(): Long {
         return rgba2Hex(r, g, b, a)
+    }
+
+    companion object {
+        fun rgba(r: Double, g: Double, b: Double, a: Double): DynamicColor {
+            return object : DynamicColor {
+                override var r: Double = r
+                override var g: Double = g
+                override var b: Double = b
+                override var a: Double = a
+
+            }
+        }
+
+        fun from(color: Color) = rgba(color.r, color.g, color.b, color.a)
+        fun from(color: InlineColor) = rgba(color.r, color.g, color.b, color.a)
+
+        fun create() = rgba(1.0, 1.0, 1.0, 1.0)
+
+        fun hex(hex: Long): DynamicColor = from(com.mechanica.engine.color.hex(hex))
+        fun hsl(hue: Degree, saturation: Double, lightness: Double, alpha: Double = 1.0): DynamicColor
+                = from(com.mechanica.engine.color.hsl(hue, saturation, lightness, alpha))
     }
 }
