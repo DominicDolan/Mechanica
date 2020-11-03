@@ -1,4 +1,4 @@
-package com.mechanica.engine.drawer
+package com.mechanica.engine.drawer.state
 
 import com.mechanica.engine.color.DynamicColor
 import com.mechanica.engine.drawer.shader.DrawerRenderer
@@ -10,11 +10,8 @@ import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import org.joml.Matrix4f
-import org.joml.Vector3f
-import kotlin.math.tan
 
-class DrawData {
-
+class DrawState {
     var viewMatrixWasSet = false
         private set
     var viewMatrix: Matrix4f = Game.matrices.worldCamera
@@ -25,27 +22,9 @@ class DrawData {
     private var projectionMatrix: Matrix4f = Game.matrices.projection
 
     private val renderer = DrawerRenderer()
-    private val defaultTransformation = Matrix4f().identity()
-    private val spareTransformation = Matrix4f().identity()
-    var transformation: Matrix4f? = null
 
-    private val translation: Vector3f = Vector3f()
-    private val pivot: Vector3f = Vector3f()
-    private val scale: Vector3f = Vector3f(1f, 1f, 1f)
-    private val zAxis = Vector3f(0f, 0f, 1f)
-    private var rx = 0f
-    private var ry = 0f
-    private var rz = 0f
-
-    private var skewX = 0f
-    private var skewY = 0f
-
-    val scaleX get() = scale.x
-    val scaleY get() = scale.y
-
-    private val translateX get() = translation.x
-    private val translateY get() = translation.y
-    private val translateZ get() = translation.z
+    val origin = OriginState()
+    val transformation = TransformationState(origin)
 
     var strokeWidth: Double = 0.0
         set(value) {
@@ -66,9 +45,6 @@ class DrawData {
             fillColorWasSet = true
             return field
         }
-
-    val normalizedOrigin = OriginVector()
-    val relativeOrigin = OriginVector()
 
     var radius: Float = 0f
 
@@ -93,78 +69,47 @@ class DrawData {
     val textHolderModel: TextModel = TextModel("")
 
     fun setTranslate(x: Float, y: Float) {
-        translation.set(translation.x + x, translation.y + y, translateZ)
+        val translation = transformation.translation
+        translation.set(translation.x + x, translation.y + y)
     }
 
-    fun setRotate(angle: Float) {
-        rz += angle
+    fun setRotate(angle: Double) {
+        transformation.rotation.value += angle
     }
 
     fun setScale(x: Float, y: Float) {
+        val scale = transformation.scale
         scale.set(scale.x*x, scale.y*y, 0f)
     }
 
     fun setSkew(x: Float, y: Float) {
-        skewX = x
-        skewY = y
+        val skew = transformation.skew
+        skew.set(skew.x + x, skew.y + y)
     }
 
     fun setDepth(z: Float) {
-        translation.set(translateX, translateY, translation.z-z)
-    }
-
-    fun getTransformationMatrix(matrix: Matrix4f): Matrix4f {
-        matrix.translate(translation)
-
-        if (rz != 0f)
-            matrix.rotate(rz, zAxis)
-
-        addSkewToMatrix(matrix)
-        addModelOriginToMatrix(matrix)
-
-        matrix.scale(scale)
-        pivot.set(0f, 0f, 0f)
-        return matrix
+        val translation = transformation.translation
+        translation.set(translation.x, translation.y, translation.z-z)
     }
 
     fun draw(model: Model, shader: DrawerShader = renderer.shader) {
         shader.fragment.color.set(fillColor)
         shader.fragment.radius.value = radius
 
-        getTransformationMatrix(defaultTransformation)
-        transformation?.let { defaultTransformation.mul(it) }
+        val matrix = transformation.getTransformationMatrix()
 
-        shader.render(model, defaultTransformation, projectionMatrix, viewMatrix)
+        shader.render(model, matrix, projectionMatrix, viewMatrix)
 
         if (!noReset) {
             rewind()
         }
     }
 
-    private fun addModelOriginToMatrix(matrix: Matrix4f) {
-        if (normalizedOrigin.wasSet || relativeOrigin.wasSet) {
-            val pivotX = normalizedOrigin.x.toFloat()*scale.x + relativeOrigin.x.toFloat()
-            val pivotY = normalizedOrigin.y.toFloat()*scale.y + relativeOrigin.y.toFloat()
-            matrix.translate(-pivotX, -pivotY, 0f)
-        }
-    }
-
-    private fun addSkewToMatrix(matrix: Matrix4f) {
-        if (skewX != 0f || skewY != 0f) {
-            spareTransformation.m10(tan(-skewX))
-            spareTransformation.m01(tan(skewY))
-
-            matrix.mul(spareTransformation)
-        }
-    }
-
     fun rewind() {
-        rz = 0f
+        transformation.reset()
+        origin.reset()
+
         fillColor.a = 1.0
-        translation.set(0f, 0f, 0f)
-        scale.set(1f, 1f, 1f)
-        skewX = 0f
-        skewY = 0f
 
         radius = 0f
         noReset = false
@@ -176,11 +121,7 @@ class DrawData {
         strokeColorWasSet = false
         fillColorWasSet = false
 
-        defaultTransformation.identity()
-        transformation = null
         renderer.rewind()
-        normalizedOrigin.reset()
-        relativeOrigin.reset()
     }
 
     inner class OriginVector : Vector {

@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.text
 
-import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.text.Text
@@ -8,26 +8,26 @@ import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
 
 class TextDrawerImpl(
-        private val data: DrawData) : TextDrawer {
+        private val state: DrawState) : TextDrawer {
 
     override fun text(text: String) {
-        val model = data.stringHolderModel
+        val model = state.stringHolderModel
         model.string = text
         drawText(model)
     }
 
     override fun text(text: Text) {
-        val model = data.textHolderModel
+        val model = state.textHolderModel
         model.setText(text)
         drawText(model)
     }
 
     private fun drawText(model: TextModel) {
-        data.blend = 0f
-        data.alphaBlend = 1f
-        data.colorPassthrough = true
+        state.blend = 0f
+        state.alphaBlend = 1f
+        state.colorPassthrough = true
 
-        if (!data.viewMatrixWasSet) data.viewMatrix = Game.matrices.uiCamera
+        if (!state.viewMatrixWasSet) state.viewMatrix = Game.matrices.uiCamera
 
         val topLeft = vec(0.0, -1.0)
         val bottomRight = bottomRight(model)
@@ -35,12 +35,12 @@ class TextDrawerImpl(
         val height = bottomRight.y - topLeft.y
         val width = bottomRight.x - topLeft.x
 
-        val origin = data.normalizedOrigin
+        val origin = state.origin.normalized
         val oX = origin.x
         val oY = origin.y
 
         origin.set(oX*width, oY*height - bottomRight.y)
-        data.draw(model)
+        state.draw(model)
     }
 
 
@@ -55,8 +55,8 @@ class TextDrawerImpl(
     }
 
     private fun positionAndScale(size: Number, x: Number, y: Number) {
-        data.setTranslate(x.toFloat(), y.toFloat())
-        data.setScale(size.toFloat(), size.toFloat())
+        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setScale(size.toFloat(), size.toFloat())
     }
 
     private fun bottomRight(model: TextModel): InlineVector {

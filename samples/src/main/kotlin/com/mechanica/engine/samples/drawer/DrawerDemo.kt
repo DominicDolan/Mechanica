@@ -16,6 +16,7 @@ import com.mechanica.engine.utils.loadImage
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
+        setFullscreen(false)
         configureDebugMode { screenLog = true }
     }
 

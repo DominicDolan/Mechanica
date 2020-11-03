@@ -1,13 +1,13 @@
 package com.mechanica.engine.drawer.superclass.image
 
-import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.ImageModel
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.vertices.AttributeArray
 
 class ImageDrawerImpl(
-        private val data: DrawData) : ImageDrawer {
+        private val state: DrawState) : ImageDrawer {
 
     private val model: ImageModel
 
@@ -31,24 +31,24 @@ class ImageDrawerImpl(
     private fun setImage(image: Image, x: Number, y: Number, width: Number, height: Number) {
         model.image = image
 
-        data.setTranslate(x.toFloat(), y.toFloat())
-        data.setScale(width.toFloat(), height.toFloat())
+        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setScale(width.toFloat(), height.toFloat())
 
-        data.cornerSize.x = width.toDouble()
-        data.cornerSize.y = height.toDouble()
+        state.cornerSize.x = width.toDouble()
+        state.cornerSize.y = height.toDouble()
 
     }
 
     private fun drawImage(blend: Float, colorPassthrough: Boolean) {
-        data.blend = blend
-        data.alphaBlend = 1f
-        data.colorPassthrough = colorPassthrough
+        state.blend = blend
+        state.alphaBlend = 1f
+        state.colorPassthrough = colorPassthrough
 
-        data.draw(model)
+        state.draw(model)
 
-        data.blend = 0f
-        data.alphaBlend = 0f
-        data.colorPassthrough = false
+        state.blend = 0f
+        state.alphaBlend = 0f
+        state.colorPassthrough = false
     }
 
 }

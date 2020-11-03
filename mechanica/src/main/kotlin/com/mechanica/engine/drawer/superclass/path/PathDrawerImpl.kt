@@ -1,16 +1,14 @@
 package com.mechanica.engine.drawer.superclass.path
 
-import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.drawer.shader.PathRenderer
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
-import org.joml.Matrix4f
 
-class PathDrawerImpl(private val data: DrawData): PathDrawer {
+class PathDrawerImpl(private val state: DrawState): PathDrawer {
 
     private val renderer = PathRenderer()
-    private val transformation = Matrix4f().identity()
     private val line = ArrayList<DynamicVector>()
 
     init {
@@ -40,13 +38,13 @@ class PathDrawerImpl(private val data: DrawData): PathDrawer {
         line[1].y = y2.toDouble()
         renderer.fillFloats(line, 2)
         draw()
-        data.rewind()
+        state.rewind()
     }
 
     private fun draw() {
-        data.getTransformationMatrix(transformation)
-        renderer.color = data.fillColor
-        renderer.stroke = data.strokeWidth.toFloat()
-        renderer.render(transformation)
+        val matrix = state.transformation.getTransformationMatrix()
+        renderer.color = state.fillColor
+        renderer.stroke = state.strokeWidth.toFloat()
+        renderer.render(matrix)
     }
 }

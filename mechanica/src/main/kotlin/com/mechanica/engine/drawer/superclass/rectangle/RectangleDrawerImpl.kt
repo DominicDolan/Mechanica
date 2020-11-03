@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
-import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.qualifiers.Attribute
@@ -8,7 +8,7 @@ import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
 
 internal class RectangleDrawerImpl(
-        private val data: DrawData) : RectangleDrawer {
+        private val state: DrawState) : RectangleDrawer {
 
     private val model: Model
 
@@ -25,15 +25,15 @@ internal class RectangleDrawerImpl(
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
-        data.setTranslate(x.toFloat(), y.toFloat())
-        data.setScale(width.toFloat(), height.toFloat())
+        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setScale(width.toFloat(), height.toFloat())
         drawRectangle()
     }
 
     private fun drawRectangle() {
-        data.cornerSize.x = data.scaleX.toDouble()
-        data.cornerSize.y = data.scaleY.toDouble()
-        data.draw(model)
+        state.cornerSize.x = state.transformation.scale.x.toDouble()
+        state.cornerSize.y = state.transformation.scale.y.toDouble()
+        state.draw(model)
     }
 
 }

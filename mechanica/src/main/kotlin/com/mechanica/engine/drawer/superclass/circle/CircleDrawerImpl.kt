@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.circle
 
-import com.mechanica.engine.drawer.DrawData
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.qualifiers.Attribute
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL20
 import kotlin.math.min
 
 class CircleDrawerImpl(
-        private val data: DrawData): CircleDrawer {
+        private val state: DrawState): CircleDrawer {
 
     private val model: Model
 
@@ -25,41 +25,41 @@ class CircleDrawerImpl(
     }
 
     private fun drawCircle() {
-        val radius = if (data.radius > 0.0) data.radius
+        val radius = if (state.radius > 0.0) state.radius
         else {
-            data.radius = 0.5f
+            state.radius = 0.5f
             0.5f
         }
 
         val diameter = radius*2.0
 
-        data.setScale(diameter.toFloat(), diameter.toFloat())
-        data.cornerSize.set(diameter, diameter)
+        state.setScale(diameter.toFloat(), diameter.toFloat())
+        state.cornerSize.set(diameter, diameter)
 
-        val origin = data.normalizedOrigin
-        if (!origin.wasSet) {
+        val origin = state.origin.normalized
+        if (!origin.wasChanged) {
             origin.set(0.5, 0.5)
         }
 
-        data.draw(model)
+        state.draw(model)
     }
 
     override fun circle(x: Number, y: Number, radius: Number) {
         if (radius.toFloat() > 0.0) {
-            data.radius = radius.toFloat()
+            state.radius = radius.toFloat()
         }
-        data.setTranslate(x.toFloat(), y.toFloat())
+        state.setTranslate(x.toFloat(), y.toFloat())
         drawCircle()
     }
 
     override fun ellipse(x: Number, y: Number, width: Number, height: Number) {
-        data.setTranslate(x.toFloat(), y.toFloat())
+        state.setTranslate(x.toFloat(), y.toFloat())
 
         val minorAxis = min(width.toDouble(), height.toDouble())
-        data.setScale(width.toFloat(), height.toFloat())
-        data.radius = (minorAxis/2f).toFloat()
-        data.cornerSize.set(minorAxis, minorAxis)
+        state.setScale(width.toFloat(), height.toFloat())
+        state.radius = (minorAxis/2f).toFloat()
+        state.cornerSize.set(minorAxis, minorAxis)
 
-        data.draw(model)
+        state.draw(model)
     }
 }

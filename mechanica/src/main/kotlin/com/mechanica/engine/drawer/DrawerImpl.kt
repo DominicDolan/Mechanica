@@ -1,6 +1,7 @@
 package com.mechanica.engine.drawer
 
 import com.mechanica.engine.drawer.shader.DrawerShader
+import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawerImpl
 import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
@@ -28,12 +29,12 @@ import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.vertices.AttributeArray
 import org.lwjgl.opengl.GL11
 
-class DrawerImpl(private val data: DrawData) :
-        RectangleDrawer by RectangleDrawerImpl(data),
-        CircleDrawer by CircleDrawerImpl(data),
-        ImageDrawer by ImageDrawerImpl(data),
-        TextDrawer by TextDrawerImpl(data),
-        PathDrawer by PathDrawerImpl(data),
+class DrawerImpl(private val state: DrawState) :
+        RectangleDrawer by RectangleDrawerImpl(state),
+        CircleDrawer by CircleDrawerImpl(state),
+        ImageDrawer by ImageDrawerImpl(state),
+        TextDrawer by TextDrawerImpl(state),
+        PathDrawer by PathDrawerImpl(state),
         Drawer
 {
 
@@ -46,45 +47,45 @@ class DrawerImpl(private val data: DrawData) :
         model = Model(position, texCoords)
     }
 
-    private val colorDrawer = ColorDrawerImpl(this, data)
+    private val colorDrawer = ColorDrawerImpl(this, state)
     override val color: ColorDrawer
         get() = colorDrawer
 
-    private val strokeDrawer = StrokeDrawerImpl(this, data)
+    private val strokeDrawer = StrokeDrawerImpl(this, state)
     override val stroke: StrokeDrawer
         get() = strokeDrawer
 
-    private val rotatedDrawer = RotatedDrawerImpl(this, data)
+    private val rotatedDrawer = RotatedDrawerImpl(this, state)
     override val rotated: RotatedDrawer
         get() = rotatedDrawer
 
-    private val originDrawer = OriginDrawerImpl(this, data)
+    private val originDrawer = OriginDrawerImpl(this, state)
     override val origin: OriginDrawer
         get() = originDrawer
 
-    private val transformationDrawer = TransformationDrawerImpl(this, data)
+    private val transformationDrawer = TransformationDrawerImpl(this, state)
     override val transformed: TransformationDrawer
         get() = transformationDrawer
 
 
     override val ui: Drawer
         get() {
-            data.viewMatrix = Game.matrices.uiCamera
+            state.viewMatrix = Game.matrices.uiCamera
             return this
         }
     override val world: Drawer
         get() {
-            data.viewMatrix = Game.matrices.worldCamera
+            state.viewMatrix = Game.matrices.worldCamera
             return this
         }
 
     override fun radius(r: Number): Drawer {
-        data.radius = r.toFloat()
+        state.radius = r.toFloat()
         return this
     }
 
     override fun depth(z: Number): Drawer {
-        data.setDepth(z.toFloat())
+        state.transformation.setDepth(z.toFloat())
         return this
     }
 
@@ -95,18 +96,18 @@ class DrawerImpl(private val data: DrawData) :
     }
 
     override fun polygon(polygon: PolygonModel) {
-        data.colorPassthrough = true
-        data.draw(polygon)
+        state.colorPassthrough = true
+        state.draw(polygon)
     }
 
     override fun model(model: Model, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
-        data.blend = blend
-        data.alphaBlend = alphaBlend
-        data.colorPassthrough = colorPassthrough
-        data.draw(model)
+        state.blend = blend
+        state.alphaBlend = alphaBlend
+        state.colorPassthrough = colorPassthrough
+        state.draw(model)
     }
 
     override fun shader(shader: DrawerShader, model: Model?) {
-        data.draw(model ?: this.model, shader)
+        state.draw(model ?: this.model, shader)
     }
 }

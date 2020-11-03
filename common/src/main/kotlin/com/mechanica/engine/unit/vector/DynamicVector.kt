@@ -9,6 +9,8 @@ interface DynamicVector : Vector {
         this.y = y
     }
 
+    fun set(value: Double) = set(value, value)
+
     fun set(vector: Vector) = set(vector.x, vector.y)
     fun set(vector: InlineVector) = set(vector.x, vector.y)
 

@@ -1,17 +1,17 @@
 package com.mechanica.engine.drawer.subclasses.layout
 
-import com.mechanica.engine.drawer.DrawData
 import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.drawer.state.DrawState
 
-class OriginDrawerImpl(drawer: Drawer, private val data: DrawData) : OriginDrawer, Drawer by drawer {
+class OriginDrawerImpl(drawer: Drawer, private val state: DrawState) : OriginDrawer, Drawer by drawer {
 
     override fun normalized(x: Number, y: Number): Drawer {
-        data.normalizedOrigin.set(x.toDouble(), y.toDouble())
+        state.origin.normalized.set(x, y)
         return this
     }
 
     override fun relative(x: Number, y: Number): Drawer {
-        data.relativeOrigin.set(x.toDouble(), y.toDouble())
+        state.origin.relative.set(x.toDouble(), y.toDouble())
         return this
     }
 }
