@@ -10,13 +10,13 @@ import org.joml.Vector3f
 
 
 class DrawStateVariableList {
-    private val list = ArrayList<Resettable?>()
+    val elements = ArrayList<Resettable?>()
     var writeMode = true
         private set
 
     fun addVector3(resetValue: Float = 0f): Vector3Variable {
-        val newVariable = Vector3Variable(this, list.size, resetValue)
-        list.add(newVariable)
+        val newVariable = Vector3Variable(this, elements.size, resetValue)
+        elements.add(newVariable)
         return newVariable
     }
 
@@ -25,41 +25,41 @@ class DrawStateVariableList {
     }
 
     fun addVector2(vector: DynamicVector, resetValue: Double = 0.0): Vector2Variable {
-        val newVariable = Vector2Variable(this, vector, list.size, resetValue)
-        list.add(newVariable)
+        val newVariable = Vector2Variable(this, vector, elements.size, resetValue)
+        elements.add(newVariable)
         return newVariable
     }
 
     fun addColor(color: DynamicColor = DynamicColor.create(), resetColor: Color? = null): ColorVariable {
-        val newVariable = ColorVariable(this, color, list.size, resetColor)
-        list.add(newVariable)
+        val newVariable = ColorVariable(this, color, elements.size, resetColor)
+        elements.add(newVariable)
         return newVariable
     }
 
     fun <T> addVariable(variable: T, resetter: GenericVariable<T>.(T) -> Unit): GenericVariable<T> {
-        val newVariable = GenericVariable(this, variable, list.size, resetter)
-        list.add(newVariable)
+        val newVariable = GenericVariable(this, variable, elements.size, resetter)
+        elements.add(newVariable)
         return newVariable
     }
 
     fun addDouble(value: Double): DrawStateDouble {
-        val newVariable = DrawStateDouble(value, list.size)
-        list.add(newVariable)
+        val newVariable = DrawStateDouble(value, elements.size)
+        elements.add(newVariable)
         return newVariable
     }
 
     fun <T> add(variable: T, resetter: (T)->Unit): DrawStateVariable<T> {
-        val newVariable = object : DrawStateVariable<T>(this, variable, list.size) {
+        val newVariable = object : DrawStateVariable<T>(this, variable, elements.size) {
             override fun reset() {
                 resetter(this.variable)
             }
         }
-        list.add(newVariable)
+        elements.add(newVariable)
         return newVariable
     }
 
     fun <T : Resettable> add(resetter: T): T {
-        list.add(resetter)
+        elements.add(resetter)
         return resetter
     }
 
@@ -72,17 +72,21 @@ class DrawStateVariableList {
     }
 
     fun reset() {
-        list.fori {
+        elements.fori {
             it?.reset()
         }
     }
 
     operator fun get(index: Int): Resettable? {
-        return list[index]
+        return elements[index]
     }
 
     operator fun set(index: Int, value: Resettable?) {
-        list[index] = value
+        elements[index] = value
+    }
+
+    inline fun forEach(action: (Resettable?) -> Unit) {
+        elements.fori(action)
     }
 
 
@@ -95,13 +99,13 @@ class DrawStateVariableList {
             set(value) {
                 field = value
                 wasChanged = true
-                list[index] = this
+                elements[index] = this
             }
 
         override fun reset() {
             value = resetValue
             wasChanged = false
-            list[index] = null
+            elements[index] = null
         }
 
     }

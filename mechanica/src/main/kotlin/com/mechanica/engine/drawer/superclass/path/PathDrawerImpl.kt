@@ -38,7 +38,6 @@ class PathDrawerImpl(private val state: DrawState): PathDrawer {
         line[1].y = y2.toDouble()
         renderer.fillFloats(line, 2)
         draw()
-        state.reset()
     }
 
     private fun draw() {
@@ -46,5 +45,6 @@ class PathDrawerImpl(private val state: DrawState): PathDrawer {
         renderer.color = state.color.fill
         renderer.stroke = state.shader.strokeWidth.value.toFloat()
         renderer.render(matrix)
+        state.reset()
     }
 }

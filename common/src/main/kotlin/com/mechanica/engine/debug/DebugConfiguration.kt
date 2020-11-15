@@ -1,6 +1,7 @@
 package com.mechanica.engine.debug
 
 interface DebugConfiguration {
+    val debugMode: Boolean
     val failEarly: Boolean
     val screenLog: Boolean
     val constructionDraws: Boolean

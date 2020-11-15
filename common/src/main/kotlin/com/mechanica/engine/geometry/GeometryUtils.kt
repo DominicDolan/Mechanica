@@ -1,7 +1,7 @@
 package com.mechanica.engine.geometry
 
 import com.mechanica.engine.geometry.lines.LineSegment
-import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.*
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -36,4 +36,21 @@ private fun arrayContainsPoint(array: Array<Vector>, point: Vector): Boolean {
         }
     }
     return result
+}
+
+fun perpendicularDistance(vector: Vector, line: LineSegment): Double {
+    return perpendicularDistance(vector, line.p1, line.p2)
+}
+
+fun perpendicularDistance(vector: Vector, lineP1: Vector, lineP2: Vector): Double {
+    val p = vec(vector)
+    val p1 = vec(lineP1)
+    val p2 = vec(lineP2)
+    val a = p - p1
+    val b = p2 - p1
+    val c = b.perpendicular()
+
+    val dot = c.dot(a)
+
+    return dot/c.r
 }

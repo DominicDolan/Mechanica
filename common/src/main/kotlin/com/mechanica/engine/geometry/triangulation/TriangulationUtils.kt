@@ -2,6 +2,7 @@ package com.mechanica.engine.geometry.triangulation
 
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.rectangleArea
+import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 
@@ -15,7 +16,7 @@ fun isConcave(prev: Vector, current: Vector, next: Vector, ccw: Boolean): Boolea
     return (isLeft && !ccw) || (!isLeft && ccw)
 }
 
-fun Triangulator.Node.isEar(concaveVertices: Iterable<Triangulator.Node>): Boolean {
+fun GrahamScanTriangulator.Node.isEar(concaveVertices: Iterable<GrahamScanTriangulator.Node>): Boolean {
 
     val p2 = this.next
     val p3 = this.prev

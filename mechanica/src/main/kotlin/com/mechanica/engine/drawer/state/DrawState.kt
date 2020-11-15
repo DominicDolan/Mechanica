@@ -9,6 +9,20 @@ import com.mechanica.engine.models.TextModel
 abstract class AbstractDrawState : Resettable {
     protected val list = DrawStateVariableList()
 
+    val hasChanged: Boolean
+        get() {
+            list.forEach {
+                if (it != null) {
+                    return true
+                }
+            }
+            return false
+        }
+
+    init {
+        list.reset()
+    }
+
     override fun reset() {
         list.reset()
     }

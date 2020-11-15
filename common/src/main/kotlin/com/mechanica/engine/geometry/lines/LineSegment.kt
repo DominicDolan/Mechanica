@@ -38,6 +38,10 @@ abstract class LineSegment() : Line {
         return isInThis && isInOther
     }
 
+    fun perpendicularDistance(vector: Vector): Double {
+        return com.mechanica.engine.geometry.perpendicularDistance(vector, this)
+    }
+
     private fun calculateAll() {
         hasChanged = false
         _m = (p2.y - p1.y)/(p2.x - p1.x)
@@ -68,6 +72,10 @@ abstract class LineSegment() : Line {
     companion object {
         operator fun invoke(p1: Vector, p2: Vector): LineSegment {
             return LineSegmentImpl(p1, p2)
+        }
+
+        operator fun invoke(line: LineSegment): LineSegment {
+            return LineSegmentImpl(line.p1, line.p2)
         }
     }
 }

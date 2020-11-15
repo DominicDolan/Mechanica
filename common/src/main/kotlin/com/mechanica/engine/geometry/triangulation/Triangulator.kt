@@ -1,95 +1,102 @@
 package com.mechanica.engine.geometry.triangulation
 
-import com.mechanica.engine.geometry.triangulation.iterators.TriangulatorIterable
+import com.mechanica.engine.geometry.rectangleArea
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.util.extensions.foriIndexed
 import com.mechanica.engine.util.extensions.indexLooped
 
-abstract class Triangulator(path: Array<out Vector>) {
 
+interface Triangulator {
+    val indices: ShortArray
+    val indexCount: Int
+
+    fun triangulate(): ShortArray
+
+}
+
+abstract class AbstractTriangulator<N : TriangulatorNode>(path: Array<out Vector>) : Triangulator {
+
+    private var hasChanged: Boolean = true
+
+    private var _ccw: Boolean = false
     val ccw: Boolean
-    val vertices = ArrayList<Node>()
+        get() {
+            if (hasChanged) reorganise()
+            return _ccw
+        }
 
-    abstract val indices: ShortArray
-    abstract var indexCount: Int
-    abstract val concaveVertices: TriangulatorIterable
-
-    abstract fun triangulate(): ShortArray
-    abstract fun rewind()
+    private var _area: Double = 0.0
+    val area: Double
+        get() {
+            if (hasChanged) reorganise()
+            return _area
+        }
+    val vertices = ArrayList<N>()
 
     init {
         if (path.size < 3) throw IllegalStateException("Can't triangulate less than 3 vertices")
-        Node(path[0])
-
-        ccw = addAllFromPath(path)
+        addAll(path)
     }
 
-    fun add(vector: InlineVector): Node {
-        val n = Node(vector)
-        rewind()
+    abstract fun createNode(vector: InlineVector): N
+
+    fun add(vector: InlineVector): N {
+        val n = createNode(vector)
+        vertices.add(n)
+        reorganise()
         return n
     }
 
-    fun add(index: Int, vector: InlineVector): Node {
-        val n = Node(vector, index)
-        rewind()
+    fun add(index: Int, vector: InlineVector): N {
+        val n = createNode(vector)
+        vertices.add(index, n)
+        reorganise()
         return n
     }
 
+    fun addAll(path: Array<out Vector>) {
+        for (element in path) {
+            val n = createNode(vec(element))
+            vertices.add(n)
+        }
+        reorganise()
+    }
 
-    private fun addAllFromPath(path: Array<out Vector>):  Boolean {
+    protected val N.prev: N
+        get() = vertices[vertices.indexLooped(correctIndex() - 1)]
+    protected val N.next: N
+        get() = vertices[vertices.indexLooped(correctIndex() + 1)]
+
+    protected val N.isConcave: Boolean
+        get() {
+            val area = rectangleArea(next, prev, this)
+            val isLeft = area > 0.0
+            return (isLeft && !ccw) || (!isLeft && ccw)
+        }
+
+    protected open fun reorganise() {
+        _area = calculatePolygonArea()
+        _ccw = _area < 0.0
+
+        vertices.foriIndexed { n, i ->
+            n.index = i
+        }
+        hasChanged = false
+    }
+
+    private fun calculatePolygonArea(): Double {
         var totalArea = 0.0
-        for (i in 1 until path.size) {
-            Node(path[i])
-
-            if (i > 0) totalArea += calculateLineArea(vec(path[i - 1]), vec(path[i]))
+        for (i in 1 until vertices.size) {
+            if (i > 0) totalArea += calculateLineArea(vec(vertices[i - 1]), vec(vertices[i]))
         }
-        return totalArea < 0.0
+        return totalArea
     }
 
-
-    inner class Node(vertex: Vector, index: Int = vertices.size): Vector {
-        override var x: Double = vertex.x
-        override var y: Double = vertex.y
-
-        private val defaultPrevious: Node
-            get() = vertices[vertices.indexLooped(listIndex - 1)]
-        private val defaultNext: Node
-            get() = vertices[vertices.indexLooped(listIndex + 1)]
-
-        var prev: Node
-        var next: Node
-        var nextConcave: Node? = null
-        var prevConcave: Node? = null
-
-        val isEar: Boolean
-            get() = isEar(concaveVertices)
-        val isConcave: Boolean
-            get() = isConcave(prev, this, next, ccw)
-
-        private var _listIndex = index
-        val listIndex: Int
-            get() {
-                if (_listIndex == -1 || vertices[_listIndex] !== this) {
-                    _listIndex = vertices.indexOf(this)
-                }
-                return _listIndex
-            }
-
-        init {
-            vertices.add(index, this)
-            prev = defaultPrevious
-            next = defaultNext
-        }
-
-        fun rewind() {
-            prev = defaultPrevious
-            next = defaultNext
-        }
-
-        override fun toString(): String {
-            return "($x, $y)"
-        }
+    private fun N.correctIndex(): Int {
+        if (vertices[index] !== this) index = vertices.indexOf(this)
+        return index
     }
+
 }

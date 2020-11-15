@@ -1,9 +1,9 @@
 package com.mechanica.engine.geometry.triangulation.iterators
 
-import com.mechanica.engine.geometry.triangulation.Triangulator
+import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
 
-class VertexLoopIterable(private val list: ArrayList<Triangulator.Node>) : TriangulatorIterable {
-    override val head: Triangulator.Node
+class VertexLoopIterable(private val list: ArrayList<GrahamScanTriangulator.Node>) : TriangulatorIterable {
+    override val head: GrahamScanTriangulator.Node
         get() = list.first()
 
     private val iterator = VertexLoopIterator()
@@ -18,26 +18,26 @@ class VertexLoopIterable(private val list: ArrayList<Triangulator.Node>) : Trian
         }
     }
 
-    override fun removeLink(node: Triangulator.Node) {
+    override fun removeLink(node: GrahamScanTriangulator.Node) {
         node.next.prev = node.prev
         node.prev.next = node.next
     }
 
-    override fun iterator(): Iterator<Triangulator.Node> {
+    override fun iterator(): Iterator<GrahamScanTriangulator.Node> {
         iterator.lastIndex = -1
         iterator.current = head
         return iterator
     }
 
-    private inner class VertexLoopIterator: Iterator<Triangulator.Node> {
+    private inner class VertexLoopIterator: Iterator<GrahamScanTriangulator.Node> {
         var current = head
         var lastIndex = -1
 
-        override fun hasNext() = current.listIndex > lastIndex
+        override fun hasNext() = current.index > lastIndex
 
-        override fun next(): Triangulator.Node {
+        override fun next(): GrahamScanTriangulator.Node {
             val cursor = current
-            lastIndex = current.listIndex
+            lastIndex = current.index
             current = current.next
             return cursor
         }

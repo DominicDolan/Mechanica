@@ -157,3 +157,6 @@ fun List<*>.indexConstrained(index: Int): Int {
         else -> index
     }
 }
+
+fun <E> List<E>.loopedGet(index: Int): E = this[indexLooped(index)]
+fun <E> List<E>.getConstrained(index: Int): E = this[indexConstrained(index)]

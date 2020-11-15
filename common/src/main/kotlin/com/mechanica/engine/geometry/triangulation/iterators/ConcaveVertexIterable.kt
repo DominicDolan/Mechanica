@@ -1,9 +1,9 @@
 package com.mechanica.engine.geometry.triangulation.iterators
 
-import com.mechanica.engine.geometry.triangulation.Triangulator
+import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
 
-class ConcaveVertexIterable(private val list: ArrayList<Triangulator.Node>) : TriangulatorIterable {
-    override var head: Triangulator.Node? = null
+class ConcaveVertexIterable(private val list: ArrayList<GrahamScanTriangulator.Node>) : TriangulatorIterable {
+    override var head: GrahamScanTriangulator.Node? = null
 
     private val iterator = ConcaveVertexIterator()
 
@@ -11,13 +11,13 @@ class ConcaveVertexIterable(private val list: ArrayList<Triangulator.Node>) : Tr
         rewind()
     }
 
-    fun setNewHead(head: Triangulator.Node?) {
+    fun setNewHead(head: GrahamScanTriangulator.Node?) {
         this.head = head
         iterator.current = head
     }
 
     override fun rewind() {
-        var current: Triangulator.Node? = null
+        var current: GrahamScanTriangulator.Node? = null
         for (v in list) {
             if (v.isConcave) {
                 val n = current
@@ -32,22 +32,22 @@ class ConcaveVertexIterable(private val list: ArrayList<Triangulator.Node>) : Tr
         }
     }
 
-    override fun removeLink(node: Triangulator.Node) {
+    override fun removeLink(node: GrahamScanTriangulator.Node) {
         node.prevConcave?.nextConcave = node.nextConcave
         node.nextConcave?.prevConcave = node.prevConcave
     }
 
-    override fun iterator(): Iterator<Triangulator.Node> {
+    override fun iterator(): Iterator<GrahamScanTriangulator.Node> {
         iterator.current = head
         return iterator
     }
 
-    private inner class ConcaveVertexIterator : Iterator<Triangulator.Node> {
+    private inner class ConcaveVertexIterator : Iterator<GrahamScanTriangulator.Node> {
         var current = head
 
         override fun hasNext(): Boolean = current != null
 
-        override fun next(): Triangulator.Node {
+        override fun next(): GrahamScanTriangulator.Node {
             val cursor = current
             current = current?.nextConcave
             return cursor ?: throw IllegalStateException("Cannot iterate over null values")

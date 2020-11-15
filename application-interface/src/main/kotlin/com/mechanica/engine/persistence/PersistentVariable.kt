@@ -2,18 +2,19 @@ package com.mechanica.engine.persistence
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlin.reflect.jvm.javaField
 
 class PersistentVariable<T:Any>(
         private val map: PersistenceMap,
         private val defaultValue: T,
-        private val instance: String? = null) : ReadWriteProperty<Any,T> {
+        private val instance: String? = null) : ReadWriteProperty<Any?,T> {
 
     private var hasRetrieved = false
     private var value: T = defaultValue
 
     private var fullPropertyName: String? = null
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): T {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         if (!hasRetrieved) {
             val name = fullPropertyName(thisRef, property)
             value = if (instance == null) {
@@ -42,7 +43,7 @@ class PersistentVariable<T:Any>(
         return this[name] as? HashMap<String, Any>
     }
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         this.value = value
         val name = fullPropertyName(thisRef, property)
         if (instance == null) {
@@ -59,11 +60,12 @@ class PersistentVariable<T:Any>(
         }
     }
 
-    private fun fullPropertyName(ref: Any, property: KProperty<*>): String {
+    private fun fullPropertyName(ref: Any?, property: KProperty<*>): String {
         val fullName = this.fullPropertyName
         return if (fullName != null) fullName
         else {
-            val newName = ref::class.java.canonicalName + "." + property.name
+            val newName = if (ref != null) ref::class.java.canonicalName + "." + property.name
+            else (property.javaField?.declaringClass?.canonicalName ?: "static") + "." + property.name
             fullPropertyName = newName
             newName
         }

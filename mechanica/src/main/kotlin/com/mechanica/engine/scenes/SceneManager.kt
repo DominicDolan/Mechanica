@@ -72,7 +72,6 @@ internal class SceneManager(
     }
 
     fun startScene() {
-
         setMainScene { sceneStarter.invoke() }
     }
 

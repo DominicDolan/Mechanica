@@ -9,6 +9,9 @@ object BackendDebugConfiguration : DebugConfiguration {
         this.configuration = configuration
     }
 
+    override val debugMode: Boolean
+        get() = configuration?.debugMode ?: false
+
     override val failEarly: Boolean
         get() = configuration?.failEarly ?: false
     override val screenLog: Boolean

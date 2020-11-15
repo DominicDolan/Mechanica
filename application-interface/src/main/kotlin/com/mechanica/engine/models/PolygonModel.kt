@@ -1,7 +1,7 @@
 package com.mechanica.engine.models
 
-import com.mechanica.engine.geometry.triangulation.GrahamScanTriangulator
 import com.mechanica.engine.geometry.triangulation.Triangulator
+import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
 import com.mechanica.engine.shader.qualifiers.Attribute
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.vertices.AttributeArray
