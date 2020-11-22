@@ -4,7 +4,10 @@ import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.persistence.JsonFileStorer
+import com.mechanica.engine.persistence.JsonStorer
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.util.getCallingClass
 import org.joml.Matrix4f
 
 interface GameConfiguration {
@@ -13,6 +16,8 @@ interface GameConfiguration {
     fun setFullscreen(isFullscreen: Boolean)
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
+
+    fun setPersistence(jsonStorer: JsonStorer = JsonFileStorer(getCallingClass().packageName + "/res/data/persistence.json"))
 
     fun setStartingScene(scene: () -> Scene)
 

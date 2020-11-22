@@ -6,7 +6,6 @@ import com.mechanica.engine.display.Monitor
 import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.*
-import com.mechanica.engine.persistence.populateData
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.unit.vector.vec
@@ -31,8 +30,6 @@ internal class GameSetup(configuration: GameConfigurationImpl) {
     init {
         val data = configuration.data
 
-        populateData()
-
         configuration.configure()
 
         monitor = data.monitor ?: Monitor.getPrimaryMonitor()
@@ -52,6 +49,10 @@ internal class GameSetup(configuration: GameConfigurationImpl) {
         cameras = Cameras(data)
 
         sceneManager = SceneManager(data.deltaCalculator, data.startingScene ?: {object : Scene() {}})
+
+        if (Game.persistenceMap == null) {
+            configuration.setPersistence()
+        }
     }
 
     private fun setupWindow(data: ConfigurationData): Window {

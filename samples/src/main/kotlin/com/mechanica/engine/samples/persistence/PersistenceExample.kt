@@ -4,12 +4,13 @@ import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.persistence.persistent
 
-var someStringVariable by persistent("Some String")
 
 fun main() {
     Game.configure {
         setFullscreen(false)
     }
+
+    var someStringVariable by persistent("Some String")
 
     // This will print "Some Other String" the second time this code is run
     println(someStringVariable)

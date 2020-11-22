@@ -12,7 +12,7 @@ import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
 import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.persistence.storeData
+import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.Scene
@@ -24,6 +24,7 @@ object Game : Configurable<GameConfiguration> {
         get() = _application ?: throw IllegalStateException("Cannot access this application object because the game context has not been initialized.\nCall Game.configureAs() before using this object")
 
     private lateinit var setup: GameSetup
+    internal var persistenceMap: PersistenceMap? = null
 
     val world: WorldCamera
         get() = setup.cameras.world
@@ -136,7 +137,7 @@ object Game : Configurable<GameConfiguration> {
     }
 
     private fun savePersistenceData() {
-        storeData()
+        persistenceMap?.store()
     }
 
 }

@@ -3,8 +3,11 @@ package com.mechanica.engine.game.configuration
 import com.mechanica.engine.context.GLFWContext
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Window
+import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
+import com.mechanica.engine.persistence.JsonStorer
+import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.scenes.Scene
 import org.joml.Matrix4f
 
@@ -34,6 +37,12 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
     override fun setViewLocation(x: Double, y: Double) {
         data.viewX = x
         data.viewY = y
+    }
+
+    override fun setPersistence(jsonStorer: JsonStorer) {
+        val map = PersistenceMap(jsonStorer)
+        map.populate()
+        Game.persistenceMap = map
     }
 
     override fun setStartingScene(scene: () -> Scene) {

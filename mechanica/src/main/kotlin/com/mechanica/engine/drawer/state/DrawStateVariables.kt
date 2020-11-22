@@ -211,6 +211,7 @@ class ColorVariable(list: DrawStateVariableList, color: DynamicColor, index: Int
 
     override fun reset() {
         markReset()
+        a = 1.0
         resetColor?.let { set(it) }
     }
 
