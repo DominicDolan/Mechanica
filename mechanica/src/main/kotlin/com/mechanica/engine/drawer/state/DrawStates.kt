@@ -3,8 +3,9 @@ package com.mechanica.engine.drawer.state
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.utils.createUnitSquareVectors
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.tan
@@ -74,8 +75,8 @@ class ShaderState : AbstractDrawState() {
     val model: GenericVariable<Model>
 
     init {
-        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
-        val texCoords = AttributeArray.createFrom(Attribute.textureCoords).createInvertedUnitQuad()
+        val position = AttributeArray.createPositionArray(createUnitSquareVectors())
+        val texCoords = AttributeArray.createTextureArray(createInvertedUnitSquareVectors())
 
         defaultModel = Model(position, texCoords)
 

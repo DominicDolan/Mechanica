@@ -1,45 +1,14 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.shader.qualifiers.AttributeQualifier
-import com.mechanica.engine.shader.qualifiers.Qualifier
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.script.ShaderLoader
-import com.mechanica.engine.shader.script.ShaderScript
-import com.mechanica.engine.shader.vbo.LwjglElementArrayType
-import org.lwjgl.opengl.GL20
-
-class LwjglLoader : GLLoader {
+class LwjglLoader : MechanicaLoader {
     override val constants = LwjglConstants()
     override val bufferLoader = LwjglBufferLoader()
     override val fontLoader = LwjglFontLoader()
     override val graphicsLoader = LwjglGraphicsLoader()
     override val audioLoader = LwjglAudioLoader()
     override val inputLoader = LwjglInputLoader()
-    override val attributeLoader: AttributeLoader = LwjglAttributeLoader()
-    override val displayLoader: DisplayLoader = LwjglDisplayLoader()
-
-    override fun createAttributeLoader(qualifier: AttributeQualifier) = LwjglAttributeLoader()
-
-    override fun createUniformLoader(qualifier: Qualifier) = LwjglUniformLoader(qualifier)
-
-    override fun createElementArray() = LwjglElementArrayType()
-
-    override fun defaultShader(vertex: ShaderScript, fragment: ShaderScript, tessellation: ShaderScript?, geometry: ShaderScript?): Shader {
-        return object : Shader() {
-            override val vertex = vertex
-            override val fragment = fragment
-            override val tessellation = tessellation
-            override val geometry = geometry
-
-            private val loader: ShaderLoader by lazy { ShaderLoader(vertex, fragment, tessellation, geometry) }
-
-            override val id: Int get() = loader.id
-
-            override fun loadProgram(id: Int) {
-                GL20.glUseProgram(id)
-            }
-
-            override fun loadUniformLocation(name: String) = GL20.glGetUniformLocation(id, name)
-        }
-    }
+    override val displayLoader = LwjglDisplayLoader()
+    override val shaderLoader = LwjglShaderLoader()
+    override val miscLoader = LwjglMiscLoader()
+    override val glPrimitives = LwjglPrimitiveLoader()
 }

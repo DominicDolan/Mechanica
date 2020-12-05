@@ -1,21 +1,18 @@
 package com.mechanica.engine.context
 
 import com.mechanica.engine.context.callbacks.EventCallbacks
-import com.mechanica.engine.context.loader.GLLoader
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.context.loader.MechanicaLoader
+import com.mechanica.engine.display.DesktopWindow
 
 interface Application {
-    fun createLoader(): GLLoader
+    val surfaceContext: SurfaceContext
+    val glContext: OpenGLContext
 
-    fun load() {
-        GLInitializer.initialize(createLoader())
-    }
+    fun createLoader(): MechanicaLoader
 
-    fun initialize(mainWindow: Window, callbacks: EventCallbacks)
+    fun initialize(mainWindow: DesktopWindow, callbacks: EventCallbacks)
     fun terminate()
 
     fun startFrame()
-
-    fun activateContext(window: Window?)
 
 }

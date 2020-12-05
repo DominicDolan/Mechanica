@@ -1,19 +1,15 @@
 package com.mechanica.engine.models
 
-import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
 import com.mechanica.engine.utils.createIndicesArrayForQuads
-import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.FloatArrayMaker
 import com.mechanica.engine.vertices.IndexArray
 import kotlin.math.max
 
-class TextModel(text: Text,
-                positionBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute(0).vec3()),
-                texCoordsBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute(1).vec2())) : Model(
-        positionBufferMaker.createArray(text.positions),
-        texCoordsBufferMaker.createArray(text.texCoords),
+class TextModel(text: Text) : Model(
+        AttributeArray.createPositionArray(text.positions),
+        AttributeArray.createTextureArray(text.texCoords),
         IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
         Image.invoke(text.font.atlas.id),
 ) {
@@ -56,8 +52,8 @@ class TextModel(text: Text,
     }
 
     private fun updateTextHolder(text: Text) {
-        positionAttribute.set(text.positions, 0, text.vertexCount)
-        texCoordsAttribute.set(text.texCoords, 0, text.vertexCount)
+//        positionAttribute.set(text.positions, 0, text.vertexCount)
+//        texCoordsAttribute.set(text.texCoords, 0, text.vertexCount)
         vertexCount = text.vertexCount
 
         if (vertexCount > indexArray.vertexCount) {

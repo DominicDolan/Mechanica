@@ -21,6 +21,16 @@ interface Color {
             1 -> g
             2 -> b
             3 -> a
+            else -> throw ArrayIndexOutOfBoundsException("Tried to get a fifth component from this color")
+        }
+    }
+
+    fun getOrZero(index: Int): Double {
+        return when (index) {
+            0 -> r
+            1 -> g
+            2 -> b
+            3 -> a
             else -> 0.0
         }
     }

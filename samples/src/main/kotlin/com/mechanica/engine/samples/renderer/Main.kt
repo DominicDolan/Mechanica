@@ -13,8 +13,6 @@ import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11.GL_STENCIL_TEST
-import org.lwjgl.opengl.GL11.glEnable
 
 
 fun main() {
@@ -58,7 +56,6 @@ private class StartMain : WorldScene() {
         )
 
         polygon = PolygonModel(random)
-        glEnable(GL_STENCIL_TEST)
     }
 
     override fun update(delta: Double) {

@@ -1,10 +1,10 @@
 package com.mechanica.engine.animation
 
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.resources.ResourceDirectory
 import com.mechanica.engine.util.extensions.constrain
 import com.mechanica.engine.util.extensions.constrainLooped
-import com.mechanica.engine.utils.loadImage
 import kotlin.math.floor
 import kotlin.math.sign
 
@@ -73,6 +73,6 @@ class FrameAnimation(private val frames: List<Image>, frameRate : Double,
 
     companion object {
         fun loadAnimation(directory: ResourceDirectory, frameRate: Double = 24.0)
-                = FrameAnimation(directory.resources.map { loadImage(it) }, frameRate)
+                = FrameAnimation(directory.resources.map { MechanicaLoader.graphicsLoader.loadImage(it) }, frameRate)
     }
 }

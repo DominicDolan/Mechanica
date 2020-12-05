@@ -6,10 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * This generated file contains a sample Kotlin application project to get you started.
  */
 
-val lwjglVersion = "3.2.3"
-val lwjglNatives = "natives-windows"
-
-val kotlinVersion: String? = "1.4.0"
+val kotlinVersion: String = "1.4.20"
 
 buildscript {
     repositories {
@@ -35,37 +32,16 @@ val commonDependencies: DependencyHandlerScope.() -> Unit = {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 }
 
-val coreLwjgl: DependencyHandlerScope.() -> Unit = {
-    //lwjgl
-    api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-
-    implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-opengl")
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-}
-
-val supplementaryLwjgl: DependencyHandlerScope.() -> Unit = {
-    implementation("org.lwjgl", "lwjgl-openal")
-    implementation("org.lwjgl", "lwjgl-stb")
-    runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-}
-
 allprojects {
     group = "com.mechanica.engine"
     version = 0.1
 
     repositories {
-        // Use jcenter for resolving your dependencies.
-        // You can declare any Maven/Ivy/file repository here.
         jcenter()
 
         mavenLocal()
         maven {
-            url = uri("http://repo.maven.apache.org/maven2")
+            url = uri("https://repo.maven.apache.org/maven2")
         }
     }
 
@@ -75,29 +51,11 @@ allprojects {
     compileKotlin.kotlinOptions {
         freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
         languageVersion = "1.4"
-        jvmTarget = "12"
+        jvmTarget = "1.8"
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_12
-        targetCompatibility = JavaVersion.VERSION_12
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
-
-project(":desktop-application") {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    dependencies {
-        coreLwjgl()
-        supplementaryLwjgl()
-    }
-}
-
-project(":mechanica") {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    dependencies(coreLwjgl)
-}
-
-project(":samples") {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    dependencies(coreLwjgl)
 }

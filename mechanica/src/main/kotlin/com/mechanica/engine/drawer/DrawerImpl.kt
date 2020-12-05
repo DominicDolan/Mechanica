@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer
 
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.state.DrawState
@@ -26,9 +27,9 @@ import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.models.PolygonModel
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.vertices.AttributeArray
-import org.lwjgl.opengl.GL11
+import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.utils.createUnitSquareVectors
 
 class DrawerImpl(private val state: DrawState,
                  private val renderer: DrawerRenderer) :
@@ -43,8 +44,8 @@ class DrawerImpl(private val state: DrawState,
     private val model: Model
 
     init {
-        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
-        val texCoords = AttributeArray.createFrom(Attribute.textureCoords).createInvertedUnitQuad()
+        val position = AttributeArray.createPositionArray(createUnitSquareVectors())
+        val texCoords = AttributeArray.createTextureArray(createInvertedUnitSquareVectors())
 
         model = Model(position, texCoords)
     }
@@ -93,7 +94,7 @@ class DrawerImpl(private val state: DrawState,
 
     override fun background() {
         with(colorDrawer) {
-            GL11.glClearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+            MechanicaLoader.graphicsLoader.clearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
         }
     }
 
@@ -108,6 +109,10 @@ class DrawerImpl(private val state: DrawState,
     }
 
     override fun shader(shader: DrawerShader, model: Model?) {
+        shader.fragment.color.set(state.color.fill)
+        shader.fragment.size.set(state.shader.cornerSize)
+        shader.fragment.radius.value = state.shader.radius.value.toFloat()
+
         shader.render(
                 model ?: state.shader.model.variable,
                 state.transformation.getTransformationMatrix(),

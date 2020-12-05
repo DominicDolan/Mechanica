@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.view
 
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.display.DrawSurface
 
 class ResolutionToCameraConverter(var resolutionWidth: Int, var resolutionHeight: Int,
                                   var cameraWidth: Double? = null, var cameraHeight: Double? = null) {
@@ -41,15 +41,15 @@ class ResolutionToCameraConverter(var resolutionWidth: Int, var resolutionHeight
         }
     }
 
-    fun calculate(camera: Camera, window: Window) {
+    fun calculate(camera: Camera, surface: DrawSurface) {
         if (cameraHeight != null) {
             cameraHeight = camera.height
         }
         if (cameraWidth != null) {
             cameraWidth = camera.width
         }
-        resolutionWidth = window.width
-        resolutionHeight = window.height
+        resolutionWidth = surface.width
+        resolutionHeight = surface.height
 
         calculate()
     }

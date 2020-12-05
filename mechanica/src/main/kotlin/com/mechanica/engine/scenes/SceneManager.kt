@@ -14,7 +14,7 @@ import com.mechanica.engine.util.Timer
 
 internal class SceneManager(
         private val deltaCalculator: DeltaCalculator,
-        private val sceneStarter: (() -> Scene)) : SceneNode, Updater {
+        private val sceneStarter: (() -> Scene?)) : SceneNode, Updater {
 
     private val scenes = ChildScenes()
 
@@ -105,9 +105,9 @@ internal class SceneManager(
             scenes.renderNodes(getDrawer())
         }
 
-        if (Game.debug.screenLog)
+        if (Game.debug.screenLog && ScreenLog.hasSomethingToRender)
             ScreenLog.render(getDrawer())
-        if (Game.debug.constructionDraws)
+        if (Game.debug.constructionDraws && DebugDrawer.hasSomethingToRender)
             DebugDrawer.render(getDrawer())
     }
 

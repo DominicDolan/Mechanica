@@ -1,6 +1,6 @@
 package com.mechanica.engine.audio
 
-import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.context.loader.MechanicaLoader
 import org.joml.Vector3f
 
 interface Listener : AudioObject {
@@ -12,7 +12,7 @@ interface Listener : AudioObject {
         var up: Vector3f
     }
 
-    companion object : Listener by GLLoader.audioLoader.listener()
+    companion object : Listener by MechanicaLoader.audioLoader.listener()
 
     enum class DistanceModel {
         INVERSE,

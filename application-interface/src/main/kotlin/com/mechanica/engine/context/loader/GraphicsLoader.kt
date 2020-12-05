@@ -10,6 +10,10 @@ interface GraphicsLoader {
     fun loadImage(id: Int): Image
     fun loadImage(res: Resource): Image
 
+    fun clearColor(r: Float, g: Float, b: Float, a: Float)
+
+    val glTriangleFanDrawer: GLDrawerLoader
+    val glTriangleStripDrawer: GLDrawerLoader
     val glPointDrawer: GLDrawerLoader
     val glLineLoopDrawer: GLDrawerLoader
     val glLinesDrawer: GLDrawerLoader

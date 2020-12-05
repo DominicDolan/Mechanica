@@ -5,6 +5,10 @@ import com.mechanica.engine.game.Game
 
 object ScreenLog {
     private val sb = StringBuilder()
+
+    val hasSomethingToRender: Boolean
+        get() = sb.isNotEmpty()
+
     internal fun render(draw: Drawer) {
         val v = Game.ui
         val fontSize = v.height*0.02

@@ -3,6 +3,7 @@ package com.mechanica.engine.samples.temp
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.PolygonModel
+import com.mechanica.engine.shader.attributes.Attribute
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.unit.vector.Vector
@@ -17,7 +18,7 @@ fun main() {
 
     val vertex = object : ShaderScript() {
 
-        val position = attribute(0).vec2()
+        val position = attribute(Attribute.positionLocation).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
         val transformation = uniform.mat4(Game.matrices.worldCamera)

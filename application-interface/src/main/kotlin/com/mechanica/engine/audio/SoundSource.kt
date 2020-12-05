@@ -1,6 +1,6 @@
 package com.mechanica.engine.audio
 
-import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.resources.AudioResource
 
 interface SoundSource : AudioObject {
@@ -19,7 +19,7 @@ interface SoundSource : AudioObject {
     fun destroy()
 
     companion object {
-        fun create(res: AudioResource) = GLLoader.audioLoader.source(res.sound)
+        fun create(res: AudioResource) = MechanicaLoader.audioLoader.source(res.sound)
     }
 
 }

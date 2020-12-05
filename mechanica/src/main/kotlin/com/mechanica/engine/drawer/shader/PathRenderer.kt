@@ -2,21 +2,16 @@ package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
-import com.mechanica.engine.utils.enableAlphaBlending
-import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.FloatArrayMaker
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH
-import org.lwjgl.opengl.GL11.glDisable
-import org.lwjgl.opengl.GL20
 
-class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createFrom(Attribute.position)) {
+class PathRenderer() {
 
     private val vertex = object : DrawerScript() {
 
@@ -149,20 +144,18 @@ class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createF
     private val lineShader = DrawerShader.create(vertex, fragment, geometry = lineGeometry) {
         prepareStencil()
 
-        glDrawLineStrip.arrays(it)
+        drawLineStrip.arrays(it)
 
-        glDisable(GL_POLYGON_SMOOTH)
-
-        GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
+        MechanicaLoader.miscLoader.stencilFunction()
     }
     private val circleShader = DrawerShader.create(vertex, fragment, geometry = circleGeometry) {
         prepareStencil()
 
-        glDrawPoints.arrays(it)
+        drawPoints.arrays(it)
 
-        enableAlphaBlending()
+        MechanicaLoader.miscLoader.enableAlphaBlending()
 
-        GL20.glStencilFunc(GL20.GL_ALWAYS, 0, 0xFF)
+        MechanicaLoader.miscLoader.stencilFunction()
     }
 
     var color: Color
@@ -186,12 +179,12 @@ class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createF
     init {
         val initialVertices = 300
         floats = FloatArray(initialVertices*3)
-        vbo = positionBufferMaker.createBuffer(floats) as AttributeArray
+        vbo = AttributeArray.createPositionArray(floats)
         model = Model(vbo)
     }
 
     fun render(transformation: Matrix4f) {
-        GL20.glClear(GL20.GL_STENCIL_BUFFER_BIT)
+        MechanicaLoader.miscLoader.clearStencil()
         fragment.mode.value = 0f
         lineShader.render(this.model, transformation)
         fragment.mode.value = 1f
@@ -201,19 +194,22 @@ class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createF
     fun fillFloats(path: List<Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.set(floats)
+        TODO()
+//        vbo.set(floats)
     }
 
     fun fillFloats(path: Array<out Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.set(floats)
+        TODO()
+//        vbo.set(floats)
     }
 
     fun fillFloats(path: VectorArray, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        vbo.set(floats)
+        TODO()
+//        vbo.set(floats)
     }
 
     private fun checkFloats(pathSize: Int) {
@@ -224,9 +220,7 @@ class PathRenderer(positionBufferMaker: FloatArrayMaker = AttributeArray.createF
     }
 
     private fun prepareStencil() {
-        GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
-        GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)
-        GL20.glStencilMask(0xFF)
+        MechanicaLoader.miscLoader.prepareStencilForPath()
     }
 
 

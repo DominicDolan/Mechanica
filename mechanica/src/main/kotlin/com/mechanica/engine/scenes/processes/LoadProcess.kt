@@ -1,11 +1,10 @@
 package com.mechanica.engine.scenes.processes
 
-import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.Game
 
 abstract class LoadProcess(order: Int = 0, private val waitTime: Float = 0.2f, private val waitLoops: Int = 2) : Process(order) {
 
-    private val loadingContext = Window.create("", 640, 480, Game.window)
+    private val loadingContext = Game.application.surfaceContext.createSharedContext()
 
     private var stage = Stage.WAIT
 
@@ -41,8 +40,8 @@ abstract class LoadProcess(order: Int = 0, private val waitTime: Float = 0.2f, p
 
     private fun startLoading() {
         val runnable = Runnable {
-            Game.application.activateContext(loadingContext)
             try {
+                loadingContext.activate()
                 load()
             } finally {
                 stage = Stage.FINISHED_LOADING

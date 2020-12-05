@@ -1,9 +1,10 @@
 package com.mechanica.engine.shader.script
 
 import com.mechanica.engine.models.Bindable
-import com.mechanica.engine.shader.uniforms.vars.UniformVar
+import com.mechanica.engine.shader.attributes.AttributeVar
+import com.mechanica.engine.shader.uniforms.UniformVar
 
-abstract class ShaderScript : ShaderDeclarations("autoVal") {
+abstract class ShaderScript : ShaderDeclarations() {
     val script: String
         get() = generateScript()
 
@@ -19,11 +20,9 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
         return sb.toString()
     }
 
-    fun loadUniformLocations(shader: Shader) {
+    fun loadVariableLocations(shader: Shader) {
         for (v in iterator) {
-            if (v is UniformVar<*>) {
-                v.location = shader.loadUniformLocation(v.locationName)
-            }
+            v.setLocation(shader)
         }
     }
 
@@ -31,6 +30,9 @@ abstract class ShaderScript : ShaderDeclarations("autoVal") {
         for (v in iterator) {
             if (v is UniformVar<*>) {
                 v.loadUniform()
+            }
+            if (v is AttributeVar<*>) {
+                v.loadAttribute()
             }
         }
     }

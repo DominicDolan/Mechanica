@@ -110,7 +110,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
         private set
         get() {
             return if (lockRatio) {
-                Game.window.aspectRatio
+                Game.surface.resolution.aspectRatio
             } else field
         }
     var lockRatio = true

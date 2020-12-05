@@ -1,7 +1,6 @@
 package com.mechanica.engine.graphics
 
 import com.mechanica.engine.context.loader.GLDrawerLoader
-import com.mechanica.engine.models.Model
 
 
 class DrawInstanced(private val glDrawCommands: GLDrawerLoader) : DrawCommands {
@@ -20,20 +19,20 @@ class DrawInstanced(private val glDrawCommands: GLDrawerLoader) : DrawCommands {
         return drawInstancedBaseVertex
     }
 
-    override fun arrays(model: Model) {
-        glDrawCommands.drawArraysInstanced(model, instanceCount)
+    override fun arrays(vertexCount: Int) {
+        glDrawCommands.drawArraysInstanced(vertexCount, instanceCount)
     }
 
-    override fun elements(model: Model) {
-        glDrawCommands.drawElementsInstanced(model, instanceCount)
+    override fun elements(vertexCount: Int) {
+        glDrawCommands.drawElementsInstanced(vertexCount, instanceCount)
     }
 
     private inner class BaseVertex : ElementsDrawCommand {
         var baseVertex: Int = 0
-        override fun elements(model: Model) {
-            glDrawCommands.drawElementsInstancedBaseVertex(model, instanceCount, baseVertex)
-        }
 
+        override fun elements(vertexCount: Int) {
+            glDrawCommands.drawElementsInstancedBaseVertex(vertexCount, instanceCount, baseVertex)
+        }
     }
 }
 
@@ -42,12 +41,12 @@ class DrawInstancedBaseInstance(
         private val drawInstanced: DrawInstanced) : DrawCommands {
     internal var baseInstance: Int = 0
 
-    override fun arrays(model: Model) {
-        glDrawCommands.drawArraysInstancedBaseInstance(model, drawInstanced.instanceCount, baseInstance)
+    override fun arrays(vertexCount: Int) {
+        glDrawCommands.drawArraysInstancedBaseInstance(vertexCount, drawInstanced.instanceCount, baseInstance)
     }
 
-    override fun elements(model: Model) {
-        glDrawCommands.drawElementsInstancedBaseInstance(model, drawInstanced.instanceCount, baseInstance)
+    override fun elements(vertexCount: Int) {
+        glDrawCommands.drawElementsInstancedBaseInstance(vertexCount, drawInstanced.instanceCount, baseInstance)
     }
 
 }

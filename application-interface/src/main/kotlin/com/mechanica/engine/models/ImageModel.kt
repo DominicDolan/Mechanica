@@ -1,15 +1,15 @@
 package com.mechanica.engine.models
 
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.unit.vector.VectorShapes
 
 class ImageModel(image: Image, vararg inputs: Bindable)
     : Model(image, *inputs) {
 
     constructor(image: Image)
             : this(image,
-            AttributeArray.createFrom(Attribute.location(0).vec3()).createUnitQuad(),
-            AttributeArray.createFrom(Attribute.location(1).vec2()).createInvertedUnitQuad()
+            AttributeArray.createPositionArray(VectorShapes.createUnitSquare()),
+            AttributeArray.createTextureArray(VectorShapes.createInvertedUnitSquare())
     )
 
     var image: Image

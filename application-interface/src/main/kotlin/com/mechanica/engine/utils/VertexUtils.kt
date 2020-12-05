@@ -4,11 +4,9 @@ import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 
 
-fun createUnitSquareVecArray() = createQuadVecArray(0f, 1f, 1f, 0f)
-fun createUnitSquareFloatArray() = createQuadFloatArray(0f, 1f, 1f, 0f)
+fun createUnitSquareFloats() = createQuadFloatArray(0f, 1f, 1f, 0f)
 
-fun createTextureUnitSquareVecArray() = createQuadVecArray(0f, 0f, 1f, 1f)
-fun createTextureUnitSquareFloatArray() = createTextureQuadFloatArray(0f, 1f, 1f, 0f)
+fun createInvertedUnitSquareFloats() = createTextureQuadFloatArray(0f, 1f, 1f, 0f)
 
 /**
  *  Creates an array of shorts of size numberOfQuads*6 to be used with a series of quadrilaterals
@@ -63,6 +61,14 @@ fun createQuadFloatArray(left: Float, top: Float, right: Float, bottom: Float): 
             right, bottom, 0f,
             right, top, 0f)
 
+}
+
+fun createUnitSquareVectors(): Array<Vector> {
+    return createQuadVecArray(0f, 1f, 1f, 0f)
+}
+
+fun createInvertedUnitSquareVectors(): Array<Vector> {
+    return createQuadVecArray(0f, 0f, 1f, 1f)
 }
 
 /*

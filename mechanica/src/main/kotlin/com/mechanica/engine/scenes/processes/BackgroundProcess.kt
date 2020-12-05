@@ -1,11 +1,10 @@
 package com.mechanica.engine.scenes.processes
 
-import com.mechanica.engine.display.Window
 import com.mechanica.engine.game.Game
 
 abstract class BackgroundProcess(private val sleepSeconds: Double) : Process() {
 
-    private val backgroundContext = Window.create("", 640, 480, Game.window)
+    private val backgroundContext = Game.application.surfaceContext.createSharedContext()
 
     private var exception: Throwable? = null
 
@@ -14,8 +13,8 @@ abstract class BackgroundProcess(private val sleepSeconds: Double) : Process() {
 
     private fun startBackgroundProcess() {
         val runnable = Runnable {
-            Game.application.activateContext(backgroundContext)
             try {
+                backgroundContext.activate()
                 backgroundLoop()
             } finally {
                 running = false

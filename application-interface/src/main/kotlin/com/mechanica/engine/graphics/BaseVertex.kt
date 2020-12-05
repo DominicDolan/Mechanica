@@ -8,8 +8,8 @@ import java.nio.IntBuffer
 class DrawBaseVertex(private val glDrawCommands: GLDrawerLoader) : ElementsDrawCommand, MultiElementsDrawCommand {
     var baseVertex: Int = 0
 
-    override fun elements(model: Model) {
-        glDrawCommands.drawElementsBaseVertex(model, baseVertex)
+    override fun elements(vertexCount: Int) {
+        glDrawCommands.drawElementsBaseVertex(vertexCount, baseVertex)
     }
 
     override fun elements(models: Array<Model>) {
@@ -34,7 +34,11 @@ class DrawRangeBaseVertex(
     internal var baseVertex: Int = 0
 
     override fun elements(model: Model) {
-        glDrawCommands.drawRangeElementsBaseVertex(model, drawRange.start, drawRange.end, baseVertex)
+        elements(model.vertexCount)
+    }
+
+    override fun elements(vertexCount: Int) {
+        glDrawCommands.drawRangeElementsBaseVertex(vertexCount, drawRange.start, drawRange.end, baseVertex)
     }
 
 }

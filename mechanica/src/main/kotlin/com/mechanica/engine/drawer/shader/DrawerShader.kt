@@ -1,15 +1,15 @@
 package com.mechanica.engine.drawer.shader
 
+import com.mechanica.engine.context.loader.MechanicaLoader
+import com.mechanica.engine.context.loader.ShaderFunctions
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.graphics.GLDraw
 import com.mechanica.engine.matrix.calculatePixelSize
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.script.ShaderLoader
 import com.mechanica.engine.shader.script.ShaderScript
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL20
 
 abstract class DrawerShader : Shader() {
 
@@ -17,6 +17,12 @@ abstract class DrawerShader : Shader() {
     abstract override val fragment: DrawerScript
     override val tessellation: DrawerScript? = null
     override val geometry: DrawerScript? = null
+
+    override val loader: ShaderFunctions by lazy {
+        matrixLoaders
+        pixelSize
+        MechanicaLoader.shaderLoader.createShaderFunctions(vertex, fragment, tessellation, geometry)
+    }
 
     private val matrixLoaders by lazy {
         val loaders = ArrayList<MatrixLoader>()
@@ -31,11 +37,6 @@ abstract class DrawerShader : Shader() {
     }
 
     private val pixelSize by lazy { fragment.uniform.float("pixelSize") }
-
-    private val loader: ShaderLoader by lazy { ShaderLoader(vertex, fragment, tessellation, geometry) }
-
-    override val id: Int
-        get() = loader.id
 
     fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
 
@@ -73,16 +74,10 @@ abstract class DrawerShader : Shader() {
                 }
             }
             if (loader.matrixType.value == 1f) {
-                this.pixelSize.value = calculatePixelSize(projection, view, Game.window.height)
+                this.pixelSize.value = calculatePixelSize(projection, view, Game.surface.height)
             }
         }
     }
-
-    override fun loadProgram(id: Int) {
-        GL20.glUseProgram(id)
-    }
-
-    override fun loadUniformLocation(name: String) = GL20.glGetUniformLocation(id, name)
 
     private class MatrixLoader(script: DrawerScript) {
         val matrixType = script.uniform.float("matrixType")
@@ -135,9 +130,7 @@ abstract class DrawerShader : Shader() {
                 override val tessellation: DrawerScript? = tessellation
                 override val geometry: DrawerScript? = geometry
 
-                override fun GLDraw.draw(model: Model) {
-                    draw.invoke(this, model)
-                }
+                override val defaultDraw = draw
             }
         }
     }

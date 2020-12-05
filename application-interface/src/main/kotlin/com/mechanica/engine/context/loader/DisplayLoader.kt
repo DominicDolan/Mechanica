@@ -1,17 +1,19 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.context.GLInitializer
-import com.mechanica.engine.display.Monitor
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.context.MechanicaInitializer
+import com.mechanica.engine.display.DesktopWindow
+import com.mechanica.engine.display.Display
 
 interface DisplayLoader {
-    fun createWindow(title: String, width: Int, height: Int, sharedWith: Window? = null): Window
-    fun createWindow(title: String, monitor: Monitor, sharedWith: Window? = null): Window
-    fun createWindow(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window? = null): Window
+    fun createWindow(title: String, width: Int, height: Int, sharedWith: DesktopWindow? = null): DesktopWindow
+    fun createWindow(title: String, display: Display, sharedWith: DesktopWindow? = null): DesktopWindow
+    fun createWindow(title: String, width: Int, height: Int, display: Display, sharedWith: DesktopWindow? = null): DesktopWindow
 
-    val allMonitors: Array<out Monitor>
+    val allDisplays: Array<out Display>
 
-    fun getPrimaryMonitor(): Monitor
+    fun getPrimaryMonitor(): Display
 
-    companion object : DisplayLoader by GLInitializer.loader.displayLoader
+    fun multisampling(samples: Int)
+
+    companion object : DisplayLoader by MechanicaInitializer.loader.displayLoader
 }

@@ -1,12 +1,13 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.shader.vars.attributes.AttributeDefinition
-import com.mechanica.engine.vertices.AttributeArray
-import com.mechanica.engine.vertices.VertexBuffer
+import com.mechanica.engine.shader.attributes.AttributeVars
+import com.mechanica.engine.shader.qualifiers.AttributeQualifier
+import com.mechanica.engine.shader.vars.GlslLocation
 
 
 interface AttributeLoader {
-    fun createAttributeArray(arraySize: Int, definition: AttributeDefinition): AttributeArray
-    fun createAttributeIntArray(arraySize: Int, definition: AttributeDefinition): VertexBuffer<IntArray>
-    fun createAttributeShortArray(arraySize: Int, definition: AttributeDefinition): VertexBuffer<ShortArray>
+    fun createLocationLoader(locationName: String): GlslLocation
+    fun variables(qualifier: AttributeQualifier) : AttributeVars
+
+    fun disableAttributeArray(value: Int)
 }

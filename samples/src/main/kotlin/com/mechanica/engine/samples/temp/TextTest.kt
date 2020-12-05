@@ -3,6 +3,7 @@ package com.mechanica.engine.samples.temp
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.TextModel
+import com.mechanica.engine.shader.attributes.Attribute
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
 import org.intellij.lang.annotations.Language
@@ -14,8 +15,8 @@ fun main() {
 
     val vertex = object : ShaderScript() {
 
-        val position = attribute(0).vec2()
-        val texCoords = attribute(1).vec2()
+        val position = attribute(Attribute.positionLocation).vec2()
+        val texCoords = attribute(Attribute.texCoordsLocation).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
         val transformation = uniform.mat4(Game.matrices.worldCamera)

@@ -2,9 +2,9 @@ package com.mechanica.engine.game
 
 import com.mechanica.engine.configuration.Configurable
 import com.mechanica.engine.context.Application
-import com.mechanica.engine.context.callbacks.EventCallbacks
+import com.mechanica.engine.context.MechanicaInitializer
 import com.mechanica.engine.debug.DebugConfiguration
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.configuration.GameSetup
@@ -30,8 +30,8 @@ object Game : Configurable<GameConfiguration> {
         get() = setup.cameras.world
     val ui: UICamera
         get() = setup.cameras.ui
-    val window: Window
-        get() = setup.window
+    val surface: DrawSurface
+        get() = application.surfaceContext.surface
 
     val debug: DebugConfiguration
         get() = setup.debugConfig
@@ -69,9 +69,11 @@ object Game : Configurable<GameConfiguration> {
     override fun configureAs(application: Application, configure: GameConfiguration.() -> Unit) {
         this._application = application
 
-        application.load()
+        MechanicaInitializer.initialize(application.createLoader())
+
         val configuration = GameConfigurationImpl(configure)
-        this.setup = GameSetup(configuration)
+        this.setup = GameSetup(application, configuration)
+
         if (configuration.initalize) {
             start()
         }
@@ -80,8 +82,6 @@ object Game : Configurable<GameConfiguration> {
     fun start(block: () -> Unit = {}) {
         try {
             if (!hasStarted) {
-                application.initialize(window, EventCallbacks.create())
-
                 Timer
                 sceneManager.startScene()
 
@@ -89,7 +89,7 @@ object Game : Configurable<GameConfiguration> {
             }
             block()
         } catch (ex: Exception) {
-            window.destroy()
+            surface.destroy()
             terminate()
             throw ex
         }
@@ -102,20 +102,20 @@ object Game : Configurable<GameConfiguration> {
         try {
             while (!hasFinished) {
                 updateFrame()
-                if (!window.update()) {
+                if (!surface.update()) {
                     return
                 }
             }
         } catch (ex: Exception) {
             throw ex
         } finally {
-            window.destroy()
+            surface.destroy()
             terminate()
         }
     }
 
-    private fun updateFrame() {
-        application.startFrame()
+    fun updateFrame() {
+        application.glContext.startFrame()
 
         gameMatrices.updateMatrices()
 
@@ -123,7 +123,7 @@ object Game : Configurable<GameConfiguration> {
     }
 
     fun close() {
-        window.shouldClose = true
+        surface.shouldClose()
     }
 
     fun terminate() {

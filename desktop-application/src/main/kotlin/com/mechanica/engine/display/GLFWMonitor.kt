@@ -1,13 +1,13 @@
 package com.mechanica.engine.display
 
-import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.context.GLFWContextOld
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGammaRamp
 import org.lwjgl.glfw.GLFWMonitorCallback
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.system.MemoryStack
 
-class GLFWMonitor private constructor(override val id: Long) : Monitor {
+class GLFWMonitor (override val id: Long) : Display {
 
     override val name by lazy { glfwGetMonitorName(id) ?: "N/A" }
 
@@ -35,7 +35,7 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
             }
         }
 
-    override val size: Monitor.Size
+    override val physicalSize: Display.Size
         get() {
             var width: Int
             var height: Int
@@ -46,10 +46,10 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
                 width = widthBuffer[0]
                 height = heightBuffer[0]
             }
-            return Monitor.Size(width, height)
+            return Display.Size(width, height)
         }
 
-    override val contentScale: Monitor.ContentScale
+    override val contentScale: Display.ContentScale
         get() {
             var xScale: Float
             var yScale: Float
@@ -60,7 +60,7 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
                 xScale = xBuffer[0]
                 yScale = yBuffer[0]
             }
-            return Monitor.ContentScale(xScale, yScale)
+            return Display.ContentScale(xScale, yScale)
         }
 
     var gammaRamp: GLFWGammaRamp
@@ -86,12 +86,12 @@ class GLFWMonitor private constructor(override val id: Long) : Monitor {
             }
 
         fun getPrimaryMonitor(): GLFWMonitor {
-            GLFWContext.initialize()
+            GLFWContextOld.initialize()
             return GLFWMonitor(glfwGetPrimaryMonitor())
         }
 
         private fun createMonitorsArray(): Array<GLFWMonitor> {
-            GLFWContext.initialize()
+            GLFWContextOld.initialize()
             val pointers = glfwGetMonitors()
             return if (pointers != null) {
                 Array(pointers.limit()) {GLFWMonitor(pointers[it])}

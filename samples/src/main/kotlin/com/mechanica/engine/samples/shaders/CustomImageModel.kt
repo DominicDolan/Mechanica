@@ -5,19 +5,23 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Image
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.shader.attributes.Attribute
+import com.mechanica.engine.shader.attributes.Vec2AttributeArray
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.unit.vector.VectorShapes
 
 
 fun main() {
-    Game.configure { }
+    Game.configure {
+        setFullscreen(false)
+        setViewport(height = 10.0)
+    }
 
     val vertexShader = object : ShaderScript() {
-        val position = attribute(0).vec2()
-        val textureCoordinates = attribute(1).vec2()
+        val position = attribute(Attribute.positionLocation).vec2()
+        val textureCoordinates = attribute(Attribute.texCoordsLocation).vec2()
 
         //language=GLSL
         override val main: String =
@@ -51,32 +55,17 @@ fun main() {
 
     val shader = Shader.create(vertexShader, fragmentShader)
 
-    fun createRectangleCoordinatesArray(left: Double, right: Double, top: Double, bottom: Double): Array<Vector> {
-        return arrayOf(
-                vec(left, top),
-                vec(left, bottom),
-                vec(right, bottom),
-                vec(left, top),
-                vec(right, bottom),
-                vec(right, top)
-        )
-    }
+    val squareCoordinates: Array<Vector> = VectorShapes.createRectangle(-0.5, -0.5, 0.7, 1.0)
+    val positionAttribute = Vec2AttributeArray(squareCoordinates)
+    positionAttribute.attachTo(vertexShader.position)
 
-    val squareCoordinates = createRectangleCoordinatesArray(-0.5, 0.5, 0.5, -0.5)
-
-    val textureCoordinates = createRectangleCoordinatesArray(0.0, 1.0, 0.0, 1.0)
-
-    val positionAttribute = AttributeArray
-            .createFrom(vertexShader.position)
-            .createArray(squareCoordinates)
-
-    val textureCoordinatesAttribute = AttributeArray
-            .createFrom(vertexShader.textureCoordinates)
-            .createArray(textureCoordinates)
+    val textureCoordinates: Array<Vector> = VectorShapes.createRectangle(0.0, 0.0, 1.0, -1.0)
+    val textureCoordinatesAttribute = Vec2AttributeArray(textureCoordinates)
+    textureCoordinatesAttribute.attachTo(vertexShader.textureCoordinates)
 
     val image = Image.loadImage(Res.image("testImage"))
 
-    val model = Model(positionAttribute, textureCoordinatesAttribute, image)
+    val model = Model(image, positionAttribute, textureCoordinatesAttribute)
 
     Game.loop {
         shader.render(model)

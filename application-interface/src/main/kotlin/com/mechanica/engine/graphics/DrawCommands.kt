@@ -3,11 +3,13 @@ package com.mechanica.engine.graphics
 import com.mechanica.engine.models.Model
 
 interface ArrayDrawCommand {
-    fun arrays(model: Model)
+    fun arrays(model: Model) = arrays(model.vertexCount)
+    fun arrays(vertexCount: Int)
 }
 
 interface ElementsDrawCommand {
-    fun elements(model: Model)
+    fun elements(model: Model) = elements(model.vertexCount)
+    fun elements(vertexCount: Int)
 }
 
 interface MultiArrayDrawCommand {

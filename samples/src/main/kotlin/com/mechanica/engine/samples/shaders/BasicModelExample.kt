@@ -4,16 +4,17 @@ import com.mechanica.engine.color.Color
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.attributes.Attribute
+import com.mechanica.engine.shader.attributes.Vec2AttributeArray
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.vertices.AttributeArray
 
 
 fun main() {
     Game.configure { }
     val vertexShader = object : ShaderScript() {
-        val position = attribute(0).vec2()
+        val position = attribute(Attribute.positionLocation).vec2()
 
         //language=GLSL
         override val main: String = """
@@ -55,9 +56,8 @@ fun main() {
             vec(right, top)
     )
 
-    val positionAttribute = AttributeArray
-        .createFrom(vertexShader.position)
-        .createArray(shapeCoordinates)
+    val positionAttribute = Vec2AttributeArray(shapeCoordinates)
+    positionAttribute.attachTo(vertexShader.position)
 
     val model = Model(positionAttribute)
 

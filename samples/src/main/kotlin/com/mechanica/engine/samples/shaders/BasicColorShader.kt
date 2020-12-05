@@ -4,15 +4,20 @@ import com.mechanica.engine.color.Color
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.models.Model
+import com.mechanica.engine.shader.attributes.Attribute
+import com.mechanica.engine.shader.attributes.Vec2AttributeArray
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.unit.vector.vec
 
 fun main() {
-    Game.configure {  }
+    Game.configure {
+        setFullscreen(false)
+    }
 
     val vertexShader = object : ShaderScript() {
-        val position = attribute(0).vec2()
+        val position = attribute(Attribute.positionLocation).vec2()
 
         //language=GLSL
         override val main: String = """
@@ -37,12 +42,25 @@ fun main() {
 
     }
 
+    // Create the shader using the defined shader scripts
     val shader = Shader.create(vertexShader, fragmentShader)
 
-    val squareModel = Model.createUnitSquare()
+    // Create the array of coordinates that we want to pass to the 'vertexShader.position' attribute
+    val coordinatesForSquare: Array<Vector> = arrayOf(
+            vec(0.0, 0.0),
+            vec(0.0, 0.4),
+            vec(0.5, 0.4),
+            vec(0.5, 0.0),
+    )
+
+    // Use these coordinates to create an attribute array and attach it to vertexShader.position
+    val positionArray = Vec2AttributeArray(coordinatesForSquare)
+    positionArray.attachTo(vertexShader.position)
 
     Game.loop {
         fragmentShader.colorInput.set(Mouse.normalized.x, Mouse.normalized.y, 0.5, 1.0)
-        shader.render(squareModel)
+
+        // The shader can take the positionArray as an input. The shader could take an array instead if multiple inputs are needed
+        shader.render(positionArray) { drawTriangleFan.arrays(4)}
     }
 }

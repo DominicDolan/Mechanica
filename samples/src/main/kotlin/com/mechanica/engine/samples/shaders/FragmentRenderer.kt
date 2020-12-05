@@ -5,13 +5,13 @@ import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.utils.createUnitSquareVectors
 import org.joml.Matrix4f
 
 class FragmentRenderer {
 
-    private val vbo = AttributeArray.createFrom(Attribute.location(0).vec3()).createUnitQuad()
+    private val vbo = AttributeArray.Companion.createPositionArray(createUnitSquareVectors())
     private val model = Model(vbo)
 
     private val vertex = object : DrawerScript() {
@@ -29,7 +29,7 @@ class FragmentRenderer {
 
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
-        val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
+        val resolution = uniform.vec2(Game.surface.width.toDouble(), Game.surface.height.toDouble())
 
         //language=GLSL
         override val main: String = """
@@ -73,7 +73,7 @@ class BreathingColorsShader : DrawerShader() {
 
         val mouse = uniform.vec2(0.0, 0.0)
         val time = uniform.float(0f)
-        val resolution = uniform.vec2(Game.window.width.toDouble(), Game.window.height.toDouble())
+        val resolution = uniform.vec2(Game.surface.width.toDouble(), Game.surface.height.toDouble())
 
         //language=GLSL
         override val main: String = """

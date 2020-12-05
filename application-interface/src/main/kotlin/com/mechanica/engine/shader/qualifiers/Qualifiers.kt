@@ -7,9 +7,13 @@ interface Qualifier {
 }
 
 interface AttributeQualifier : Qualifier {
-    val location: Int
     override val qualifierName: String
-        get() = "layout (location=$location) in"
+        get() = "in"
+}
+
+interface UniformQualifier : Qualifier {
+    override val qualifierName: String
+        get() = "uniform"
 }
 
 //class AttributeArrayBuilder(private val variables: ScriptVariables? = null) {

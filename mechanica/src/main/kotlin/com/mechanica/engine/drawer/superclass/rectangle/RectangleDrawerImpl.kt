@@ -1,12 +1,12 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.qualifiers.Attribute
-import com.mechanica.engine.vertices.AttributeArray
-import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
+import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.unit.vector.VectorShapes
 
 internal class RectangleDrawerImpl(
         private val state: DrawState,
@@ -15,11 +15,11 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = AttributeArray.createFrom(Attribute.position).createUnitQuad()
+        val position = AttributeArray.createPositionArray(VectorShapes.createUnitSquare())
 
         val disableTexCoords = object : Bindable {
             override fun bind() {
-                glDisableVertexAttribArray(1)
+                MechanicaLoader.shaderLoader.attributeLoader.disableAttributeArray(1)
             }
         }
         model = Model(position, disableTexCoords)

@@ -22,16 +22,16 @@ internal class MouseImpl : Mouse {
 
     private val worldRatio: Vector = object : Vector {
         override val x: Double
-            get() = Game.window.width/ Game.world.width
+            get() = Game.surface.width/ Game.world.width
         override val y: Double
-            get() = Game.window.height/ Game.world.height
+            get() = Game.surface.height/ Game.world.height
     }
 
     private val uiRatio: Vector = object : Vector {
         override val x: Double
-            get() = Game.window.width/ Game.ui.width
+            get() = Game.surface.width/ Game.ui.width
         override val y: Double
-            get() = Game.window.height/ Game.ui.height
+            get() = Game.surface.height/ Game.ui.height
 
     }
 
@@ -60,9 +60,9 @@ internal class MouseImpl : Mouse {
 
     override val normalized: Vector = object : Vector {
         override val x: Double
-            get() = pixel.x/ Game.window.width
+            get() = pixel.x/ Game.surface.width
         override val y: Double
-            get() = 1.0 - pixel.y/ Game.window.height
+            get() = 1.0 - pixel.y/ Game.surface.height
 
     }
 }

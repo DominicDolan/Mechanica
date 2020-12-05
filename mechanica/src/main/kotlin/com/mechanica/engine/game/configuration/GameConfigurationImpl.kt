@@ -1,8 +1,8 @@
 package com.mechanica.engine.game.configuration
 
-import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.debug.GameDebugConfiguration
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
@@ -49,8 +49,8 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
         data.startingScene = scene
     }
 
-    override fun configureWindow(configuration: Window.() -> Unit) {
-        data.windowConfiguration = configuration
+    override fun configureDrawSurface(configuration: DrawSurface.() -> Unit) {
+        data.surfaceConfiguration = configuration
     }
 
     override fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit) {
@@ -58,7 +58,7 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
     }
 
     override fun setMultisampling(samples: Int) {
-        GLFWContext.multisampling(samples)
+        MechanicaLoader.displayLoader.multisampling(samples)
     }
 
     override fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit) {

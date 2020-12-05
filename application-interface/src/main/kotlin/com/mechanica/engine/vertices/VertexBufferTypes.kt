@@ -1,6 +1,6 @@
 package com.mechanica.engine.vertices
 
-import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.context.loader.MechanicaLoader
 
 
 interface VertexBufferType<T> {
@@ -10,5 +10,5 @@ interface VertexBufferType<T> {
 interface ElementArrayType: VertexBufferType<ShortArray> {
     override fun createBuffer(array: ShortArray): IndexArray
 
-    companion object : ElementArrayType by GLLoader.createElementArray()
+    companion object : ElementArrayType by MechanicaLoader.shaderLoader.createElementArray()
 }

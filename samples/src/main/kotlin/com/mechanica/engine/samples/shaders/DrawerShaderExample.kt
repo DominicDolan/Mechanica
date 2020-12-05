@@ -11,6 +11,7 @@ import com.mechanica.engine.input.mouse.Mouse
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
+        setFullscreen(false)
     }
 
     val vertexShader = object : DrawerScript() {
@@ -18,6 +19,7 @@ fun main() {
         override val main: String = """
             void main(void) {
                 gl_Position = projection*view*transformation*vec4($position, 1.0);
+                //projection*view*transformation*
             }
         """
     }

@@ -9,7 +9,8 @@ import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
-import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.shader.attributes.Attribute
+import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.text.Text
@@ -17,22 +18,21 @@ import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.utils.loadImage
-import com.mechanica.engine.vertices.AttributeArray
 import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL40
 
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
+        setFullscreen(false)
         setMultisampling(0)
     }
 
     val vertex = object : ShaderScript() {
 
-        val position = attribute(0).vec4()
-        val color = attribute(1).vec4()
+        val position = attribute(Attribute.positionLocation).vec4()
+        val color = attribute.vec4()
 
         val transformation = uniform.mat4()
         val view = uniform.mat4(Game.matrices.worldCamera)
@@ -78,14 +78,14 @@ fun main() {
             vec(0.85, 0.95)
     )
 
-    val square = AttributeArray.createFrom(Attribute.location(0).vec2()).createArray(squareArray)
+    val square = AttributeArray.createPositionArray(squareArray)
 
     val colorArray = arrayOf(
             hex(0xFF00FFFF),
             hex(0xFFFF00FF),
             hex(0x0000FFFF),
             hex(0x00FF00FF))
-    val colors = AttributeArray.createFrom(vertex.color).createArray(colorArray)
+    val colors = AttributeArray.create(colorArray, vertex.color)
 
     val shader = Shader(vertex, fragment)
     val inputs: Array<Bindable> = arrayOf(square, colors, indices)
@@ -102,7 +102,8 @@ fun main() {
         vertex.transformation.set(transformation)
         fragment.mouse.set(mouse)
         shader.render(inputs) {
-            GL40.glDrawElements(GL40.GL_TRIANGLES, 6, GL40.GL_UNSIGNED_SHORT, 0)
+            this.drawTriangles.elements(indices.vertexCount)
+//            GL40.glDrawElements(GL40.GL_TRIANGLES, 6, GL40.GL_UNSIGNED_SHORT, 0)
 //            GL40.glDrawArrays(GL40.GL_TRIANGLE_STRIP, 0, 4)
         }
         draw.green.rectangle()

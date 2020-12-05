@@ -1,11 +1,12 @@
 package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.hex
+import com.mechanica.engine.shader.attributes.Attribute
 import com.mechanica.engine.shader.script.ShaderScript
 
 abstract class DrawerScript : ShaderScript() {
-    protected val position by lazy { attribute(0).vec3("position") }
-    protected val textureCoords by lazy { attribute(1).vec2("textureCoords") }
+    protected val position by lazy { attribute(Attribute.positionLocation).vec3() }
+    protected val textureCoords by lazy { attribute(Attribute.positionLocation).vec2() }
 
     val color by lazy { uniform.vec4(hex(0x000000FF)) }
 

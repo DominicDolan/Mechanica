@@ -6,32 +6,32 @@ import java.nio.IntBuffer
 
 class LwjglDrawerLoader(val mode: Int, val type: Int) : GLDrawerLoader {
 
-    override fun drawElements(model: Model) {
-        model.isValid {
-            glDrawElements(mode, model.vertexCount, type, 0)
+    override fun drawElements(vertexCount: Int) {
+        if (vertexCount > 0) {
+            glDrawElements(mode, vertexCount, type, 0)
         }
     }
 
-    override fun drawElementsBaseVertex(model: Model, baseVertex: Int) {
-        model.isValid {
-            glDrawElementsBaseVertex(mode, model.vertexCount, type, 0, baseVertex)
+    override fun drawElementsBaseVertex(vertexCount: Int, baseVertex: Int) {
+        if (vertexCount > 0) {
+            glDrawElementsBaseVertex(mode, vertexCount, type, 0, baseVertex)
         }
     }
 
-    override fun drawRangeElements(model: Model, start: Int, end: Int) {
-        model.isValid {
-            glDrawRangeElements(mode, start, end, model.vertexCount, type, 0)
+    override fun drawRangeElements(vertexCount: Int, start: Int, end: Int) {
+        if (vertexCount > 0) {
+            glDrawRangeElements(mode, start, end, vertexCount, type, 0)
         }
     }
 
-    override fun drawRangeElementsBaseVertex(model: Model, start: Int, end: Int, baseVertex: Int) {
-        model.isValid {
-            glDrawRangeElementsBaseVertex(mode, start, end, model.vertexCount, type, 0, baseVertex)
+    override fun drawRangeElementsBaseVertex(vertexCount: Int, start: Int, end: Int, baseVertex: Int) {
+        if (vertexCount > 0) {
+            glDrawRangeElementsBaseVertex(mode, start, end, vertexCount, type, 0, baseVertex)
         }
     }
 
-    override fun drawElementsIndirect(model: Model) {
-        model.isValid {
+    override fun drawElementsIndirect(vertexCount: Int) {
+        if (vertexCount > 0) {
             glDrawElementsIndirect(mode, type, 0)
         }
     }
@@ -48,32 +48,32 @@ class LwjglDrawerLoader(val mode: Int, val type: Int) : GLDrawerLoader {
         TODO("not implemented")
     }
 
-    override fun drawElementsInstanced(model: Model, instanceCount: Int) {
-        model.isValid {
-            glDrawElementsInstanced(mode, model.vertexCount, type, 0, instanceCount)
+    override fun drawElementsInstanced(vertexCount: Int, instanceCount: Int) {
+        if (vertexCount > 0) {
+            glDrawElementsInstanced(mode, vertexCount, type, 0, instanceCount)
         }
     }
 
-    override fun drawElementsInstancedBaseVertex(model: Model, instanceCount: Int, baseVertex: Int) {
-        model.isValid {
-            glDrawElementsInstancedBaseVertex(mode, model.vertexCount, type, 0, instanceCount, baseVertex)
+    override fun drawElementsInstancedBaseVertex(vertexCount: Int, instanceCount: Int, baseVertex: Int) {
+        if (vertexCount > 0) {
+            glDrawElementsInstancedBaseVertex(mode, vertexCount, type, 0, instanceCount, baseVertex)
         }
     }
 
-    override fun drawElementsInstancedBaseInstance(model: Model, instanceCount: Int, baseInstance: Int) {
-        model.isValid {
-            glDrawElementsInstancedBaseInstance(mode, model.vertexCount, type, 0, instanceCount, baseInstance)
+    override fun drawElementsInstancedBaseInstance(vertexCount: Int, instanceCount: Int, baseInstance: Int) {
+        if (vertexCount > 0) {
+            glDrawElementsInstancedBaseInstance(mode, vertexCount, type, 0, instanceCount, baseInstance)
         }
     }
 
-    override fun drawArrays(model: Model) {
-        model.isValid {
-            glDrawArrays(mode, 0, model.vertexCount)
+    override fun drawArrays(vertexCount: Int) {
+        if (vertexCount > 0) {
+            glDrawArrays(mode, 0, vertexCount)
         }
     }
 
-    override fun drawArraysIndirect(model: Model) {
-        model.isValid {
+    override fun drawArraysIndirect(vertexCount: Int) {
+        if (vertexCount > 0) {
             glDrawArraysIndirect(mode, 0)
         }
     }
@@ -82,15 +82,15 @@ class LwjglDrawerLoader(val mode: Int, val type: Int) : GLDrawerLoader {
         TODO("not implemented")
     }
 
-    override fun drawArraysInstanced(model: Model, instanceCount: Int) {
-        model.isValid {
-            glDrawArraysInstanced(mode, 0, model.vertexCount, instanceCount)
+    override fun drawArraysInstanced(vertexCount: Int, instanceCount: Int) {
+        if (vertexCount > 0) {
+            glDrawArraysInstanced(mode, 0, vertexCount, instanceCount)
         }
     }
 
-    override fun drawArraysInstancedBaseInstance(model: Model, instanceCount: Int, baseInstance: Int) {
-        model.isValid {
-            glDrawArraysInstancedBaseInstance(mode, 0, model.vertexCount, instanceCount, baseInstance)
+    override fun drawArraysInstancedBaseInstance(vertexCount: Int, instanceCount: Int, baseInstance: Int) {
+        if (vertexCount > 0) {
+            glDrawArraysInstancedBaseInstance(mode, 0, vertexCount, instanceCount, baseInstance)
         }
     }
 

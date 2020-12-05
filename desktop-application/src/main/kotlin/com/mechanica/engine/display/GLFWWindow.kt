@@ -1,7 +1,7 @@
 package com.mechanica.engine.display
 
-import com.mechanica.engine.context.GLContext
-import com.mechanica.engine.context.GLFWContext
+import com.mechanica.engine.context.GLContextOld
+import com.mechanica.engine.context.GLFWContextOld
 import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.resources.Resource
 import com.mechanica.engine.utils.ImageData
@@ -12,17 +12,11 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 
-class GLFWWindow private constructor(width: Int, height: Int, override val title: String, monitor: Monitor?, sharedWith: Window?) : Window {
+class GLFWWindow private constructor(width: Int, height: Int, override val title: String, display: Display?, sharedWith: DesktopWindow?) : DesktopWindow {
     override val id: Long
     var hasInitialized = false
         private set
 
-    override val width: Int
-        get() = resolution.width
-    override val height: Int
-        get() = resolution.height
-    override val aspectRatio: Double
-        get() = if (width != 0 && height != 0) width.toDouble()/height.toDouble() else 1.0
     override var isFocused: Boolean
         get() = glfwGetWindowAttrib(id, GLFW_FOCUSED) == GLFW_TRUE
         set(value) { if (value) glfwFocusWindow(id) }
@@ -59,13 +53,13 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         set(value) { glfwSetWindowShouldClose(id, value) }
     override var vSync: Boolean = true
         set(value) {
-            if (GLContext.initialized) {
+            if (GLContextOld.initialized) {
                 glfwSwapInterval(if (value) 1 else 0)
             }
             field = value
         }
     override val isFullscreen: Boolean
-        get() = monitor != null
+        get() = display != null
 
     private var finished = false
 
@@ -73,7 +67,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         get() = glfwGetWindowOpacity(id)
         set(value) = glfwSetWindowOpacity(id, value)
 
-    var monitor: Monitor? = monitor
+    var display: Display? = display
         get() {
             val monitor = field
             val monitorId = glfwGetWindowMonitor(id)
@@ -96,34 +90,22 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
 
     override val position: PositionImpl = PositionImpl()
 
-    override val resolution: Window.Dimension by lazy {
-        setResolution(DimensionImpl(0, 0, false))
+    override val resolution: Resolution by lazy {
+        setResolution(GLFWResolution(0.px, 0.px, false))
     }
 
-    override val size: Window.Dimension by lazy {
+    override val size: DesktopWindow.Dimension by lazy {
         setWindowSize(DimensionImpl(0, 0, false))
     }
 
-    override val isResizing: Boolean
-        get() {
-            val resolution = (resolution as DimensionImpl)
-            val size = (size as DimensionImpl)
-            val isResizing =  resolution.isChanging || size.isChanging
-            resolution.isChanging = false
-            size.isChanging = false
-            return isResizing
-        }
-
-    private val callbackList = ArrayList<((Window) -> Unit)>()
+    private val callbackList = ArrayList<((DesktopWindow) -> Unit)>()
 
     init {
-        if (sharedWith != null) {
-            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
-        }
-        id = glfwCreateWindow(width, height, title, monitor?.id ?: MemoryUtil.NULL, sharedWith?.id ?: MemoryUtil.NULL)
+        id = glfwCreateWindow(width, height, title, display?.id ?: MemoryUtil.NULL, sharedWith?.id ?: MemoryUtil.NULL)
 
-        if (id == MemoryUtil.NULL)
+        if (id == MemoryUtil.NULL) {
             throw RuntimeException("Failed to create the GLFW window")
+        }
         hasInitialized = true
 
         setFramebufferSizeCallback()
@@ -141,16 +123,16 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
 
     }
 
-    override fun addRefreshCallback(callback: (Window) -> Unit) {
+    override fun addOnChangedCallback(callback: (DesktopWindow) -> Unit) {
         callbackList.add(callback)
     }
 
     private fun setFramebufferSizeCallback() {
         glfwSetFramebufferSizeCallback(id) { window, w, h ->
             if (window == id) {
-                val resolution = (resolution as DimensionImpl)
-                resolution.width = w
-                resolution.height = h
+                val resolution = (resolution as GLFWResolution)
+                resolution.width = w.px
+                resolution.height = h.px
                 resolution.isChanging = true
 
             }
@@ -187,6 +169,10 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         }
     }
 
+    override fun shouldClose() {
+        shouldClose = true
+    }
+
     fun swapBuffers() {
         glfwSwapBuffers(id)
     }
@@ -199,7 +185,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         glfwRequestWindowAttention(id)
     }
 
-    private fun setWindowSize(out: DimensionImpl): Window.Dimension {
+    private fun setWindowSize(out: DimensionImpl): DesktopWindow.Dimension {
         val widthArray = IntArray(1)
         val heightArray = IntArray(1)
         glfwGetWindowSize(id, widthArray, heightArray)
@@ -208,12 +194,12 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         return out
     }
 
-    private fun setResolution(out: DimensionImpl): Window.Dimension {
+    private fun setResolution(out: GLFWResolution): Resolution {
         val widthArray = IntArray(1)
         val heightArray = IntArray(1)
         glfwGetFramebufferSize(id, widthArray, heightArray)
-        out.width = widthArray[0]
-        out.height = heightArray[0]
+        out.width = widthArray[0].px
+        out.height = heightArray[0].px
         return out
     }
 
@@ -238,24 +224,24 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     }
 
     override fun setFullscreen() {
-        setFullscreen(Monitor.getPrimaryMonitor())
+        setFullscreen(Display.getPrimaryMonitor())
     }
 
-    override fun setFullscreen(monitor: Monitor) {
+    override fun setFullscreen(display: Display) {
         val vSync = vSync
-        val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
-        glfwSetWindowMonitor(id, monitor.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
+        val vidMode = if (display is GLFWMonitor) display.currentVideoMode else throw IllegalStateException("Unable to put window into fullscreen mode")
+        glfwSetWindowMonitor(id, display.id, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate())
         this.vSync = vSync
     }
 
-    override fun setFullscreen(monitor: Monitor, width: Int, height: Int, refreshRate: Int) {
+    override fun setFullscreen(display: Display, width: Int, height: Int, refreshRate: Int) {
         val vSync = vSync
-        glfwSetWindowMonitor(id, monitor.id, 0, 0, width, height, refreshRate)
+        glfwSetWindowMonitor(id, display.id, 0, 0, width, height, refreshRate)
         this.vSync = vSync
     }
 
     override fun exitFullscreen(width: Int, height: Int) {
-        if (this.monitor != null) {
+        if (this.display != null) {
             val vidMode = GLFWMonitor.getPrimaryMonitor().currentVideoMode
             val screenWidth = vidMode.width()
             val screenHeight = vidMode.height()
@@ -280,7 +266,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
 
     }
 
-    inner class PositionImpl : Window.Position {
+    inner class PositionImpl : DesktopWindow.Position {
         val xArray = IntArray(1)
         val yArray = IntArray(1)
         override var x: Int
@@ -305,20 +291,25 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         }
     }
 
+    private data class GLFWResolution(
+            override var width: Pixel,
+            override var height: Pixel,
+            var isChanging: Boolean) : Resolution
+
     private data class DimensionImpl(
             override var width: Int, 
             override var height: Int, 
-            var isChanging: Boolean) : Window.Dimension
+            var isChanging: Boolean) : DesktopWindow.Dimension
 
     companion object {
-        fun create(title: String, width: Int, height: Int, sharedWith: Window? = null): Window {
-            GLFWContext.initialize()
+        fun create(title: String, width: Int, height: Int, sharedWith: DesktopWindow? = null): GLFWWindow {
+            GLFWContextOld.initialize()
             return GLFWWindow(width, height, title, null, sharedWith)
         }
 
-        fun create(title: String, monitor: Monitor, sharedWith: Window? = null): Window {
-            GLFWContext.initialize()
-            val vidMode = if (monitor is GLFWMonitor) monitor.currentVideoMode else throw IllegalStateException("Unable to create window")
+        fun create(title: String, display: Display, sharedWith: DesktopWindow? = null): GLFWWindow {
+            GLFWContextOld.initialize()
+            val vidMode = if (display is GLFWMonitor) display.currentVideoMode else throw IllegalStateException("Unable to create window")
             val width = vidMode.width()
             val height = vidMode.height()
             glfwWindowHint(GLFW_RED_BITS, vidMode.redBits())
@@ -326,12 +317,12 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
             glfwWindowHint(GLFW_BLUE_BITS, vidMode.blueBits())
             glfwWindowHint(GLFW_REFRESH_RATE, vidMode.refreshRate())
 
-            return GLFWWindow(width, height, title, monitor, sharedWith)
+            return GLFWWindow(width, height, title, display, sharedWith)
         }
 
-        fun create(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window? = null): Window {
-            GLFWContext.initialize()
-            return GLFWWindow(width, height, title, monitor, sharedWith)
+        fun create(title: String, width: Int, height: Int, display: Display, sharedWith: DesktopWindow? = null): GLFWWindow {
+            GLFWContextOld.initialize()
+            return GLFWWindow(width, height, title, display, sharedWith)
         }
 
     }

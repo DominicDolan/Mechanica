@@ -1,8 +1,10 @@
 package com.mechanica.engine.models
 
-import com.mechanica.engine.shader.qualifiers.Attribute
+import com.mechanica.engine.shader.attributes.Attribute
+import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.vertices.AttributeArray
+import com.mechanica.engine.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.utils.createUnitSquareVectors
 import com.mechanica.engine.vertices.IndexArray
 import com.mechanica.engine.vertices.VertexBuffer
 
@@ -14,6 +16,9 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
             var max = 0
             for (vbo in inputs) {
                 if (vbo is VertexBuffer<*> && vbo.vertexCount > max) {
+                    max = vbo.vertexCount
+                }
+                if (vbo is AttributeArray && vbo.vertexCount > max) {
                     max = vbo.vertexCount
                 }
             }
@@ -47,26 +52,20 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
     override fun iterator() = inputs.iterator()
 
     companion object {
-        fun create(vararg bindables: Bindable) = Model(*bindables)
-
         fun createUnitSquare(): Model {
-            val positionAttribute = Attribute.location(0).vec3()
-            val positionArray = AttributeArray.createFrom(positionAttribute).createUnitQuad()
+            val positionArray = AttributeArray.create(createUnitSquareVectors(), Attribute.position)
 
-            val textureAttribute = Attribute.location(1).vec2()
-            val tc = AttributeArray.createFrom(textureAttribute).createInvertedUnitQuad()
+            val tc = AttributeArray.create(createInvertedUnitSquareVectors(), Attribute.textureCoords)
             return Model(positionArray, tc)
         }
 
         fun createFromFloatArray(array: FloatArray): Model {
-            val positionAttribute = Attribute.location(0).vec3()
-            val position = AttributeArray.createFrom(positionAttribute).createBuffer(array)
+            val position = AttributeArray.create(array, Attribute.position)
             return Model(position)
         }
 
         fun createFromVecArray(array: Array<Vector>): Model {
-            val positionAttribute = Attribute.location(0).vec3()
-            val position = AttributeArray.createFrom(positionAttribute).createArray(array)
+            val position = AttributeArray.create(array, Attribute.position)
             return Model(position)
         }
     }

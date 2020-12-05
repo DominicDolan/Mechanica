@@ -12,6 +12,14 @@ interface Vector {
 
     val theta get() = atan2(this.y, this.x).radians
 
+    operator fun get(i: Int): Double {
+        return if (i == 0) x else if (i == 1) y else throw ArrayIndexOutOfBoundsException("Tried to call 3rd coordinate on a 2D vector")
+    }
+
+    fun getOrZero(i: Int): Double {
+        return if (i == 0) x else if (i == 1) y else 0.0
+    }
+
     companion object {
         fun create(x: Double = 0.0, y: Double = 0.0) = object : Vector {
             override val x = x

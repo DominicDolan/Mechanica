@@ -11,6 +11,9 @@ import com.mechanica.engine.unit.vector.vec
 object DebugDrawer {
     private val drawings = ArrayList<(Drawer) -> Unit>()
 
+    val hasSomethingToRender: Boolean
+        get() = drawings.isNotEmpty()
+
     internal fun render(draw: Drawer) {
         if (Game.debug.constructionDraws) {
             for (drawing in drawings) {

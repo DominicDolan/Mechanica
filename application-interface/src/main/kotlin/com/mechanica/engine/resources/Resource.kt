@@ -1,6 +1,6 @@
 package com.mechanica.engine.resources
 
-import com.mechanica.engine.context.loader.GLLoader
+import com.mechanica.engine.context.loader.MechanicaLoader
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -29,7 +29,7 @@ interface Resource : GenericResource {
     override val buffer: ByteBuffer
         get() {
             val bytes = stream.readAllBytes()
-            val buffer = GLLoader.bufferLoader.byteBuffer(bytes.size)
+            val buffer = MechanicaLoader.bufferLoader.byteBuffer(bytes.size)
             buffer.put(bytes)
             buffer.flip()
             return buffer

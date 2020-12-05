@@ -1,7 +1,7 @@
 package com.mechanica.engine.game.configuration
 
 import com.mechanica.engine.debug.GameDebugConfiguration
-import com.mechanica.engine.display.Window
+import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.persistence.JsonFileStorer
@@ -23,7 +23,7 @@ interface GameConfiguration {
 
     fun setMultisampling(samples: Int)
 
-    fun configureWindow(configuration: (Window.() -> Unit))
+    fun configureDrawSurface(configuration: (DrawSurface.() -> Unit))
     fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit)
 
     fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)

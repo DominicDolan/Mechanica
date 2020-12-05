@@ -1,27 +1,32 @@
 package com.mechanica.engine.context.loader
 
+import com.mechanica.engine.context.GLFWContextOld
+import com.mechanica.engine.display.DesktopWindow
+import com.mechanica.engine.display.Display
 import com.mechanica.engine.display.GLFWMonitor
 import com.mechanica.engine.display.GLFWWindow
-import com.mechanica.engine.display.Monitor
-import com.mechanica.engine.display.Window
 
 class LwjglDisplayLoader : DisplayLoader {
-    override fun createWindow(title: String, width: Int, height: Int, sharedWith: Window?): Window {
+    override fun createWindow(title: String, width: Int, height: Int, sharedWith: DesktopWindow?): DesktopWindow {
         return GLFWWindow.create(title, width, height, sharedWith)
     }
 
-    override fun createWindow(title: String, monitor: Monitor, sharedWith: Window?): Window {
-        return GLFWWindow.create(title, monitor, sharedWith)
+    override fun createWindow(title: String, display: Display, sharedWith: DesktopWindow?): DesktopWindow {
+        return GLFWWindow.create(title, display, sharedWith)
     }
 
-    override fun createWindow(title: String, width: Int, height: Int, monitor: Monitor, sharedWith: Window?): Window {
-        return GLFWWindow.create(title, width, height, monitor, sharedWith)
+    override fun createWindow(title: String, width: Int, height: Int, display: Display, sharedWith: DesktopWindow?): DesktopWindow {
+        return GLFWWindow.create(title, width, height, display, sharedWith)
     }
 
-    override val allMonitors: Array<out Monitor>
+    override fun multisampling(samples: Int) {
+        GLFWContextOld.multisampling(samples)
+    }
+
+    override val allDisplays: Array<out Display>
         get() = GLFWMonitor.allMonitors
 
-    override fun getPrimaryMonitor(): Monitor {
+    override fun getPrimaryMonitor(): Display {
         return GLFWMonitor.getPrimaryMonitor()
     }
 }
