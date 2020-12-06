@@ -19,7 +19,6 @@ fun main() {
         override val main: String = """
             void main(void) {
                 gl_Position = projection*view*transformation*vec4($position, 1.0);
-                //projection*view*transformation*
             }
         """
     }

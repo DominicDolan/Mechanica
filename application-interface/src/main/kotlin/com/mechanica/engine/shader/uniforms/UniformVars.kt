@@ -154,7 +154,8 @@ abstract class UniformMatrix4f(
         var matrix: Matrix4f,
         override val name: String
 ) : UniformVar<Matrix4f>() {
-    override val value: Matrix4f = Matrix4f().identity()
+    override val value: Matrix4f
+        get() = matrix
     override val type = ShaderType.mat4()
 
     init {

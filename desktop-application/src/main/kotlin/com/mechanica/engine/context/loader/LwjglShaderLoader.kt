@@ -9,8 +9,7 @@ import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.shader.vars.GlslLocation
 import com.mechanica.engine.shader.vars.ShaderType
 import com.mechanica.engine.shader.vbo.LwjglElementArrayType
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL15.glGenBuffers
+import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL40
 
@@ -34,26 +33,31 @@ class LwjglShaderLoader : ShaderLoader {
             tessellation: ShaderScript?,
             geometry: ShaderScript?): ShaderFunctions = ShaderCreator(vertex, fragment, tessellation, geometry)
 
-    override fun createFloatBufferLoader(floats: FloatArray) = object : FloatBufferLoader() {
-        override val floats: FloatArray = floats
-        override val id: Int = glGenBuffers()
-        val bufferTarget: Int = GL40.GL_ARRAY_BUFFER
+    override fun createFloatBufferLoader(floats: FloatArray) = LwjglFloatBufferBinder(floats)
 
-        override fun initiateBuffer() {
+    override fun createFloatAttributeBinder(location: GlslLocation, type: ShaderType<*>) = LwjglFloatAttributeBinder(location, type)
+
+    class LwjglFloatBufferBinder(override var floats: FloatArray) : FloatBufferLoader() {
+        override val id: Int = glGenBuffers()
+        private val bufferTarget: Int = GL40.GL_ARRAY_BUFFER
+
+        override fun initiateBuffer(byteCapacity: Long) {
             GL40.glBufferData(bufferTarget, byteCapacity, GL40.GL_STATIC_DRAW)
         }
 
         override fun storeSubData(offset: Long) {
-            GL15.glBufferSubData(bufferTarget, offset, floats)
+            glBufferSubData(bufferTarget, offset, floats)
         }
 
         override fun bind() {
             GL40.glBindBuffer(bufferTarget, id)
         }
 
+        override fun getExistingBufferSize(): Long {
+            bind()
+            return glGetBufferParameteri(bufferTarget, GL_BUFFER_SIZE).toLong()
+        }
     }
-
-    override fun createFloatAttributeBinder(location: GlslLocation, type: ShaderType<*>) = LwjglFloatAttributeBinder(location, type)
 
     class LwjglFloatAttributeBinder(private val locatable: GlslLocation, private val type: ShaderType<*>) : FloatAttributeBinder() {
         override val location: Int

@@ -1,6 +1,7 @@
 package com.mechanica.engine.models
 
 import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.shader.attributes.Vec2AttributeArray
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
 import com.mechanica.engine.utils.createIndicesArrayForQuads
@@ -13,8 +14,8 @@ class TextModel(text: Text) : Model(
         IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
         Image.invoke(text.font.atlas.id),
 ) {
-    private val positionAttribute = inputs[0] as AttributeArray
-    private val texCoordsAttribute = inputs[1] as AttributeArray
+    private val positionAttribute = inputs[0] as Vec2AttributeArray
+    private val texCoordsAttribute = inputs[1] as Vec2AttributeArray
     private val indexArray = inputs[2] as IndexArray
 
     private var atlas
@@ -52,8 +53,12 @@ class TextModel(text: Text) : Model(
     }
 
     private fun updateTextHolder(text: Text) {
-//        positionAttribute.set(text.positions, 0, text.vertexCount)
-//        texCoordsAttribute.set(text.texCoords, 0, text.vertexCount)
+        positionAttribute.value = text.positions
+        positionAttribute.updateBuffer()
+
+        texCoordsAttribute.value = text.texCoords
+        texCoordsAttribute.updateBuffer()
+
         vertexCount = text.vertexCount
 
         if (vertexCount > indexArray.vertexCount) {

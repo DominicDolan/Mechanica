@@ -6,7 +6,7 @@ import com.mechanica.engine.shader.script.ShaderScript
 
 abstract class DrawerScript : ShaderScript() {
     protected val position by lazy { attribute(Attribute.positionLocation).vec3() }
-    protected val textureCoords by lazy { attribute(Attribute.positionLocation).vec2() }
+    protected val textureCoords by lazy { attribute(Attribute.texCoordsLocation).vec2() }
 
     val color by lazy { uniform.vec4(hex(0x000000FF)) }
 

@@ -11,6 +11,7 @@ import org.intellij.lang.annotations.Language
 fun main() {
     Game.configure {
         setViewport(height = 10.0)
+        setFullscreen(false)
     }
 
     val vertex = object : ShaderScript() {
@@ -19,6 +20,7 @@ fun main() {
         val texCoords = attribute(Attribute.texCoordsLocation).vec2()
 
         val projection = uniform.mat4(Game.matrices.projection)
+        val view = uniform.mat4(Game.matrices.worldCamera)
         val transformation = uniform.mat4(Game.matrices.worldCamera)
 
         @Language("GLSL")
@@ -26,7 +28,7 @@ fun main() {
             out vec2 tc;
             void main(void) {
                 tc = $texCoords;
-                gl_Position = $projection*$transformation*vec4($position, 0.0, 1.0);
+                gl_Position = $projection*$view*$transformation*vec4($position, 0.0, 1.0);
             }
         """
     }

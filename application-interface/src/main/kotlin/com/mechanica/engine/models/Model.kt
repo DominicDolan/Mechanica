@@ -53,19 +53,19 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
 
     companion object {
         fun createUnitSquare(): Model {
-            val positionArray = AttributeArray.create(createUnitSquareVectors(), Attribute.position)
+            val positionArray = AttributeArray.createPositionArray(createUnitSquareVectors())
 
-            val tc = AttributeArray.create(createInvertedUnitSquareVectors(), Attribute.textureCoords)
+            val tc = AttributeArray.createTextureArray(createInvertedUnitSquareVectors())
             return Model(positionArray, tc)
         }
 
         fun createFromFloatArray(array: FloatArray): Model {
-            val position = AttributeArray.create(array, Attribute.position)
+            val position = AttributeArray.create(array, Attribute.positionLocation)
             return Model(position)
         }
 
         fun createFromVecArray(array: Array<Vector>): Model {
-            val position = AttributeArray.create(array, Attribute.position)
+            val position = AttributeArray.create(array, Attribute.positionLocation)
             return Model(position)
         }
     }

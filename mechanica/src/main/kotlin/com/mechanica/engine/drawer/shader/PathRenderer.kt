@@ -5,6 +5,7 @@ import com.mechanica.engine.color.toColor
 import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.models.Model
 import com.mechanica.engine.shader.attributes.AttributeArray
+import com.mechanica.engine.shader.attributes.FloatAttributeArray
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill
@@ -173,7 +174,7 @@ class PathRenderer() {
 
     private var floats: FloatArray
 
-    private val vbo: AttributeArray
+    private val vbo: FloatAttributeArray
     private val model: Model
 
     init {
@@ -194,22 +195,20 @@ class PathRenderer() {
     fun fillFloats(path: List<Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        TODO()
-//        vbo.set(floats)
+        vbo.value = floats
+        vbo.updateBuffer()
     }
 
     fun fillFloats(path: Array<out Vector>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        TODO()
-//        vbo.set(floats)
+        vbo.value = floats
+        vbo.updateBuffer()
     }
 
     fun fillFloats(path: VectorArray, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
-        TODO()
-//        vbo.set(floats)
     }
 
     private fun checkFloats(pathSize: Int) {

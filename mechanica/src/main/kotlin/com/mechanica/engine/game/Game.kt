@@ -73,6 +73,9 @@ object Game : Configurable<GameConfiguration> {
 
         val configuration = GameConfigurationImpl(configure)
         this.setup = GameSetup(application, configuration)
+        Game.application.glContext.startFrame()
+        surface.update()
+        gameMatrices.updateMatrices()
 
         if (configuration.initalize) {
             start()
@@ -84,6 +87,7 @@ object Game : Configurable<GameConfiguration> {
             if (!hasStarted) {
                 Timer
                 sceneManager.startScene()
+                updateFrame()
 
                 hasStarted = true
             }
@@ -101,25 +105,24 @@ object Game : Configurable<GameConfiguration> {
 
         try {
             while (!hasFinished) {
-                updateFrame()
-                if (!surface.update()) {
+                if (!updateFrame()) {
                     return
                 }
             }
-        } catch (ex: Exception) {
-            throw ex
         } finally {
             surface.destroy()
             terminate()
         }
     }
 
-    fun updateFrame() {
+    private fun updateFrame(): Boolean {
         application.glContext.startFrame()
 
         gameMatrices.updateMatrices()
 
         sceneManager.updateAndRender()
+
+        return surface.update()
     }
 
     fun close() {

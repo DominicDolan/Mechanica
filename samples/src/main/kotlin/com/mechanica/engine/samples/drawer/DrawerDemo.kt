@@ -1,6 +1,8 @@
 package com.mechanica.engine.samples.drawer
 
+import com.mechanica.engine.color.Color
 import com.mechanica.engine.config.configure
+import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
@@ -41,16 +43,16 @@ fun main() {
     Game.loop {
         val rotation = (mouse.x*20.0).degrees
         val radius = ((mouse.y + Game.world.height/2.0)/5.0)
-//        ScreenLog { "Radius: $radius" }
+        ScreenLog { "Radius: $radius" }
 
         draw.red.radius(radius).circle()
         draw.black.alpha(0.5).rotated(rotation).about(1, 2).rectangle(-2, -2, 2 , 4)
         draw.radius(0.2).blue.rectangle(0, -1, 2.0, 1.0)
         draw.depth(radius*2).radius(0.2).image(image, 3, 3)
         draw.radius(0.2).image(image, 3, 3)
-//        draw.origin.normalized(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
+        draw.origin.normalized(0.5, 0.5).green.text("Hello,\nworld\nHi", radius, 1, 1)
         draw.transformed.scale(3, 3).translate(4, -2).cyan.polygon(polygonModel)
-//        draw.color.strokeColor(hex(0xD0F045FF), strokeWidth = 0.05).path(points)
+        draw.color.strokeColor(Color.hex(0xD0F045FF), strokeWidth = 0.05).path(points)
         draw.cyan.ellipse(-3, -3, 2, 1)
     }
 }
