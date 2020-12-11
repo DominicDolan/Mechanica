@@ -38,6 +38,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
         surface.addOnChangedCallback { refreshView(it) }
 
         application.glContext.initialize(data)
+        application.audioContext.initialize(data)
 
         view = StaticView(data.viewX, data.viewY,
                 resolutionToCameraConverter.cameraWidthOut,
@@ -52,7 +53,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
         sceneManager = SceneManager(data.deltaCalculator, data.startingScene ?: { null })
 
         if (Game.persistenceMap == null) {
-//            configuration.setPersistence()
+            configuration.setPersistence()
         }
     }
 

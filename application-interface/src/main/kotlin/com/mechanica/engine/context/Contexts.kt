@@ -1,5 +1,7 @@
 package com.mechanica.engine.context
 
+import com.mechanica.engine.audio.AudioDevice
+import com.mechanica.engine.audio.Listener
 import com.mechanica.engine.configuration.ContextConfigurationData
 import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.display.Display
@@ -34,4 +36,9 @@ interface SurfaceContext : Context {
 
 interface OpenGLContext : Context {
     fun startFrame()
+}
+
+interface AudioContext : Context {
+    val listener: Listener
+    val device: AudioDevice
 }

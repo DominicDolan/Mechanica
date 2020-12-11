@@ -8,13 +8,15 @@ import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL40
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 class LwjglBufferLoader : BufferLoader {
-    override fun byteBuffer(size: Int) = BufferUtils.createByteBuffer(size)
+    override fun byteBuffer(size: Int): ByteBuffer = BufferUtils.createByteBuffer(size)
 
-    override fun intBuffer(size: Int) = BufferUtils.createIntBuffer(size)
+    override fun intBuffer(size: Int): IntBuffer = BufferUtils.createIntBuffer(size)
 
-    override fun floatBuffer(size: Int) = BufferUtils.createFloatBuffer(size)
+    override fun floatBuffer(size: Int): FloatBuffer = BufferUtils.createFloatBuffer(size)
 
     override fun useByteBuffer(size: Int, block: ByteBuffer.() -> Unit) {
         val buffer = MemoryUtil.memAlloc(size)

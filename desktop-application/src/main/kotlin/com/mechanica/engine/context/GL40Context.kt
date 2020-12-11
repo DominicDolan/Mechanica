@@ -7,7 +7,7 @@ import org.lwjgl.opengl.*
 
 class GL40Context(private val application: Application) : OpenGLContext {
 
-    private var parsedVersionString: GLVersionStringParser? = null
+    private var parsedVersionString: VersionStringParser? = null
     override val majorVersion: Int
         get() = parsedVersionString?.majorVersion ?: throw uninitializedException()
     override val minorVersion: Int
@@ -31,9 +31,6 @@ class GL40Context(private val application: Application) : OpenGLContext {
         GL11.glEnable(GL11.GL_STENCIL_TEST)
 
         enableAlphaBlending()
-
-        // TODO: Move this to its own context
-        ALContext.initialize()
     }
 
     override fun startFrame() {
@@ -63,29 +60,10 @@ class GL40Context(private val application: Application) : OpenGLContext {
         GL30.glBindVertexArray(vao)
     }
 
-    private fun parseVersionString(): GLVersionStringParser {
+    private fun parseVersionString(): VersionStringParser {
         val versionString: String = GL11.glGetString(GL11.GL_VERSION) ?:
         throw IllegalStateException("Unable to get the version of OpenGL")
-        return GLVersionStringParser(versionString)
-    }
-
-    private class GLVersionStringParser(versionString: String) {
-        val majorVersion: Int
-        val minorVersion: Int
-        val version: Double
-
-        init {
-            val majorVersionIndex = versionString.indexOf('.')
-            var minorVersionIndex = majorVersionIndex + 1
-            while (minorVersionIndex < versionString.length && Character.isDigit(minorVersionIndex)) {
-                minorVersionIndex++
-            }
-            minorVersionIndex++
-            majorVersion = versionString.substring(0, majorVersionIndex).toInt()
-            minorVersion = versionString.substring(majorVersionIndex + 1, minorVersionIndex).toInt()
-            version = versionString.substring(0, minorVersionIndex).toDouble()
-
-        }
+        return VersionStringParser(versionString)
     }
 
     companion object {
