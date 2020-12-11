@@ -3,10 +3,9 @@ package com.mechanica.engine.models
 import com.mechanica.engine.shader.attributes.Attribute
 import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.unit.vector.Vector
+import com.mechanica.engine.utils.ElementIndexArray
 import com.mechanica.engine.utils.createInvertedUnitSquareVectors
 import com.mechanica.engine.utils.createUnitSquareVectors
-import com.mechanica.engine.vertices.IndexArray
-import com.mechanica.engine.vertices.VertexBuffer
 
 open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
     protected val inputs: Array<Bindable> = arrayOf(*inputs)
@@ -15,7 +14,7 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
         get() {
             var max = 0
             for (vbo in inputs) {
-                if (vbo is VertexBuffer<*> && vbo.vertexCount > max) {
+                if (vbo is ElementIndexArray && vbo.vertexCount > max) {
                     max = vbo.vertexCount
                 }
                 if (vbo is AttributeArray && vbo.vertexCount > max) {
@@ -31,7 +30,7 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
     init {
         var hasElementArrayBuffer = false
         for (input in inputs) {
-            if (input is IndexArray) {
+            if (input is ElementIndexArray) {
                 hasElementArrayBuffer = true
             }
         }
@@ -41,11 +40,7 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
 
     fun bind() {
         for (vbo in inputs) {
-            if (vbo is VertexBuffer<*>) {
-                vbo.safeBind()
-            } else {
-                vbo.bind()
-            }
+            vbo.bind()
         }
     }
 

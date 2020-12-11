@@ -1,6 +1,5 @@
 package com.mechanica.engine.display
 
-import com.mechanica.engine.context.GLFWContextOld
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGammaRamp
 import org.lwjgl.glfw.GLFWMonitorCallback
@@ -86,12 +85,10 @@ class GLFWMonitor (override val id: Long) : Display {
             }
 
         fun getPrimaryMonitor(): GLFWMonitor {
-            GLFWContextOld.initialize()
             return GLFWMonitor(glfwGetPrimaryMonitor())
         }
 
         private fun createMonitorsArray(): Array<GLFWMonitor> {
-            GLFWContextOld.initialize()
             val pointers = glfwGetMonitors()
             return if (pointers != null) {
                 Array(pointers.limit()) {GLFWMonitor(pointers[it])}

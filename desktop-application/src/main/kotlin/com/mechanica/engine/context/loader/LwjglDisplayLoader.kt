@@ -1,6 +1,5 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.context.GLFWContextOld
 import com.mechanica.engine.display.DesktopWindow
 import com.mechanica.engine.display.Display
 import com.mechanica.engine.display.GLFWMonitor
@@ -17,10 +16,6 @@ class LwjglDisplayLoader : DisplayLoader {
 
     override fun createWindow(title: String, width: Int, height: Int, display: Display, sharedWith: DesktopWindow?): DesktopWindow {
         return GLFWWindow.create(title, width, height, display, sharedWith)
-    }
-
-    override fun multisampling(samples: Int) {
-        GLFWContextOld.multisampling(samples)
     }
 
     override val allDisplays: Array<out Display>

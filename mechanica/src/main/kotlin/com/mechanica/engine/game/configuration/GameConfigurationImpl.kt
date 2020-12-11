@@ -1,6 +1,5 @@
 package com.mechanica.engine.game.configuration
 
-import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.Game
@@ -58,7 +57,7 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
     }
 
     override fun setMultisampling(samples: Int) {
-        MechanicaLoader.displayLoader.multisampling(samples)
+        data.multisamplingSamples = samples
     }
 
     override fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit) {

@@ -1,13 +1,12 @@
 package com.mechanica.engine.shader.attributes
 
 import com.mechanica.engine.color.Color
-import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.models.Bindable
 import com.mechanica.engine.shader.vars.GlslLocation
 import com.mechanica.engine.shader.vars.ShaderType
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.utils.GLPrimitive
+import com.mechanica.engine.utils.FloatBufferLoader
 import org.joml.Vector3f
 import org.joml.Vector4f
 
@@ -107,35 +106,6 @@ interface AttributeArray : Bindable {
     }
 }
 
-interface VertexBufferLoader : Bindable {
-    val id: Int
-    val type: GLPrimitive
-
-    fun storeData(arraySize: Long) {
-        bind()
-        val capacityNeeded = arraySize*type.byteSize
-        if (getExistingBufferSize() < capacityNeeded) {
-            initiateBuffer(capacityNeeded)
-        }
-        storeSubData(0)
-    }
-
-    fun initiateBuffer(byteCapacity: Long)
-    fun storeSubData(offset: Long)
-    fun getExistingBufferSize(): Long
-}
-
-abstract class FloatBufferLoader : VertexBufferLoader {
-    abstract var floats: FloatArray
-    override val type = MechanicaLoader.glPrimitives.glFloat
-
-    companion object {
-        fun create(floats: FloatArray): FloatBufferLoader {
-            return MechanicaLoader.shaderLoader.createFloatBufferLoader(floats)
-        }
-    }
-}
-
 abstract class AttributeArrayForFloats<T> : AttributeArray {
     private var bindable: Bindable? = null
     private var type: ShaderType<*>? = null
@@ -161,12 +131,11 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
         val floats = valueToFloatArray(type.coordinateSize)
         val buffer = bufferLoader
         if (buffer == null) {
-            bufferLoader = FloatBufferLoader.create(floats)
+            bufferLoader = FloatBufferLoader.createArrayBuffer(floats)
         } else {
             buffer.floats = floats
+            buffer.storeData(floats.size.toLong())
         }
-
-        bufferLoader?.storeData(floats.size.toLong())
     }
 
     override fun bind() {

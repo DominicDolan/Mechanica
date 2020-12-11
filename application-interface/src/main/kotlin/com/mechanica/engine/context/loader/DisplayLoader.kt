@@ -13,7 +13,5 @@ interface DisplayLoader {
 
     fun getPrimaryMonitor(): Display
 
-    fun multisampling(samples: Int)
-
     companion object : DisplayLoader by MechanicaInitializer.loader.displayLoader
 }

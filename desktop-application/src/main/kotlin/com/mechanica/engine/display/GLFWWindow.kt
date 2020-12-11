@@ -1,7 +1,5 @@
 package com.mechanica.engine.display
 
-import com.mechanica.engine.context.GLContextOld
-import com.mechanica.engine.context.GLFWContextOld
 import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.resources.Resource
 import com.mechanica.engine.utils.ImageData
@@ -53,9 +51,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         set(value) { glfwSetWindowShouldClose(id, value) }
     override var vSync: Boolean = true
         set(value) {
-            if (GLContextOld.initialized) {
-                glfwSwapInterval(if (value) 1 else 0)
-            }
+            glfwSwapInterval(if (value) 1 else 0)
             field = value
         }
     override val isFullscreen: Boolean
@@ -303,12 +299,10 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
 
     companion object {
         fun create(title: String, width: Int, height: Int, sharedWith: DesktopWindow? = null): GLFWWindow {
-            GLFWContextOld.initialize()
             return GLFWWindow(width, height, title, null, sharedWith)
         }
 
         fun create(title: String, display: Display, sharedWith: DesktopWindow? = null): GLFWWindow {
-            GLFWContextOld.initialize()
             val vidMode = if (display is GLFWMonitor) display.currentVideoMode else throw IllegalStateException("Unable to create window")
             val width = vidMode.width()
             val height = vidMode.height()
@@ -321,7 +315,6 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         }
 
         fun create(title: String, width: Int, height: Int, display: Display, sharedWith: DesktopWindow? = null): GLFWWindow {
-            GLFWContextOld.initialize()
             return GLFWWindow(width, height, title, display, sharedWith)
         }
 

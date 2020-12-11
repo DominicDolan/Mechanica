@@ -1,6 +1,5 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.audio.AudioFile
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
@@ -11,4 +10,9 @@ interface BufferLoader {
     fun floatBuffer(size: Int): FloatBuffer
 
     fun useByteBuffer(size: Int, block: ByteBuffer.() -> Unit)
+
+    val arrayBufferLoaders: GLBufferLoaders
+    val elementArrayBufferLoaders: GLBufferLoaders
+    val copyReadBufferLoaders: GLBufferLoaders
+    val copyWriteBufferLoaders: GLBufferLoaders
 }

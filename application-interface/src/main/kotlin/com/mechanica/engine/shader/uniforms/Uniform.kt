@@ -1,14 +1,13 @@
 package com.mechanica.engine.shader.uniforms
 
 import com.mechanica.engine.context.loader.MechanicaLoader
-import com.mechanica.engine.context.loader.UniformLoader
 import com.mechanica.engine.shader.script.ScriptVariables
 import com.mechanica.engine.shader.vars.ShaderType
 import org.joml.Matrix4f
 import kotlin.reflect.KProperty
 
 class Uniform(private val variables: ScriptVariables) : UniformVars {
-    private val loader: UniformLoader = MechanicaLoader.shaderLoader.uniformLoader
+    private val loader: UniformVars = MechanicaLoader.shaderLoader.uniformLoader.variables
 
     override fun <T> type(type: ShaderType<T>, name: String, initialValue: T, load: (T) -> Unit): UniformVar<T> {
         val v = object : UniformVar<T>() {
@@ -30,25 +29,25 @@ class Uniform(private val variables: ScriptVariables) : UniformVars {
 
     override fun float(f: Float, name: String?): UniformFloat {
         val variableName = name ?: variables.getNextName()
-        val v = loader.createUniformFloat(variableName, f)
+        val v = loader.float(f, variableName)
         return addVariable(v)
     }
 
     override fun vec2(x: Number, y: Number, name: String?): UniformVector2f {
         val variableName = name ?: variables.getNextName()
-        val v = loader.createUniformVec2(variableName, x, y)
+        val v = loader.vec2(x, y, variableName)
         return addVariable(v)
     }
 
     override fun vec3(x: Number, y: Number, z: Number, name: String?): UniformVector3f {
         val variableName = name ?: variables.getNextName()
-        val v = loader.createUniformVec3(variableName, x, y, z)
+        val v = loader.vec3(x, y, z, variableName)
         return addVariable(v)
     }
 
     override fun vec4(x: Number, y: Number, z: Number, w: Number, name: String?): UniformVector4f {
         val variableName = name ?: variables.getNextName()
-        val v = loader.createUniformVec4(variableName, x, y, z, w)
+        val v = loader.vec4(x, y, z, w, variableName)
         return addVariable(v)
     }
 
@@ -56,7 +55,7 @@ class Uniform(private val variables: ScriptVariables) : UniformVars {
         val variableName = name ?: variables.getNextName()
         val matrix = Matrix4f()
 
-        val v = loader.createUniformMat4(variableName, matrix)
+        val v = loader.mat4(matrix, variableName)
         return addVariable(v)
     }
 

@@ -4,19 +4,19 @@ import com.mechanica.engine.shader.attributes.AttributeArray
 import com.mechanica.engine.shader.attributes.Vec2AttributeArray
 import com.mechanica.engine.text.Font
 import com.mechanica.engine.text.Text
+import com.mechanica.engine.utils.ElementIndexArray
 import com.mechanica.engine.utils.createIndicesArrayForQuads
-import com.mechanica.engine.vertices.IndexArray
 import kotlin.math.max
 
 class TextModel(text: Text) : Model(
         AttributeArray.createPositionArray(text.positions),
         AttributeArray.createTextureArray(text.texCoords),
-        IndexArray.create(*createIndicesArrayForQuads(max(text.positions.size/2, 20))),
+        ElementIndexArray(max(text.positions.size/2, 20)),
         Image.invoke(text.font.atlas.id),
 ) {
     private val positionAttribute = inputs[0] as Vec2AttributeArray
     private val texCoordsAttribute = inputs[1] as Vec2AttributeArray
-    private val indexArray = inputs[2] as IndexArray
+    private val indexArray = inputs[2] as ElementIndexArray
 
     private var atlas
         get() = inputs[3] as Image
@@ -62,7 +62,7 @@ class TextModel(text: Text) : Model(
         vertexCount = text.vertexCount
 
         if (vertexCount > indexArray.vertexCount) {
-            indexArray.set(createIndicesArrayForQuads(vertexCount))
+            indexArray.redefineBuffer(createIndicesArrayForQuads(vertexCount))
         }
     }
 

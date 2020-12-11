@@ -2,9 +2,12 @@ package com.mechanica.engine.context.loader
 
 import com.mechanica.engine.shader.*
 import com.mechanica.engine.shader.script.Shader
+import com.mechanica.engine.shader.uniforms.*
 import com.mechanica.engine.shader.vars.GlslLocation
+import com.mechanica.engine.shader.vars.ShaderType
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
+import kotlin.reflect.KProperty
 
 class LwjglUniformLoader: UniformLoader {
     override fun createLocationLoader(locationName: String) = object : GlslLocation {
@@ -15,9 +18,45 @@ class LwjglUniformLoader: UniformLoader {
             location = GL20.glGetUniformLocation(shader.id, locationName)
         }
     }
-    override fun createUniformFloat(name: String, initial: Float) = LwjglFloat(initial, name)
-    override fun createUniformVec2(name: String, x: Number, y: Number) = LwjglVector2f(x, y, name)
-    override fun createUniformVec3(name: String, x: Number, y: Number, z: Number) = LwjglVector3f(x, y, z, name)
-    override fun createUniformVec4(name: String, x: Number, y: Number, z: Number, w: Number) = LwjglVector4f(x, y, z, w, name)
-    override fun createUniformMat4(name: String, initial: Matrix4f) = LwjglMatrix4f(initial, name)
+
+    override val variables: UniformVars = LwjglUniformVars()
+}
+
+class LwjglUniformVars : UniformVars {
+    override fun <T> type(type: ShaderType<T>, name: String, initialValue: T, load: (T) -> Unit): UniformVar<T> {
+        return object : UniformVar<T>() {
+            override var value: T = initialValue
+            override fun loadUniform() { load(value) }
+            override val name: String = name
+            override val type: ShaderType<T> = type
+            override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+                this.value = value
+            }
+        }
+    }
+
+    override fun <T> type(type: ShaderType<T>, initialValue: T, load: (T) -> Unit): UniformVar<T> {
+        return type(type, "", initialValue, load)
+    }
+
+    override fun float(f: Float, name: String?): UniformFloat {
+        return LwjglFloat(f, name ?: "")
+    }
+
+    override fun vec2(x: Number, y: Number, name: String?): UniformVector2f {
+        return LwjglVector2f(x, y, name ?: "")
+    }
+
+    override fun vec3(x: Number, y: Number, z: Number, name: String?): UniformVector3f {
+        return LwjglVector3f(x, y, z, name ?: "")
+    }
+
+    override fun vec4(x: Number, y: Number, z: Number, w: Number, name: String?): UniformVector4f {
+        return LwjglVector4f(x, y, z, w, name ?: "")
+    }
+
+    override fun mat4(name: String?): UniformMatrix4f {
+        return LwjglMatrix4f(Matrix4f(), name ?: "")
+    }
+
 }
