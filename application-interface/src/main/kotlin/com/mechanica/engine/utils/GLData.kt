@@ -8,7 +8,6 @@ interface GLPrimitive {
 
     companion object {
         fun float() = MechanicaLoader.glPrimitives.glFloat
-        fun double() = MechanicaLoader.glPrimitives.glDouble
         fun int() = MechanicaLoader.glPrimitives.glInt
         fun short() = MechanicaLoader.glPrimitives.glShort
     }

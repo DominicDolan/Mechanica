@@ -2,8 +2,6 @@ package com.mechanica.engine.resources
 
 import com.mechanica.engine.context.loader.MechanicaLoader
 import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URI
 import java.net.URL
@@ -36,49 +34,74 @@ interface Resource : GenericResource {
         }
 
     companion object {
+        private val loader = MechanicaLoader.fileLoader
 
-        operator fun invoke(file: String): Resource {
-            val fileForURL = file.replace("\\", "/")
-            val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
-            return ResourceImpl(url)
+        operator fun invoke(path: String): Resource {
+            return loader.resource(path)
+        }
+
+        fun create(path: String): Resource {
+            return loader.resource(path)
         }
 
         operator fun invoke(url: URL): Resource {
-            return ResourceImpl(url)
+            return loader.resource(url)
         }
 
         operator fun invoke(uri: URI): Resource {
-            return ResourceImpl(uri.toURL())
+            return loader.resource(uri)
         }
 
-        fun external(file: String): Resource {
-            return ExternalResource(file)
+        fun external(path: String, createIfAbsent: Boolean = true): ExternalResource {
+            return loader.externalResource(path, createIfAbsent)
         }
 
-        private fun getResourceURL(file: String): URL? {
-            val systemResources = ClassLoader.getSystemResources(file)
-            return if (systemResources != null && systemResources.hasMoreElements())
-                systemResources.nextElement()
-            else null
-        }
-
-        private class ResourceImpl(private val url: URL) : Resource {
-            private val protocol = url.protocol
-            override val path: String
-                get() {
-                    return if (protocol == "jar") {
-                        URL(url.path).path
-                    } else {
-                        url.path
-                    }
-                }
-            override val stream: InputStream
-                get() {
-                    val conn = url.openConnection()
-                    return conn.getInputStream()
-                }
-
+        fun directory(path: String, recursive: Boolean = false): ResourceDirectory {
+            return loader.directory(path, recursive)
         }
 
     }
+}
+
+interface ExternalResource : Resource {
+    fun write(content: String)
+
+    companion object {
+        operator fun invoke(path: String) {
+            Resource.external(path)
+        }
+
+        fun create(path: String) {
+            Resource.external(path)
+        }
+    }
+}
+
+abstract class ResourceDirectory {
+    abstract val resources: Array<Resource>
+    abstract val folders: Array<ResourceDirectory>
+
+    val fileCount: Int
+        get() = resources.size
+
+    val folderCount: Int
+        get() = folders.size
+
+    abstract val name: String
+
+    fun getFile(index: Int) = resources[index]
+    fun getFolder(index: Int) = folders[index]
+
+    inline fun forEachFile(operation: (Resource) -> Unit) {
+        for (i in 0 until fileCount) {
+            operation(getFile(i))
+        }
+    }
+
+    inline fun forEachFolder(operation: (ResourceDirectory) -> Unit) {
+        for (i in 0 until folderCount) {
+            operation(getFolder(i))
+        }
+    }
+
 }

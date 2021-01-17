@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.context.loader.MechanicaLoader
-import com.mechanica.engine.context.loader.ShaderFunctions
+import com.mechanica.engine.context.loader.ShaderCreator
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.graphics.GLDraw
@@ -18,10 +18,10 @@ abstract class DrawerShader : Shader() {
     override val tessellation: DrawerScript? = null
     override val geometry: DrawerScript? = null
 
-    override val loader: ShaderFunctions by lazy {
+    override val loader: ShaderCreator by lazy {
         matrixLoaders
         pixelSize
-        MechanicaLoader.shaderLoader.createShaderFunctions(vertex, fragment, tessellation, geometry)
+        MechanicaLoader.shaderLoader.createShaderCreator(vertex, fragment, tessellation, geometry)
     }
 
     private val matrixLoaders by lazy {

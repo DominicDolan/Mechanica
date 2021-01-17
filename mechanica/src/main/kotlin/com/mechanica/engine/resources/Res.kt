@@ -11,7 +11,7 @@ object Res {
 
     class SpecificResourceDirectory(private val prefix: String) {
         operator fun get(file: String): ResourceDirectory {
-            return ResourceDirectory("$prefix$file")
+            return Resource.directory("$prefix$file")
         }
     }
 
@@ -23,7 +23,7 @@ object Res {
 
     fun external(path: String, createIfAbsent: Boolean = false): ExternalResource {
         val prefix = "res/"
-        return ExternalResource("$prefix$path", createIfAbsent)
+        return Resource.external("$prefix$path", createIfAbsent)
     }
 
     operator fun get(file: String): Resource {

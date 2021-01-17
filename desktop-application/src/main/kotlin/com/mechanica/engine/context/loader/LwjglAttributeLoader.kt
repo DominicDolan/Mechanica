@@ -1,10 +1,14 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.shader.attributes.*
+import com.mechanica.engine.shader.LwjglAttributeVars
+import com.mechanica.engine.shader.attributes.AttributeVars
+import com.mechanica.engine.shader.attributes.FloatAttributeBinder
 import com.mechanica.engine.shader.qualifiers.AttributeQualifier
 import com.mechanica.engine.shader.script.Shader
 import com.mechanica.engine.shader.vars.GlslLocation
+import com.mechanica.engine.shader.vars.ShaderType
 import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL40
 
 class LwjglAttributeLoader : AttributeLoader {
     override fun createLocationLoader(locationName: String) = object : GlslLocation {
@@ -20,46 +24,24 @@ class LwjglAttributeLoader : AttributeLoader {
         return LwjglAttributeVars(qualifier)
     }
 
-    override fun disableAttributeArray(value: Int) {
-        GL20.glDisableVertexAttribArray(value)
-    }
+    override fun createFloatAttributeBinder(location: GlslLocation, type: ShaderType<*>) = LwjglFloatAttributeBinder(location, type)
 }
 
-class LwjglAttributeVars(private val qualifier: AttributeQualifier) : AttributeVars {
-    override fun float(name: String?): AttributeFloat {
-        return object : AttributeFloat(name ?: "") {
-            override fun loadAttribute() { }
-            override val qualifier = this@LwjglAttributeVars.qualifier
-        }
+
+class LwjglFloatAttributeBinder(private val locatable: GlslLocation, private val type: ShaderType<*>) : FloatAttributeBinder() {
+    override val location: Int
+        get() = locatable.location
+
+    override fun bind() {
+        GL40.glVertexAttribPointer(location, type.coordinateSize, primitiveType.id, false, 0, 0)
+        GL40.glEnableVertexAttribArray(location)
     }
 
-    override fun vec2(name: String?): AttributeVector2 {
-        return object : AttributeVector2(name ?: "") {
-            override fun loadAttribute() { }
-            override val qualifier = this@LwjglAttributeVars.qualifier
-        }
+    override fun unbind() {
+        GL20.glDisableVertexAttribArray(location)
     }
 
-    override fun vec3(name: String?): AttributeVector3 {
-        return object : AttributeVector3(name ?: "") {
-            override fun loadAttribute() { }
-            override val qualifier = this@LwjglAttributeVars.qualifier
-        }
+    override fun setLocation(shader: Shader) {
+        locatable.setLocation(shader)
     }
-
-    override fun vec4(name: String?): AttributeVector4 {
-        return object : AttributeVector4(name ?: "") {
-            override fun loadAttribute() { }
-            override val qualifier = this@LwjglAttributeVars.qualifier
-        }
-    }
-
-    override fun mat4(name: String?): AttributeMatrix4 {
-        return object : AttributeMatrix4(name ?: "") {
-            override fun loadAttribute() { }
-            override val qualifier = this@LwjglAttributeVars.qualifier
-        }
-    }
-
-
 }

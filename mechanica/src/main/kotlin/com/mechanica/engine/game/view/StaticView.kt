@@ -23,5 +23,5 @@ class StaticView(
     }
 
     override val ratio: Double
-        get() = height/width
+        get() = width/height
 }

@@ -6,7 +6,7 @@ import com.mechanica.engine.models.Model
 import java.nio.IntBuffer
 
 class GLDraw {
-    private val glDrawer = MechanicaLoader.graphicsLoader.glDrawer
+    private val glDrawer = MechanicaLoader.graphicsLoader.glTrianglesDrawer
 
     val drawTriangles by lazy { GLDrawCommands(glDrawer) }
     val drawTriangleFan by lazy { GLDrawCommands(MechanicaLoader.graphicsLoader.glTriangleFanDrawer) }

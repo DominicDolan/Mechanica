@@ -6,5 +6,4 @@ interface GLPrimitiveLoader {
     val glFloat: GLPrimitive
     val glInt: GLPrimitive
     val glShort: GLPrimitive
-    val glDouble: GLPrimitive
 }

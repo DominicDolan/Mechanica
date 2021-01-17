@@ -71,7 +71,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
         val world: WorldCamera
         val ui: UICamera
 
-        val matrices = GameMatrices(surfaceContext.surface, data.projectionMatrixConfiguration, view)
+        val matrices = GameMatrices(surfaceContext.surface, data.projectionMatrixConfiguration, surfaceContext.display, view)
 
         init {
             val contentScale = surfaceContext.display.contentScale

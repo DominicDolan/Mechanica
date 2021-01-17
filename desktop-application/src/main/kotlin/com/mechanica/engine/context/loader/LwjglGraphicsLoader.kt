@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL42
 
 class LwjglGraphicsLoader : GraphicsLoader {
-    override val glDrawer: GLDrawerLoader = LwjglDrawerLoader(GL42.GL_TRIANGLES, GL42.GL_UNSIGNED_SHORT)
+    override val glTrianglesDrawer: GLDrawerLoader = LwjglDrawerLoader(GL42.GL_TRIANGLES, GL42.GL_UNSIGNED_SHORT)
     override val glPointDrawer: GLDrawerLoader = LwjglDrawerLoader(GL42.GL_POINTS, GL42.GL_UNSIGNED_SHORT)
     override val glTriangleFanDrawer: GLDrawerLoader = LwjglDrawerLoader(GL42.GL_TRIANGLE_FAN, GL42.GL_UNSIGNED_SHORT)
     override val glTriangleStripDrawer: GLDrawerLoader = LwjglDrawerLoader(GL42.GL_TRIANGLE_STRIP, GL42.GL_UNSIGNED_SHORT)

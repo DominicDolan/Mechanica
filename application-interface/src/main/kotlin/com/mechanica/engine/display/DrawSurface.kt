@@ -10,7 +10,7 @@ interface DrawSurface {
 
     var vSync: Boolean
 
-    fun addOnChangedCallback(callback: (DesktopWindow) -> Unit)
+    fun addOnChangedCallback(callback: (DrawSurface) -> Unit)
 
     fun update(): Boolean
 

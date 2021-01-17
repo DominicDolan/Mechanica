@@ -16,8 +16,4 @@ class LwjglPrimitiveLoader : GLPrimitiveLoader {
         override val id: Int = GL11.GL_SHORT
         override val byteSize: Int = 2
     }
-    override val glDouble = object : GLPrimitive {
-        override val id: Int = GL11.GL_DOUBLE
-        override val byteSize: Int = 8
-    }
 }

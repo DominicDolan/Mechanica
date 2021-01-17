@@ -4,7 +4,7 @@ import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.models.Bindable
 
 
-interface GLBufferLoader : Bindable {
+interface GLBufferObject : Bindable {
     val id: Int
     val type: GLPrimitive
 
@@ -22,39 +22,39 @@ interface GLBufferLoader : Bindable {
     fun getExistingBufferSize(): Long
 }
 
-abstract class FloatBufferLoader : GLBufferLoader {
+abstract class FloatBufferObject : GLBufferObject {
     abstract var floats: FloatArray
     override val type = GLPrimitive.float()
 
     companion object {
-        fun createArrayBuffer(floats: FloatArray): FloatBufferLoader {
-            return MechanicaLoader.bufferLoader.arrayBufferLoaders.floats(floats)
+        fun createArrayBuffer(floats: FloatArray): FloatBufferObject {
+            return MechanicaLoader.bufferLoader.arrayBufferFactory.floats(floats)
         }
     }
 }
 
-abstract class ShortBufferLoader : GLBufferLoader {
+abstract class ShortBufferObject : GLBufferObject {
     abstract var shorts: ShortArray
     override val type: GLPrimitive = GLPrimitive.short()
 
     companion object {
-        fun createArrayBuffer(shorts: ShortArray): ShortBufferLoader {
-            return MechanicaLoader.bufferLoader.arrayBufferLoaders.shorts(shorts)
+        fun createArrayBuffer(shorts: ShortArray): ShortBufferObject {
+            return MechanicaLoader.bufferLoader.arrayBufferFactory.shorts(shorts)
         }
 
-        fun createElementArrayBuffer(shorts: ShortArray): ShortBufferLoader {
-            return MechanicaLoader.bufferLoader.elementArrayBufferLoaders.shorts(shorts)
+        fun createElementArrayBuffer(shorts: ShortArray): ShortBufferObject {
+            return MechanicaLoader.bufferLoader.elementArrayBufferFactory.shorts(shorts)
         }
     }
 }
 
-abstract class IntBufferLoader : GLBufferLoader {
+abstract class IntBufferObject : GLBufferObject {
     abstract var ints: IntArray
     override val type: GLPrimitive = GLPrimitive.short()
 
     companion object {
-        fun createArrayBuffer(ints: IntArray): IntBufferLoader {
-            return MechanicaLoader.bufferLoader.arrayBufferLoaders.ints(ints)
+        fun createArrayBuffer(ints: IntArray): IntBufferObject {
+            return MechanicaLoader.bufferLoader.arrayBufferFactory.ints(ints)
         }
     }
 }

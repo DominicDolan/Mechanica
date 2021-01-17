@@ -5,7 +5,7 @@ import com.mechanica.engine.resources.Resource
 
 interface GraphicsLoader {
 
-    val glDrawer: GLDrawerLoader
+    val glTrianglesDrawer: GLDrawerLoader
 
     fun loadImage(id: Int): Image
     fun loadImage(res: Resource): Image

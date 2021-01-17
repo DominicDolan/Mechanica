@@ -119,7 +119,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
 
     }
 
-    override fun addOnChangedCallback(callback: (DesktopWindow) -> Unit) {
+    override fun addOnChangedCallback(callback: (DrawSurface) -> Unit) {
         callbackList.add(callback)
     }
 
@@ -220,7 +220,7 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
     }
 
     override fun setFullscreen() {
-        setFullscreen(Display.getPrimaryMonitor())
+        setFullscreen(GLFWMonitor.getPrimaryMonitor())
     }
 
     override fun setFullscreen(display: Display) {

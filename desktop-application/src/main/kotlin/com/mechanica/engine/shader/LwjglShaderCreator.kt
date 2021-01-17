@@ -1,23 +1,22 @@
-package com.mechanica.engine.shader.script
+package com.mechanica.engine.shader
 
-import com.mechanica.engine.context.loader.ShaderFunctions
+import com.mechanica.engine.context.loader.ShaderCreator
+import com.mechanica.engine.shader.script.ShaderDeclarations
+import com.mechanica.engine.shader.script.ShaderScript
 import com.mechanica.engine.util.scriptWithLineNumbers
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER
 import kotlin.system.exitProcess
 
-class ShaderCreator(
+class LwjglShaderCreator(
         vertex: ShaderScript,
         fragment: ShaderScript,
         tessellation: ShaderScript?,
-        geometry: ShaderScript?): ShaderDeclarations(), ShaderFunctions {
+        geometry: ShaderScript?): ShaderDeclarations(),
+    ShaderCreator {
 
     override val id: Int = GL20.glCreateProgram()
-
-    var version = "430"
-    override val glslHeader: String
-        get() = "#version $version core\n"
 
     private val vertexShaderID: Int
     private val fragmentShaderID: Int

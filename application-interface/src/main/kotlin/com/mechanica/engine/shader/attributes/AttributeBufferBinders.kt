@@ -15,7 +15,7 @@ abstract class FloatAttributeBinder : AttributeBufferBinder {
     override val primitiveType = MechanicaLoader.glPrimitives.glFloat
 
     companion object {
-        private val loader = MechanicaLoader.shaderLoader
+        private val loader = MechanicaLoader.shaderLoader.attributeLoader
 
         fun create(location: GlslLocation, type: ShaderType<*>): FloatAttributeBinder {
             return loader.createFloatAttributeBinder(location, type)

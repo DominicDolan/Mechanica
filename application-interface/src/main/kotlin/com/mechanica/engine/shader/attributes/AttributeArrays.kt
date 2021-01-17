@@ -6,7 +6,7 @@ import com.mechanica.engine.shader.vars.GlslLocation
 import com.mechanica.engine.shader.vars.ShaderType
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.utils.FloatBufferLoader
+import com.mechanica.engine.utils.FloatBufferObject
 import org.joml.Vector3f
 import org.joml.Vector4f
 
@@ -112,7 +112,7 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
 
     abstract val value: T
 
-    protected var bufferLoader: FloatBufferLoader? = null
+    protected var bufferLoader: FloatBufferObject? = null
 
     fun attachTo(variable: AttributeVar<*>) {
         bindable = variable
@@ -131,7 +131,7 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
         val floats = valueToFloatArray(type.coordinateSize)
         val buffer = bufferLoader
         if (buffer == null) {
-            bufferLoader = FloatBufferLoader.createArrayBuffer(floats)
+            bufferLoader = FloatBufferObject.createArrayBuffer(floats)
         } else {
             buffer.floats = floats
             buffer.storeData(floats.size.toLong())

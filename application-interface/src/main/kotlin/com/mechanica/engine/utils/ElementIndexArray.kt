@@ -3,7 +3,7 @@ package com.mechanica.engine.utils
 import com.mechanica.engine.models.Bindable
 
 class ElementIndexArray(shorts: ShortArray) : Bindable {
-    private val buffer = ShortBufferLoader.createElementArrayBuffer(shorts)
+    private val buffer = ShortBufferObject.createElementArrayBuffer(shorts)
 
     val vertexCount: Int
         get() = buffer.shorts.size

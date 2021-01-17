@@ -11,8 +11,8 @@ interface BufferLoader {
 
     fun useByteBuffer(size: Int, block: ByteBuffer.() -> Unit)
 
-    val arrayBufferLoaders: GLBufferLoaders
-    val elementArrayBufferLoaders: GLBufferLoaders
-    val copyReadBufferLoaders: GLBufferLoaders
-    val copyWriteBufferLoaders: GLBufferLoaders
+    val arrayBufferFactory: GLBufferFactory
+    val elementArrayBufferFactory: GLBufferFactory
+    val copyReadBufferFactory: GLBufferFactory
+    val copyWriteBufferFactory: GLBufferFactory
 }

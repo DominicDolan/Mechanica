@@ -1,8 +1,8 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.utils.FloatBufferLoader
-import com.mechanica.engine.utils.IntBufferLoader
-import com.mechanica.engine.utils.ShortBufferLoader
+import com.mechanica.engine.utils.FloatBufferObject
+import com.mechanica.engine.utils.IntBufferObject
+import com.mechanica.engine.utils.ShortBufferObject
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL40
@@ -24,30 +24,30 @@ class LwjglBufferLoader : BufferLoader {
         MemoryUtil.memFree(buffer)
     }
 
-    override val arrayBufferLoaders: GLBufferLoaders = LwjglBufferLoaders(GL40.GL_ARRAY_BUFFER)
-    override val elementArrayBufferLoaders: GLBufferLoaders = LwjglBufferLoaders(GL40.GL_ELEMENT_ARRAY_BUFFER)
-    override val copyReadBufferLoaders: GLBufferLoaders = LwjglBufferLoaders(GL40.GL_COPY_READ_BUFFER)
-    override val copyWriteBufferLoaders: GLBufferLoaders = LwjglBufferLoaders(GL40.GL_COPY_WRITE_BUFFER)
+    override val arrayBufferFactory: GLBufferFactory = LwjglBufferFactory(GL40.GL_ARRAY_BUFFER)
+    override val elementArrayBufferFactory: GLBufferFactory = LwjglBufferFactory(GL40.GL_ELEMENT_ARRAY_BUFFER)
+    override val copyReadBufferFactory: GLBufferFactory = LwjglBufferFactory(GL40.GL_COPY_READ_BUFFER)
+    override val copyWriteBufferFactory: GLBufferFactory = LwjglBufferFactory(GL40.GL_COPY_WRITE_BUFFER)
 
 }
 
 
-class LwjglBufferLoaders(private val bufferTarget: Int) : GLBufferLoaders {
-    override fun floats(floats: FloatArray): FloatBufferLoader {
-        return LwjglFloatBufferLoader(floats, bufferTarget)
+class LwjglBufferFactory(private val bufferTarget: Int) : GLBufferFactory {
+    override fun floats(floats: FloatArray): FloatBufferObject {
+        return LwjglFloatBufferObject(floats, bufferTarget)
     }
 
-    override fun shorts(shorts: ShortArray): ShortBufferLoader {
-        return LwjglShortBufferLoader(shorts, bufferTarget)
+    override fun shorts(shorts: ShortArray): ShortBufferObject {
+        return LwjglShortBufferObject(shorts, bufferTarget)
     }
 
-    override fun ints(ints: IntArray): IntBufferLoader {
-        return LwjglIntBufferLoader(ints, bufferTarget)
+    override fun ints(ints: IntArray): IntBufferObject {
+        return LwjglIntBufferObject(ints, bufferTarget)
     }
 
 }
 
-class LwjglFloatBufferLoader(override var floats: FloatArray, private val bufferTarget: Int) : FloatBufferLoader() {
+class LwjglFloatBufferObject(override var floats: FloatArray, private val bufferTarget: Int) : FloatBufferObject() {
     override val id: Int = GL15.glGenBuffers()
 
     init {
@@ -72,7 +72,7 @@ class LwjglFloatBufferLoader(override var floats: FloatArray, private val buffer
     }
 }
 
-class LwjglShortBufferLoader(override var shorts: ShortArray, private val bufferTarget: Int) : ShortBufferLoader() {
+class LwjglShortBufferObject(override var shorts: ShortArray, private val bufferTarget: Int) : ShortBufferObject() {
     override val id: Int = GL15.glGenBuffers()
 
     init {
@@ -97,7 +97,7 @@ class LwjglShortBufferLoader(override var shorts: ShortArray, private val buffer
     }
 }
 
-class LwjglIntBufferLoader(override var ints: IntArray, private val bufferTarget: Int) : IntBufferLoader() {
+class LwjglIntBufferObject(override var ints: IntArray, private val bufferTarget: Int) : IntBufferObject() {
     override val id: Int = GL15.glGenBuffers()
 
     init {

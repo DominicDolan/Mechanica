@@ -7,10 +7,10 @@ interface MechanicaLoader {
     val constants: GLConstants
     val bufferLoader: BufferLoader
     val fontLoader: FontLoader
+    val fileLoader: FileLoader
     val graphicsLoader: GraphicsLoader
     val audioLoader: AudioLoader
     val inputLoader: InputLoader
-    val displayLoader: DisplayLoader
     val shaderLoader: ShaderLoader
     val glPrimitives: GLPrimitiveLoader
 

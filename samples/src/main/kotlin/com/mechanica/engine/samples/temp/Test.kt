@@ -17,8 +17,8 @@ import com.mechanica.engine.text.Text
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec
+import com.mechanica.engine.utils.ElementIndexArray
 import com.mechanica.engine.utils.loadImage
-import com.mechanica.engine.vertices.IndexArray
 import org.intellij.lang.annotations.Language
 import org.joml.Matrix4f
 
@@ -70,7 +70,7 @@ fun main() {
     }
 
     val transformation = Matrix4f().identity()
-    val indices = IndexArray.create(0, 1, 2, 2, 1, 3)
+    val indices = ElementIndexArray(shortArrayOf(0, 1, 2, 2, 1, 3))
     val squareArray: Array<Vector> = arrayOf(
             vec(0.25, 0.25),
             vec(0.8, 0.25),

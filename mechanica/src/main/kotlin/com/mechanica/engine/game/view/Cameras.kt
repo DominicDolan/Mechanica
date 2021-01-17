@@ -31,7 +31,7 @@ class UICamera internal constructor(
 
     }
     override val ratio: Double
-        get() = world.ratio*(scale.y/scale.x)
+        get() = world.ratio*(scale.x/scale.y)
 
     fun update(width: Double, height: Double) {
         _width = width
@@ -106,7 +106,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
             y = value.y
         }
 
-    override var ratio: Double = height/width
+    override var ratio: Double = width/height
         private set
         get() {
             return if (lockRatio) {

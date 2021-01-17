@@ -9,10 +9,4 @@ class DesktopApplication : Application {
 
     override fun createLoader() = LwjglLoader()
 
-    override fun terminate() {
-        surfaceContext.destroy()
-        glContext.destroy()
-        audioContext.destroy()
-    }
-
 }

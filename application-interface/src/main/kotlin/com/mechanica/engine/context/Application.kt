@@ -9,6 +9,10 @@ interface Application {
 
     fun createLoader(): MechanicaLoader
 
-    fun terminate()
+    fun terminate() {
+        surfaceContext.destroy()
+        glContext.destroy()
+        audioContext.destroy()
+    }
 
 }

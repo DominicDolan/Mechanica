@@ -10,6 +10,7 @@ import org.joml.Matrix4f
 internal class GameMatrices(
         private val surface: DrawSurface,
         private val projectionConfiguration: (Matrix4f.(View) -> Unit),
+        display: Display,
         viewPort: View) : Matrices {
     override val projection: Matrix4f = Matrix4f().identity()
     override val worldCamera: Matrix4f = Matrix4f().identity()
@@ -25,7 +26,7 @@ internal class GameMatrices(
         projectionConfiguration(projection, viewPort)
 
         updateView(viewPort)
-        setUiView(viewPort.height/Display.getPrimaryMonitor().contentScale.yScale)
+        setUiView(viewPort.height/display.contentScale.yScale)
 
         pixelScale = calculatePixelSize(projection, worldCamera, surface.height)
         pixelUIScale = calculatePixelSize(projection, uiCamera, surface.height)
