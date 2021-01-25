@@ -1,7 +1,7 @@
 package com.mechanica.engine.duke.style
 
 import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.text.Font
+import com.mechanica.engine.shaders.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 
 class Style {

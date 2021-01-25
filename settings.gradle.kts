@@ -9,7 +9,7 @@
 
 rootProject.name = "Mechanica"
 
-include("common", "desktop-application", "application-interface", "mechanica", "samples", "mechanica-ui")
+include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
 
 pluginManagement {
     resolutionStrategy {
@@ -20,3 +20,4 @@ pluginManagement {
         }
     }
 }
+include("shaders-interface")

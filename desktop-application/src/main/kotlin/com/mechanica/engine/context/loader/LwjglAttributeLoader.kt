@@ -1,12 +1,13 @@
 package com.mechanica.engine.context.loader
 
 import com.mechanica.engine.shader.LwjglAttributeVars
-import com.mechanica.engine.shader.attributes.AttributeVars
-import com.mechanica.engine.shader.attributes.FloatAttributeBinder
-import com.mechanica.engine.shader.qualifiers.AttributeQualifier
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.vars.GlslLocation
-import com.mechanica.engine.shader.vars.ShaderType
+import com.mechanica.engine.shaders.attributes.AttributeVars
+import com.mechanica.engine.shaders.attributes.FloatAttributeBinder
+import com.mechanica.engine.shaders.context.AttributeLoader
+import com.mechanica.engine.shaders.qualifiers.AttributeQualifier
+import com.mechanica.engine.shaders.script.Shader
+import com.mechanica.engine.shaders.vars.GlslLocation
+import com.mechanica.engine.shaders.vars.ShaderType
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL40
 

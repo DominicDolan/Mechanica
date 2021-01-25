@@ -2,10 +2,10 @@ package com.mechanica.engine.samples.temp
 
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.TextModel
-import com.mechanica.engine.shader.attributes.Attribute
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shaders.attributes.Attribute
+import com.mechanica.engine.shaders.models.TextModel
+import com.mechanica.engine.shaders.script.Shader
+import com.mechanica.engine.shaders.script.ShaderScript
 import org.intellij.lang.annotations.Language
 
 fun main() {

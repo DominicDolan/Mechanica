@@ -1,8 +1,10 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.utils.FloatBufferObject
-import com.mechanica.engine.utils.IntBufferObject
-import com.mechanica.engine.utils.ShortBufferObject
+import com.mechanica.engine.shaders.buffers.BufferLoader
+import com.mechanica.engine.shaders.buffers.FloatBufferObject
+import com.mechanica.engine.shaders.buffers.IntBufferObject
+import com.mechanica.engine.shaders.buffers.ShortBufferObject
+import com.mechanica.engine.shaders.context.GLBufferFactory
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL40

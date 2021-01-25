@@ -1,6 +1,6 @@
 package com.mechanica.engine.shader
 
-import com.mechanica.engine.shader.uniforms.*
+import com.mechanica.engine.shaders.uniforms.*
 import org.joml.Matrix4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20

@@ -2,10 +2,10 @@ package com.mechanica.engine.drawer.state
 
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.drawer.shader.DrawerScript
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.attributes.AttributeArray
-import com.mechanica.engine.utils.createInvertedUnitSquareVectors
-import com.mechanica.engine.utils.createUnitSquareVectors
+import com.mechanica.engine.shaders.attributes.AttributeArray
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.shaders.utils.createUnitSquareVectors
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import kotlin.math.tan

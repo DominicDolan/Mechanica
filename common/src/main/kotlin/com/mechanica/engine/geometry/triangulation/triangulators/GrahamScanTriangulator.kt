@@ -85,6 +85,7 @@ class GrahamScanTriangulator(path: Array<out Vector>) : AbstractTriangulator<Gra
         lines.add(LineSegment(node.prev, node.next))
     }
 
+    @Suppress("SENSELESS_COMPARISON") // There4's a small chance that this function could be called before "init" is finished
     override fun reorganise() {
         super.reorganise()
         if (activeVertices != null && concaveVertices != null) {

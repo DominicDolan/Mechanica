@@ -1,6 +1,5 @@
 package com.mechanica.engine.drawer
 
-import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.drawer.state.DrawState
@@ -25,11 +24,12 @@ import com.mechanica.engine.drawer.superclass.rectangle.RectangleDrawerImpl
 import com.mechanica.engine.drawer.superclass.text.TextDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.models.PolygonModel
-import com.mechanica.engine.shader.attributes.AttributeArray
-import com.mechanica.engine.utils.createInvertedUnitSquareVectors
-import com.mechanica.engine.utils.createUnitSquareVectors
+import com.mechanica.engine.shaders.attributes.AttributeArray
+import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.models.PolygonModel
+import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.shaders.utils.createUnitSquareVectors
 
 class DrawerImpl(private val state: DrawState,
                  private val renderer: DrawerRenderer) :
@@ -94,7 +94,7 @@ class DrawerImpl(private val state: DrawState,
 
     override fun background() {
         with(colorDrawer) {
-            MechanicaLoader.graphicsLoader.clearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+            ShaderLoader.drawLoader.clearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
         }
     }
 

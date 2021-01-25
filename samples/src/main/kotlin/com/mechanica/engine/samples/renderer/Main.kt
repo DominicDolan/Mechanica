@@ -5,13 +5,13 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.models.Image
-import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.resources.create
 import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.shaders.models.Image
+import com.mechanica.engine.shaders.models.PolygonModel
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.utils.loadImage
 import org.joml.Matrix4f
 
 
@@ -43,7 +43,7 @@ private class StartMain : WorldScene() {
 //        transformation.m10(transformation.m10() + transformation.m01())
 
 
-        image = loadImage(Res.image["testImage"])
+        image = Image.create(Res.image["testImage"])
 
         val random = listOf(
                 vec(0, 0),

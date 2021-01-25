@@ -6,7 +6,7 @@ import com.mechanica.engine.duke.NodeRendererToDrawer
 import com.mechanica.engine.duke.context.DukeUIScene
 import com.mechanica.engine.duke.style.Style
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.text.Text
 
 abstract class Element(val scene: DukeUIScene) {
     var node: NodeData = scene.firstNode

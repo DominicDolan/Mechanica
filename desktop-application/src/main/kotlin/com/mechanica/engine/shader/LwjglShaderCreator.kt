@@ -1,8 +1,8 @@
 package com.mechanica.engine.shader
 
-import com.mechanica.engine.context.loader.ShaderCreator
-import com.mechanica.engine.shader.script.ShaderDeclarations
-import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shaders.context.ShaderCreator
+import com.mechanica.engine.shaders.script.ShaderDeclarations
+import com.mechanica.engine.shaders.script.ShaderScript
 import com.mechanica.engine.util.scriptWithLineNumbers
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
@@ -13,8 +13,8 @@ class LwjglShaderCreator(
         vertex: ShaderScript,
         fragment: ShaderScript,
         tessellation: ShaderScript?,
-        geometry: ShaderScript?): ShaderDeclarations(),
-    ShaderCreator {
+        geometry: ShaderScript?)
+    : ShaderDeclarations(), ShaderCreator {
 
     override val id: Int = GL20.glCreateProgram()
 

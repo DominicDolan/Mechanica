@@ -1,7 +1,7 @@
 package com.mechanica.engine.duke.elements
 
 import com.mechanica.engine.duke.context.DukeUIScene
-import com.mechanica.engine.models.Image
+import com.mechanica.engine.shaders.models.Image
 
 class ImageElement(scene: DukeUIScene) : Element(scene) {
     var image: Image? = null

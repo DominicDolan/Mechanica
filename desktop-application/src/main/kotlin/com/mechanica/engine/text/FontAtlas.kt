@@ -1,12 +1,11 @@
 package com.mechanica.engine.text
 
 import com.mechanica.engine.memory.BitmapBuffer
-import com.mechanica.engine.memory.buffer.write
 import com.mechanica.engine.memory.useMemoryStack
-import com.mechanica.engine.models.Image
+import com.mechanica.engine.shader.LwjglImage
+import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
-import com.mechanica.engine.utils.loadImage
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.stb.STBTTAlignedQuad
@@ -54,7 +53,7 @@ class FontAtlas(private val data: LwjglStandardFont.FontData, private val config
 
         scale = getScale(data)
 
-        image = loadImage(bitmap, width, height, 1, GL11.GL_ALPHA)
+        image = LwjglImage.create(bitmap, width, height, 1, GL11.GL_ALPHA)
     }
 
     private fun insertCharacters(bitmap: ByteBuffer) {

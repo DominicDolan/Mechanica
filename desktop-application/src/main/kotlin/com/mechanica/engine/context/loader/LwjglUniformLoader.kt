@@ -1,10 +1,11 @@
 package com.mechanica.engine.context.loader
 
 import com.mechanica.engine.shader.*
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.uniforms.*
-import com.mechanica.engine.shader.vars.GlslLocation
-import com.mechanica.engine.shader.vars.ShaderType
+import com.mechanica.engine.shaders.context.UniformLoader
+import com.mechanica.engine.shaders.script.Shader
+import com.mechanica.engine.shaders.uniforms.*
+import com.mechanica.engine.shaders.vars.GlslLocation
+import com.mechanica.engine.shaders.vars.ShaderType
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
 import kotlin.reflect.KProperty

@@ -4,12 +4,13 @@ import com.mechanica.engine.color.Color
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.resources.defaults
 import com.mechanica.engine.scenes.scenes.LoadScene
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.scenes.scenes.logo.MechanicaStartupScreen
 import com.mechanica.engine.scenes.setNewMainScene
-import com.mechanica.engine.text.Font
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.text.Font
+import com.mechanica.engine.shaders.text.Text
 
 fun main() {
     Game.configure {

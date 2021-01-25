@@ -3,9 +3,9 @@ package com.mechanica.engine.drawer.shader
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
 import com.mechanica.engine.context.loader.MechanicaLoader
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.attributes.AttributeArray
-import com.mechanica.engine.shader.attributes.FloatAttributeArray
+import com.mechanica.engine.shaders.attributes.AttributeArray
+import com.mechanica.engine.shaders.attributes.FloatAttributeArray
+import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.VectorArray
 import com.mechanica.engine.util.extensions.fill

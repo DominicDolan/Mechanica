@@ -3,8 +3,8 @@ package com.mechanica.engine.duke.elements
 import com.duke.ui.output.RenderDescription
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.duke.NodeDataToDrawer
-import com.mechanica.engine.models.Image
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.models.Image
+import com.mechanica.engine.shaders.text.Text
 
 inline fun Element.e(content: Element.() -> Unit) {
     switchElementAndAddChild(content) { DefaultElement(it) }

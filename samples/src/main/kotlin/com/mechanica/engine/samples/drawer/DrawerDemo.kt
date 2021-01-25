@@ -6,12 +6,13 @@ import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.resources.create
+import com.mechanica.engine.shaders.models.Image
+import com.mechanica.engine.shaders.models.PolygonModel
 import com.mechanica.engine.unit.angle.degrees
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.vec
-import com.mechanica.engine.utils.loadImage
 
 fun main() {
     Game.configure {
@@ -21,7 +22,7 @@ fun main() {
     }
 
     val draw = Drawer.create()
-    val image = loadImage(Res.image["testImage"])
+    val image = Image.create(Res.image["testImage"])
 
     val points = arrayOf(
             vec(0, 0),

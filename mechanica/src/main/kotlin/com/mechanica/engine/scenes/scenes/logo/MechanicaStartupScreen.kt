@@ -5,18 +5,20 @@ import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
-import com.mechanica.engine.models.Image
-import com.mechanica.engine.models.ImageModel
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.resources.create
+import com.mechanica.engine.resources.defaults
 import com.mechanica.engine.scenes.addAnimationSequence
 import com.mechanica.engine.scenes.scenes.UIScene
-import com.mechanica.engine.text.Font
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.models.Image
+import com.mechanica.engine.shaders.models.ImageModel
+import com.mechanica.engine.shaders.text.Font
+import com.mechanica.engine.shaders.text.Text
 import kotlin.math.min
 
 class MechanicaStartupScreen(private val textColor: Color = Color.black, order: Int = 0) : UIScene(order) {
     private val titleSize: Double = min(camera.width, camera.height)
-    private val title = ImageModel(Image.loadImage(Res.image("logo/mechanica-title")))
+    private val title = ImageModel(Image.create(Res.image("logo/mechanica-title")))
 
     private val poweredBy = Text("Powered by", Font.defaults.bold(true))
 

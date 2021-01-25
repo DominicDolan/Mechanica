@@ -2,7 +2,7 @@ package com.mechanica.engine.duke.elements
 
 import com.mechanica.engine.duke.context.DukeUIScene
 import com.mechanica.engine.duke.style.Style
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.text.Text
 
 class TextElement(scene: DukeUIScene) : Element(scene) {
     var text = Text("")

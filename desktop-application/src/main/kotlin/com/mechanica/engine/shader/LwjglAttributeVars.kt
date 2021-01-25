@@ -1,7 +1,7 @@
 package com.mechanica.engine.shader
 
-import com.mechanica.engine.shader.attributes.*
-import com.mechanica.engine.shader.qualifiers.AttributeQualifier
+import com.mechanica.engine.shaders.attributes.*
+import com.mechanica.engine.shaders.qualifiers.AttributeQualifier
 
 
 class LwjglAttributeVars(private val qualifier: AttributeQualifier) : AttributeVars {

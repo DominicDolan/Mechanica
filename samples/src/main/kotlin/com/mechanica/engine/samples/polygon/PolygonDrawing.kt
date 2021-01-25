@@ -9,8 +9,8 @@ import com.mechanica.engine.geometry.triangulation.lists.TriangulatorList
 import com.mechanica.engine.geometry.triangulation.triangulators.DiagonalTriangulator
 import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
 import com.mechanica.engine.input.Inputs
-import com.mechanica.engine.models.PolygonModel
 import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.shaders.models.PolygonModel
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.minus
 import com.mechanica.engine.unit.vector.vec

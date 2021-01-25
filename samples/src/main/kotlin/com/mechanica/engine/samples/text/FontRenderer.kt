@@ -7,9 +7,10 @@ import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.models.TextModel
 import com.mechanica.engine.resources.Res
-import com.mechanica.engine.text.Font
+import com.mechanica.engine.resources.create
+import com.mechanica.engine.shaders.models.TextModel
+import com.mechanica.engine.shaders.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.unit.vector.vec

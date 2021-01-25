@@ -2,13 +2,13 @@ package com.mechanica.engine.drawer.superclass.circle
 
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.models.Bindable
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.attributes.AttributeArray
-import com.mechanica.engine.shader.attributes.FloatAttributeBinder
-import com.mechanica.engine.shader.vars.GlslLocation
-import com.mechanica.engine.shader.vars.ShaderType
-import com.mechanica.engine.utils.createUnitSquareVectors
+import com.mechanica.engine.shaders.attributes.AttributeArray
+import com.mechanica.engine.shaders.attributes.FloatAttributeBinder
+import com.mechanica.engine.shaders.models.Bindable
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.utils.createUnitSquareVectors
+import com.mechanica.engine.shaders.vars.GlslLocation
+import com.mechanica.engine.shaders.vars.ShaderType
 import kotlin.math.min
 
 class CircleDrawerImpl(

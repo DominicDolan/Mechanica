@@ -1,6 +1,7 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.models.Model
+import com.mechanica.engine.shaders.draw.GLDrawerLoader
+import com.mechanica.engine.shaders.models.Model
 import org.lwjgl.opengl.GL42.*
 import java.nio.IntBuffer
 

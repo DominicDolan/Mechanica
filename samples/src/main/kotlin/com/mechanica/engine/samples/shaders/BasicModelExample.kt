@@ -3,11 +3,11 @@ package com.mechanica.engine.samples.shaders
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.attributes.Attribute
-import com.mechanica.engine.shader.attributes.Vec2AttributeArray
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shaders.attributes.Attribute
+import com.mechanica.engine.shaders.attributes.Vec2AttributeArray
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.script.Shader
+import com.mechanica.engine.shaders.script.ShaderScript
 import com.mechanica.engine.unit.vector.vec
 
 

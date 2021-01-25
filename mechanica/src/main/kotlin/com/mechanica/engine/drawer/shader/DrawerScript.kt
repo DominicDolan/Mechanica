@@ -1,8 +1,8 @@
 package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.color.hex
-import com.mechanica.engine.shader.attributes.Attribute
-import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shaders.attributes.Attribute
+import com.mechanica.engine.shaders.script.ShaderScript
 
 abstract class DrawerScript : ShaderScript() {
     val position by lazy { attribute(Attribute.positionLocation).vec3() }

@@ -1,14 +1,14 @@
 package com.mechanica.engine.drawer.shader
 
 import com.mechanica.engine.context.loader.MechanicaLoader
-import com.mechanica.engine.context.loader.ShaderCreator
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.graphics.GLDraw
 import com.mechanica.engine.matrix.calculatePixelSize
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.shader.script.Shader
-import com.mechanica.engine.shader.script.ShaderScript
+import com.mechanica.engine.shaders.context.ShaderCreator
+import com.mechanica.engine.shaders.draw.GLDraw
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.script.Shader
+import com.mechanica.engine.shaders.script.ShaderScript
 import org.joml.Matrix4f
 
 abstract class DrawerShader : Shader() {

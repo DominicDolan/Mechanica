@@ -1,6 +1,6 @@
 package com.mechanica.engine.text
 
-import com.mechanica.engine.resources.Resource
+import com.mechanica.engine.shaders.text.Font
 import com.mechanica.engine.unit.vector.DynamicVector
 import org.lwjgl.stb.STBTTAlignedQuad
 import org.lwjgl.stb.STBTTFontinfo
@@ -10,7 +10,7 @@ import org.lwjgl.stb.STBTruetype.stbtt_GetCodepointKernAdvance
 import org.lwjgl.system.MemoryStack
 import java.nio.ByteBuffer
 
-class LwjglStandardFont(resource: Resource, initializer: FontAtlasConfiguration.() -> Unit): Font() {
+class  LwjglStandardFont(resource: ByteBuffer, initializer: FontAtlasConfiguration.() -> Unit): Font() {
 
     override val ascent: Float
         get() = metrics.ascent
@@ -49,8 +49,7 @@ class LwjglStandardFont(resource: Resource, initializer: FontAtlasConfiguration.
         }
     }
 
-    inner class FontData(resource: Resource) {
-        val ttf: ByteBuffer = resource.buffer
+    inner class FontData(val ttf: ByteBuffer) {
         val info: STBTTFontinfo = STBTTFontinfo.create()
         val cdata: STBTTPackedchar.Buffer
         val scale: Float

@@ -3,8 +3,8 @@ package com.mechanica.engine.drawer.state
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.InlineColor
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Model
-import com.mechanica.engine.models.TextModel
+import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.models.TextModel
 
 abstract class AbstractDrawState : Resettable {
     protected val list = DrawStateVariableList()

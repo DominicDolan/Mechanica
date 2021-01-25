@@ -7,7 +7,7 @@ import com.mechanica.engine.input.Key
 import com.mechanica.engine.input.KeyIDs
 import com.mechanica.engine.persistence.persistent
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.text.Text
 
 fun main() {
     Game.configure {

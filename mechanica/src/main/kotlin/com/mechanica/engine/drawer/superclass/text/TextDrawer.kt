@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.text
 
-import com.mechanica.engine.text.Text
+import com.mechanica.engine.shaders.text.Text
 import com.mechanica.engine.unit.vector.InlineVector
 import com.mechanica.engine.unit.vector.Vector
 

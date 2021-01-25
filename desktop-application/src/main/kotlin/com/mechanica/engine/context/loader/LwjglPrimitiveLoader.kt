@@ -1,6 +1,7 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.utils.GLPrimitive
+import com.mechanica.engine.shaders.glPrimitives.GLPrimitive
+import com.mechanica.engine.shaders.glPrimitives.GLPrimitiveLoader
 import org.lwjgl.opengl.GL11
 
 class LwjglPrimitiveLoader : GLPrimitiveLoader {

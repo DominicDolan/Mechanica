@@ -1,12 +1,8 @@
 package com.mechanica.engine.utils
 
-import com.mechanica.engine.models.Image
 import com.mechanica.engine.resources.Resource
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL11.GL_RGBA
-import org.lwjgl.opengl.GL12
-import org.lwjgl.opengl.GL30
 import org.lwjgl.opengl.GL40
 import org.lwjgl.stb.STBImage
 import java.nio.ByteBuffer
@@ -17,52 +13,19 @@ fun enableAlphaBlending() {
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 }
 
-fun loadImage(resource: Resource): Image {
-    val data = ImageData(resource)
-
-    var image = Image(0)
-    if (data.data != null) {
-        image = loadImage(data.data, data.width, data.height)
-    }
-    data.free()
-
-    return image
-}
-
-
-fun loadImage(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, format: Int = GL_RGBA): Image {
-
-    val image = GL11.glGenTextures()
-    GL11.glBindTexture(GL11.GL_TEXTURE_2D, image)
-
-    setMipmapping(buffer, width, height, levels, format)
-
-    check(GL11.glIsTexture(image)) { "Unable to load texture" }
-
-    return Image(image)
-}
-
-private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int, format: Int) {
-    for (i in 0..levels) {
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, data)
-    }
-    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
-    GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
-    GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
-
-}
-
-class ImageData(resource: Resource) {
+class ImageData(val buffer: ByteBuffer) {
     val data: ByteBuffer?
     val width: Int
     val height: Int
+
+    constructor(resource: Resource) : this(resource.buffer)
 
     init {
         val widthBuffer = BufferUtils.createIntBuffer(1)
         val heightBuffer = BufferUtils.createIntBuffer(1)
         val componentsBuffer = BufferUtils.createIntBuffer(1)
 
-        data = STBImage.stbi_load_from_memory(resource.buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
+        data = STBImage.stbi_load_from_memory(buffer, widthBuffer, heightBuffer, componentsBuffer, 4)
         width = widthBuffer.get()
         height = heightBuffer.get()
     }

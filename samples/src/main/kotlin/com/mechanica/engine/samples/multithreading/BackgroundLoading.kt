@@ -4,11 +4,12 @@ import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.models.Image
 import com.mechanica.engine.resources.Res
+import com.mechanica.engine.resources.create
 import com.mechanica.engine.scenes.addAnimation
 import com.mechanica.engine.scenes.processes.LoadProcess
 import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.shaders.models.Image
 
 fun main() {
     Game.configure {
@@ -57,7 +58,7 @@ class ImageLoader : LoadProcess() {
     // load() is called on a different thread
     override fun load() {
         Thread.sleep(4000)
-        image = Image.loadImage(Res.image("testImage"))
+        image = Image.create(Res.image("testImage"))
     }
 
     // onFinish() is back on the main thread and it is called after load() has finished executing

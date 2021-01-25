@@ -2,11 +2,11 @@ package com.mechanica.engine.drawer.superclass.image
 
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.models.Image
-import com.mechanica.engine.models.ImageModel
-import com.mechanica.engine.shader.attributes.AttributeArray
-import com.mechanica.engine.utils.createInvertedUnitSquareVectors
-import com.mechanica.engine.utils.createUnitSquareVectors
+import com.mechanica.engine.shaders.attributes.AttributeArray
+import com.mechanica.engine.shaders.models.Image
+import com.mechanica.engine.shaders.models.ImageModel
+import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
+import com.mechanica.engine.shaders.utils.createUnitSquareVectors
 
 class ImageDrawerImpl(
         private val state: DrawState,

@@ -3,7 +3,7 @@ package com.mechanica.engine.drawer.shader
 import com.mechanica.engine.color.Color
 import com.mechanica.engine.color.toColor
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.models.Model
+import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.unit.vector.DynamicVector
 import org.joml.Matrix4f
 
