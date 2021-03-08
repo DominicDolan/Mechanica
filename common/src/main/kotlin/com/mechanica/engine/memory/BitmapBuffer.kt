@@ -1,11 +1,12 @@
 package com.mechanica.engine.memory
 
-import com.mechanica.engine.unit.vector.DynamicIntVector
+import com.cave.library.vector.vec2.IntVector2
+import com.cave.library.vector.vec2.VariableIntVector2
 import java.nio.ByteBuffer
 
 class BitmapBuffer(val buffer: ByteBuffer, val width: Int, val height: Int) {
 
-    val bufferPosition = object : DynamicIntVector {
+    val bufferPosition = object : VariableIntVector2 {
         private var _x = 0
         override var x: Int
             get() = _x
@@ -26,6 +27,8 @@ class BitmapBuffer(val buffer: ByteBuffer, val width: Int, val height: Int) {
             val row = y*width
             buffer.position(row+x)
         }
+
+        override fun toString() = IntVector2.toString(this)
     }
     
     val stBufferPosition = STVector()

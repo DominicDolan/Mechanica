@@ -1,6 +1,8 @@
 package com.mechanica.engine.samples.geometry
 
-import com.mechanica.engine.color.rgba
+import com.cave.library.color.rgba
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.shader.PathRenderer
@@ -8,10 +10,6 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.distanceTo
-import com.mechanica.engine.unit.vector.vec
-import org.joml.Matrix4f
 
 fun main() {
     Game.configure {
@@ -26,9 +24,9 @@ fun main() {
 class DrawingExample : WorldScene() {
     private val renderer = PathRenderer()
 
-    private val transformation = Matrix4f()
+    private val transformation = Matrix4()
 
-    private val paths = ArrayList<ArrayList<Vector>>()
+    private val paths = ArrayList<ArrayList<Vector2>>()
     private val strokes = ArrayList<Float>()
     private val minLineLength = 0.05
 

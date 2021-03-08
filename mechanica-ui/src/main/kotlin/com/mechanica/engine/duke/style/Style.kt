@@ -1,11 +1,11 @@
 package com.mechanica.engine.duke.style
 
-import com.mechanica.engine.color.DynamicColor
+import com.cave.library.color.VariableColor
+import com.cave.library.vector.vec2.VariableVector2
 import com.mechanica.engine.shaders.text.Font
-import com.mechanica.engine.unit.vector.DynamicVector
 
 class Style {
-    val color: DynamicColor = DynamicColor.rgba(1.0, 1.0, 1.0, 0.0)
+    val color: VariableColor = VariableColor.rgba(1.0, 1.0, 1.0, 0.0)
 
     var isVisible: Boolean = true
 
@@ -18,11 +18,11 @@ class Style {
     }
 
     class TextFormat {
-        val color: DynamicColor = DynamicColor.rgba(0.7, 0.7, 0.7, 1.0)
+        val color: VariableColor = VariableColor.rgba(0.7, 0.7, 0.7, 1.0)
 
         var size: Double = 1.0
 
-        val alignment: DynamicVector = DynamicVector.create(0.0, 0.0)
+        val alignment: VariableVector2 = VariableVector2.create(0.0, 0.0)
 
         var font: Font? = null
 

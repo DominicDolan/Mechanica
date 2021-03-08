@@ -1,7 +1,7 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.vec
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.vec
 
 interface Line {
     val m: Double

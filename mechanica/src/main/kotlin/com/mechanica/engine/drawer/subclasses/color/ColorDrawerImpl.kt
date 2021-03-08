@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer.subclasses.color
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.InlineColor
+import com.cave.library.color.Color
+import com.cave.library.color.InlineColor
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.state.DrawState
 

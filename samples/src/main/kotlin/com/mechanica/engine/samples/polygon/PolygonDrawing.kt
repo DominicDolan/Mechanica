@@ -1,5 +1,8 @@
 package com.mechanica.engine.samples.polygon
 
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.minus
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -11,9 +14,6 @@ import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTrian
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.shaders.models.PolygonModel
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.minus
-import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.fori
 import com.mechanica.engine.util.extensions.indexLooped
 import kotlin.math.abs
@@ -31,18 +31,18 @@ fun main() {
 class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
     private val selectionRadius = 0.07
 
-    private val vertices = ArrayList<Vector>()
+    private val vertices = ArrayList<Vector2>()
 
     private var model: PolygonModel? = null
 
     private var diagonal = LineSegment.invoke(vec(0.0, 0.0), vec(0.0, 0.0))
 
-    private val triangleVertices = ArrayList<Vector>()
-    private var farthestVertex: Vector? = null
+    private val triangleVertices = ArrayList<Vector2>()
+    private var farthestVertex: Vector2? = null
 
     private var diagonalTriangulator: DiagonalTriangulator? = null
 
-    private val list = TriangulatorList<Vector>()
+    private val list = TriangulatorList<Vector2>()
 
     override fun update(delta: Double) {
         super.update(delta)
@@ -105,9 +105,9 @@ class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
         }
     }
 
-    private val Vector.prev: Vector
+    private val Vector2.prev: Vector2
         get() = vertices[vertices.indexLooped(vertices.indexOf(this) - 1)]
-    private val Vector.next: Vector
+    private val Vector2.next: Vector2
         get() = vertices[vertices.indexLooped(vertices.indexOf(this) + 1)]
 
     private fun refresh() {
@@ -145,8 +145,8 @@ class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
         }
     }
 
-    private fun leftMost(): Vector {
-        var leftMost: Vector = vertices.first()
+    private fun leftMost(): Vector2 {
+        var leftMost: Vector2 = vertices.first()
         vertices.fori {
             if (it.x < leftMost.x) {
                 leftMost = it
@@ -155,9 +155,9 @@ class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
         return leftMost
     }
 
-    private fun getCorrectVertexInTriangle(leftMost: Vector, line: LineSegment): Vector? {
+    private fun getCorrectVertexInTriangle(leftMost: Vector2, line: LineSegment): Vector2? {
         var maxDistance = 0.0
-        var vertex: Vector? = null
+        var vertex: Vector2? = null
         triangleVertices.clear()
         vertices.fori {
             if (it.isInTriangle(leftMost, line.p1, line.p2)) {

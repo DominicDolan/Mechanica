@@ -1,5 +1,6 @@
 package com.mechanica.engine.game.configuration
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.configuration.ContextConfigurationData
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.Display
@@ -8,7 +9,6 @@ import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.Scene
-import org.joml.Matrix4f
 
 class ConfigurationData : ContextConfigurationData {
     override val display: Display? = null
@@ -32,7 +32,7 @@ class ConfigurationData : ContextConfigurationData {
     var startingScene: (() -> Scene)? = null
 
     var debugConfiguration: (GameDebugConfiguration.() -> Unit) = { }
-    var projectionMatrixConfiguration: (Matrix4f.(View) -> Unit) = GameMatrices.Companion::defaultProjectionMatrix
+    var projectionMatrixConfiguration: (Matrix4.(View) -> Unit) = GameMatrices.Companion::defaultProjectionMatrix
 
     var deltaCalculator: DeltaCalculator = DeltaCalculator.basicVariableCalculator()
 }

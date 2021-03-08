@@ -1,59 +1,58 @@
 package com.mechanica.engine.drawer.state
 
-import com.mechanica.engine.color.Color
+import com.cave.library.angle.radians
+import com.cave.library.color.Color
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
 import com.mechanica.engine.shaders.utils.createUnitSquareVectors
-import org.joml.Matrix4f
-import org.joml.Vector3f
 import kotlin.math.tan
 
 class TransformationState(private val origin: OriginState) : AbstractDrawState() {
-    private val matrix = list.add(Matrix4f().identity()) { it.identity() }
-    var userMatrix: Matrix4f? = null
+    private val matrix = list.add(Matrix4.identity()) { it.identity() }
+    var userMatrix: Matrix4? = null
 
-    val translation = list.addVector3(0f)
-    val scale = list.addVector3(1f)
+    val translation = list.addVector3(0.0)
+    val scale = list.addVector3(1.0)
 
-    private val zAxis = Vector3f(0f, 0f, 1f)
     var rotation = list.addDouble(0.0)
 
-    private val skewMatrix = Matrix4f().identity()
+    private val skewMatrix = Matrix4.identity()
     val skew = list.addVector2(0.0)
 
-    fun getTransformationMatrix(): Matrix4f {
-        val matrix = matrix.variable
+    fun getTransformationMatrix(): Matrix4 {
+        val matrix: Matrix4 = matrix.variable
         matrix.translate(translation.variable)
 
         if (rotation.wasChanged)
-            matrix.rotate(rotation.value.toFloat(), zAxis)
+            matrix.rotation.angle = rotation.value.radians
 
         addSkewToMatrix(matrix)
         addOriginToMatrix(matrix)
 
         matrix.scale(scale.variable)
 
-        userMatrix?.let { matrix.mul(it) }
+        userMatrix?.let { matrix *= it }
         userMatrix = null
         return matrix
     }
 
-    private fun addSkewToMatrix(matrix: Matrix4f) {
+    private fun addSkewToMatrix(matrix: Matrix4) {
         if (skew.wasChanged) {
-            skewMatrix.m10(tan(-skew.x.toFloat()))
-            skewMatrix.m01(tan(skew.y.toFloat()))
+            skewMatrix[1,0] = tan(-skew.x)
+            skewMatrix[0,1] = tan(skew.y)
 
-            matrix.mul(skewMatrix)
+            matrix *= skewMatrix
         }
     }
 
-    private fun addOriginToMatrix(matrix: Matrix4f) {
+    private fun addOriginToMatrix(matrix: Matrix4) {
         if (origin.wasChanged) {
-            val pivotX = origin.normalized.x.toFloat()*scale.x + origin.relative.x.toFloat()
-            val pivotY = origin.normalized.y.toFloat()*scale.y + origin.relative.y.toFloat()
-            matrix.translate(-pivotX, -pivotY, 0f)
+            val pivotX = origin.normalized.x*scale.x + origin.relative.x
+            val pivotY = origin.normalized.y*scale.y + origin.relative.y
+            matrix.translate(-pivotX, -pivotY, 0.0)
         }
     }
 }

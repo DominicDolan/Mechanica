@@ -9,7 +9,8 @@
 
 rootProject.name = "Mechanica"
 
-include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
+includeBuild("F:/Src/Mechanica/Kotlin-CAVE")
+include("common", "desktop-application", "application-interface", "mechanica-shaders", "shaders-interface", "mechanica", "samples", "mechanica-ui")
 
 pluginManagement {
     resolutionStrategy {
@@ -20,4 +21,3 @@ pluginManagement {
         }
     }
 }
-include("shaders-interface")

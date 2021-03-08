@@ -1,12 +1,12 @@
 package com.mechanica.engine.geometry.triangulation.triangulators
 
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.geometry.triangulation.Triangulator
 import com.mechanica.engine.geometry.triangulation.lists.DiagonalCalculator
 import com.mechanica.engine.geometry.triangulation.lists.TriangulatorList
-import com.mechanica.engine.unit.vector.Vector
 
-private typealias Node = TriangulatorList<Vector>.Node
-class DiagonalTriangulator(vertices: List<Vector>) : Triangulator {
+private typealias Node = TriangulatorList<Vector2>.Node
+class DiagonalTriangulator(vertices: List<Vector2>) : Triangulator {
 
     override var indices: ShortArray = ShortArray(100)
         private set

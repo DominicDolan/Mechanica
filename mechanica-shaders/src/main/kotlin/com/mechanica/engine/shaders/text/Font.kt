@@ -1,8 +1,8 @@
 package com.mechanica.engine.shaders.text
 
+import com.cave.library.vector.vec2.VariableVector2
 import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.text.CharacterCursor
-import com.mechanica.engine.unit.vector.DynamicVector
 
 abstract class Font {
     abstract val atlas: Image
@@ -13,7 +13,7 @@ abstract class Font {
     val lineHeight: Float
         get() = ascent - descent+lineGap
 
-    abstract fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<DynamicVector>, texCoords: Array<DynamicVector>)
+    abstract fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<VariableVector2>, texCoords: Array<VariableVector2>)
 
     companion object
 }

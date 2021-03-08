@@ -1,11 +1,11 @@
 package com.mechanica.engine.samples.scenes
 
+import com.cave.library.angle.degrees
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.scenes.scenes.Scene
-import com.mechanica.engine.unit.angle.degrees
 
 fun main() {
     Game.configure {

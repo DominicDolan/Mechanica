@@ -1,12 +1,12 @@
 package com.mechanica.engine.context.loader
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.shader.*
 import com.mechanica.engine.shaders.context.UniformLoader
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.uniforms.*
 import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
-import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20
 import kotlin.reflect.KProperty
 
@@ -44,20 +44,20 @@ class LwjglUniformVars : UniformVars {
         return LwjglFloat(f, name ?: "")
     }
 
-    override fun vec2(x: Number, y: Number, name: String?): UniformVector2f {
-        return LwjglVector2f(x, y, name ?: "")
+    override fun vec2(x: Number, y: Number, name: String?): UniformVector2 {
+        return LwjglVector2(x, y, name ?: "")
     }
 
-    override fun vec3(x: Number, y: Number, z: Number, name: String?): UniformVector3f {
-        return LwjglVector3f(x, y, z, name ?: "")
+    override fun vec3(x: Number, y: Number, z: Number, name: String?): UniformVector3 {
+        return LwjglVector3(x, y, z, name ?: "")
     }
 
-    override fun vec4(x: Number, y: Number, z: Number, w: Number, name: String?): UniformVector4f {
-        return LwjglVector4f(x, y, z, w, name ?: "")
+    override fun vec4(x: Number, y: Number, z: Number, w: Number, name: String?): UniformVector4 {
+        return LwjglVector4(x, y, z, w, name ?: "")
     }
 
     override fun mat4(name: String?): UniformMatrix4f {
-        return LwjglMatrix4f(Matrix4f(), name ?: "")
+        return LwjglMatrix4(Matrix4.identity(), name ?: "")
     }
 
 }

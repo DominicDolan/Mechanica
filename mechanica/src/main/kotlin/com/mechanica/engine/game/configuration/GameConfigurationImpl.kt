@@ -1,5 +1,6 @@
 package com.mechanica.engine.game.configuration
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.Game
@@ -8,7 +9,6 @@ import com.mechanica.engine.game.view.View
 import com.mechanica.engine.persistence.JsonStorer
 import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.scenes.Scene
-import org.joml.Matrix4f
 
 internal class GameConfigurationImpl(private val configure: GameConfiguration.() -> Unit) : GameConfiguration {
     val data = ConfigurationData()
@@ -60,7 +60,7 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
         data.multisamplingSamples = samples
     }
 
-    override fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit) {
+    override fun configureProjectionMatrix(configuration: Matrix4.(View) -> Unit) {
         data.projectionMatrixConfiguration = configuration
     }
 

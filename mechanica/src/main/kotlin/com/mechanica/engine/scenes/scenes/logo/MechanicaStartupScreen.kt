@@ -1,8 +1,8 @@
 package com.mechanica.engine.scenes.scenes.logo
 
+import com.cave.library.color.Color
 import com.mechanica.engine.animation.AnimationFormula
 import com.mechanica.engine.animation.AnimationFormulas
-import com.mechanica.engine.color.Color
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.resources.Res

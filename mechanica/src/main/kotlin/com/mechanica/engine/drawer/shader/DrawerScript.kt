@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.shader
 
-import com.mechanica.engine.color.hex
+import com.cave.library.color.hex
 import com.mechanica.engine.shaders.attributes.Attribute
 import com.mechanica.engine.shaders.script.ShaderScript
 

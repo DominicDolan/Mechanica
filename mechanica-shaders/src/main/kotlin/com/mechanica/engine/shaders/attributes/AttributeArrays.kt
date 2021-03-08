@@ -1,14 +1,14 @@
 package com.mechanica.engine.shaders.attributes
 
-import com.mechanica.engine.color.Color
+import com.cave.library.color.Color
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec3.Vector3
+import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.buffers.FloatBufferObject
 import com.mechanica.engine.shaders.models.Bindable
 import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
-import org.joml.Vector3f
-import org.joml.Vector4f
 
 interface AttributeArray : Bindable {
     val vertexCount: Int
@@ -26,13 +26,13 @@ interface AttributeArray : Bindable {
             return attribute
         }
 
-        fun create(array: Array<out Vector>, location: Int, type: ShaderType<*> = ShaderType.vec2()) : AttributeArrayForFloats<*> {
+        fun create(array: Array<out Vector2>, location: Int, type: ShaderType<*> = ShaderType.vec2()) : AttributeArrayForFloats<*> {
             val attribute = Vec2AttributeArray(array)
             attribute.attachTo(location, type)
             return attribute
         }
 
-        fun create(array: Array<out Vector>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
+        fun create(array: Array<out Vector2>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
             val attribute = Vec2AttributeArray(array)
             attribute.attachTo(attributeVar)
             return attribute
@@ -44,13 +44,13 @@ interface AttributeArray : Bindable {
             return attribute
         }
 
-        fun createPositionArray(array: Array<out Vector>): Vec2AttributeArray {
+        fun createPositionArray(array: Array<out Vector2>): Vec2AttributeArray {
             val attribute = Vec2AttributeArray(array)
             attribute.attachTo(0, ShaderType.vec3())
             return attribute
         }
 
-        fun createPositionArray(array: Array<Vector3f>): Vec3AttributeArray {
+        fun createPositionArray(array: Array<Vector3>): Vec3AttributeArray {
             val attribute = Vec3AttributeArray(array)
             attribute.attachTo(0, ShaderType.vec3())
             return attribute
@@ -62,31 +62,31 @@ interface AttributeArray : Bindable {
             return attribute
         }
 
-        fun createTextureArray(array: Array<out Vector>): Vec2AttributeArray {
+        fun createTextureArray(array: Array<out Vector2>): Vec2AttributeArray {
             val attribute = Vec2AttributeArray(array)
             attribute.attachTo(1, ShaderType.vec2())
             return attribute
         }
 
-        fun create(array: Array<Vector3f>, location: Int, type: ShaderType<*> = ShaderType.vec3()) : AttributeArrayForFloats<*> {
+        fun create(array: Array<Vector3>, location: Int, type: ShaderType<*> = ShaderType.vec3()) : AttributeArrayForFloats<*> {
             val attribute = Vec3AttributeArray(array)
             attribute.attachTo(location, type)
             return attribute
         }
 
-        fun create(array: Array<Vector3f>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
+        fun create(array: Array<Vector3>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
             val attribute = Vec3AttributeArray(array)
             attribute.attachTo(attributeVar)
             return attribute
         }
 
-        fun create(array: Array<Vector4f>, location: Int, type: ShaderType<*> = ShaderType.vec4()) : AttributeArrayForFloats<*> {
+        fun create(array: Array<Vector4>, location: Int, type: ShaderType<*> = ShaderType.vec4()) : AttributeArrayForFloats<*> {
             val attribute = Vec4AttributeArray(array)
             attribute.attachTo(location, type)
             return attribute
         }
 
-        fun create(array: Array<Vector4f>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
+        fun create(array: Array<Vector4>, attributeVar: AttributeVar<*>) : AttributeArrayForFloats<*> {
             val attribute = Vec4AttributeArray(array)
             attribute.attachTo(attributeVar)
             return attribute
@@ -204,19 +204,19 @@ abstract class AttributeArrayMultiCoordForFloats<T> : AttributeArrayForFloats<Ar
     }
 }
 
-class Vec2AttributeArray(array: Array<out Vector>) : AttributeArrayMultiCoordForFloats<DynamicVector>() {
-    override var value: Array<DynamicVector> = Array(array.size) { DynamicVector.create(array[it]) }
+class Vec2AttributeArray(array: Array<out Vector2>) : AttributeArrayMultiCoordForFloats<VariableVector2>() {
+    override var value: Array<VariableVector2> = Array(array.size) { VariableVector2.create(array[it]) }
 
-    override val valueToFloatConverter: (DynamicVector, Int) -> Float = { v, coord -> v.getOrZero(coord).toFloat() }
+    override val valueToFloatConverter: (VariableVector2, Int) -> Float = { v, coord -> v.getOrZero(coord).toFloat() }
 }
 
-class Vec3AttributeArray(override var value: Array<Vector3f>) : AttributeArrayMultiCoordForFloats<Vector3f>() {
-    override val valueToFloatConverter: (Vector3f, Int) -> Float = { v, coord -> if (coord < 3) v[coord] else 0f }
+class Vec3AttributeArray(override var value: Array<Vector3>) : AttributeArrayMultiCoordForFloats<Vector3>() {
+    override val valueToFloatConverter: (Vector3, Int) -> Float = { v, coord -> if (coord < 3) v[coord].toFloat() else 0f }
 
 }
 
-class Vec4AttributeArray(override var value: Array<Vector4f>) : AttributeArrayMultiCoordForFloats<Vector4f>() {
-    override val valueToFloatConverter: (Vector4f, Int) -> Float = { v, coord -> if (coord < 4) v[coord] else 0f }
+class Vec4AttributeArray(override var value: Array<Vector4>) : AttributeArrayMultiCoordForFloats<Vector4>() {
+    override val valueToFloatConverter: (Vector4, Int) -> Float = { v, coord -> if (coord < 4) v[coord].toFloat() else 0f }
 }
 
 class ColorAttributeArray(override var value: Array<out Color>) : AttributeArrayMultiCoordForFloats<Color>() {

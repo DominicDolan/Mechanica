@@ -1,10 +1,10 @@
 package com.mechanica.engine.drawer.subclasses.rotation
 
+import com.cave.library.angle.Degree
+import com.cave.library.angle.Radian
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.unit.angle.Degree
-import com.mechanica.engine.unit.angle.Radian
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
 
 interface RotatedDrawer : Drawer {
 
@@ -13,5 +13,5 @@ interface RotatedDrawer : Drawer {
 
     fun about(pivotX: Number, pivotY: Number): Drawer
     fun about(point: InlineVector): Drawer
-    fun about(point: Vector): Drawer
+    fun about(point: Vector2): Drawer
 }

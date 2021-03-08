@@ -1,7 +1,7 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.Vector2
 import kotlin.math.max
 import kotlin.math.min
 
@@ -22,8 +22,8 @@ abstract class LineSegment() : Line {
     override val c: Double
         get() = if (!hasChanged) _c else calculateXIntercept()
 
-    abstract val p1: Vector
-    abstract val p2: Vector
+    abstract val p1: Vector2
+    abstract val p2: Vector2
 
     fun isInBoundingBox(point: InlineVector): Boolean {
         val xBoolean = point.x in min(p1.x, p2.x)..max(p1.x, p2.x)
@@ -38,7 +38,7 @@ abstract class LineSegment() : Line {
         return isInThis && isInOther
     }
 
-    fun perpendicularDistance(vector: Vector): Double {
+    fun perpendicularDistance(vector: Vector2): Double {
         return com.mechanica.engine.geometry.perpendicularDistance(vector, this)
     }
 
@@ -70,7 +70,7 @@ abstract class LineSegment() : Line {
     }
 
     companion object {
-        operator fun invoke(p1: Vector, p2: Vector): LineSegment {
+        operator fun invoke(p1: Vector2, p2: Vector2): LineSegment {
             return LineSegmentImpl(p1, p2)
         }
 

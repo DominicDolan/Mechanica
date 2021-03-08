@@ -1,4 +1,6 @@
-package com.mechanica.engine.unit.vector
+package com.mechanica.engine.util
+
+import com.cave.library.vector.vec2.InlineVector
 
 class VectorArray(size: Int, init: (Int) -> InlineVector) {
     private val longArray: LongArray = LongArray(size) { init(it).toLong() }

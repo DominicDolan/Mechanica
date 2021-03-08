@@ -1,26 +1,26 @@
 package com.mechanica.engine.shaders.vars
 
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec3.Vector3
+import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.attributes.AttributeVar
 import com.mechanica.engine.shaders.context.ShaderLoader
 import com.mechanica.engine.shaders.qualifiers.Qualifier
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.uniforms.UniformVar
-import com.mechanica.engine.unit.vector.DynamicVector
-import org.joml.Matrix4f
-import org.joml.Vector3f
-import org.joml.Vector4f
 
 interface ShaderVars<Q : Qualifier> {
 
     fun float(name: String? = null): ShaderVar<Float, Q>
 
-    fun vec2(name: String? = null): ShaderVar<DynamicVector, Q>
+    fun vec2(name: String? = null): ShaderVar<VariableVector2, Q>
 
-    fun vec3(name: String? = null): ShaderVar<Vector3f, Q>
+    fun vec3(name: String? = null): ShaderVar<Vector3, Q>
 
-    fun vec4(name: String? = null): ShaderVar<Vector4f, Q>
+    fun vec4(name: String? = null): ShaderVar<Vector4, Q>
 
-    fun mat4(name: String? = null): ShaderVar<Matrix4f, Q>
+    fun mat4(name: String? = null): ShaderVar<Matrix4, Q>
 
 
 }

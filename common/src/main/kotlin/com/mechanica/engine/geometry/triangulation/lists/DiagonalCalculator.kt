@@ -1,13 +1,13 @@
 package com.mechanica.engine.geometry.triangulation.lists
 
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.lines.LineSegment
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 import kotlin.math.abs
 
-private typealias Node = TriangulatorList<Vector>.Node
-class DiagonalCalculator(private val list: TriangulatorList<Vector>) : LineSegment() {
+private typealias Node = TriangulatorList<Vector2>.Node
+class DiagonalCalculator(private val list: TriangulatorList<Vector2>) : LineSegment() {
 
     private lateinit var activeHead: Node
 
@@ -16,8 +16,8 @@ class DiagonalCalculator(private val list: TriangulatorList<Vector>) : LineSegme
     override lateinit var p2: Node
         private set
 
-    var leftMostTemp: Vector = vec(0.0, 0.0)
-    var furthestTemp: Vector? = null
+    var leftMostTemp: Vector2 = vec(0.0, 0.0)
+    var furthestTemp: Vector2? = null
 
     fun calculate(head: Node): LineSegment {
         activeHead = head
@@ -56,7 +56,7 @@ class DiagonalCalculator(private val list: TriangulatorList<Vector>) : LineSegme
         return leftMost
     }
 
-    private fun getCorrectVertexInTriangle(leftMost: Vector): Node? {
+    private fun getCorrectVertexInTriangle(leftMost: Vector2): Node? {
         var maxDistance = 0.0
         var vertex: Node? = null
         list.loopFrom(activeHead) {

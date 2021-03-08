@@ -1,12 +1,12 @@
 package com.mechanica.engine.samples.input
 
+import com.cave.library.angle.degrees
+import com.cave.library.angle.plus
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.angle.plus
 
 fun main() {
     Game.configure {

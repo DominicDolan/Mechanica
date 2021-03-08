@@ -1,12 +1,12 @@
 package com.mechanica.engine.samples.input
 
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 
 fun main() {
     Game.configure {
@@ -18,7 +18,7 @@ fun main() {
 }
 
 class MouseExample : WorldScene(), Inputs by Inputs.create() {
-    private var circlePositions = ArrayList<Vector>()
+    private var circlePositions = ArrayList<Vector2>()
 
     override fun update(delta: Double) {
         if (mouse.MB1.hasBeenPressed) {

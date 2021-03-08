@@ -1,12 +1,12 @@
 package com.mechanica.engine.geometry.path
 
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import kotlin.math.sqrt
 
-fun Iterable<DynamicVector>.moveToOrigin() {
+fun Iterable<VariableVector2>.moveToOrigin() {
     val minX = (this.minByOrNull { it.x } ?: vec(0.0, 0.0)).x
     val minY = (this.minByOrNull { it.y } ?: vec(0.0, 0.0)).y
     this.forEach { vec ->
@@ -21,9 +21,9 @@ fun List<InlineVector>.moveToOrigin(): List<InlineVector> {
     return this.map { vec(it.x - minX, it.y - minY) }
 }
 
-fun Iterable<DynamicVector>.scale(scale: Double) = scale(scale, scale)
+fun Iterable<VariableVector2>.scale(scale: Double) = scale(scale, scale)
 
-fun Iterable<DynamicVector>.scale(scaleX: Double, scaleY: Double) {
+fun Iterable<VariableVector2>.scale(scaleX: Double, scaleY: Double) {
     this.forEach { vec ->
         vec.x *= scaleX
         vec.y *= scaleY
@@ -37,7 +37,7 @@ fun List<InlineVector>.scale(scaleX: Double, scaleY: Double): List<InlineVector>
 }
 
 
-fun Iterable<Vector>.centroid(): InlineVector {
+fun Iterable<Vector2>.centroid(): InlineVector {
     var xAverage = 0.0
     var yAverage = 0.0
     this.forEachIndexed { i, vec ->
@@ -48,7 +48,7 @@ fun Iterable<Vector>.centroid(): InlineVector {
     return vec(xAverage, yAverage)
 }
 
-fun Iterable<DynamicVector>.normalizeX(width: Double): Iterable<DynamicVector> {
+fun Iterable<VariableVector2>.normalizeX(width: Double): Iterable<VariableVector2> {
     val currentHeight = this.xRange()
     val factor = width/currentHeight
     this.scale(factor)
@@ -56,13 +56,13 @@ fun Iterable<DynamicVector>.normalizeX(width: Double): Iterable<DynamicVector> {
 }
 
 
-fun Iterable<DynamicVector>.normalizeY(height: Double) {
+fun Iterable<VariableVector2>.normalizeY(height: Double) {
     val currentHeight = this.yRange()
     val factor = height/currentHeight
     this.scale(factor)
 }
 
-fun Iterable<DynamicVector>.flipVertically() {
+fun Iterable<VariableVector2>.flipVertically() {
     this.forEach {
         it.y = -it.y
     }
@@ -70,19 +70,19 @@ fun Iterable<DynamicVector>.flipVertically() {
 
 fun Iterable<InlineVector>.flipVertically() = this.map { vec(it.x, -it.y) }
 
-fun Iterable<DynamicVector>.xRange(): Double {
+fun Iterable<VariableVector2>.xRange(): Double {
     val max = this.maxByOrNull { it.x } ?: vec(0.0, 0.0)
     val min = this.minByOrNull { it.x } ?: vec(0.0, 0.0)
     return max.x - min.x
 }
 
-fun Iterable<DynamicVector>.yRange(): Double {
+fun Iterable<VariableVector2>.yRange(): Double {
     val max = this.maxByOrNull { it.y } ?: vec(0.0, 0.0)
     val min = this.minByOrNull { it.y } ?: vec(0.0, 0.0)
     return max.y - min.y
 }
 
-fun Iterable<DynamicVector>.calculateLength(): Double {
+fun Iterable<VariableVector2>.calculateLength(): Double {
     var previous = this.first()
     var length = 0.0
     for (vector in this) {

@@ -1,11 +1,11 @@
 package com.mechanica.engine.samples.temp
 
+import com.cave.library.angle.degrees
+import com.cave.library.angle.radians
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.angle.radians
 
 fun main() {
     Game.configure {

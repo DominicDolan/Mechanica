@@ -1,9 +1,9 @@
 package com.mechanica.engine.geometry.triangulation
 
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.geometry.rectangleArea
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.foriIndexed
 import com.mechanica.engine.util.extensions.indexLooped
 
@@ -16,7 +16,7 @@ interface Triangulator {
 
 }
 
-abstract class AbstractTriangulator<N : TriangulatorNode>(path: Array<out Vector>) : Triangulator {
+abstract class AbstractTriangulator<N : TriangulatorNode>(path: Array<out Vector2>) : Triangulator {
 
     private var hasChanged: Boolean = true
 
@@ -56,7 +56,7 @@ abstract class AbstractTriangulator<N : TriangulatorNode>(path: Array<out Vector
         return n
     }
 
-    fun addAll(path: Array<out Vector>) {
+    fun addAll(path: Array<out Vector2>) {
         for (element in path) {
             val n = createNode(vec(element))
             vertices.add(n)

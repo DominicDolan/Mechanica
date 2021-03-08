@@ -1,5 +1,6 @@
 package com.mechanica.engine.scenes.scenes.logo
 
+import com.cave.library.angle.degrees
 import com.mechanica.engine.animation.AnimationFormula
 import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.drawer.Drawer
@@ -9,7 +10,6 @@ import com.mechanica.engine.resources.create
 import com.mechanica.engine.scenes.addAnimationSequence
 import com.mechanica.engine.scenes.scenes.sprites.StaticSprite
 import com.mechanica.engine.shaders.models.Image
-import com.mechanica.engine.unit.angle.degrees
 
 open class MechanicaLoadingIcon(view: View, order: Int = 0) : StaticSprite(view, order) {
     private val mother = Image.create(Res.image("logo/astrolabe-mother"))

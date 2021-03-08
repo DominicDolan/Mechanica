@@ -1,13 +1,13 @@
 package com.mechanica.engine.geometry.lines
 
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.Vector2
 
-class LineSegmentImpl(p1: Vector, p2: Vector) : LineSegment() {
+class LineSegmentImpl(p1: Vector2, p2: Vector2) : LineSegment() {
 
     override val p1 = LinePoint(p1)
     override val p2 = LinePoint(p2)
 
-    inner class LinePoint(vec: Vector) : Vector {
+    inner class LinePoint(vec: Vector2) : Vector2 {
         override var x: Double = vec.x
             set(value) {
                 field = value

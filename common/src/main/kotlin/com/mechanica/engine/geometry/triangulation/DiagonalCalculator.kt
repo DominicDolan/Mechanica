@@ -1,17 +1,17 @@
 package com.mechanica.engine.geometry.triangulation
 
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.lines.LineSegment
-import com.mechanica.engine.unit.vector.Vector
 import com.mechanica.engine.util.extensions.fori
 import com.mechanica.engine.util.extensions.indexLooped
 import kotlin.math.abs
 
-class DiagonalCalculator(private val vertices: ArrayList<Vector>) {
+class DiagonalCalculator(private val vertices: ArrayList<Vector2>) {
 
-    private val Vector.prev: Vector
+    private val Vector2.prev: Vector2
         get() = vertices[vertices.indexLooped(vertices.indexOf(this) - 1)]
-    private val Vector.next: Vector
+    private val Vector2.next: Vector2
         get() = vertices[vertices.indexLooped(vertices.indexOf(this) + 1)]
 
     private var p1Index: Int = -1
@@ -19,8 +19,8 @@ class DiagonalCalculator(private val vertices: ArrayList<Vector>) {
 
     val diagonal = calculateDiagonal()
 
-    val subPolygon1 = ArrayList<Vector>()
-    val subPolygon2 = ArrayList<Vector>()
+    val subPolygon1 = ArrayList<Vector2>()
+    val subPolygon2 = ArrayList<Vector2>()
 
 
     init {
@@ -48,7 +48,7 @@ class DiagonalCalculator(private val vertices: ArrayList<Vector>) {
         subPolygon2.addFromVertices(p2Index, p1Index)
     }
 
-    private fun ArrayList<Vector>.addFromVertices(fromIndex: Int, toIndex: Int) {
+    private fun ArrayList<Vector2>.addFromVertices(fromIndex: Int, toIndex: Int) {
         var start = vertices[fromIndex]
         this.add(start)
         while (start !== vertices[toIndex]) {
@@ -57,8 +57,8 @@ class DiagonalCalculator(private val vertices: ArrayList<Vector>) {
         }
     }
 
-    private fun leftMost(): Vector {
-        var leftMost: Vector = vertices.first()
+    private fun leftMost(): Vector2 {
+        var leftMost: Vector2 = vertices.first()
         vertices.fori {
             if (it.x < leftMost.x) {
                 leftMost = it
@@ -67,9 +67,9 @@ class DiagonalCalculator(private val vertices: ArrayList<Vector>) {
         return leftMost
     }
 
-    private fun getCorrectVertexInTriangle(leftMost: Vector, line: LineSegment): Vector? {
+    private fun getCorrectVertexInTriangle(leftMost: Vector2, line: LineSegment): Vector2? {
         var maxDistance = 0.0
-        var vertex: Vector? = null
+        var vertex: Vector2? = null
         vertices.fori {
             if (it.isInTriangle(leftMost, line.p1, line.p2)) {
                 val perpendicularDistance = abs(line.perpendicularDistance(it))

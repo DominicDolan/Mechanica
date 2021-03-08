@@ -1,12 +1,12 @@
 package com.mechanica.engine.geometry.triangulation
 
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.Vector2
 
-abstract class TriangulatorNode : Vector {
+abstract class TriangulatorNode : Vector2 {
     var index: Int = 0
 }
 
-//class BasicNode(vertex: Vector, override val triangulator: Triangulator<BasicNode>, index: Int = triangulator.vertices.size): TriangulatorNode {
+//class BasicNode(vertex: Vector2, override val triangulator: Triangulator<BasicNode>, index: Int = triangulator.vertices.size): TriangulatorNode {
 //    override var x: Double = vertex.x
 //    override var y: Double = vertex.y
 //

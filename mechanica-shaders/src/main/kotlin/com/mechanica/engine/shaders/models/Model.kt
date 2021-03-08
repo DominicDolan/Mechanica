@@ -1,11 +1,11 @@
 package com.mechanica.engine.shaders.models
 
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.shaders.attributes.Attribute
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.utils.ElementIndexArray
 import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
 import com.mechanica.engine.shaders.utils.createUnitSquareVectors
-import com.mechanica.engine.unit.vector.Vector
 
 open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
     protected val inputs: Array<Bindable> = arrayOf(*inputs)
@@ -59,7 +59,7 @@ open class Model(vararg inputs: Bindable) : Iterable<Bindable> {
             return Model(position)
         }
 
-        fun createFromVecArray(array: Array<Vector>): Model {
+        fun createFromVecArray(array: Array<Vector2>): Model {
             val position = AttributeArray.create(array, Attribute.positionLocation)
             return Model(position)
         }

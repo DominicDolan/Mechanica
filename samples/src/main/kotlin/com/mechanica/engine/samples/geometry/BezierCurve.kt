@@ -1,13 +1,13 @@
 package com.mechanica.engine.samples.geometry
 
-import com.mechanica.engine.color.rgba
+import com.cave.library.color.rgba
+import com.cave.library.vector.vec2.*
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.unit.vector.*
 
 fun main() {
     Game.configure {
@@ -23,12 +23,12 @@ class BezierCurve : WorldScene() {
     private val maxVertices = 1000
     private val minLineLength = 0.1
 
-    private val vertices = ArrayList<DynamicVector>(maxVertices)
+    private val vertices = ArrayList<VariableVector2>(maxVertices)
     private var index = 0
 
-    var p1 = DynamicVector.create(-6.0, -3.0)
-    var p2 = DynamicVector.create(6.0, -3.0)
-    var bezierPoint = DynamicVector.create(0.0, 3.0)
+    var p1 = VariableVector2.create(-6.0, -3.0)
+    var p2 = VariableVector2.create(6.0, -3.0)
+    var bezierPoint = VariableVector2.create(0.0, 3.0)
 
     private val constructionPoints = arrayOf(p1, bezierPoint, p2)
 
@@ -85,12 +85,12 @@ class BezierCurve : WorldScene() {
 //        updateConstructionLines()
     }
 
-    private fun addPoint(vector: Vector) {
+    private fun addPoint(vector: Vector2) {
         if (index < vertices.size) {
             vertices[index].set(vector)
             index++
         } else {
-            vertices.add(DynamicVector.create(vector))
+            vertices.add(VariableVector2.create(vector))
         }
     }
 

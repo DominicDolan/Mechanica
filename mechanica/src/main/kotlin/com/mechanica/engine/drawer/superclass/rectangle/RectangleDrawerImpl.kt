@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
+import com.cave.library.vector.arrays.Vector2Arrays
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.shaders.attributes.AttributeArray
@@ -8,7 +9,6 @@ import com.mechanica.engine.shaders.models.Bindable
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
-import com.mechanica.engine.unit.vector.VectorShapes
 
 internal class RectangleDrawerImpl(
         private val state: DrawState,
@@ -17,7 +17,7 @@ internal class RectangleDrawerImpl(
     private val model: Model
 
     init {
-        val position = AttributeArray.createPositionArray(VectorShapes.createUnitSquare())
+        val position = AttributeArray.createPositionArray(Vector2Arrays.createUnitSquare())
 
         val attributeBinder = FloatAttributeBinder.create(GlslLocation.Companion.create(1), ShaderType.vec2())
         val disableTexCoords = object : Bindable {

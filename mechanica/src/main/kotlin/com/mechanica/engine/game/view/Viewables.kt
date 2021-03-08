@@ -1,13 +1,13 @@
 package com.mechanica.engine.game.view
 
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.Drawer
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
 
 interface Viewable {
     val view: View
 
-    val position: Vector
+    val position: Vector2
         get() = view.xy
 
     val Drawer.inView: Drawer
@@ -23,7 +23,7 @@ interface Viewable {
 }
 
 interface MovingViewable : Viewable{
-    override val position: DynamicVector
+    override val position: VariableVector2
 
     companion object {
         fun create(
@@ -44,7 +44,7 @@ private open class MovingViewableImpl(
         height: Double = 1.0,
 ) : MovingViewable {
 
-    override val position = DynamicVector.create(x + width/2.0, y + height/2.0)
+    override val position = VariableVector2.create(x + width/2.0, y + height/2.0)
 
     override val view: View by lazy { MovingView(width, height) }
 
@@ -57,10 +57,10 @@ private open class MovingViewableImpl(
         override val y: Double
             get() = position.y
 
-        override val xy: DynamicVector
+        override val xy: VariableVector2
             get() = position
 
-        override var wh: Vector = object : Vector {
+        override var wh: Vector2 = object : Vector2 {
             override val x: Double
                 get() = this@MovingView.width
             override val y: Double
@@ -102,7 +102,7 @@ private class DynamicViewableImpl(
             get() = position.y
             set(value) { position.y = value }
 
-        override val xy: DynamicVector = object : DynamicVector {
+        override val xy: VariableVector2 = object : VariableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.x
                 set(value) {this@DynamicViewableView.x = value }
@@ -111,7 +111,7 @@ private class DynamicViewableImpl(
                 set(value) { this@DynamicViewableView.y = value}
         }
 
-        override val wh: DynamicVector = object : DynamicVector {
+        override val wh: VariableVector2 = object : VariableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.width
                 set(value) {this@DynamicViewableView.width = value }

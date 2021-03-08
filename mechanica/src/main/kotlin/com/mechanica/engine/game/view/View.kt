@@ -1,14 +1,14 @@
 package com.mechanica.engine.game.view
 
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.Vector2
 
 interface View {
     val width: Double
     val height: Double
     val x: Double
     val y: Double
-    val xy: Vector
-    val wh: Vector
+    val xy: Vector2
+    val wh: Vector2
 
     val bottom: Double
         get() = y - height/2.0

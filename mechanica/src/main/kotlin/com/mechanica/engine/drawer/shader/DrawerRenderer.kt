@@ -1,11 +1,11 @@
 package com.mechanica.engine.drawer.shader
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.toColor
+import com.cave.library.color.Color
+import com.cave.library.color.toColor
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.VariableVector2
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.shaders.models.Model
-import com.mechanica.engine.unit.vector.DynamicVector
-import org.joml.Matrix4f
 
 class DrawerRenderer {
 
@@ -112,11 +112,11 @@ class DrawerRenderer {
                     if (value) 1f else 0f
         }
 
-    val size: DynamicVector = fragment.size.value
+    val size: VariableVector2 = fragment.size.value
 
     var strokeWidth = 0.0
 
-    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
+    fun render(model: Model, transformation: Matrix4, projection: Matrix4, view: Matrix4) {
         shader.render(model, transformation, projection, view)
     }
 

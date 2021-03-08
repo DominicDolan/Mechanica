@@ -1,9 +1,9 @@
 package com.mechanica.engine.drawer.subclasses.transformation
 
+import com.cave.library.angle.Radian
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.unit.angle.Radian
-import org.joml.Matrix4f
 
 class TransformationDrawerImpl(drawer: Drawer, private val state: DrawState): TransformationDrawer, Drawer by drawer {
     override fun translate(x: Number, y: Number): TransformationDrawer {
@@ -21,7 +21,7 @@ class TransformationDrawerImpl(drawer: Drawer, private val state: DrawState): Tr
         return this
     }
 
-    override fun matrix(matrix: Matrix4f): TransformationDrawer {
+    override fun matrix(matrix: Matrix4): TransformationDrawer {
         state.transformation.userMatrix = matrix
         return this
     }

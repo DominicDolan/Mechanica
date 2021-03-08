@@ -1,5 +1,9 @@
 package com.mechanica.engine.samples.scenes
 
+import com.cave.library.angle.Degree
+import com.cave.library.angle.degrees
+import com.cave.library.angle.plus
+import com.cave.library.vector.vec2.*
 import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
@@ -14,10 +18,6 @@ import com.mechanica.engine.scenes.scenes.UIScene
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.scenes.scenes.sprites.MovingSprite
 import com.mechanica.engine.scenes.setNewMainScene
-import com.mechanica.engine.unit.angle.Degree
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.angle.plus
-import com.mechanica.engine.unit.vector.*
 import com.mechanica.engine.util.Timer
 import com.mechanica.engine.util.extensions.fori
 
@@ -88,7 +88,7 @@ class Player : MovingSprite(), Inputs by Inputs.create() {
 }
 
 abstract class PlayerState(private val player: Player) : MovingSprite() {
-    override val position: DynamicVector
+    override val position: VariableVector2
         get() = player.position
     override val view: View
         get() = player.view

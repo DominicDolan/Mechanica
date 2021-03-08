@@ -1,9 +1,9 @@
 package com.mechanica.engine.input.mouse
 
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.context.callbacks.MouseHandler
 import com.mechanica.engine.input.Key
 import com.mechanica.engine.input.KeyID
-import com.mechanica.engine.unit.vector.Vector
 
 
 interface Mouse {
@@ -18,10 +18,10 @@ interface Mouse {
     val scroll: ScrollWheel
     val scrollDown: ScrollWheel
     val scrollUp: ScrollWheel
-    val pixel: Vector
-    val world: Vector
-    val ui: Vector
-    val normalized: Vector
+    val pixel: Vector2
+    val world: Vector2
+    val ui: Vector2
+    val normalized: Vector2
 
     class ScrollWheel(vararg keys: KeyID): Key(*keys) {
         val distance: Double

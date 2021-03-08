@@ -1,12 +1,12 @@
 package com.mechanica.engine.drawer.state
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.DynamicColor
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.color.Color
+import com.cave.library.color.VariableColor
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec3.VariableVector3
 import com.mechanica.engine.util.extensions.fori
-import org.joml.Vector3f
 
 
 class DrawStateVariableList {
@@ -14,23 +14,23 @@ class DrawStateVariableList {
     var writeMode = true
         private set
 
-    fun addVector3(resetValue: Float = 0f): Vector3Variable {
+    fun addVector3(resetValue: Double = 0.0): Vector3Variable {
         val newVariable = Vector3Variable(this, elements.size, resetValue)
         elements.add(newVariable)
         return newVariable
     }
 
     fun addVector2(resetValue: Double = 0.0): Vector2Variable {
-        return addVector2(DynamicVector.create(), resetValue)
+        return addVector2(VariableVector2.create(), resetValue)
     }
 
-    fun addVector2(vector: DynamicVector, resetValue: Double = 0.0): Vector2Variable {
+    fun addVector2(vector: VariableVector2, resetValue: Double = 0.0): Vector2Variable {
         val newVariable = Vector2Variable(this, vector, elements.size, resetValue)
         elements.add(newVariable)
         return newVariable
     }
 
-    fun addColor(color: DynamicColor = DynamicColor.create(), resetColor: Color? = null): ColorVariable {
+    fun addColor(color: VariableColor = VariableColor.create(), resetColor: Color? = null): ColorVariable {
         val newVariable = ColorVariable(this, color, elements.size, resetColor)
         elements.add(newVariable)
         return newVariable
@@ -136,43 +136,43 @@ abstract class DrawStateVariable<T>(
 }
 
 
-class Vector3Variable(list: DrawStateVariableList, index: Int, private val resetValue: Float = 0f)
-    : DrawStateVariable<Vector3f>(list, Vector3f(), index) {
+class Vector3Variable(list: DrawStateVariableList, index: Int, private val resetValue: Double = 0.0)
+    : DrawStateVariable<VariableVector3>(list, VariableVector3.create(), index) {
 
-    var x: Float
+    var x: Double
         get() = variable.x
         set(value) = set(value, y, z)
-    var y: Float
+    var y: Double
         get() = variable.y
         set(value) = set(x, value, z)
-    var z: Float
+    var z: Double
         get() = variable.z
         set(value) = set(x, y, value)
 
 
     override fun reset() {
         markReset()
-        variable.set(resetValue)
+        variable.set(resetValue, resetValue, resetValue)
     }
 
     fun set(x: Number = this.x, y: Number = this.y, z: Number = this.z) {
         markChanged()
-        variable.set(x.toFloat(), y.toFloat(), z.toFloat())
+        variable.set(x.toDouble(), y.toDouble(), z.toDouble())
     }
 
-    fun set(xy: Vector) {
+    fun set(xy: Vector2) {
         markChanged()
-        variable.set(xy.x.toFloat(), xy.y.toFloat(), z)
+        variable.set(xy.x, xy.y, z)
     }
 
     fun set(xy: InlineVector) {
         markChanged()
-        variable.set(xy.x.toFloat(), xy.y.toFloat(), z)
+        variable.set(xy.x, xy.y, z)
     }
 }
 
-class Vector2Variable(list: DrawStateVariableList, vector: DynamicVector, index: Int, private val resetValue: Double = 0.0)
-    : DrawStateVariable<DynamicVector>(list, vector, index), DynamicVector {
+class Vector2Variable(list: DrawStateVariableList, vector: VariableVector2, index: Int, private val resetValue: Double = 0.0)
+    : DrawStateVariable<VariableVector2>(list, vector, index), VariableVector2 {
 
     override var x: Double
         get() = variable.x
@@ -183,7 +183,7 @@ class Vector2Variable(list: DrawStateVariableList, vector: DynamicVector, index:
 
     override fun reset() {
         markReset()
-        variable.set(resetValue)
+        variable.set(resetValue, resetValue)
     }
 
     override fun set(x: Double, y: Double) {
@@ -191,10 +191,11 @@ class Vector2Variable(list: DrawStateVariableList, vector: DynamicVector, index:
         variable.set(x, y)
     }
 
+    override fun toString() = Vector2.toString(this)
 }
 
-class ColorVariable(list: DrawStateVariableList, color: DynamicColor, index: Int, private val resetColor: Color? = null)
-    : DrawStateVariable<DynamicColor>(list, color, index), DynamicColor {
+class ColorVariable(list: DrawStateVariableList, color: VariableColor, index: Int, private val resetColor: Color? = null)
+    : DrawStateVariable<VariableColor>(list, color, index), VariableColor {
 
     override var r: Double
         get() = variable.r

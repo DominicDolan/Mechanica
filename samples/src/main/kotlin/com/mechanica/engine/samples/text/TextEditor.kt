@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.text
 
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -7,9 +8,7 @@ import com.mechanica.engine.input.TextInput
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
-import org.joml.Matrix4f
 import kotlin.math.max
 import kotlin.math.min
 
@@ -29,7 +28,7 @@ fun main() {
 private class StartText : WorldScene() {
     val renderer = FontRenderer()
 
-    val transformation = Matrix4f()
+    val transformation = Matrix4()
 
     val startPosition = vec(-Game.world.width.toFloat()/2f, Game.world.height.toFloat()/2f - renderer.fontSize)
 

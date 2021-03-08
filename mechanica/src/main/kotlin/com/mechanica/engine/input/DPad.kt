@@ -1,12 +1,12 @@
 package com.mechanica.engine.input
 
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.Vector2
 
 class DPad(downKey: Key, upKey: Key, leftKey: Key, rightKey: Key, multiplier: Double = 1.0) {
     private val vertical = DirectionalKeys(downKey, upKey, multiplier)
     private val horizontal = DirectionalKeys(leftKey, rightKey, multiplier)
 
-    val value: Vector = object : Vector {
+    val value: Vector2 = object : Vector2 {
         override val x: Double
             get() = horizontal.value
         override val y: Double

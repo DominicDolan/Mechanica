@@ -1,6 +1,9 @@
 package com.mechanica.engine.samples.drawer
 
-import com.mechanica.engine.color.Color
+import com.cave.library.angle.degrees
+import com.cave.library.color.Color
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
@@ -10,9 +13,6 @@ import com.mechanica.engine.resources.Res
 import com.mechanica.engine.resources.create
 import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.shaders.models.PolygonModel
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.vec
 
 fun main() {
     Game.configure {

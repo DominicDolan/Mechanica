@@ -1,10 +1,10 @@
 package com.mechanica.engine.scenes.scenes.sprites
 
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.game.view.MovingViewable
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.scenes.scenes.Scene
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
 
 abstract class MovingSprite(x: Double = 0.0,
                             y: Double = 0.0,
@@ -13,7 +13,7 @@ abstract class MovingSprite(x: Double = 0.0,
                             order: Int = 0
 ) : Scene(order), MovingViewable {
 
-    override val position = DynamicVector.create(x + width/2.0, y + height/2.0)
+    override val position = VariableVector2.create(x + width/2.0, y + height/2.0)
     override val view: View by lazy { MovingView(width, height) }
 
     inner class MovingView(
@@ -25,10 +25,10 @@ abstract class MovingSprite(x: Double = 0.0,
         override val y: Double
             get() = position.y
 
-        override val xy: DynamicVector
+        override val xy: VariableVector2
             get() = position
 
-        override var wh: Vector = object : Vector {
+        override var wh: Vector2 = object : Vector2 {
             override val x: Double
                 get() = this@MovingView.width
             override val y: Double

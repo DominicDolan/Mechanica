@@ -1,5 +1,9 @@
 package com.mechanica.engine.samples.renderer
 
+import com.cave.library.angle.degrees
+import com.cave.library.angle.radians
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -10,9 +14,6 @@ import com.mechanica.engine.resources.create
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.shaders.models.PolygonModel
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.vector.vec
-import org.joml.Matrix4f
 
 
 fun main() {
@@ -24,7 +25,7 @@ fun main() {
 }
 
 private class StartMain : WorldScene() {
-    private val transformation = Matrix4f()
+    private val transformation = Matrix4.identity()
 
     val image: Image
     var timer = 0.0
@@ -32,12 +33,9 @@ private class StartMain : WorldScene() {
     val polygon: PolygonModel
 
     init {
-        transformation.scale(1f, 1f,1f)
-        println(transformation)
-        println()
+        transformation.scale(1.0, 1.0,1.0)
 
-        transformation.rotationZ((-Math.PI/6f).toFloat())
-        transformation.m01(transformation.m10() + transformation.m01())
+        transformation.rotation.angle = (-Math.PI/6f).radians
 
 //        transformation.rotationZ((-Math.PI/6f).toFloat())
 //        transformation.m10(transformation.m10() + transformation.m01())

@@ -2,9 +2,9 @@
 
 package com.mechanica.engine.util.extensions
 
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.VectorArray
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.util.VectorArray
 
 /**
  * Created by domin on 02/11/2017.
@@ -17,7 +17,7 @@ fun <T> Array<T>.set(setter: (Int) -> T) {
 }
 
 
-fun Array<Vector>.containsPoint(point: Vector): Boolean {
+fun Array<Vector2>.containsPoint(point: Vector2): Boolean {
     val len = this.size
     var result = false
 
@@ -31,7 +31,7 @@ fun Array<Vector>.containsPoint(point: Vector): Boolean {
     return result
 }
 
-fun Array<Vector>.toFloatArray(coordinateSize: Int): FloatArray {
+fun Array<Vector2>.toFloatArray(coordinateSize: Int): FloatArray {
     val floats = FloatArray(this.size*coordinateSize)
     for (i in this.indices) {
         val floatsIndex = i*coordinateSize
@@ -44,7 +44,7 @@ fun Array<Vector>.toFloatArray(coordinateSize: Int): FloatArray {
     return floats
 }
 
-//fun List<Vector>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
+//fun List<Vector2>.toFloatBuffer(coordinateSize: Int): FloatBuffer {
 //    val floats = FloatArray(this.size*coordinateSize)
 //    for (i in this.indices) {
 //        val floatsIndex = i*coordinateSize
@@ -75,14 +75,14 @@ fun List<Double>.mean(): Double {
 }
 
 
-fun FloatArray.fill(arrayList: List<Vector>, start: Int = 0, end: Int = (arrayList.size + start)) {
+fun FloatArray.fill(arrayList: List<Vector2>, start: Int = 0, end: Int = (arrayList.size + start)) {
     for (i in start until end) {
         this[i*3] = arrayList[i].x.toFloat()
         this[i*3 + 1] = arrayList[i].y.toFloat()
     }
 }
 
-fun FloatArray.fill(array: Array<out Vector>, start: Int = 0, end: Int = (array.size + start)) {
+fun FloatArray.fill(array: Array<out Vector2>, start: Int = 0, end: Int = (array.size + start)) {
     for (i in start until end) {
         this[i*3] = array[i].x.toFloat()
         this[i*3 + 1] = array[i].y.toFloat()
@@ -110,7 +110,7 @@ fun FloatArray.fillLightWeight(iterator: Iterator<InlineVector>) {
     }
 }
 
-fun FloatArray.fill(iterator: Iterator<Vector>) {
+fun FloatArray.fill(iterator: Iterator<Vector2>) {
     for ((i, v) in iterator.withIndex()) {
         this[i*3] = v.x.toFloat()
         this[i*3 + 1] = v.y.toFloat()

@@ -1,7 +1,9 @@
 package com.mechanica.engine.samples.geometry
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.hex
+import com.cave.library.color.Color
+import com.cave.library.color.hex
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.Drawer
@@ -12,8 +14,6 @@ import com.mechanica.engine.geometry.lines.LineSegmentImpl
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.WorldScene
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 
 fun main() {
     Game.configure {
@@ -34,7 +34,7 @@ class LinesDemo : WorldScene() {
     private val l1Color = hex(0xFFFF00FF)
     private val l2Color = hex(0x00FFFFFF)
 
-    private val pathHolder = ArrayList<Vector>()
+    private val pathHolder = ArrayList<Vector2>()
 
     init {
         renderer.stroke = stroke

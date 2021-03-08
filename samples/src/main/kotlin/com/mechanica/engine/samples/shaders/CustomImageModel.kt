@@ -1,5 +1,7 @@
 package com.mechanica.engine.samples.shaders
 
+import com.cave.library.vector.arrays.Vector2Arrays
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.resources.Res
@@ -10,8 +12,6 @@ import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.script.ShaderScript
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.VectorShapes
 
 
 fun main() {
@@ -55,12 +55,12 @@ fun main() {
     }
 
     val shader = Shader.create(vertexShader, fragmentShader)
-
-    val squareCoordinates: Array<Vector> = VectorShapes.createRectangle(-0.5, -0.5, 0.7, 1.0)
+Vector2Arrays
+    val squareCoordinates: Array<Vector2> = Vector2Arrays.createRectangle(-0.5, -0.5, 0.7, 1.0)
     val positionAttribute = Vec2AttributeArray(squareCoordinates)
     positionAttribute.attachTo(vertexShader.position)
 
-    val textureCoordinates: Array<Vector> = VectorShapes.createRectangle(0.0, 0.0, 1.0, -1.0)
+    val textureCoordinates: Array<Vector2> = Vector2Arrays.createRectangle(0.0, 0.0, 1.0, -1.0)
     val textureCoordinatesAttribute = Vec2AttributeArray(textureCoordinates)
     textureCoordinatesAttribute.attachTo(vertexShader.textureCoordinates)
 

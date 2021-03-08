@@ -1,5 +1,6 @@
 package com.mechanica.engine.game.configuration
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.delta.DeltaCalculator
@@ -8,7 +9,6 @@ import com.mechanica.engine.persistence.JsonFileStorer
 import com.mechanica.engine.persistence.JsonStorer
 import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.getCallingClass
-import org.joml.Matrix4f
 
 interface GameConfiguration {
     var initalize: Boolean
@@ -26,7 +26,7 @@ interface GameConfiguration {
     fun configureDrawSurface(configuration: (DrawSurface.() -> Unit))
     fun configureDebugMode(configuration: GameDebugConfiguration.() -> Unit)
 
-    fun configureProjectionMatrix(configuration: Matrix4f.(View) -> Unit)
+    fun configureProjectionMatrix(configuration: Matrix4.(View) -> Unit)
 
     fun setDeltaTimeCalculator(calculator: DeltaCalculator)
 }

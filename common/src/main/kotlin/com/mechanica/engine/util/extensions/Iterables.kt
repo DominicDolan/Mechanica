@@ -1,8 +1,8 @@
 package com.mechanica.engine.util.extensions
 
-import com.mechanica.engine.unit.vector.Vector
+import com.cave.library.vector.vec2.Vector2
 
-fun Iterable<Vector>.containsPoint(point: Vector): Boolean {
+fun Iterable<Vector2>.containsPoint(point: Vector2): Boolean {
     var result = false
     var prev = this.last()
     

@@ -1,17 +1,23 @@
 package com.mechanica.engine.geometry
 
+import com.cave.library.vector.vec2.*
 import com.mechanica.engine.geometry.lines.LineSegment
-import com.mechanica.engine.unit.vector.*
 import kotlin.math.abs
 import kotlin.math.sign
 
-fun Vector.isLeftOf(line: LineSegment) = rectangleArea(this, line.p1, line.p2) > 0.0
+fun Vector2.isLeftOf(line: LineSegment) = rectangleArea(this, line.p1, line.p2) > 0.0
 
-fun rectangleArea(p0: Vector, p1: Vector, p2: Vector): Double {
+fun VectorTest() {
+    
+}
+fun TestVector() {
+    
+}
+fun rectangleArea(p0: Vector2, p1: Vector2, p2: Vector2): Double {
     return (((p2.x - p1.x)*(p0.y - p1.y)) - ((p2.y - p1.y)*(p0.x - p1.x)))
 }
 
-fun Vector.isInTriangle(p0: Vector, p1: Vector, p2: Vector): Boolean {
+fun Vector2.isInTriangle(p0: Vector2, p1: Vector2, p2: Vector2): Boolean {
     val area = rectangleArea(p0, p1, p2)
     val sign = sign(area)
     val s = (p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * this.x + (p0.x - p2.x) * this.y) * sign
@@ -20,11 +26,11 @@ fun Vector.isInTriangle(p0: Vector, p1: Vector, p2: Vector): Boolean {
     return s > 0.0 && t > 0.0 && (s + t) < abs(area)
 }
 
-fun Array<Vector>.containsPoint(point: Vector) = arrayContainsPoint(this, point)
+fun Array<Vector2>.containsPoint(point: Vector2) = arrayContainsPoint(this, point)
 
-fun Vector.isInPath(path: Array<Vector>) = arrayContainsPoint(path, this)
+fun Vector2.isInPath(path: Array<Vector2>) = arrayContainsPoint(path, this)
 
-private fun arrayContainsPoint(array: Array<Vector>, point: Vector): Boolean {
+private fun arrayContainsPoint(array: Array<Vector2>, point: Vector2): Boolean {
     val len = array.size
     var result = false
 
@@ -38,11 +44,11 @@ private fun arrayContainsPoint(array: Array<Vector>, point: Vector): Boolean {
     return result
 }
 
-fun perpendicularDistance(vector: Vector, line: LineSegment): Double {
+fun perpendicularDistance(vector: Vector2, line: LineSegment): Double {
     return perpendicularDistance(vector, line.p1, line.p2)
 }
 
-fun perpendicularDistance(vector: Vector, lineP1: Vector, lineP2: Vector): Double {
+fun perpendicularDistance(vector: Vector2, lineP1: Vector2, lineP2: Vector2): Double {
     val p = vec(vector)
     val p1 = vec(lineP1)
     val p2 = vec(lineP2)

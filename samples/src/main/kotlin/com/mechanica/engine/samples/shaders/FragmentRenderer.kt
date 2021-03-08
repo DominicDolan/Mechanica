@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.shaders
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
@@ -7,7 +8,6 @@ import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.utils.createUnitSquareVectors
-import org.joml.Matrix4f
 
 class FragmentRenderer {
 
@@ -46,7 +46,7 @@ class FragmentRenderer {
     private val shader = DrawerShader.create(vertex, fragment)
     private val startTime = System.currentTimeMillis()
 
-    private val transformation = Matrix4f().also { it.identity() }
+    private val transformation = Matrix4.identity()
 
 
     fun render() {

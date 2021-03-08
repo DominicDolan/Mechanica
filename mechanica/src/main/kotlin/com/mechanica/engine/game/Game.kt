@@ -11,11 +11,11 @@ import com.mechanica.engine.game.configuration.GameSetup
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
-import com.mechanica.engine.matrix.Matrices
 import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.util.CameraMatrices
 import com.mechanica.engine.util.Timer
 
 object Game : Configurable<GameConfiguration> {
@@ -36,7 +36,7 @@ object Game : Configurable<GameConfiguration> {
     val debug: DebugConfiguration
         get() = setup.debugConfig
 
-    val matrices: Matrices
+    val matrices: CameraMatrices
         get() = gameMatrices
     private val gameMatrices: GameMatrices
         get() = setup.cameras.matrices

@@ -1,6 +1,6 @@
 package com.mechanica.engine.samples.scenes
 
-import com.mechanica.engine.color.Color
+import com.cave.library.color.Color
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game

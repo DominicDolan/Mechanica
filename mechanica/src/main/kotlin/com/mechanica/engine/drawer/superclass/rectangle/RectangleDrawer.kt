@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.rectangle
 
-import com.mechanica.engine.unit.vector.InlineVector
+import com.cave.library.vector.vec2.InlineVector
 
 interface RectangleDrawer {
     fun rectangle(x: Number = 0, y: Number = 0, width: Number = 1, height: Number = 1)

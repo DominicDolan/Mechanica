@@ -1,5 +1,9 @@
 package com.mechanica.engine.shaders.attributes
 
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec3.Vector3
+import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.models.Bindable
 import com.mechanica.engine.shaders.qualifiers.AttributeQualifier
 import com.mechanica.engine.shaders.script.Shader
@@ -7,10 +11,6 @@ import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
 import com.mechanica.engine.shaders.vars.ShaderVar
 import com.mechanica.engine.shaders.vars.ShaderVars
-import com.mechanica.engine.unit.vector.DynamicVector
-import org.joml.Matrix4f
-import org.joml.Vector3f
-import org.joml.Vector4f
 
 interface AttributeVars : ShaderVars<AttributeQualifier> {
 
@@ -56,24 +56,24 @@ abstract class AttributeFloat(
 
 abstract class AttributeVector2(
         override val name: String
-) : AttributeVar<DynamicVector>() {
+) : AttributeVar<VariableVector2>() {
     override val type = ShaderType.vec2()
 }
 
 abstract class AttributeVector3(
         override val name: String
-) : AttributeVar<Vector3f>() {
+) : AttributeVar<Vector3>() {
     override val type = ShaderType.vec3()
 }
 
 abstract class AttributeVector4(
         override val name: String
-) : AttributeVar<Vector4f>() {
+) : AttributeVar<Vector4>() {
     override val type = ShaderType.vec4()
 }
 
 abstract class AttributeMatrix4(
         override val name: String
-) : AttributeVar<Matrix4f>() {
+) : AttributeVar<Matrix4>() {
     override val type = ShaderType.mat4()
 }

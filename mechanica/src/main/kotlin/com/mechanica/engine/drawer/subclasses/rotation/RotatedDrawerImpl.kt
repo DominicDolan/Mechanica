@@ -1,11 +1,11 @@
 package com.mechanica.engine.drawer.subclasses.rotation
 
+import com.cave.library.angle.Degree
+import com.cave.library.angle.Radian
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.unit.angle.Degree
-import com.mechanica.engine.unit.angle.Radian
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.Vector
 
 internal class RotatedDrawerImpl(drawer: Drawer, private val state: DrawState): RotatedDrawer, Drawer by drawer {
 
@@ -19,7 +19,7 @@ internal class RotatedDrawerImpl(drawer: Drawer, private val state: DrawState): 
     }
 
     override fun about(point: InlineVector) = about(point.x, point.y)
-    override fun about(point: Vector) = about(point.x, point.y)
+    override fun about(point: Vector2) = about(point.x, point.y)
 
     private fun rotate(radians: Double): RotatedDrawer {
         state.setRotate(radians)

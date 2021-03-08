@@ -1,7 +1,11 @@
 package com.mechanica.engine.samples.text
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.toColor
+import com.cave.library.color.Color
+import com.cave.library.color.toColor
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
@@ -11,18 +15,14 @@ import com.mechanica.engine.resources.Res
 import com.mechanica.engine.resources.create
 import com.mechanica.engine.shaders.models.TextModel
 import com.mechanica.engine.shaders.text.Font
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 import com.mechanica.engine.util.extensions.constrain
-import org.joml.Matrix4f
 import kotlin.math.ceil
 import kotlin.math.max
 
 
 class FontRenderer {
 
-    private val transformation = Matrix4f().identity()
+    private val transformation = Matrix4().identity()
     private val projection = Game.matrices.projection
     private val view = Game.matrices.worldCamera
 
@@ -102,12 +102,12 @@ class FontRenderer {
 
     var fontSize: Double = 1.0
 
-    var position: DynamicVector = DynamicVector.create()
+    var position: VariableVector2 = VariableVector2.create()
         set(value) {
             field.set(value)
         }
 
-    fun render(transformation: Matrix4f ) {
+    fun render(transformation: Matrix4 ) {
         fragment.mouse.value = (Mouse.world.x/Game.world.width).toFloat() + 0.5f
         if (transformation == this.transformation) {
             transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
@@ -123,7 +123,7 @@ class FontRenderer {
         return characterOutput
     }
 
-    fun from(location: Vector): CharacterOutput {
+    fun from(location: Vector2): CharacterOutput {
         characterOutput.inputPosition = location
         return characterOutput
     }
@@ -151,22 +151,22 @@ class FontRenderer {
             get() = inputPosition.x
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as DynamicVector).x = value
+                (inputPosition as VariableVector2).x = value
             }
         var y: Double
             get() = inputPosition.y
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as DynamicVector).y = value
+                (inputPosition as VariableVector2).y = value
             }
 
-        var inputPosition: Vector = DynamicVector.create()
+        var inputPosition: Vector2 = VariableVector2.create()
             set(value) {
                 inputType = INPUT_POSITION
-                (field as DynamicVector).set(value)
+                (field as VariableVector2).set(value)
             }
 
-        override fun getPosition(): Vector {
+        override fun getPosition(): Vector2 {
             return when (inputType) {
                 INPUT_INDEX -> {
                     getCharacterPosition(inputIndex)
@@ -190,7 +190,7 @@ class FontRenderer {
             }
         }
 
-        fun getCharacterPosition(index: Int): Vector {
+        fun getCharacterPosition(index: Int): Vector2 {
             val safeIndex = max(0, index)
             val x = model.getCharacterPosition(safeIndex)*fontSize + this@FontRenderer.position.x
             val y = -model.getLine(safeIndex)*fontSize + this@FontRenderer.position.y
@@ -209,7 +209,7 @@ class FontRenderer {
             return model.getCharacterIndex(adjustedX, line)
         }
 
-        fun getClosestCharacterPosition(x: Double, y: Double): Vector {
+        fun getClosestCharacterPosition(x: Double, y: Double): Vector2 {
             val textPosition = this@FontRenderer.position
             val adjustedY = (y - textPosition.y)/fontSize
             val adjustedX = (x - textPosition.x)/fontSize
@@ -223,11 +223,11 @@ class FontRenderer {
             return vec(xOut, yOut)
         }
 
-        fun getCharacterIndex(coordinates: Vector) = getCharacterIndex(coordinates.x, coordinates.y)
+        fun getCharacterIndex(coordinates: Vector2) = getCharacterIndex(coordinates.x, coordinates.y)
     }
 
     abstract class CharacterOutput {
-        abstract fun getPosition(): Vector
+        abstract fun getPosition(): Vector2
         abstract fun getIndex(): Int
     }
 

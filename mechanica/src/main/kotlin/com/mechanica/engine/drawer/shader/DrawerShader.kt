@@ -1,15 +1,15 @@
 package com.mechanica.engine.drawer.shader
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.GameMatrices
-import com.mechanica.engine.matrix.calculatePixelSize
+import com.mechanica.engine.game.view.calculatePixelSize
 import com.mechanica.engine.shaders.context.ShaderCreator
 import com.mechanica.engine.shaders.draw.GLDraw
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.script.ShaderScript
-import org.joml.Matrix4f
 
 abstract class DrawerShader : Shader() {
 
@@ -38,7 +38,7 @@ abstract class DrawerShader : Shader() {
 
     private val pixelSize by lazy { fragment.uniform.float("pixelSize") }
 
-    fun render(model: Model, transformation: Matrix4f, projection: Matrix4f? = null, view: Matrix4f? = null) {
+    fun render(model: Model, transformation: Matrix4, projection: Matrix4? = null, view: Matrix4? = null) {
 
         loadMatrixUniforms(transformation,
                 projection ?: Game.matrices.projection,
@@ -48,7 +48,7 @@ abstract class DrawerShader : Shader() {
         render(model)
     }
 
-    private fun loadMatrixUniforms(transformation: Matrix4f, projection: Matrix4f, view: Matrix4f) {
+    private fun loadMatrixUniforms(transformation: Matrix4, projection: Matrix4, view: Matrix4) {
         setGameMatrices(projection, view)
 
         for (loader in matrixLoaders) {
@@ -58,7 +58,7 @@ abstract class DrawerShader : Shader() {
         }
     }
 
-    private fun setGameMatrices(projection: Matrix4f, view: Matrix4f) {
+    private fun setGameMatrices(projection: Matrix4, view: Matrix4) {
 
         for (loader in matrixLoaders) {
             loader.matrixType.value = 1f

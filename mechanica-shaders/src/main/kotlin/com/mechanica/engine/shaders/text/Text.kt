@@ -1,8 +1,8 @@
 package com.mechanica.engine.shaders.text
 
+import com.cave.library.vector.vec2.VariableVector2
 import com.mechanica.engine.shaders.context.ShaderLoader
 import com.mechanica.engine.text.CharacterCursor
-import com.mechanica.engine.unit.vector.DynamicVector
 import com.mechanica.engine.util.extensions.constrain
 import kotlin.math.abs
 import kotlin.math.max
@@ -20,9 +20,9 @@ class Text(text: String, font: Font = ShaderLoader.fontLoader.defaultFont()) {
             update(string, font)
         }
 
-    var positions: Array<DynamicVector> = Array(text.length*8){ DynamicVector.create() }
+    var positions: Array<VariableVector2> = Array(text.length*8){ VariableVector2.create() }
         private set
-    var texCoords: Array<DynamicVector> = Array(text.length*8){ DynamicVector.create() }
+    var texCoords: Array<VariableVector2> = Array(text.length*8){ VariableVector2.create() }
         private set
 
     private var characterPositions = DoubleArray(100)
@@ -145,8 +145,8 @@ class Text(text: String, font: Font = ShaderLoader.fontLoader.defaultFont()) {
     }
 
     private fun increaseSize(newSize: Int) {
-        positions = Array(newSize){ DynamicVector.create() }
-        texCoords = Array(newSize){ DynamicVector.create() }
+        positions = Array(newSize){ VariableVector2.create() }
+        texCoords = Array(newSize){ VariableVector2.create() }
     }
 
     private fun increaseNewLineArraySize(newSize: Int) {

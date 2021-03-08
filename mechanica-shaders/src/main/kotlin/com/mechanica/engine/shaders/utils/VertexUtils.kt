@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.utils
 
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 
 
 fun createUnitSquareFloats() = createQuadFloatArray(0f, 1f, 1f, 0f)
@@ -41,7 +41,7 @@ fun createIndicesArrayForQuads(numberOfQuads: Int): ShortArray {
     return array
 }
 
-fun createQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+fun createQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector2> {
     return arrayOf(
             vec(left, top),
             vec(left, bottom),
@@ -63,11 +63,11 @@ fun createQuadFloatArray(left: Float, top: Float, right: Float, bottom: Float): 
 
 }
 
-fun createUnitSquareVectors(): Array<Vector> {
+fun createUnitSquareVectors(): Array<Vector2> {
     return createQuadVecArray(0f, 1f, 1f, 0f)
 }
 
-fun createInvertedUnitSquareVectors(): Array<Vector> {
+fun createInvertedUnitSquareVectors(): Array<Vector2> {
     return createQuadVecArray(0f, 0f, 1f, 1f)
 }
 
@@ -91,7 +91,7 @@ textureCoords = floatArrayOf(
 
 */
 
-private fun createTextureQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector> {
+private fun createTextureQuadVecArray(left: Float, top: Float, right: Float, bottom: Float): Array<Vector2> {
     return arrayOf(
             vec(left, bottom),
             vec(left, top),

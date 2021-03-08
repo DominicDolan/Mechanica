@@ -1,10 +1,10 @@
 package com.mechanica.engine.input.mouse
 
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.context.callbacks.MouseHandler
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Key
 import com.mechanica.engine.input.KeyIDs
-import com.mechanica.engine.unit.vector.Vector
 
 internal class MouseImpl : Mouse {
     override val MB1 = Key(KeyIDs.M1)
@@ -20,14 +20,14 @@ internal class MouseImpl : Mouse {
     override val scrollDown = Mouse.ScrollWheel(KeyIDs.SCROLL_DOWN)
     override val scrollUp = Mouse.ScrollWheel(KeyIDs.SCROLL_UP)
 
-    private val worldRatio: Vector = object : Vector {
+    private val worldRatio: Vector2 = object : Vector2 {
         override val x: Double
             get() = Game.surface.width/ Game.world.width
         override val y: Double
             get() = Game.surface.height/ Game.world.height
     }
 
-    private val uiRatio: Vector = object : Vector {
+    private val uiRatio: Vector2 = object : Vector2 {
         override val x: Double
             get() = Game.surface.width/ Game.ui.width
         override val y: Double
@@ -35,7 +35,7 @@ internal class MouseImpl : Mouse {
 
     }
 
-    override val pixel: Vector = object : Vector {
+    override val pixel: Vector2 = object : Vector2 {
         override val x: Double
             get() = MouseHandler.cursorX
         override val y: Double
@@ -43,14 +43,14 @@ internal class MouseImpl : Mouse {
 
     }
 
-    override val world: Vector = object : Vector {
+    override val world: Vector2 = object : Vector2 {
         override val x: Double
             get() = pixel.x/ worldRatio.x - Game.world.width/2.0 + Game.world.x
         override val y: Double
             get() = Game.world.height/2.0 - pixel.y/ worldRatio.y + Game.world.y
     }
 
-    override val ui: Vector = object : Vector {
+    override val ui: Vector2 = object : Vector2 {
         override val x: Double
             get() = pixel.x/ uiRatio.x - Game.ui.width/2.0
         override val y: Double
@@ -58,7 +58,7 @@ internal class MouseImpl : Mouse {
 
     }
 
-    override val normalized: Vector = object : Vector {
+    override val normalized: Vector2 = object : Vector2 {
         override val x: Double
             get() = pixel.x/ Game.surface.width
         override val y: Double

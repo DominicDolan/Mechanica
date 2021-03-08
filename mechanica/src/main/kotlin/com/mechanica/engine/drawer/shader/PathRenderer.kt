@@ -1,16 +1,16 @@
 package com.mechanica.engine.drawer.shader
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.toColor
+import com.cave.library.color.Color
+import com.cave.library.color.toColor
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.context.loader.MechanicaLoader
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.attributes.FloatAttributeArray
 import com.mechanica.engine.shaders.models.Model
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.VectorArray
+import com.mechanica.engine.util.VectorArray
 import com.mechanica.engine.util.extensions.fill
 import org.intellij.lang.annotations.Language
-import org.joml.Matrix4f
 
 class PathRenderer() {
 
@@ -184,7 +184,7 @@ class PathRenderer() {
         model = Model(vbo)
     }
 
-    fun render(transformation: Matrix4f) {
+    fun render(transformation: Matrix4) {
         MechanicaLoader.miscLoader.clearStencil()
         fragment.mode.value = 0f
         lineShader.render(this.model, transformation)
@@ -192,14 +192,14 @@ class PathRenderer() {
         circleShader.render(this.model, transformation)
     }
 
-    fun fillFloats(path: List<Vector>, count: Int = path.size) {
+    fun fillFloats(path: List<Vector2>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
         vbo.value = floats
         vbo.updateBuffer()
     }
 
-    fun fillFloats(path: Array<out Vector>, count: Int = path.size) {
+    fun fillFloats(path: Array<out Vector2>, count: Int = path.size) {
         checkFloats(count)
         floats.fill(path, end = count)
         vbo.value = floats

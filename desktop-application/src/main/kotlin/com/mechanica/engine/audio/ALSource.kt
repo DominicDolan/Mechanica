@@ -1,7 +1,5 @@
 package com.mechanica.engine.audio
 
-import com.mechanica.engine.memory.useMemoryStack
-import org.joml.Vector3f
 import org.lwjgl.openal.AL10.*
 import org.lwjgl.openal.EXTOffset.AL_SAMPLE_OFFSET
 import kotlin.math.roundToInt
@@ -65,18 +63,13 @@ class ALSource(override var sound: Sound) : ALAudioObject(), SoundSource {
         destroy()
     }
 
-    override fun getVector3f(property: Int, vec: Vector3f) {
-        useMemoryStack {
-            val floats = floats(0f, 0f, 0f)
-            alGetSourcefv(id, property, floats)
-            vec.set(floats[0], floats[1], floats[2])
-        }
+    override fun getVector3(vec: ALVector3) {
+        alGetSourcefv(id, vec.property, vec.array)
     }
 
-    override fun set3f(property: Int, x: Float, y: Float, z: Float) {
-        alSource3f(id, property, x, y, z)
+    override fun setVector3(vec: ALVector3) {
+        alSourcefv(id, vec.property, vec.array)
     }
-
 
     private inner class ALFloatProperty(private val property: Int) {
         operator fun getValue(thisRef: SoundSource, property: KProperty<*>): Float {

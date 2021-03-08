@@ -1,18 +1,20 @@
 package com.mechanica.engine.shaders.uniforms
 
-import com.mechanica.engine.color.Color
-import com.mechanica.engine.color.InlineColor
+import com.cave.library.color.Color
+import com.cave.library.color.InlineColor
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec3.VariableVector3
+import com.cave.library.vector.vec3.Vector3
+import com.cave.library.vector.vec4.VariableVector4
+import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.qualifiers.UniformQualifier
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
 import com.mechanica.engine.shaders.vars.ShaderVar
 import com.mechanica.engine.shaders.vars.ShaderVars
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
-import org.joml.Matrix4f
-import org.joml.Vector3f
-import org.joml.Vector4f
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -24,21 +26,21 @@ interface UniformVars : ShaderVars<UniformQualifier> {
     fun float(f: Float, name: String? = null): UniformFloat
     override fun float(name: String?): UniformFloat = float(0f, name)
 
-    fun vec2(x: Number, y: Number, name: String? = null): UniformVector2f
-    override fun vec2(name: String?): UniformVector2f = vec2(0f, 0f, name)
-    fun vec2(vector: Vector, name: String? = null): UniformVector2f = vec2(vector.x, vector.y, name)
+    fun vec2(x: Number, y: Number, name: String? = null): UniformVector2
+    override fun vec2(name: String?): UniformVector2 = vec2(0f, 0f, name)
+    fun vec2(vector: Vector2, name: String? = null): UniformVector2 = vec2(vector.x, vector.y, name)
 
-    fun vec3(x: Number, y: Number, z: Number, name: String? = null): UniformVector3f
-    fun vec3(vector: Vector3f, name: String? = null): UniformVector3f = vec3(vector.x, vector.y, vector.z, name)
-    override fun vec3(name: String?): UniformVector3f = vec3(0f, 0f, 0f, name)
+    fun vec3(x: Number, y: Number, z: Number, name: String? = null): UniformVector3
+    fun vec3(vector: Vector3, name: String? = null): UniformVector3 = vec3(vector.x, vector.y, vector.z, name)
+    override fun vec3(name: String?): UniformVector3 = vec3(0f, 0f, 0f, name)
 
-    fun vec4(x: Number, y: Number, z: Number, w: Number, name: String? = null): UniformVector4f
-    override fun vec4(name: String?): UniformVector4f = vec4(0f, 0f, 0f, 0f, name)
-    fun vec4(color: Color, name: String? = null): UniformVector4f = vec4(color.r, color.g, color.b, color.a, name)
+    fun vec4(x: Number, y: Number, z: Number, w: Number, name: String? = null): UniformVector4
+    override fun vec4(name: String?): UniformVector4 = vec4(0f, 0f, 0f, 0f, name)
+    fun vec4(color: Color, name: String? = null): UniformVector4 = vec4(color.r, color.g, color.b, color.a, name)
 
     override fun mat4(name: String?): UniformMatrix4f
 
-    fun mat4(matrix: Matrix4f, name: String? = null): UniformMatrix4f {
+    fun mat4(matrix: Matrix4, name: String? = null): UniformMatrix4f {
         val v = mat4(name)
         v.set(matrix)
         return v
@@ -83,78 +85,78 @@ abstract class UniformFloat(
     }
 }
 
-abstract class UniformVector2f(
+abstract class UniformVector2(
         x: Number, y: Number,
         override val name: String
-) : UniformVar<DynamicVector>(), DynamicVector by DynamicVector.create(x.toDouble(), y.toDouble()) {
-    override val value: DynamicVector by lazy { this }
+) : UniformVar<VariableVector2>(), VariableVector2 by VariableVector2.create(x.toDouble(), y.toDouble()) {
+    override val value: VariableVector2 by lazy { this }
     override val type = ShaderType.vec2()
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: DynamicVector) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: VariableVector2) {
         this.value.set(value)
     }
 }
 
-abstract class UniformVector3f(
+abstract class UniformVector3(
         x: Number, y: Number, z: Number,
         override val name: String
-) : UniformVar<Vector3f>() {
-    override var value: Vector3f = Vector3f()
+) : UniformVar<Vector3>() {
+    override var value: VariableVector3 = VariableVector3.create()
     override val type = ShaderType.vec3()
 
     init { set(x, y, z) }
 
     fun set(x: Number, y: Number, z: Number) {
-        value.x = x.toFloat()
-        value.y = y.toFloat()
-        value.z = z.toFloat()
+        value.x = x.toDouble()
+        value.y = y.toDouble()
+        value.z = z.toDouble()
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Vector3f) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Vector3) {
         this.value.set(value)
     }
 }
 
-abstract class UniformVector4f (
+abstract class UniformVector4 (
         x: Number, y: Number, z: Number, w: Number,
         override val name: String
-) : UniformVar<Vector4f>() {
-    override var value: Vector4f = Vector4f()
+) : UniformVar<Vector4>() {
+    override var value: VariableVector4 = VariableVector4.create()
     override val type = ShaderType.vec4()
 
     init { set(x, y, z, w) }
 
     fun set(color: Color) {
-        value.x = color.r.toFloat()
-        value.y = color.g.toFloat()
-        value.z = color.b.toFloat()
-        value.w = color.a.toFloat()
+        value.x = color.r
+        value.y = color.g
+        value.z = color.b
+        value.w = color.a
     }
 
     fun set(color: InlineColor) {
-        value.x = color.r.toFloat()
-        value.y = color.g.toFloat()
-        value.z = color.b.toFloat()
-        value.w = color.a.toFloat()
+        value.x = color.r
+        value.y = color.g
+        value.z = color.b
+        value.w = color.a
     }
 
     fun set(x: Number, y: Number, z: Number, w: Number) {
-        value.x = x.toFloat()
-        value.y = y.toFloat()
-        value.z = z.toFloat()
-        value.w = w.toFloat()
+        value.x = x.toDouble()
+        value.y = y.toDouble()
+        value.z = z.toDouble()
+        value.w = w.toDouble()
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Vector4f) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Vector4) {
         this.value.set(value)
     }
 }
 
 abstract class UniformMatrix4f(
-        var matrix: Matrix4f,
+        var matrix: Matrix4,
         override val name: String
-) : UniformVar<Matrix4f>() {
-    override val value: Matrix4f
+) : UniformVar<Matrix4>() {
+    override val value: Matrix4
         get() = matrix
     override val type = ShaderType.mat4()
 
@@ -162,11 +164,11 @@ abstract class UniformMatrix4f(
         set(matrix)
     }
 
-    fun set(matrix: Matrix4f) {
+    fun set(matrix: Matrix4) {
         this.matrix.set(matrix)
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Matrix4f) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Matrix4) {
         set(value)
     }
 }

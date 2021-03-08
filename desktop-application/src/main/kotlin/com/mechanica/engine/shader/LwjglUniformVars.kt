@@ -1,8 +1,7 @@
 package com.mechanica.engine.shader
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.shaders.uniforms.*
-import org.joml.Matrix4f
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20
 
 class LwjglFloat(
@@ -14,42 +13,42 @@ class LwjglFloat(
     }
 }
 
-class LwjglVector2f(
+class LwjglVector2(
         x: Number, y: Number,
         name: String
-) : UniformVector2f(x, y, name) {
+) : UniformVector2(x, y, name) {
 
     override fun loadUniform() {
         GL20.glUniform2f(location, x.toFloat(), y.toFloat())
     }
 }
 
-class LwjglVector3f(
+class LwjglVector3(
         x: Number, y: Number, z: Number,
         name: String
-) : UniformVector3f(x, y, z, name) {
+) : UniformVector3(x, y, z, name) {
     override fun loadUniform() {
-        GL20.glUniform3f(location, value.x, value.y, value.z)
+        GL20.glUniform3f(location, value.x.toFloat(), value.y.toFloat(), value.z.toFloat())
     }
 }
 
-class LwjglVector4f (
+class LwjglVector4 (
         x: Number, y: Number, z: Number, w: Number,
         name: String
-) : UniformVector4f(x, y, z, w, name) {
+) : UniformVector4(x, y, z, w, name) {
     override fun loadUniform() {
-        GL20.glUniform4f(location, value.x, value.y, value.z, value.w)
+        GL20.glUniform4f(location, value.x.toFloat(), value.y.toFloat(), value.z.toFloat(), value.w.toFloat())
     }
 }
 
-class LwjglMatrix4f(
-        matrix: Matrix4f,
+class LwjglMatrix4(
+        matrix: Matrix4,
         name: String
 ): UniformMatrix4f(matrix, name) {
-    private val buffer = BufferUtils.createFloatBuffer(16)
+    private val array = FloatArray(16)
 
     override fun loadUniform() {
-        matrix.get(buffer)
-        GL20.glUniformMatrix4fv(location, false, buffer)
+        matrix.fill(array)
+        GL20.glUniformMatrix4fv(location, false, array)
     }
 }

@@ -1,16 +1,16 @@
 package com.mechanica.engine.game.view
 
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 
 sealed class Camera : View
 
 class UICamera internal constructor(
         private val matrices: GameMatrices,
         private val world: WorldCamera,
-        private val scale: Vector) : Camera() {
+        private val scale: Vector2) : Camera() {
 
     private var _width: Double = world.width/scale.x
     override val width: Double
@@ -22,8 +22,8 @@ class UICamera internal constructor(
 
     override val x: Double = 0.0
     override val y: Double = 0.0
-    override val xy: Vector = vec(0.0, 0.0)
-    override val wh: Vector = object : Vector {
+    override val xy: Vector2 = vec(0.0, 0.0)
+    override val wh: Vector2 = object : Vector2 {
         override val x: Double
             get() = width
         override val y: Double
@@ -79,7 +79,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
         }
 
     @Suppress("SetterBackingFieldAssignment")
-    override var xy: DynamicVector = object : DynamicVector {
+    override var xy: VariableVector2 = object : VariableVector2 {
         override var x: Double
             get() = this@WorldCamera.x
             set(value) {this@WorldCamera.x = value}
@@ -93,7 +93,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
         }
 
     @Suppress("SetterBackingFieldAssignment")
-    override var wh: DynamicVector = object : DynamicVector {
+    override var wh: VariableVector2 = object : VariableVector2 {
         override var x: Double
             get() = this@WorldCamera.width
             set(value) {this@WorldCamera.width = value }

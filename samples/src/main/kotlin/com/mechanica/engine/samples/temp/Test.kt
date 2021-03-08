@@ -1,6 +1,9 @@
 package com.mechanica.engine.samples.temp
 
-import com.mechanica.engine.color.hex
+import com.cave.library.angle.degrees
+import com.cave.library.color.hex
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -17,11 +20,7 @@ import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.script.ShaderScript
 import com.mechanica.engine.shaders.text.Text
 import com.mechanica.engine.shaders.utils.ElementIndexArray
-import com.mechanica.engine.unit.angle.degrees
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
 import org.intellij.lang.annotations.Language
-import org.joml.Matrix4f
 
 fun main() {
     Game.configure {
@@ -70,9 +69,9 @@ fun main() {
         """
     }
 
-    val transformation = Matrix4f().identity()
+    val transformation = Matrix4().identity()
     val indices = ElementIndexArray(shortArrayOf(0, 1, 2, 2, 1, 3))
-    val squareArray: Array<Vector> = arrayOf(
+    val squareArray: Array<Vector2> = arrayOf(
             vec(0.25, 0.25),
             vec(0.8, 0.25),
             vec(0.2, 0.85),

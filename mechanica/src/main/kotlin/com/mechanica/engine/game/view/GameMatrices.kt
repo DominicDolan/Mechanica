@@ -1,23 +1,23 @@
 package com.mechanica.engine.game.view
 
+import com.cave.library.angle.radians
+import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.matrix.mat4.StaticMatrix4
 import com.mechanica.engine.display.Display
 import com.mechanica.engine.display.DrawSurface
-import com.mechanica.engine.matrix.Matrices
-import com.mechanica.engine.matrix.calculatePixelSize
-import com.mechanica.engine.matrix.yScale
-import org.joml.Matrix4f
+import com.mechanica.engine.util.CameraMatrices
 
 internal class GameMatrices(
         private val surface: DrawSurface,
-        private val projectionConfiguration: (Matrix4f.(View) -> Unit),
+        private val projectionConfiguration: (Matrix4.(View) -> Unit),
         display: Display,
-        viewPort: View) : Matrices {
-    override val projection: Matrix4f = Matrix4f().identity()
-    override val worldCamera: Matrix4f = Matrix4f().identity()
-    override val uiCamera = Matrix4f()
+        viewPort: View) : CameraMatrices {
+    override val projection: Matrix4 = Matrix4.identity()
+    override val worldCamera: Matrix4 = Matrix4.identity()
+    override val uiCamera = Matrix4.identity()
 
-    val pvMatrix = Matrix4f()
-    val pvUiMatrix = Matrix4f()
+    val pvMatrix = Matrix4.identity()
+    val pvUiMatrix = Matrix4.identity()
 
     var pixelScale: Float
     var pixelUIScale: Float
@@ -37,8 +37,8 @@ internal class GameMatrices(
         val x = view.x
         val y = view.y
 
-        val cameraZ = height*projection.yScale/2f
-        worldCamera.setTranslation(-x.toFloat(), -y.toFloat(), -cameraZ.toFloat())
+        val cameraZ = height*projection.scale.y/2f
+        worldCamera.translation.set(-x, -y, -cameraZ)
 
         projectionConfiguration(projection, view)
 
@@ -46,17 +46,17 @@ internal class GameMatrices(
     }
 
     fun setUiView(height: Double) {
-        val cameraZ = height*projection.yScale/(2f)
-        uiCamera.setTranslation(0f, 0f, -cameraZ.toFloat())
+        val cameraZ = height*projection.scale.y/(2f)
+        uiCamera.translation.set(0.0, 0.0, -cameraZ)
         pixelUIScale = calculatePixelSize(projection, uiCamera, surface.height)
     }
 
     fun updateMatrices() {
         pvMatrix.set(projection)
-        pvMatrix.mul(worldCamera)
+        pvMatrix *= worldCamera
 
         pvUiMatrix.set(projection)
-        pvUiMatrix.mul(uiCamera)
+        pvUiMatrix *= uiCamera
     }
 
     companion object {
@@ -64,13 +64,11 @@ internal class GameMatrices(
         private val fovRadian: Float
             get() = Math.toRadians(fov.toDouble()).toFloat()
 
-        fun defaultProjectionMatrix(matrix: Matrix4f, view: View) {
-            val aspectRatio = view.ratio.toFloat()
+        fun defaultProjectionMatrix(matrix: Matrix4, view: View) {
 
-            matrix.setPerspective(fovRadian, aspectRatio, 0f, 1f, false)
+            val sm = StaticMatrix4.perspective(fovRadian.radians, view.ratio, 0.0, Double.POSITIVE_INFINITY)
+            matrix.set(sm)
 
-            matrix._m22(-1f)
-            matrix._m32(0f)
 //
 //            matrix.zero()
 //            val yScale = (1f / tan(Math.toRadians((this.fov / 2f).toDouble())) * aspectRatio).toFloat()

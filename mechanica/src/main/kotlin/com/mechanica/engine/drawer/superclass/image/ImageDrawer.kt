@@ -1,7 +1,7 @@
 package com.mechanica.engine.drawer.superclass.image
 
+import com.cave.library.vector.vec2.InlineVector
 import com.mechanica.engine.shaders.models.Image
-import com.mechanica.engine.unit.vector.InlineVector
 
 interface ImageDrawer {
     fun image(image: Image, x: Number = 0, y: Number = 0, width: Number = 1, height: Number = 1)

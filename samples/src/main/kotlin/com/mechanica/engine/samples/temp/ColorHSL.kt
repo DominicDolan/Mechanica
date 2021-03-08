@@ -1,6 +1,6 @@
 package com.mechanica.engine.samples.temp
 
-import com.mechanica.engine.color.rgba
+import com.cave.library.color.rgba
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game

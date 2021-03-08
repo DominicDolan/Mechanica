@@ -1,12 +1,12 @@
 package com.mechanica.engine.geometry.triangulation.lists
 
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.vec
+import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.util.extensions.fori
 import com.mechanica.engine.util.extensions.foriIndexed
 import com.mechanica.engine.util.extensions.loopedGet
 
-class TriangulatorList<V : Vector>() {
+class TriangulatorList<V : Vector2>() {
     private val vertices = ArrayList<NodeImpl>()
 
     private var _head: NodeImpl? = null
@@ -58,7 +58,7 @@ class TriangulatorList<V : Vector>() {
         }
     }
 
-    fun vertices(): List<Vector> {
+    fun vertices(): List<Vector2> {
         return this.vertices.map { vec(it.point) }
     }
 
@@ -92,7 +92,7 @@ class TriangulatorList<V : Vector>() {
         }
     }
 
-    abstract inner class Node : Vector {
+    abstract inner class Node : Vector2 {
         abstract val point: V
         abstract val index: Int
 
@@ -104,7 +104,7 @@ class TriangulatorList<V : Vector>() {
         abstract fun linkTo(other: Node): Boolean
     }
 
-    private inner class NodeImpl(override val point: V, override var index: Int) : Vector by point, Node() {
+    private inner class NodeImpl(override val point: V, override var index: Int) : Vector2 by point, Node() {
         override lateinit var prev: NodeImpl
             private set
         override lateinit var next: NodeImpl

@@ -1,12 +1,12 @@
 package com.mechanica.engine.drawer.superclass.text
 
+import com.cave.library.vector.vec2.InlineVector
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.drawer.shader.DrawerRenderer
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.shaders.models.TextModel
 import com.mechanica.engine.shaders.text.Text
-import com.mechanica.engine.unit.vector.InlineVector
-import com.mechanica.engine.unit.vector.vec
 
 class TextDrawerImpl(
         private val state: DrawState,

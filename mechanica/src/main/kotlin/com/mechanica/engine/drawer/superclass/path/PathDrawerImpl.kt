@@ -1,22 +1,22 @@
 package com.mechanica.engine.drawer.superclass.path
 
+import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.drawer.state.DrawState
-import com.mechanica.engine.unit.vector.DynamicVector
-import com.mechanica.engine.unit.vector.Vector
-import com.mechanica.engine.unit.vector.VectorArray
+import com.mechanica.engine.util.VectorArray
 
 class PathDrawerImpl(private val state: DrawState): PathDrawer {
 
     private val renderer = PathRenderer()
-    private val line = ArrayList<DynamicVector>()
+    private val line = ArrayList<VariableVector2>()
 
     init {
-        line.add(DynamicVector.create())
-        line.add(DynamicVector.create())
+        line.add(VariableVector2.create())
+        line.add(VariableVector2.create())
     }
 
-    override fun path(path: Array<out Vector>, count: Int) {
+    override fun path(path: Array<out Vector2>, count: Int) {
         renderer.fillFloats(path, count)
         draw()
     }
@@ -26,7 +26,7 @@ class PathDrawerImpl(private val state: DrawState): PathDrawer {
         draw()
     }
 
-    override fun path(path: List<Vector>, count: Int) {
+    override fun path(path: List<Vector2>, count: Int) {
         renderer.fillFloats(path, count)
         draw()
     }

@@ -1,5 +1,6 @@
 package com.mechanica.engine.game.configuration
 
+import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.context.Application
 import com.mechanica.engine.context.SurfaceContext
 import com.mechanica.engine.context.callbacks.EventCallbacks
@@ -8,7 +9,6 @@ import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.*
 import com.mechanica.engine.scenes.SceneManager
-import com.mechanica.engine.unit.vector.vec
 
 internal class GameSetup(application: Application, configuration: GameConfigurationImpl) {
 
