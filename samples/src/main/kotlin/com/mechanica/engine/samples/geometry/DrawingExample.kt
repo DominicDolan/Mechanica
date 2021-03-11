@@ -1,7 +1,9 @@
 package com.mechanica.engine.samples.geometry
 
 import com.cave.library.color.rgba
+import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.distanceTo
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
@@ -24,7 +26,7 @@ fun main() {
 class DrawingExample : WorldScene() {
     private val renderer = PathRenderer()
 
-    private val transformation = Matrix4()
+    private val transformation = Matrix4.identity()
 
     private val paths = ArrayList<ArrayList<Vector2>>()
     private val strokes = ArrayList<Float>()

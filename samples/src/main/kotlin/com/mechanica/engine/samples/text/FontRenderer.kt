@@ -22,7 +22,7 @@ import kotlin.math.max
 
 class FontRenderer {
 
-    private val transformation = Matrix4().identity()
+    private val transformation = Matrix4.identity()
     private val projection = Game.matrices.projection
     private val view = Game.matrices.worldCamera
 
@@ -110,8 +110,8 @@ class FontRenderer {
     fun render(transformation: Matrix4 ) {
         fragment.mouse.value = (Mouse.world.x/Game.world.width).toFloat() + 0.5f
         if (transformation == this.transformation) {
-            transformation.translate(position.x.toFloat(), position.y.toFloat(), 0f)
-            transformation.scale(fontSize.toFloat(), fontSize.toFloat(), 1f)
+            transformation.translate(position.x, position.y, 0.0)
+            transformation.scale(fontSize, fontSize, 1.0)
         }
         shader.render(this.model, transformation, projection, view)
         if (transformation == this.transformation) { transformation.identity() }

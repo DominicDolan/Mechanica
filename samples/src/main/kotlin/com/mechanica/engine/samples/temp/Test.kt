@@ -2,6 +2,7 @@ package com.mechanica.engine.samples.temp
 
 import com.cave.library.angle.degrees
 import com.cave.library.color.hex
+import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
@@ -69,7 +70,7 @@ fun main() {
         """
     }
 
-    val transformation = Matrix4().identity()
+    val transformation = Matrix4.identity()
     val indices = ElementIndexArray(shortArrayOf(0, 1, 2, 2, 1, 3))
     val squareArray: Array<Vector2> = arrayOf(
             vec(0.25, 0.25),
@@ -98,7 +99,7 @@ fun main() {
     Game.loop {
         transformation.identity()
         val mouse = vec(Mouse.world.x/5.0, Mouse.world.y/5.0)
-        transformation.scale(5.0f, 5.0f, 1.0f)
+        transformation.scale(5.0, 5.0, 1.0)
         vertex.transformation.set(transformation)
         fragment.mouse.set(mouse)
         shader.render(inputs) {

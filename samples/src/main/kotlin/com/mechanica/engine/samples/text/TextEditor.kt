@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.text
 
+import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
@@ -28,7 +29,7 @@ fun main() {
 private class StartText : WorldScene() {
     val renderer = FontRenderer()
 
-    val transformation = Matrix4()
+    val transformation = Matrix4.identity()
 
     val startPosition = vec(-Game.world.width.toFloat()/2f, Game.world.height.toFloat()/2f - renderer.fontSize)
 
