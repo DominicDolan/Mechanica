@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.vars
 
-import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.matrix.mat4.StaticMatrix4
 import com.cave.library.vector.vec2.VariableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
@@ -46,7 +46,7 @@ class Vec4ShaderType : ShaderType<Vector4> {
     override fun toString() = type
 }
 
-class Mat4ShaderType : ShaderType<Matrix4> {
+class Mat4ShaderType : ShaderType<StaticMatrix4> {
     override val type: String = "mat4"
     override val coordinateSize: Int = 16
 

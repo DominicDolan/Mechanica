@@ -1,6 +1,5 @@
 package com.mechanica.engine.samples.shaders
 
-import com.cave.library.color.Color
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
@@ -29,7 +28,7 @@ fun main() {
     }
 
     val fragmentShader = object : ShaderScript() {
-        val colorInput = uniform.vec4(Color.red)
+        val colorInput = uniform.vec4()
 
         //language=GLSL
         override val main: String = """
@@ -46,6 +45,7 @@ fun main() {
     val shader = Shader.create(vertexShader, fragmentShader)
 
     // Create the array of coordinates that we want to pass to the 'vertexShader.position' attribute
+    // It is also possible to use Vector2Arrays.createRectangle() as a shortcut for doing this
     val coordinatesForSquare: Array<Vector2> = arrayOf(
             vec(0.0, 0.0),
             vec(0.0, 0.4),
@@ -60,7 +60,7 @@ fun main() {
     Game.loop {
         fragmentShader.colorInput.set(Mouse.normalized.x, Mouse.normalized.y, 0.5, 1.0)
 
-        // The shader can take the positionArray as an input. The shader could take an array instead if multiple inputs are needed
+        // The shader can take the positionArray as an input. The render function can take an array of attributes if many are needed
         shader.render(positionArray) { drawTriangleFan.arrays(4)}
     }
 }

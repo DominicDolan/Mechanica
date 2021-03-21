@@ -3,6 +3,7 @@ package com.mechanica.engine.shaders.uniforms
 import com.cave.library.color.Color
 import com.cave.library.color.InlineColor
 import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.matrix.mat4.StaticMatrix4
 import com.cave.library.vector.vec2.VariableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec3.VariableVector3
@@ -155,8 +156,8 @@ abstract class UniformVector4 (
 abstract class UniformMatrix4f(
         var matrix: Matrix4,
         override val name: String
-) : UniformVar<Matrix4>() {
-    override val value: Matrix4
+) : UniformVar<StaticMatrix4>() {
+    override val value: StaticMatrix4
         get() = matrix
     override val type = ShaderType.mat4()
 
@@ -164,11 +165,11 @@ abstract class UniformMatrix4f(
         set(matrix)
     }
 
-    fun set(matrix: Matrix4) {
+    fun set(matrix: StaticMatrix4) {
         this.matrix.set(matrix)
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Matrix4) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: StaticMatrix4) {
         set(value)
     }
 }

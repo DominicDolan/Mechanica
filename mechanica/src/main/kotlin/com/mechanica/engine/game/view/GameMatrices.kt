@@ -1,6 +1,7 @@
 package com.mechanica.engine.game.view
 
-import com.cave.library.angle.radians
+import com.cave.library.angle.Radian
+import com.cave.library.angle.degrees
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.matrix.mat4.StaticMatrix4
 import com.mechanica.engine.display.Display
@@ -60,13 +61,12 @@ internal class GameMatrices(
     }
 
     companion object {
-        private const val fov = 70f
-        private val fovRadian: Float
-            get() = Math.toRadians(fov.toDouble()).toFloat()
+        private const val fov = 70.0
+        private val fovRadian: Radian = fov.degrees.toRadians()
 
         fun defaultProjectionMatrix(matrix: Matrix4, view: View) {
 
-            val sm = StaticMatrix4.perspective(fovRadian.radians, view.ratio, 0.0, Double.POSITIVE_INFINITY)
+            val sm = StaticMatrix4.perspective(fovRadian, view.ratio, 0.0, Double.POSITIVE_INFINITY)
             matrix.set(sm)
 
 //

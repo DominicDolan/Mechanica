@@ -3,11 +3,10 @@ package com.mechanica.engine.drawer.state
 import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.matrix.mat4.Matrix4
+import com.cave.library.vector.arrays.Vector2Arrays
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
-import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
-import com.mechanica.engine.shaders.utils.createUnitSquareVectors
 import kotlin.math.tan
 
 class TransformationState(private val origin: OriginState) : AbstractDrawState() {
@@ -74,8 +73,8 @@ class ShaderState : AbstractDrawState() {
     val model: GenericVariable<Model>
 
     init {
-        val position = AttributeArray.createPositionArray(createUnitSquareVectors())
-        val texCoords = AttributeArray.createTextureArray(createInvertedUnitSquareVectors())
+        val position = AttributeArray.createPositionArray(Vector2Arrays.createUnitSquare())
+        val texCoords = AttributeArray.createTextureArray(Vector2Arrays.createInvertedUnitSquare())
 
         defaultModel = Model(position, texCoords)
 

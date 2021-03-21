@@ -6,7 +6,7 @@ import com.cave.library.vector.vec3.component2
 import kotlin.math.min
 
 fun calculatePixelSize(projection: Matrix4, view: Matrix4, resolutionHeight: Int, zTranslation: Float = 0f): Float {
-    val zTranslate = (zTranslation + view.translation.z)
+    val zTranslate = (zTranslation - view.translation.z)
 
 
     /* The following equations help to work out the y height:

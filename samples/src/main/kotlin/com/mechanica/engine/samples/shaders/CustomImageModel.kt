@@ -55,7 +55,7 @@ fun main() {
     }
 
     val shader = Shader.create(vertexShader, fragmentShader)
-Vector2Arrays
+
     val squareCoordinates: Array<Vector2> = Vector2Arrays.createRectangle(-0.5, -0.5, 0.7, 1.0)
     val positionAttribute = Vec2AttributeArray(squareCoordinates)
     positionAttribute.attachTo(vertexShader.position)
