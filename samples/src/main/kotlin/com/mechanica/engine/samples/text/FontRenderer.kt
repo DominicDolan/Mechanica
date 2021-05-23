@@ -110,8 +110,8 @@ class FontRenderer {
     fun render(transformation: Matrix4 ) {
         fragment.mouse.value = (Mouse.world.x/Game.world.width).toFloat() + 0.5f
         if (transformation == this.transformation) {
-            transformation.translate(position.x, position.y, 0.0)
-            transformation.scale(fontSize, fontSize, 1.0)
+            transformation.translation.set(position.x, position.y, 0.0)
+            transformation.scale.set(fontSize, fontSize, 1.0)
         }
         shader.render(this.model, transformation, projection, view)
         if (transformation == this.transformation) { transformation.identity() }

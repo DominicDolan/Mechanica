@@ -1,5 +1,6 @@
 package com.mechanica.engine.drawer.state
 
+import com.cave.library.angle.Radian
 import com.cave.library.color.Color
 import com.cave.library.color.VariableColor
 import com.cave.library.vector.vec2.InlineVector
@@ -44,6 +45,12 @@ class DrawStateVariableList {
 
     fun addDouble(value: Double): DrawStateDouble {
         val newVariable = DrawStateDouble(value, elements.size)
+        elements.add(newVariable)
+        return newVariable
+    }
+
+    fun addRadian(value: Radian): DrawStateRadian {
+        val newVariable = DrawStateRadian(value, elements.size)
         elements.add(newVariable)
         return newVariable
     }
@@ -107,7 +114,25 @@ class DrawStateVariableList {
             wasChanged = false
             elements[index] = null
         }
+    }
 
+    inner class DrawStateRadian(private val resetValue: Radian, val index: Int) : Resettable {
+
+        var wasChanged = true
+            private set
+
+        var value: Radian = resetValue
+            set(value) {
+                field = value
+                wasChanged = true
+                elements[index] = this
+            }
+
+        override fun reset() {
+            value = resetValue
+            wasChanged = false
+            elements[index] = null
+        }
     }
 }
 

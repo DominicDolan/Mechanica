@@ -24,12 +24,13 @@ plugins {
 val commonDependencies: DependencyHandlerScope.() -> Unit = {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
-    implementation("com.cave.library:Kotlin-CAVE:0.1")
+    api("com.cave.library:Kotlin-CAVE:0.1")
 
 }
 

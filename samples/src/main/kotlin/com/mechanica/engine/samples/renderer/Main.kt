@@ -33,7 +33,7 @@ private class StartMain : WorldScene() {
     val polygon: PolygonModel
 
     init {
-        transformation.scale(1.0, 1.0,1.0)
+        transformation.scale.set(1.0, 1.0,1.0)
 
         transformation.rotation.angle = (-Math.PI/6f).radians
 

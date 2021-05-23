@@ -13,7 +13,6 @@ fun main() {
     val draw = Drawer.create()
 
     Game.loop {
-//        draw.centered.grey.text("Hello, Mechanica")
         draw.red.rectangle()
     }
 }

@@ -55,8 +55,8 @@ class TextDrawerImpl(
     }
 
     private fun positionAndScale(size: Number, x: Number, y: Number) {
-        state.setTranslate(x.toFloat(), y.toFloat())
-        state.setScale(size.toFloat(), size.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
+        state.setScale(size.toDouble(), size.toDouble())
     }
 
     private fun bottomRight(model: TextModel): InlineVector {

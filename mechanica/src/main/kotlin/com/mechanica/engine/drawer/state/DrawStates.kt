@@ -1,9 +1,11 @@
 package com.mechanica.engine.drawer.state
 
+import com.cave.library.angle.Radian
 import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.arrays.Vector2Arrays
+import com.cave.library.vector.vec3.VariableVector3
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
@@ -16,24 +18,26 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
     val translation = list.addVector3(0.0)
     val scale = list.addVector3(1.0)
 
-    var rotation = list.addDouble(0.0)
+    var rotation = list.addRadian(0.0.radians)
 
     private val skewMatrix = Matrix4.identity()
     val skew = list.addVector2(0.0)
 
     fun getTransformationMatrix(): Matrix4 {
         val matrix: Matrix4 = matrix.variable
-        matrix.translate(translation.variable)
+        matrix.translation.set(translation.variable)
 
         if (rotation.wasChanged)
-            matrix.rotation.angle = rotation.value.radians
+            matrix.rotation.angle = rotation.value
 
         addSkewToMatrix(matrix)
         addOriginToMatrix(matrix)
 
-        matrix.scale(scale.variable)
+        matrix.scale.set(scale.variable)
 
-        userMatrix?.let { matrix *= it }
+        userMatrix?.let {
+            matrix *= it
+        }
         userMatrix = null
         return matrix
     }
@@ -51,7 +55,7 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         if (origin.wasChanged) {
             val pivotX = origin.normalized.x*scale.x + origin.relative.x
             val pivotY = origin.normalized.y*scale.y + origin.relative.y
-            matrix.translate(-pivotX, -pivotY, 0.0)
+            matrix.translation.set(translation.x-pivotX, translation.y-pivotY, 0.0)
         }
     }
 }

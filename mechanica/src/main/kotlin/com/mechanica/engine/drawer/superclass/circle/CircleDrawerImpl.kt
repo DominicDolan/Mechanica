@@ -39,7 +39,7 @@ class CircleDrawerImpl(
 
         val diameter = radius*2.0
 
-        state.setScale(diameter.toFloat(), diameter.toFloat())
+        state.setScale(diameter, diameter)
         state.shader.cornerSize.set(diameter, diameter)
 
         val origin = state.origin.normalized
@@ -56,15 +56,15 @@ class CircleDrawerImpl(
         if (radius.toFloat() > 0.0) {
             state.shader.radius.value = radius.toDouble()
         }
-        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
         drawCircle()
     }
 
     override fun ellipse(x: Number, y: Number, width: Number, height: Number) {
-        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
 
         val minorAxis = min(width.toDouble(), height.toDouble())
-        state.setScale(width.toFloat(), height.toFloat())
+        state.setScale(width.toDouble(), height.toDouble())
         state.shader.radius.value = (minorAxis/2.0)
         state.shader.cornerSize.set(minorAxis, minorAxis)
 

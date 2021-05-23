@@ -30,14 +30,14 @@ internal class RectangleDrawerImpl(
     }
 
     override fun rectangle(x: Number, y: Number, width: Number, height: Number) {
-        state.setTranslate(x.toFloat(), y.toFloat())
-        state.setScale(width.toFloat(), height.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
+        state.setScale(width.toDouble(), height.toDouble())
         drawRectangle()
     }
 
     private fun drawRectangle() {
-        val scale = state.transformation.scale.variable
-        state.shader.cornerSize.set(scale.x.toDouble(), scale.y.toDouble())
+        val scale = state.transformation.scale
+        state.shader.cornerSize.set(scale.x, scale.y)
         state.setModel(model)
         renderer.render(state, 0f, 0f, false)
     }

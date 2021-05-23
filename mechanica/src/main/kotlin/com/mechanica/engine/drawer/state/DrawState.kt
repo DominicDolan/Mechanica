@@ -1,5 +1,7 @@
 package com.mechanica.engine.drawer.state
 
+import com.cave.library.angle.Radian
+import com.cave.library.angle.plus
 import com.cave.library.color.Color
 import com.cave.library.color.InlineColor
 import com.mechanica.engine.game.Game
@@ -44,18 +46,18 @@ class DrawState : AbstractDrawState() {
     val stringHolderModel: TextModel = TextModel("")
     val textHolderModel: TextModel = TextModel("")
 
-    fun setTranslate(x: Float, y: Float) {
+    fun setTranslate(x: Double, y: Double) {
         val translation = transformation.translation
         translation.set(translation.x + x, translation.y + y)
     }
 
-    fun setRotate(angle: Double) {
+    fun setRotate(angle: Radian) {
         transformation.rotation.value += angle
     }
 
-    fun setScale(x: Float, y: Float) {
+    fun setScale(x: Double, y: Double) {
         val scale = transformation.scale
-        scale.set(scale.x*x, scale.y*y, 0f)
+        scale.set(scale.x*x, scale.y*y, 1.0)
     }
 
     fun setSkew(x: Float, y: Float) {

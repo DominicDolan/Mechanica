@@ -35,8 +35,8 @@ class ImageDrawerImpl(
         model.image = image
         state.setModel(model)
 
-        state.setTranslate(x.toFloat(), y.toFloat())
-        state.setScale(width.toFloat(), height.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
+        state.setScale(width.toDouble(), height.toDouble())
 
         state.shader.cornerSize.set(width.toDouble(), height.toDouble())
     }

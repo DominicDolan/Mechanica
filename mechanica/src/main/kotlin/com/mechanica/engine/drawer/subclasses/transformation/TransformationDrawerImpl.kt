@@ -7,12 +7,12 @@ import com.mechanica.engine.drawer.state.DrawState
 
 class TransformationDrawerImpl(drawer: Drawer, private val state: DrawState): TransformationDrawer, Drawer by drawer {
     override fun translate(x: Number, y: Number): TransformationDrawer {
-        state.setTranslate(x.toFloat(), y.toFloat())
+        state.setTranslate(x.toDouble(), y.toDouble())
         return this
     }
 
     override fun scale(x: Number, y: Number): TransformationDrawer {
-        state.setScale(x.toFloat(), y.toFloat())
+        state.setScale(x.toDouble(), y.toDouble())
         return this
     }
 

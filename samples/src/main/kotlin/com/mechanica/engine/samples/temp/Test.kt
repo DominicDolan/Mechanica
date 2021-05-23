@@ -99,7 +99,7 @@ fun main() {
     Game.loop {
         transformation.identity()
         val mouse = vec(Mouse.world.x/5.0, Mouse.world.y/5.0)
-        transformation.scale(5.0, 5.0, 1.0)
+        transformation.scale.set(5.0, 5.0, 1.0)
         vertex.transformation.set(transformation)
         fragment.mouse.set(mouse)
         shader.render(inputs) {
