@@ -4,7 +4,7 @@ import com.cave.library.angle.degrees
 import com.cave.library.angle.plus
 import com.cave.library.angle.radians
 import com.cave.library.vector.arrays.Vector2Arrays
-import com.cave.library.vector.vec2.plusAssign
+import com.cave.library.vector.plusAssign
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.DPad

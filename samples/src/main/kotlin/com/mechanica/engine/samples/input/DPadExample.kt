@@ -1,7 +1,7 @@
 package com.mechanica.engine.samples.input
 
+import com.cave.library.vector.plusAssign
 import com.cave.library.vector.vec2.VariableVector2
-import com.cave.library.vector.vec2.plusAssign
 import com.cave.library.vector.vec2.times
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
