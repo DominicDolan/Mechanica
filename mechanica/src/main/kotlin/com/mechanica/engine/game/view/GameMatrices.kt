@@ -3,7 +3,6 @@ package com.mechanica.engine.game.view
 import com.cave.library.angle.Radian
 import com.cave.library.angle.degrees
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.matrix.mat4.StaticMatrix4
 import com.mechanica.engine.display.Display
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.util.CameraMatrices
@@ -66,7 +65,7 @@ internal class GameMatrices(
 
         fun defaultProjectionMatrix(matrix: Matrix4, view: View) {
 
-            val sm = StaticMatrix4.perspective(fovRadian, view.ratio, 0.0, Double.POSITIVE_INFINITY)
+            val sm = Matrix4.perspective(fovRadian, view.ratio, 0.0, Double.POSITIVE_INFINITY)
             matrix.set(sm)
 
 //

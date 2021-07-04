@@ -17,7 +17,7 @@ class TransformationDrawerImpl(drawer: Drawer, private val state: DrawState): Tr
     }
 
     override fun skew(horizontal: Radian, vertical: Radian): TransformationDrawer {
-        state.setSkew(horizontal.toDouble().toFloat(), vertical.toDouble().toFloat())
+        state.setSkew(horizontal.toFloat(), vertical.toFloat())
         return this
     }
 

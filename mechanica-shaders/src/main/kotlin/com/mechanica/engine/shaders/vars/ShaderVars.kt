@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.vars
 
-import com.cave.library.matrix.mat4.StaticMatrix4
+import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.VariableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
@@ -20,7 +20,7 @@ interface ShaderVars<Q : Qualifier> {
 
     fun vec4(name: String? = null): ShaderVar<Vector4, Q>
 
-    fun mat4(name: String? = null): ShaderVar<StaticMatrix4, Q>
+    fun mat4(name: String? = null): ShaderVar<Matrix4, Q>
 
 
 }

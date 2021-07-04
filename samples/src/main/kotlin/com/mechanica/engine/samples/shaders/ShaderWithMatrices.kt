@@ -3,23 +3,17 @@ package com.mechanica.engine.samples.shaders
 import com.cave.library.angle.degrees
 import com.cave.library.angle.plus
 import com.cave.library.angle.radians
-import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.matrix.mat4.StaticMatrix4
 import com.cave.library.vector.arrays.Vector2Arrays
 import com.cave.library.vector.vec2.plusAssign
-import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.DPad
 import com.mechanica.engine.input.DirectionalKeys
-import com.mechanica.engine.input.KeyIDs
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.attributes.Vec2AttributeArray
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.script.ShaderScript
-import com.mechanica.engine.shaders.vars.ShaderType
 import org.intellij.lang.annotations.Language
 
 fun main() {

@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.attributes
 
-import com.cave.library.matrix.mat4.StaticMatrix4
+import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.VariableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
@@ -74,6 +74,6 @@ abstract class AttributeVector4(
 
 abstract class AttributeMatrix4(
         override val name: String
-) : AttributeVar<StaticMatrix4>() {
+) : AttributeVar<Matrix4>() {
     override val type = ShaderType.mat4()
 }

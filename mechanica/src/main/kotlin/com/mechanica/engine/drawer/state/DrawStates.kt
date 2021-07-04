@@ -1,11 +1,9 @@
 package com.mechanica.engine.drawer.state
 
-import com.cave.library.angle.Radian
 import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.arrays.Vector2Arrays
-import com.cave.library.vector.vec3.VariableVector3
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
@@ -13,6 +11,7 @@ import kotlin.math.tan
 
 class TransformationState(private val origin: OriginState) : AbstractDrawState() {
     private val matrix = list.add(Matrix4.identity()) { it.identity() }
+    private val matrix2 = list.add(Matrix4.identity()) { it.identity() }
     var userMatrix: Matrix4? = null
 
     val translation = list.addVector3(0.0)
@@ -27,8 +26,10 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         val matrix: Matrix4 = matrix.variable
         matrix.translation.set(translation.variable)
 
-        if (rotation.wasChanged)
-            matrix.rotation.angle = rotation.value
+        if (rotation.wasChanged) {
+            matrix2.variable.rotation.angle = rotation.value
+            matrix *= matrix2.variable
+        }
 
         addSkewToMatrix(matrix)
         addOriginToMatrix(matrix)
@@ -44,10 +45,11 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
 
     private fun addSkewToMatrix(matrix: Matrix4) {
         if (skew.wasChanged) {
-            skewMatrix[1,0] = tan(-skew.x)
-            skewMatrix[0,1] = tan(skew.y)
+            skewMatrix[0, 1] = tan(-skew.x)
+            skewMatrix[1, 0] = tan(skew.y)
 
             matrix *= skewMatrix
+            skewMatrix.identity()
         }
     }
 
@@ -55,7 +57,8 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         if (origin.wasChanged) {
             val pivotX = origin.normalized.x*scale.x + origin.relative.x
             val pivotY = origin.normalized.y*scale.y + origin.relative.y
-            matrix.translation.set(translation.x-pivotX, translation.y-pivotY, 0.0)
+            matrix2.variable.identity().translation.set(-pivotX, -pivotY, 0.0)
+            matrix *= matrix2.variable
         }
     }
 }
