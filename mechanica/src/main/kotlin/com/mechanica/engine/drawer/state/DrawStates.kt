@@ -11,7 +11,6 @@ import kotlin.math.tan
 
 class TransformationState(private val origin: OriginState) : AbstractDrawState() {
     private val matrix = list.add(Matrix4.identity()) { it.identity() }
-    private val matrix2 = list.add(Matrix4.identity()) { it.identity() }
     var userMatrix: Matrix4? = null
 
     val translation = list.addVector3(0.0)
@@ -27,14 +26,13 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         matrix.translation.set(translation.variable)
 
         if (rotation.wasChanged) {
-            matrix2.variable.rotation.angle = rotation.value
-            matrix *= matrix2.variable
+            matrix.rotation.apply(rotation.value)
         }
 
         addSkewToMatrix(matrix)
         addOriginToMatrix(matrix)
 
-        matrix.scale.set(scale.variable)
+        matrix.scale.apply(scale.variable)
 
         userMatrix?.let {
             matrix *= it
@@ -57,8 +55,7 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         if (origin.wasChanged) {
             val pivotX = origin.normalized.x*scale.x + origin.relative.x
             val pivotY = origin.normalized.y*scale.y + origin.relative.y
-            matrix2.variable.identity().translation.set(-pivotX, -pivotY, 0.0)
-            matrix *= matrix2.variable
+            matrix.translation.apply(-pivotX, -pivotY, 0.0)
         }
     }
 }

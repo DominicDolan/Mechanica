@@ -18,7 +18,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     `java-library`
-    maven
 }
 
 val commonDependencies: DependencyHandlerScope.() -> Unit = {

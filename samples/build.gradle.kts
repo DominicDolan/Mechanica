@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = "com.mechanica.engine.samples.basic.BasicDemoKt"
+    mainClass.set("com.mechanica.engine.samples.drawer.DrawerMiniDemoKt")
 }
 
 dependencies {
