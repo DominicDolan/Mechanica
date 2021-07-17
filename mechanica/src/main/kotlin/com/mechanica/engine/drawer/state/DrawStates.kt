@@ -7,7 +7,6 @@ import com.cave.library.vector.arrays.Vector2Arrays
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
-import kotlin.math.tan
 
 class TransformationState(private val origin: OriginState) : AbstractDrawState() {
     private val matrix = list.add(Matrix4.identity()) { it.identity() }
@@ -18,8 +17,7 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
 
     var rotation = list.addRadian(0.0.radians)
 
-    private val skewMatrix = Matrix4.identity()
-    val skew = list.addVector2(0.0)
+    val skew = list.addAngleVector2(0.0.radians)
 
     fun getTransformationMatrix(): Matrix4 {
         val matrix: Matrix4 = matrix.variable
@@ -29,7 +27,10 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
             matrix.rotation.apply(rotation.value)
         }
 
-        addSkewToMatrix(matrix)
+        if (skew.wasChanged) {
+            matrix.skew.apply(skew.x, skew.y)
+        }
+
         addOriginToMatrix(matrix)
 
         matrix.scale.apply(scale.variable)
@@ -39,16 +40,6 @@ class TransformationState(private val origin: OriginState) : AbstractDrawState()
         }
         userMatrix = null
         return matrix
-    }
-
-    private fun addSkewToMatrix(matrix: Matrix4) {
-        if (skew.wasChanged) {
-            skewMatrix[0, 1] = tan(-skew.x)
-            skewMatrix[1, 0] = tan(skew.y)
-
-            matrix *= skewMatrix
-            skewMatrix.identity()
-        }
     }
 
     private fun addOriginToMatrix(matrix: Matrix4) {

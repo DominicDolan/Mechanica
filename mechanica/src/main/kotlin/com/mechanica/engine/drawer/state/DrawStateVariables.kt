@@ -1,11 +1,10 @@
 package com.mechanica.engine.drawer.state
 
 import com.cave.library.angle.Radian
+import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.color.VariableColor
-import com.cave.library.vector.vec2.InlineVector
-import com.cave.library.vector.vec2.VariableVector2
-import com.cave.library.vector.vec2.Vector2
+import com.cave.library.vector.vec2.*
 import com.cave.library.vector.vec3.VariableVector3
 import com.mechanica.engine.util.extensions.fori
 
@@ -29,6 +28,16 @@ class DrawStateVariableList {
         val newVariable = Vector2Variable(this, vector, elements.size, resetValue)
         elements.add(newVariable)
         return newVariable
+    }
+
+    fun addAngleVector2(vector: VariableAngleVector2, resetValue: Radian = 0.0.radians): AngleVector2Variable {
+        val newVariable = AngleVector2Variable(this, vector, elements.size, resetValue)
+        elements.add(newVariable)
+        return newVariable
+    }
+
+    fun addAngleVector2(resetValue: Radian = 0.0.radians): AngleVector2Variable {
+        return addAngleVector2(VariableAngleVector2.create(), resetValue)
     }
 
     fun addColor(color: VariableColor = VariableColor.create(), resetColor: Color? = null): ColorVariable {
@@ -217,6 +226,29 @@ class Vector2Variable(list: DrawStateVariableList, vector: VariableVector2, inde
     }
 
     override fun toString() = Vector2.toString(this)
+}
+
+class AngleVector2Variable(list: DrawStateVariableList, vector: VariableAngleVector2, index: Int, private val resetValue: Radian = 0.0.radians)
+    : DrawStateVariable<VariableAngleVector2>(list, vector, index), VariableAngleVector2 {
+
+    override var x: Radian
+        get() = variable.x
+        set(value) = set(value, y)
+    override var y: Radian
+        get() = variable.y
+        set(value) = set(x, value)
+
+    override fun reset() {
+        markReset()
+        variable.set(resetValue, resetValue)
+    }
+
+    override fun set(x: Radian, y: Radian) {
+        markChanged()
+        variable.set(x, y)
+    }
+
+    override fun toString() = AngleVector2.toString(this)
 }
 
 class ColorVariable(list: DrawStateVariableList, color: VariableColor, index: Int, private val resetColor: Color? = null)

@@ -60,7 +60,7 @@ class DrawState : AbstractDrawState() {
         scale.set(scale.x*x, scale.y*y, 1.0)
     }
 
-    fun setSkew(x: Float, y: Float) {
+    fun setSkew(x: Radian, y: Radian) {
         val skew = transformation.skew
         skew.set(skew.x + x, skew.y + y)
     }
