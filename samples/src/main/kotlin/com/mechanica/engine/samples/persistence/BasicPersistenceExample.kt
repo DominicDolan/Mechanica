@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_CHANGED_VALUE", "UNUSED_VALUE")
+
 package com.mechanica.engine.samples.persistence
 
 import com.mechanica.engine.config.configure
@@ -17,6 +19,7 @@ fun main() {
 
     someStringVariable = "Some Other String"
 
+    // For variables that can have multiple instances, an instance id can be passed in
     val class1 = SomeClass("class1", "1")
     val class2 = SomeClass("class2", "2")
 
@@ -28,9 +31,9 @@ fun main() {
     Game.terminate()
 }
 
-class SomeClass(string: String, id: String) {
+class SomeClass(valueToPersist: String, instanceId: String) {
     // The instance id is required here because there will be multiple instances of SomeClass
-    private var variable by persistent(string, instance = id)
+    private var variable by persistent(valueToPersist, instance = instanceId)
 
     fun setValue(string: String) {
         variable = string
