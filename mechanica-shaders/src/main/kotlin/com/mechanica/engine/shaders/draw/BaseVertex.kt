@@ -4,7 +4,7 @@ import com.mechanica.engine.shaders.models.Model
 import java.nio.IntBuffer
 
 
-class DrawBaseVertex(private val glDrawCommands: GLDrawerLoader) : ElementsDrawCommand, MultiElementsDrawCommand {
+class DrawBaseVertex(private val glDrawCommands: GLDrawerFactory) : ElementsDrawCommand, MultiElementsDrawCommand {
     var baseVertex: Int = 0
 
     override fun elements(vertexCount: Int) {
@@ -16,7 +16,7 @@ class DrawBaseVertex(private val glDrawCommands: GLDrawerLoader) : ElementsDrawC
     }
 }
 
-class MultiDrawBaseVertex(private val glDrawCommands: GLDrawerLoader) : MultiElementsDrawCommand {
+class MultiDrawBaseVertex(private val glDrawCommands: GLDrawerFactory) : MultiElementsDrawCommand {
     var baseVertex: IntBuffer? = null
 
     override fun elements(models: Array<Model>) {
@@ -28,8 +28,8 @@ class MultiDrawBaseVertex(private val glDrawCommands: GLDrawerLoader) : MultiEle
 }
 
 class DrawRangeBaseVertex(
-        private val glDrawCommands: GLDrawerLoader,
-        private val drawRange: DrawRange
+    private val glDrawCommands: GLDrawerFactory,
+    private val drawRange: DrawRange
 ): ElementsDrawCommand {
     internal var baseVertex: Int = 0
 

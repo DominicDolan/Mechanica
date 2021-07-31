@@ -2,7 +2,7 @@ package com.mechanica.engine.context.loader
 
 import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.shader.*
-import com.mechanica.engine.shaders.context.UniformLoader
+import com.mechanica.engine.shaders.context.UniformFactory
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.uniforms.*
 import com.mechanica.engine.shaders.vars.GlslLocation
@@ -10,7 +10,7 @@ import com.mechanica.engine.shaders.vars.ShaderType
 import org.lwjgl.opengl.GL20
 import kotlin.reflect.KProperty
 
-class LwjglUniformLoader: UniformLoader {
+class LwjglUniformFactory: UniformFactory {
     override fun createLocationLoader(locationName: String) = object : GlslLocation {
         override var location: Int = 0
             private set

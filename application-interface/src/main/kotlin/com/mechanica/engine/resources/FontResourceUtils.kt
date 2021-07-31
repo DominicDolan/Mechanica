@@ -1,6 +1,6 @@
 package com.mechanica.engine.resources
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.text.Font
 import com.mechanica.engine.text.FontAtlasConfiguration
 import java.nio.ByteBuffer
@@ -98,7 +98,7 @@ fun Font.Companion.defaults(config: FontAtlasConfiguration.() -> Unit): FontSet 
 }
 
 fun Font.Companion.create(ttfFile: ByteBuffer, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
-    return ShaderLoader.fontLoader.font(ttfFile, configureAtlas)
+    return ShaderFactory.fontFactory.font(ttfFile, configureAtlas)
 }
 
 fun Font.Companion.create(resource: Resource, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {

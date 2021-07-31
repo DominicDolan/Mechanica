@@ -2,50 +2,50 @@ package com.mechanica.engine.shaders.context
 
 import com.mechanica.engine.shaders.attributes.AttributeVars
 import com.mechanica.engine.shaders.attributes.FloatAttributeBinder
-import com.mechanica.engine.shaders.buffers.BufferLoader
+import com.mechanica.engine.shaders.buffers.BufferFactories
 import com.mechanica.engine.shaders.buffers.FloatBufferObject
 import com.mechanica.engine.shaders.buffers.IntBufferObject
 import com.mechanica.engine.shaders.buffers.ShortBufferObject
-import com.mechanica.engine.shaders.draw.DrawLoader
-import com.mechanica.engine.shaders.glPrimitives.GLPrimitiveLoader
+import com.mechanica.engine.shaders.draw.DrawFactories
+import com.mechanica.engine.shaders.glPrimitives.GLPrimitiveFactory
 import com.mechanica.engine.shaders.qualifiers.AttributeQualifier
 import com.mechanica.engine.shaders.script.PlatformScriptValues
 import com.mechanica.engine.shaders.script.ShaderScript
-import com.mechanica.engine.shaders.text.FontLoader
+import com.mechanica.engine.shaders.text.FontFactory
 import com.mechanica.engine.shaders.uniforms.UniformVars
 import com.mechanica.engine.shaders.vars.GlslLocation
 import com.mechanica.engine.shaders.vars.ShaderType
 
-interface ShaderLoader {
+interface ShaderFactory {
     val platformScriptValues: PlatformScriptValues
 
-    val attributeLoader: AttributeLoader
-    val uniformLoader: UniformLoader
+    val attributeFactory: AttributeFactory
+    val uniformFactory: UniformFactory
 
-    val bufferLoader: BufferLoader
+    val bufferFactories: BufferFactories
 
-    val imageLoader: ImageLoader
+    val imageFactory: ImageFactory
 
-    val glPrimitives: GLPrimitiveLoader
+    val glPrimitives: GLPrimitiveFactory
 
-    val drawLoader: DrawLoader
+    val drawFactories: DrawFactories
 
-    val fontLoader: FontLoader
+    val fontFactory: FontFactory
 
     fun createShaderCreator(vertex: ShaderScript,
                             fragment: ShaderScript,
                             tessellation: ShaderScript?,
                             geometry: ShaderScript?): ShaderCreator
 
-    companion object : ShaderLoader by MechanicaShadersInitializer.loader
+    companion object : ShaderFactory by MechanicaShadersInitializer.factory
 }
 
-interface UniformLoader {
+interface UniformFactory {
     val variables: UniformVars
     fun createLocationLoader(locationName: String): GlslLocation
 }
 
-interface AttributeLoader {
+interface AttributeFactory {
     fun createLocationLoader(locationName: String): GlslLocation
     fun variables(qualifier: AttributeQualifier) : AttributeVars
 

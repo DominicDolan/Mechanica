@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.models
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import java.nio.ByteBuffer
 
 interface Image : Bindable {
@@ -9,7 +9,7 @@ interface Image : Bindable {
     companion object {
         operator fun invoke(id: Int) = create(id)
 
-        fun create(id: Int) = ShaderLoader.imageLoader.loadImage(id)
-        fun create(buffer: ByteBuffer) = ShaderLoader.imageLoader.loadImage(buffer)
+        fun create(id: Int) = ShaderFactory.imageFactory.loadImage(id)
+        fun create(buffer: ByteBuffer) = ShaderFactory.imageFactory.loadImage(buffer)
     }
 }

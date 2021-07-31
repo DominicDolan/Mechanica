@@ -1,6 +1,6 @@
 package com.mechanica.engine.context.loader
 
-import com.mechanica.engine.shaders.buffers.BufferLoader
+import com.mechanica.engine.shaders.buffers.BufferFactories
 import com.mechanica.engine.shaders.buffers.FloatBufferObject
 import com.mechanica.engine.shaders.buffers.IntBufferObject
 import com.mechanica.engine.shaders.buffers.ShortBufferObject
@@ -13,7 +13,7 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class LwjglBufferLoader : BufferLoader {
+class LwjglBufferFactories : BufferFactories {
     override fun byteBuffer(size: Int): ByteBuffer = BufferUtils.createByteBuffer(size)
 
     override fun intBuffer(size: Int): IntBuffer = BufferUtils.createIntBuffer(size)

@@ -6,7 +6,7 @@ import com.mechanica.engine.audio.ALSource
 import com.mechanica.engine.audio.Sound
 import com.mechanica.engine.resources.Resource
 
-class LwjglAudioLoader : AudioLoader {
+class LwjglAudioFactory : AudioFactory {
     override fun sound(res: Resource): Sound = ALSound(res)
 
     override fun source(sound: Sound) = ALSource(sound)

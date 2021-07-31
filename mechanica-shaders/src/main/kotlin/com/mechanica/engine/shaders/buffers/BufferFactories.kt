@@ -6,7 +6,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 
-interface BufferLoader {
+interface BufferFactories {
     fun byteBuffer(size: Int): ByteBuffer
     fun intBuffer(size: Int): IntBuffer
     fun floatBuffer(size: Int): FloatBuffer

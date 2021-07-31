@@ -1,6 +1,6 @@
 package com.mechanica.engine.context.loader
 
-interface MiscLoader {
+interface MiscFactory {
     fun prepareStencilForPath()
     fun stencilFunction()
     fun clearStencil()

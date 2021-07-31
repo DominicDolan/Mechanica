@@ -69,7 +69,7 @@ object Game : Configurable<GameConfiguration> {
     override fun configureAs(application: Application, configure: GameConfiguration.() -> Unit) {
         this._application = application
 
-        MechanicaInitializer.initialize(application.createLoader())
+        MechanicaInitializer.initialize(application.createFactory())
 
         val configuration = GameConfigurationImpl(configure)
         this.setup = GameSetup(application, configuration)

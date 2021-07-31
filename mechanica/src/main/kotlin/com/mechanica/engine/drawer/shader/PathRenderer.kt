@@ -4,7 +4,7 @@ import com.cave.library.color.Color
 import com.cave.library.color.toColor
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.Vector2
-import com.mechanica.engine.context.loader.MechanicaLoader
+import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.attributes.FloatAttributeArray
 import com.mechanica.engine.shaders.models.Model
@@ -147,16 +147,16 @@ class PathRenderer() {
 
         drawLineStrip.arrays(it)
 
-        MechanicaLoader.miscLoader.stencilFunction()
+        MechanicaFactory.miscFactory.stencilFunction()
     }
     private val circleShader = DrawerShader.create(vertex, fragment, geometry = circleGeometry) {
         prepareStencil()
 
         drawPoints.arrays(it)
 
-        MechanicaLoader.miscLoader.enableAlphaBlending()
+        MechanicaFactory.miscFactory.enableAlphaBlending()
 
-        MechanicaLoader.miscLoader.stencilFunction()
+        MechanicaFactory.miscFactory.stencilFunction()
     }
 
     var color: Color
@@ -185,7 +185,7 @@ class PathRenderer() {
     }
 
     fun render(transformation: Matrix4) {
-        MechanicaLoader.miscLoader.clearStencil()
+        MechanicaFactory.miscFactory.clearStencil()
         fragment.mode.value = 0f
         lineShader.render(this.model, transformation)
         fragment.mode.value = 1f
@@ -219,7 +219,7 @@ class PathRenderer() {
     }
 
     private fun prepareStencil() {
-        MechanicaLoader.miscLoader.prepareStencilForPath()
+        MechanicaFactory.miscFactory.prepareStencilForPath()
     }
 
 

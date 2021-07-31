@@ -1,19 +1,19 @@
 package com.mechanica.engine.shaders.draw
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.models.Model
 import java.nio.IntBuffer
 
 class GLDraw {
-    private val glDrawer = ShaderLoader.drawLoader.glTrianglesDrawer
+    private val glDrawer = ShaderFactory.drawFactories.glTrianglesDrawer
 
     val drawTriangles by lazy { GLDrawCommands(glDrawer) }
-    val drawTriangleFan by lazy { GLDrawCommands(ShaderLoader.drawLoader.glTriangleFanDrawer) }
-    val drawTriangleStrip by lazy { GLDrawCommands(ShaderLoader.drawLoader.glTriangleStripDrawer) }
-    val drawPoints by lazy { GLDrawCommands(ShaderLoader.drawLoader.glPointDrawer) }
-    val drawLines by lazy { GLDrawCommands(ShaderLoader.drawLoader.glLinesDrawer) }
-    val drawLineLoop by lazy { GLDrawCommands(ShaderLoader.drawLoader.glLineLoopDrawer) }
-    val drawLineStrip by lazy { GLDrawCommands(ShaderLoader.drawLoader.glLineStripDrawer) }
+    val drawTriangleFan by lazy { GLDrawCommands(ShaderFactory.drawFactories.glTriangleFanDrawer) }
+    val drawTriangleStrip by lazy { GLDrawCommands(ShaderFactory.drawFactories.glTriangleStripDrawer) }
+    val drawPoints by lazy { GLDrawCommands(ShaderFactory.drawFactories.glPointDrawer) }
+    val drawLines by lazy { GLDrawCommands(ShaderFactory.drawFactories.glLinesDrawer) }
+    val drawLineLoop by lazy { GLDrawCommands(ShaderFactory.drawFactories.glLineLoopDrawer) }
+    val drawLineStrip by lazy { GLDrawCommands(ShaderFactory.drawFactories.glLineStripDrawer) }
 
     fun drawModel(model: Model) {
         if (model.hasIndexArray) {
@@ -25,7 +25,7 @@ class GLDraw {
 
 }
 
-class GLDrawCommands(private val glDrawCommands: GLDrawerLoader) : MultiDrawCommands {
+class GLDrawCommands(private val glDrawCommands: GLDrawerFactory) : MultiDrawCommands {
 
     private val instancedDraw = DrawInstanced(glDrawCommands)
     private val baseVertexDraw = DrawBaseVertex(glDrawCommands)
@@ -71,7 +71,7 @@ class GLDrawCommands(private val glDrawCommands: GLDrawerLoader) : MultiDrawComm
 
 }
 
-class DrawRange(private val glDrawCommands: GLDrawerLoader) : ElementsDrawCommand {
+class DrawRange(private val glDrawCommands: GLDrawerFactory) : ElementsDrawCommand {
     internal var start: Int = 0
     internal var end: Int = 1
     private val drawRangeBaseVertex = DrawRangeBaseVertex(glDrawCommands, this)

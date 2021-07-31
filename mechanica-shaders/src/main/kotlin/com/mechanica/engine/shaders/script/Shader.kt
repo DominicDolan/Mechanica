@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.script
 
 import com.mechanica.engine.shaders.context.ShaderCreator
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.draw.GLDraw
 import com.mechanica.engine.shaders.models.Bindable
 import com.mechanica.engine.shaders.models.Model
@@ -17,7 +17,7 @@ abstract class Shader {
 
     private val gl = GLDraw()
 
-    protected open val loader: ShaderCreator by lazy { ShaderLoader.createShaderCreator(vertex, fragment, tessellation, geometry) }
+    protected open val loader: ShaderCreator by lazy { ShaderFactory.createShaderCreator(vertex, fragment, tessellation, geometry) }
 
     val id: Int get() = loader.id
 

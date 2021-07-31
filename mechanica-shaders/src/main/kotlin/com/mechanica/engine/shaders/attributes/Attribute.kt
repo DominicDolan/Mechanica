@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.attributes
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.qualifiers.AttributeQualifier
 import com.mechanica.engine.shaders.script.ScriptVariables
 
@@ -9,29 +9,29 @@ class Attribute internal constructor(
         qualifier: AttributeQualifier = Companion.qualifier,
 ) : AttributeVars {
 
-    private val loader: AttributeVars = ShaderLoader.attributeLoader.variables(qualifier)
+    private val attributes: AttributeVars = ShaderFactory.attributeFactory.variables(qualifier)
 
     override fun float(name: String?): AttributeFloat {
         val variableName = name ?: variables?.getNextName() ?: ""
-        val v = loader.float(variableName)
+        val v = attributes.float(variableName)
         return addVariable(v)
     }
 
     override fun vec2(name: String?): AttributeVector2 {
         val variableName = name ?: variables?.getNextName() ?: ""
-        val v = loader.vec2(variableName)
+        val v = attributes.vec2(variableName)
         return addVariable(v)
     }
 
     override fun vec3(name: String?): AttributeVector3 {
         val variableName = name ?: variables?.getNextName() ?: ""
-        val v = loader.vec3(variableName)
+        val v = attributes.vec3(variableName)
         return addVariable(v)
     }
 
     override fun vec4(name: String?): AttributeVector4 {
         val variableName = name ?: variables?.getNextName() ?: ""
-        val v = loader.vec4(variableName)
+        val v = attributes.vec4(variableName)
         return addVariable(v)
     }
 

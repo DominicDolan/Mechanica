@@ -25,7 +25,7 @@ import com.mechanica.engine.drawer.superclass.text.TextDrawer
 import com.mechanica.engine.drawer.superclass.text.TextDrawerImpl
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.shaders.attributes.AttributeArray
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.shaders.models.PolygonModel
 import com.mechanica.engine.shaders.utils.createInvertedUnitSquareVectors
@@ -94,7 +94,7 @@ class DrawerImpl(private val state: DrawState,
 
     override fun background() {
         with(colorDrawer) {
-            ShaderLoader.drawLoader.clearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
+            ShaderFactory.drawFactories.clearColor(r.toFloat(), g.toFloat(), b.toFloat(), a.toFloat())
         }
     }
 

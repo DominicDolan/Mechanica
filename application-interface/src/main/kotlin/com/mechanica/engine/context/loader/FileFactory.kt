@@ -6,7 +6,7 @@ import com.mechanica.engine.resources.ResourceDirectory
 import java.net.URI
 import java.net.URL
 
-interface FileLoader {
+interface FileFactory {
     fun resource(path: String): Resource
     fun resource(url: URL): Resource
     fun resource(uri: URI): Resource

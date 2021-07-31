@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11.GL_POLYGON_SMOOTH
 import org.lwjgl.opengl.GL11.glDisable
 import org.lwjgl.opengl.GL20
 
-class LwjglMiscLoader : MiscLoader {
+class LwjglMiscFactory : MiscFactory {
     override fun prepareStencilForPath() {
         GL20.glStencilOp(GL20.GL_KEEP, GL20.GL_KEEP, GL20.GL_REPLACE)
         GL20.glStencilFunc(GL20.GL_NOTEQUAL, 1, 0xFF)

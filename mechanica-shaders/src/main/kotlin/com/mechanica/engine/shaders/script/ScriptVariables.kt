@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.script
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.uniforms.UniformVar
 import com.mechanica.engine.shaders.vars.ShaderVar
 
@@ -10,7 +10,7 @@ interface PlatformScriptValues {
         get() = "autoVal"
 }
 
-class ScriptVariables: PlatformScriptValues by ShaderLoader.platformScriptValues, Iterable<ShaderVar<*, *>> {
+class ScriptVariables: PlatformScriptValues by ShaderFactory.platformScriptValues, Iterable<ShaderVar<*, *>> {
     private val variables = ArrayList<ShaderVar<*, *>>()
     private val functions = ArrayList<String>()
 

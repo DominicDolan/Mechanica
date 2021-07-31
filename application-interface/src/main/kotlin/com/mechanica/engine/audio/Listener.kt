@@ -1,7 +1,7 @@
 package com.mechanica.engine.audio
 
 import com.cave.library.vector.vec3.Vector3
-import com.mechanica.engine.context.loader.MechanicaLoader
+import com.mechanica.engine.context.loader.MechanicaFactory
 
 interface Listener : AudioObject {
     var distanceModel: DistanceModel
@@ -12,7 +12,7 @@ interface Listener : AudioObject {
         var up: Vector3
     }
 
-    companion object : Listener by MechanicaLoader.audioLoader.listener()
+    companion object : Listener by MechanicaFactory.audioFactory.listener()
 
     enum class DistanceModel {
         INVERSE,

@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.attributes
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.glPrimitives.GLPrimitive
 import com.mechanica.engine.shaders.models.Bindable
 import com.mechanica.engine.shaders.vars.GlslLocation
@@ -12,13 +12,13 @@ interface AttributeBufferBinder : Bindable, GlslLocation {
 }
 
 abstract class FloatAttributeBinder : AttributeBufferBinder {
-    override val primitiveType = ShaderLoader.glPrimitives.glFloat
+    override val primitiveType = ShaderFactory.glPrimitives.glFloat
 
     companion object {
-        private val loader = ShaderLoader.attributeLoader
+        private val factory = ShaderFactory.attributeFactory
 
         fun create(location: GlslLocation, type: ShaderType<*>): FloatAttributeBinder {
-            return loader.createFloatAttributeBinder(location, type)
+            return factory.createFloatAttributeBinder(location, type)
         }
 
         fun create(variable: AttributeVar<*>): FloatAttributeBinder {
@@ -28,5 +28,5 @@ abstract class FloatAttributeBinder : AttributeBufferBinder {
 }
 
 abstract class IntAttributeBinder : AttributeBufferBinder {
-    override val primitiveType = ShaderLoader.glPrimitives.glInt
+    override val primitiveType = ShaderFactory.glPrimitives.glInt
 }

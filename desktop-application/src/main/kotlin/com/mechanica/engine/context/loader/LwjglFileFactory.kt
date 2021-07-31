@@ -9,7 +9,7 @@ import java.net.URL
 import java.nio.file.*
 import java.util.stream.Stream
 
-class LwjglFileLoader : FileLoader {
+class LwjglFileFactory : FileFactory {
     override fun resource(path: String): Resource {
         val fileForURL = path.replace("\\", "/")
         val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")

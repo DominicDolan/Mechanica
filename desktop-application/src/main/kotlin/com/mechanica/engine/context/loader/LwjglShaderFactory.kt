@@ -1,23 +1,23 @@
 package com.mechanica.engine.context.loader
 
 import com.mechanica.engine.shader.LwjglShaderCreator
-import com.mechanica.engine.shaders.context.AttributeLoader
+import com.mechanica.engine.shaders.context.AttributeFactory
 import com.mechanica.engine.shaders.context.ShaderCreator
-import com.mechanica.engine.shaders.context.ShaderLoader
-import com.mechanica.engine.shaders.draw.DrawLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
+import com.mechanica.engine.shaders.draw.DrawFactories
 import com.mechanica.engine.shaders.script.PlatformScriptValues
 import com.mechanica.engine.shaders.script.ShaderScript
 
-class LwjglShaderLoader : ShaderLoader {
+class LwjglShaderFactory : ShaderFactory {
 
-    override val attributeLoader: AttributeLoader = LwjglAttributeLoader()
-    override val uniformLoader = LwjglUniformLoader()
+    override val attributeFactory: AttributeFactory = LwjglAttributeFactory()
+    override val uniformFactory = LwjglUniformFactory()
 
-    override val bufferLoader = LwjglBufferLoader()
-    override val imageLoader = LwjglImageLoader()
-    override val glPrimitives = LwjglPrimitiveLoader()
-    override val drawLoader: DrawLoader = LwjglDrawLoader()
-    override val fontLoader = LwjglFontLoader()
+    override val bufferFactories = LwjglBufferFactories()
+    override val imageFactory = LwjglImageFactory()
+    override val glPrimitives = LwjglPrimitiveFactory()
+    override val drawFactories: DrawFactories = LwjglDrawFactories()
+    override val fontFactory = LwjglFontFactory()
 
     override val platformScriptValues = object : PlatformScriptValues {
         val version = "430"

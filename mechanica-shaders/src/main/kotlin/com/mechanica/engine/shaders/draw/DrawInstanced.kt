@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.draw
 
 
-class DrawInstanced(private val glDrawCommands: GLDrawerLoader) : DrawCommands {
+class DrawInstanced(private val glDrawCommands: GLDrawerFactory) : DrawCommands {
     internal var instanceCount: Int = 1
 
     private val drawInstancedBaseInstance = DrawInstancedBaseInstance(glDrawCommands, this)
@@ -35,8 +35,8 @@ class DrawInstanced(private val glDrawCommands: GLDrawerLoader) : DrawCommands {
 }
 
 class DrawInstancedBaseInstance(
-        private val glDrawCommands: GLDrawerLoader,
-        private val drawInstanced: DrawInstanced) : DrawCommands {
+    private val glDrawCommands: GLDrawerFactory,
+    private val drawInstanced: DrawInstanced) : DrawCommands {
     internal var baseInstance: Int = 0
 
     override fun arrays(vertexCount: Int) {

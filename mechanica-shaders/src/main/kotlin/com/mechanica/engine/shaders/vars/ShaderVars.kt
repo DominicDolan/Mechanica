@@ -5,7 +5,7 @@ import com.cave.library.vector.vec2.VariableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.attributes.AttributeVar
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.qualifiers.Qualifier
 import com.mechanica.engine.shaders.script.Shader
 import com.mechanica.engine.shaders.uniforms.UniformVar
@@ -32,7 +32,7 @@ interface GlslLocation {
     companion object {
 
         fun create(variable: AttributeVar<*>): GlslLocation {
-            return ShaderLoader.attributeLoader.createLocationLoader(variable.locationName)
+            return ShaderFactory.attributeFactory.createLocationLoader(variable.locationName)
         }
 
         fun create(location: Int): GlslLocation {
@@ -43,7 +43,7 @@ interface GlslLocation {
         }
 
         fun create(variable: UniformVar<*>): GlslLocation {
-            return ShaderLoader.uniformLoader.createLocationLoader(variable.locationName)
+            return ShaderFactory.uniformFactory.createLocationLoader(variable.locationName)
         }
     }
 }

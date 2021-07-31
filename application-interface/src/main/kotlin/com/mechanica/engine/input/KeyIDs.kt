@@ -1,6 +1,6 @@
 package com.mechanica.engine.input
 
-import com.mechanica.engine.context.loader.MechanicaLoader
+import com.mechanica.engine.context.loader.MechanicaFactory
 
 interface KeyIDs {
     val UNKNOWN: KeyID
@@ -137,5 +137,5 @@ interface KeyIDs {
     val SCROLL_DOWN: KeyID
     val SCROLL: KeyID
 
-    companion object : KeyIDs by MechanicaLoader.inputLoader.keyIds()
+    companion object : KeyIDs by MechanicaFactory.inputFactory.keyIds()
 }

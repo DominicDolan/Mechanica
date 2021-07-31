@@ -1,7 +1,7 @@
 package com.mechanica.engine.resources
 
-import com.mechanica.engine.context.loader.MechanicaLoader
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.context.loader.MechanicaFactory
+import com.mechanica.engine.shaders.context.ShaderFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URI
@@ -28,37 +28,37 @@ interface Resource : GenericResource {
     override val buffer: ByteBuffer
         get() {
             val bytes = stream.readAllBytes()
-            val buffer = ShaderLoader.bufferLoader.byteBuffer(bytes.size)
+            val buffer = ShaderFactory.bufferFactories.byteBuffer(bytes.size)
             buffer.put(bytes)
             buffer.flip()
             return buffer
         }
 
     companion object {
-        private val loader = MechanicaLoader.fileLoader
+        private val factory = MechanicaFactory.fileFactory
 
         operator fun invoke(path: String): Resource {
-            return loader.resource(path)
+            return factory.resource(path)
         }
 
         fun create(path: String): Resource {
-            return loader.resource(path)
+            return factory.resource(path)
         }
 
         operator fun invoke(url: URL): Resource {
-            return loader.resource(url)
+            return factory.resource(url)
         }
 
         operator fun invoke(uri: URI): Resource {
-            return loader.resource(uri)
+            return factory.resource(uri)
         }
 
         fun external(path: String, createIfAbsent: Boolean = true): ExternalResource {
-            return loader.externalResource(path, createIfAbsent)
+            return factory.externalResource(path, createIfAbsent)
         }
 
         fun directory(path: String, recursive: Boolean = false): ResourceDirectory {
-            return loader.directory(path, recursive)
+            return factory.directory(path, recursive)
         }
 
     }

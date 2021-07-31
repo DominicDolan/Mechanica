@@ -3,7 +3,7 @@ package com.mechanica.engine.shaders.draw
 import com.mechanica.engine.shaders.models.Model
 import java.nio.IntBuffer
 
-interface GLDrawerLoader {
+interface GLDrawerFactory {
     /**
      * Defines a sequence of geometric primitives using [vertexCount]
      * vertices, whose indices are stored in the buffer bound to the

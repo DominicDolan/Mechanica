@@ -1,13 +1,13 @@
 package com.mechanica.engine.shaders.text
 
 import com.cave.library.vector.vec2.VariableVector2
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.text.CharacterCursor
 import com.mechanica.engine.util.extensions.constrain
 import kotlin.math.abs
 import kotlin.math.max
 
-class Text(text: String, font: Font = ShaderLoader.fontLoader.defaultFont()) {
+class Text(text: String, font: Font = ShaderFactory.fontFactory.defaultFont()) {
 
     var string = text
         set(value) {

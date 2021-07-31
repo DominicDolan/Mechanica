@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.buffers
 
-import com.mechanica.engine.shaders.context.ShaderLoader
+import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.glPrimitives.GLPrimitive
 import com.mechanica.engine.shaders.models.Bindable
 
@@ -29,7 +29,7 @@ abstract class FloatBufferObject : GLBufferObject {
 
     companion object {
         fun createArrayBuffer(floats: FloatArray): FloatBufferObject {
-            return ShaderLoader.bufferLoader.arrayBufferFactory.floats(floats)
+            return ShaderFactory.bufferFactories.arrayBufferFactory.floats(floats)
         }
     }
 }
@@ -40,11 +40,11 @@ abstract class ShortBufferObject : GLBufferObject {
 
     companion object {
         fun createArrayBuffer(shorts: ShortArray): ShortBufferObject {
-            return ShaderLoader.bufferLoader.arrayBufferFactory.shorts(shorts)
+            return ShaderFactory.bufferFactories.arrayBufferFactory.shorts(shorts)
         }
 
         fun createElementArrayBuffer(shorts: ShortArray): ShortBufferObject {
-            return ShaderLoader.bufferLoader.elementArrayBufferFactory.shorts(shorts)
+            return ShaderFactory.bufferFactories.elementArrayBufferFactory.shorts(shorts)
         }
     }
 }
@@ -55,7 +55,7 @@ abstract class IntBufferObject : GLBufferObject {
 
     companion object {
         fun createArrayBuffer(ints: IntArray): IntBufferObject {
-            return ShaderLoader.bufferLoader.arrayBufferFactory.ints(ints)
+            return ShaderFactory.bufferFactories.arrayBufferFactory.ints(ints)
         }
     }
 }

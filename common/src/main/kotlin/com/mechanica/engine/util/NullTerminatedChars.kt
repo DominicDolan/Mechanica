@@ -58,14 +58,14 @@ class NullTerminatedChars(capacity: Int = 50) {
 
     fun clear() {
         size = 0
-        set { Character.MIN_VALUE }
+        setEach { Character.MIN_VALUE }
     }
 
     inline fun forEach(operation: (Char) -> Unit) {
-        set { operation(it); it }
+        setEach { operation(it); it }
     }
 
-    inline fun set(operation: (Char) -> Char) {
+    inline fun setEach(operation: (Char) -> Char) {
         var i = 0
         var currentChar = chars.first()
 
