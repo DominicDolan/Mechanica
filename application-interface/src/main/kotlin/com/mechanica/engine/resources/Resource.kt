@@ -3,6 +3,7 @@ package com.mechanica.engine.resources
 import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.shaders.context.ShaderFactory
 import java.io.BufferedReader
+import java.io.DataInputStream
 import java.io.InputStreamReader
 import java.net.URI
 import java.net.URL
@@ -27,7 +28,9 @@ interface Resource : GenericResource {
         }
     override val buffer: ByteBuffer
         get() {
-            val bytes = stream.readAllBytes()
+            val bytes = ByteArray(stream.available())
+            val dataInputStream = DataInputStream(stream)
+            dataInputStream.readFully(bytes)
             val buffer = ShaderFactory.bufferFactories.byteBuffer(bytes.size)
             buffer.put(bytes)
             buffer.flip()

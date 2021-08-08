@@ -17,7 +17,7 @@ interface GameConfiguration {
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
 
-    fun setPersistence(jsonStorer: JsonStorer = JsonFileStorer(getCallingClass().packageName + "/res/data/persistence.json"))
+    fun setPersistence(jsonStorer: JsonStorer = JsonFileStorer(getCallingClass().`package`.name + "/res/data/persistence.json"))
 
     fun setStartingScene(scene: () -> Scene)
 
