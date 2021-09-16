@@ -1,6 +1,6 @@
 package com.mechanica.engine.geometry.triangulation.iterators
 
-import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
+import com.mechanica.engine.geometry.triangulation.polygon.GrahamScanTriangulator
 
 class VertexLoopIterable(private val list: ArrayList<GrahamScanTriangulator.Node>) : TriangulatorIterable {
     override val head: GrahamScanTriangulator.Node

@@ -7,6 +7,6 @@ import com.mechanica.engine.drawer.Drawer
 interface StrokeDrawer : Drawer {
     operator fun invoke(stroke: Double): Drawer
 
-    fun strokeColor(color: Color)
-    fun strokeColor(color: InlineColor)
+    fun strokeColor(color: Color): StrokeDrawer
+    fun strokeColor(color: InlineColor): StrokeDrawer
 }

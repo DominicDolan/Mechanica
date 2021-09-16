@@ -11,11 +11,13 @@ class StrokeDrawerImpl(drawer: Drawer, private val state: DrawState) : StrokeDra
         return this
     }
 
-    override fun strokeColor(color: Color) {
+    override fun strokeColor(color: Color): StrokeDrawer {
         state.setStrokeColor(color)
+        return this
     }
 
-    override fun strokeColor(color: InlineColor) {
+    override fun strokeColor(color: InlineColor): StrokeDrawer {
         state.setStrokeColor(color)
+        return this
     }
 }

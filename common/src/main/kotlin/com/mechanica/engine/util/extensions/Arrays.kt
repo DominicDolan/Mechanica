@@ -143,10 +143,14 @@ inline fun <E> withEach(array: Array<E>, operation: E.() -> Unit) {
 }
 
 fun List<*>.indexLooped(index: Int): Int {
+    return index.looped(this.size)
+}
+
+fun Int.looped(size: Int): Int {
     return when {
-        index < 0 -> this.size + index
-        index > this.lastIndex -> index - this.size
-        else -> index
+        this < 0 -> size + this
+        this >= size -> this - size
+        else -> this
     }
 }
 
@@ -160,3 +164,27 @@ fun List<*>.indexConstrained(index: Int): Int {
 
 fun <E> List<E>.loopedGet(index: Int): E = this[indexLooped(index)]
 fun <E> List<E>.getConstrained(index: Int): E = this[indexConstrained(index)]
+
+fun <T> ArrayList<T>.add(item1: T, item2: T) {
+    add(item1)
+    add(item2)
+}
+
+fun <T> ArrayList<T>.add(item1: T, item2: T, item3: T) {
+    add(item1)
+    add(item2)
+    add(item3)
+}
+
+fun <T> ArrayList<T>.remove(item1: T, item2: T): Boolean {
+    val item1Success = remove(item1)
+    val item2Success = remove(item2)
+    return item1Success && item2Success
+}
+
+fun <T> ArrayList<T>.remove(item1: T, item2: T, item3: T): Boolean {
+    val item1Success = remove(item1)
+    val item2Success = remove(item2)
+    val item3Success = remove(item3)
+    return item1Success && item2Success && item3Success
+}

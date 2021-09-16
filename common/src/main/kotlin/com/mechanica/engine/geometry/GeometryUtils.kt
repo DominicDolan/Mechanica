@@ -7,12 +7,6 @@ import kotlin.math.sign
 
 fun Vector2.isLeftOf(line: LineSegment) = rectangleArea(this, line.p1, line.p2) > 0.0
 
-fun VectorTest() {
-    
-}
-fun TestVector() {
-    
-}
 fun rectangleArea(p0: Vector2, p1: Vector2, p2: Vector2): Double {
     return (((p2.x - p1.x)*(p0.y - p1.y)) - ((p2.y - p1.y)*(p0.x - p1.x)))
 }

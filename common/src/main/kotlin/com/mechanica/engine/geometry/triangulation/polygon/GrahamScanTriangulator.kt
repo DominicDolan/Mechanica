@@ -1,9 +1,8 @@
-package com.mechanica.engine.geometry.triangulation.triangulators
+package com.mechanica.engine.geometry.triangulation.polygon
 
 import com.cave.library.vector.vec2.InlineVector
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.geometry.lines.LineSegment
-import com.mechanica.engine.geometry.triangulation.AbstractTriangulator
 import com.mechanica.engine.geometry.triangulation.TriangulatorNode
 import com.mechanica.engine.geometry.triangulation.isConcave
 import com.mechanica.engine.geometry.triangulation.isEar
@@ -13,7 +12,7 @@ import com.mechanica.engine.geometry.triangulation.iterators.VertexLoopIterable
 import com.mechanica.engine.util.extensions.indexLooped
 
 // From: "The Graham scan triangulates simple polygons" Pattern Recognition Letters, 1990. Kong, X., H. Everett, and G.T. Toussaint
-class GrahamScanTriangulator(path: Array<out Vector2>) : AbstractTriangulator<GrahamScanTriangulator.Node>(path) {
+class GrahamScanTriangulator(path: Array<out Vector2>) : PolygonTriangulator<GrahamScanTriangulator.Node>(path) {
     override val indices = ShortArray(500)
     override var indexCount = 0
     var current: Node? = null

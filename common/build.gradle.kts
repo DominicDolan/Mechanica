@@ -1,4 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+dependencies {
+    testImplementation(kotlin("test-junit"))
+    testImplementation(project(":mechanica"))
+    testImplementation(project(":desktop-application"))
+
+}
 
 plugins {
     kotlin("jvm")

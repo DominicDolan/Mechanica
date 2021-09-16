@@ -9,8 +9,8 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.triangulation.lists.TriangulatorList
-import com.mechanica.engine.geometry.triangulation.triangulators.DiagonalTriangulator
-import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
+import com.mechanica.engine.geometry.triangulation.polygon.DiagonalTriangulator
+import com.mechanica.engine.geometry.triangulation.polygon.GrahamScanTriangulator
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.scenes.scenes.WorldScene
 import com.mechanica.engine.shaders.models.PolygonModel

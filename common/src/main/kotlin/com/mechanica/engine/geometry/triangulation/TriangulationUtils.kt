@@ -4,7 +4,7 @@ import com.cave.library.vector.vec2.InlineVector
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.geometry.isInTriangle
 import com.mechanica.engine.geometry.rectangleArea
-import com.mechanica.engine.geometry.triangulation.triangulators.GrahamScanTriangulator
+import com.mechanica.engine.geometry.triangulation.polygon.GrahamScanTriangulator
 
 fun calculateLineArea(p1: InlineVector, p2: InlineVector): Double {
     return (p2.x - p1.x)*(p2.y + p1.y)

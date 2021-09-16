@@ -1,4 +1,4 @@
-package com.mechanica.engine.geometry.triangulation.triangulators
+package com.mechanica.engine.geometry.triangulation.polygon
 
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.geometry.triangulation.Triangulator
