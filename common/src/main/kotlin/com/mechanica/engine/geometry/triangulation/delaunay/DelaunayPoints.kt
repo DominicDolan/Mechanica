@@ -27,30 +27,30 @@ fun Vector2.isLexicographicallyGreater(other: Vector2): Boolean {
     return false
 }
 
-fun Vector2.isOnRightOf(edge: DelaunayEdge): Boolean {
+fun Vector2.isOnRightOf(edge: DelaunayEdge): Int {
     return isOnRightOf(edge.p1, edge.p2)
 }
 
-fun Vector2.isOnRightOf(p1: Vector2, p2: Vector2): Boolean {
+fun Vector2.isOnRightOf(p1: Vector2, p2: Vector2): Int {
     if (p1 !is SuperPoint && p2 !is SuperPoint && this !is SuperPoint) {
         val a = vec(this); val b = vec(p1); val c = vec(p2)
 
-        return (a - b).cross(c - b).sign == 1.0
+        return (a - b).cross(c - b).sign.toInt()
     } else if (this is SuperPoint) {
         return when(this) {
-            SuperPoint.TopPoint -> p1.isLexicographicallyGreater(p2)
-            SuperPoint.BottomPoint -> p2.isLexicographicallyGreater(p1)
+            SuperPoint.TopPoint -> if (p1.isLexicographicallyGreater(p2)) 1 else -1
+            SuperPoint.BottomPoint -> if (p2.isLexicographicallyGreater(p1)) 1 else -1
         }
     } else {
         if (p1 is SuperPoint && p2 is SuperPoint) {
-            return p1 is SuperPoint.BottomPoint
+            return if (p1 is SuperPoint.BottomPoint) 1 else -1
         }
 
         if (p1 is SuperPoint) {
-            return p2.isLexicographicallyGreater(this) != p1 is SuperPoint.BottomPoint
+            return if(p2.isLexicographicallyGreater(this) != p1 is SuperPoint.BottomPoint) 1 else -1
         } else if (p2 is SuperPoint) {
-            return this.isLexicographicallyGreater(p1) != p2 is SuperPoint.BottomPoint
+            return if (this.isLexicographicallyGreater(p1) != p2 is SuperPoint.BottomPoint) 1 else -1
         }
-        return false
+        return -1
     }
 }

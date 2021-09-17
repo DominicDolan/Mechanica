@@ -1,7 +1,6 @@
 package com.mechanica.engine.samples.temp
 
 import com.cave.library.vector.vec2.Vector2
-import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -27,28 +26,11 @@ class TriangulationScene : Scene() {
     private var polygons: List<PolygonModel> = emptyList()
     private var trianglePaths: List<Array<Vector2>> = emptyList()
     private val triangulator: DelaunayTriangulator
-    private val points: Array<Vector2> = createRandomPoints(36)
+    private val points: Array<Vector2> = createRandomPoints(1024)
 
     init {
         triangulator = DelaunayTriangulator(points)
         triangulate()
-    }
-
-    override fun update(delta: Double) {
-
-//        if (dpad.negativeKey.hasBeenPressed || dpad.positiveKey.hasBeenPressed) {
-//            triangulator.limit += dpad.value.toInt()
-//            triangulate()
-//        }
-//
-//        if (Keyboard.space.hasBeenPressed) {
-//            showSuperTriangles = !showSuperTriangles
-//        }
-//
-//        if (Keyboard.L.hasBeenPressed) {
-//            triangulator.legalize = !triangulator.legalize
-//            triangulate()
-//        }
     }
 
     override fun render(draw: Drawer) {
@@ -106,16 +88,5 @@ class TriangulationScene : Scene() {
 
     private fun createRandomPoints(size: Int): Array<Vector2> {
         return Array(size) { Vector2.create(Math.random()*4.0 - 2.0, Math.random()*4.0 - 2.0)}
-    }
-
-    private fun createSetPoints(): Array<Vector2> {
-        return arrayOf(
-            vec(1.6, 1.45),
-            vec(0.0, 0.0),
-            vec(-1.6, 1.6),
-            vec(0.1, 1.5),
-            vec(1.5, -1.4),
-            vec(-1.5, -1.6),
-        )
     }
 }

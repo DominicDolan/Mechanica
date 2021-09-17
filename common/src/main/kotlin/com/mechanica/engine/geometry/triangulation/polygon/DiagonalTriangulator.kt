@@ -8,13 +8,13 @@ import com.mechanica.engine.geometry.triangulation.lists.TriangulatorList
 private typealias Node = TriangulatorList<Vector2>.Node
 class DiagonalTriangulator(vertices: List<Vector2>) : Triangulator {
 
-    override var indices: ShortArray = ShortArray(100)
+    var indices: ShortArray = ShortArray(100)
         private set
     override var indexCount: Int = 0
         private set
 
     val list = TriangulatorList(vertices)
-    val diagonalCalculator = DiagonalCalculator(list)
+    private val diagonalCalculator = DiagonalCalculator(list)
 
     override fun triangulate(): ShortArray {
         val head = list.head

@@ -12,21 +12,24 @@ interface Triangle {
     val b: Vector2
     val c: Vector2
 
-    fun contains(point: Vector2): Boolean {
+    fun contains(point: Vector2): Int {
         val a = vec(a)
         val b = vec(b)
         val c = vec(c)
 
         val p = vec(point)
 
-        val pab = (p - a).cross(b - a).sign == 1.0
-        val pbc = (p - b).cross(c - b).sign == 1.0
+        val pab = (p - a).cross(b - a).sign
+        val pbc = (p - b).cross(c - b).sign
 
-        if (pab != pbc) return false
+        if (pab == 0.0 || pbc == 0.0) return 0
 
-        val pca = (p - c).cross(a - c).sign == 1.0
+        if (pab != pbc) return -1
 
-        return pab == pca
+        val pca = (p - c).cross(a - c).sign
+        if (pca == 0.0) return 0
+
+        return if (pab == pca) return 1 else -1
     }
 
     operator fun component1() = a

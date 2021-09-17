@@ -13,7 +13,7 @@ import com.mechanica.engine.util.extensions.indexLooped
 
 // From: "The Graham scan triangulates simple polygons" Pattern Recognition Letters, 1990. Kong, X., H. Everett, and G.T. Toussaint
 class GrahamScanTriangulator(path: Array<out Vector2>) : PolygonTriangulator<GrahamScanTriangulator.Node>(path) {
-    override val indices = ShortArray(500)
+    val indices = ShortArray(500)
     override var indexCount = 0
     var current: Node? = null
     var new: Node? = null
@@ -84,7 +84,7 @@ class GrahamScanTriangulator(path: Array<out Vector2>) : PolygonTriangulator<Gra
         lines.add(LineSegment(node.prev, node.next))
     }
 
-    @Suppress("SENSELESS_COMPARISON") // There4's a small chance that this function could be called before "init" is finished
+    @Suppress("SENSELESS_COMPARISON") // There's a small chance that this function could be called before "init" is finished
     override fun reorganise() {
         super.reorganise()
         if (activeVertices != null && concaveVertices != null) {

@@ -46,11 +46,13 @@ class DelaunayTriangle(
         }
     }
 
-    override fun contains(point: Vector2): Boolean {
+    override fun contains(point: Vector2): Int {
         val ab = point.isOnRightOf(a, b)
         val bc = point.isOnRightOf(b, c)
         val ca = point.isOnRightOf(c, a)
-        return (ab == bc) && (bc == ca)
+        if (ab == 0 || bc == 0 || ca == 0) return 0
+
+        return if((ab == bc) && (bc == ca)) 1 else -1
     }
 
     val hasSuperPoint: Boolean
@@ -70,9 +72,9 @@ class DelaunayTriangle(
             val ac = vec(a) - vec(c)
             val bc = vec(b) - vec(c)
 
-            val det = ac.x * bc.y - ac.y * bc.x;
+            val det = ac.x * bc.y - ac.y * bc.x
 
-            return det < 0.0;
+            return det < 0.0
         }
 
         val ap = vec(a) - vec(point)
