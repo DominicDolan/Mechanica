@@ -13,6 +13,11 @@ import com.mechanica.engine.shaders.vars.ShaderType
 interface AttributeArray : Bindable {
     val vertexCount: Int
 
+    fun updateBuffer()
+
+    fun attachTo(variable: AttributeVar<*>)
+    fun attachTo(location: Int, type: ShaderType<*>)
+
     companion object {
         fun create(floats: FloatArray, location: Int, type: ShaderType<*> = ShaderType.float()) : AttributeArrayForFloats<*> {
             val attribute = FloatAttributeArray(floats)
@@ -114,13 +119,13 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
 
     protected var bufferLoader: FloatBufferObject? = null
 
-    fun attachTo(variable: AttributeVar<*>) {
+    override fun attachTo(variable: AttributeVar<*>) {
         bindable = variable
         type = variable.type
         storeDataToBufferLoader(variable.type)
     }
 
-    fun attachTo(location: Int, type: ShaderType<*>) {
+    override fun attachTo(location: Int, type: ShaderType<*>) {
         val locatable = GlslLocation.create(location)
         this.type = type
         bindable = FloatAttributeBinder.create(locatable, type)
@@ -147,7 +152,7 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
 
     }
 
-    fun updateBuffer() {
+    override fun updateBuffer() {
         val type = this.type
         if (type != null) {
             storeDataToBufferLoader(type)
