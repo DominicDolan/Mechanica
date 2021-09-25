@@ -1,6 +1,6 @@
 package com.mechanica.engine.animation
 
-import com.mechanica.engine.scenes.processes.Updateable
+import com.mechanica.engine.scenes.scenes.Updateable
 
 interface AnimationController : Updateable {
 

@@ -11,17 +11,15 @@ abstract class DynamicSprite(
         x: Double = 0.0,
         y: Double = 0.0,
         width: Double = 1.0,
-        height: Double = 1.0,
-        order: Int = 0,
-) : Scene(order), DynamicViewable {
+        height: Double = 1.0
+) : Scene(), DynamicViewable {
 
     override val position: VariableVector2 = VariableVector2.create(x, y)
     override val view: DynamicView by lazy { DynamicViewableView(width, height) }
 
     constructor(
-            view: View,
-            order: Int = 0,
-    ) : this(view.x, view.y, view.width, view.height, order)
+            view: View
+    ) : this(view.x, view.y, view.width, view.height)
 
     abstract override fun render(draw: Drawer)
 

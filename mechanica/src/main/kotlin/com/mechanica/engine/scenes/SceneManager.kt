@@ -6,9 +6,8 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.delta.Updater
-import com.mechanica.engine.game.view.Camera
-import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.scenes.scenes.SceneHub
 import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.Timer
 
@@ -20,26 +19,26 @@ internal class SceneManager(
 
     var updateVar: ((Double) -> Unit)? = null
 
-    private var sceneSetter: () -> Scene? = { null }
-    var currentScene: Scene? = null
+    private var sceneSetter: () -> SceneNode? = { null }
+    var currentScene: SceneNode? = null
         private set(value) {
             val scene = currentScene
 
             if (value == null) {
-                if (scene != null) removeScene(scene)
+                if (scene != null) scenes.removeScene(scene)
                 field = null
                 return
             }
 
             if (scene == null) {
-                addScene(value)
+                scenes.addScene(value)
                 field = value
                 return
             }
 
-            val new = replaceScene(scene, value)
+            val new = scenes.replaceScene(scene, value)
             if (new === scene) {
-                addScene(value)
+                scenes.addScene(value)
             }
 
             field = new
@@ -75,10 +74,13 @@ internal class SceneManager(
         setMainScene { sceneStarter.invoke() }
     }
 
-    fun setMainScene(setter: () -> Scene?) {
+    fun setMainScene(setter: () -> SceneNode?) {
         sceneSetter = setter
         scheduleSceneChange = true
     }
+
+    fun addScene(scene: SceneNode, order: Int = 0) = scenes.addScene(scene, order)
+    fun removeScene(scene: SceneNode) = scenes.removeScene(scene)
 
     fun updateAndRender() {
         val now = Timer.now
@@ -92,7 +94,7 @@ internal class SceneManager(
     override fun update(delta: Double) {
         if (!pause || frameAdvance) {
             updateVar?.invoke(delta)
-            scenes.updateNodes(delta)
+            scenes.updateChildren(delta)
             frameAdvance = false
         } else {
             updatePaused()
@@ -102,7 +104,7 @@ internal class SceneManager(
 
     override fun render() {
         if (currentScene != null || scenes.hasChildren) {
-            scenes.renderNodes(getDrawer())
+            scenes.renderChildren(getDrawer())
         }
 
         if (Game.debug.screenLog && ScreenLog.hasSomethingToRender)
@@ -113,7 +115,7 @@ internal class SceneManager(
 
     private fun checkStateChange() {
         if (scheduleSceneChange) {
-            currentScene?.destructNodes()
+            (currentScene as? SceneHub)?.removeChildren()
             currentScene = sceneSetter()
             scheduleSceneChange = false
         }
@@ -134,25 +136,8 @@ internal class SceneManager(
         startOfLoop = Timer.now
     }
 
-    override val camera: Camera
-        get() = currentScene?.camera ?: Game.world
-    override fun <S : SceneNode> addScene(scene: S): S = scenes.addScene(scene)
-    override fun removeScene(scene: SceneNode) = scenes.removeScene(scene)
-    override fun <S : SceneNode> replaceScene(old: S, new: S): S = scenes.replaceScene(old, new)
-    override fun renderNodes(draw: Drawer) = scenes.renderNodes(draw)
-    override fun <P : Updateable> addProcess(process: P): P = scenes.addProcess(process)
-    override fun removeProcess(process: Updateable): Boolean = scenes.removeProcess(process)
-    override fun <P : Updateable> replaceProcess(old: P, new: P): P = scenes.replaceProcess(old, new)
-    override fun updateNodes(delta: Double) = scenes.updateNodes(delta)
-    override fun destructor() = scenes.destructor()
-    override fun destructNodes() = scenes.destructNodes()
-    override fun hasScene(scene: SceneNode) = scenes.hasScene(scene)
+    override fun onRemove() = scenes.onRemove()
 
-    override fun render(draw: Drawer) { }
-
-    class ChildScenes : Scene() {
-        val hasChildren: Boolean
-            get() = childScenes.isNotEmpty()
-    }
+    class ChildScenes : SceneHub()
 
 }

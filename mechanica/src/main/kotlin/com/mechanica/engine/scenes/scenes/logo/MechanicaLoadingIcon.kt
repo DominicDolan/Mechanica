@@ -11,7 +11,7 @@ import com.mechanica.engine.scenes.addAnimationSequence
 import com.mechanica.engine.scenes.scenes.sprites.StaticSprite
 import com.mechanica.engine.shaders.models.Image
 
-open class MechanicaLoadingIcon(view: View, order: Int = 0) : StaticSprite(view, order) {
+open class MechanicaLoadingIcon(view: View) : StaticSprite(view) {
     private val mother = Image.create(Res.image("logo/astrolabe-mother"))
     private val rete = Image.create(Res.image("logo/astrolabe-rete"))
     private val rule = Image.create(Res.image("logo/astrolabe-rule"))
@@ -26,13 +26,14 @@ open class MechanicaLoadingIcon(view: View, order: Int = 0) : StaticSprite(view,
             x: Double = 0.0,
             y: Double = 0.0,
             width: Double = 1.0,
-            height: Double = 1.0,
-            order: Int = 0) : this(View.create(x, y, width, height), order)
+            height: Double = 1.0) : this(View.create(x, y, width, height))
 
     init {
         sequence.play()
         sequence.looped = true
     }
+
+    override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {
         draw.inView.image(mother)

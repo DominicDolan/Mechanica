@@ -13,8 +13,8 @@ import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
 import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.SceneManager
-import com.mechanica.engine.scenes.processes.Updateable
 import com.mechanica.engine.scenes.scenes.Scene
+import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.CameraMatrices
 import com.mechanica.engine.util.Timer
 
@@ -44,21 +44,13 @@ object Game : Configurable<GameConfiguration> {
     internal val sceneManager: SceneManager
         get() = setup.sceneManager
 
-    val scene: Scene
+    val scene: SceneNode
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
 
     private var hasStarted = false
     private var hasFinished = false
 
-    fun addProcess(process: Updateable) {
-        sceneManager.addProcess(process)
-    }
-
-    fun removeProcess(process: Updateable) {
-        sceneManager.removeProcess(process)
-    }
-
-    fun addScene(scene: Scene) {
+    fun addScene(scene: SceneNode) {
         sceneManager.addScene(scene)
     }
 
@@ -135,7 +127,7 @@ object Game : Configurable<GameConfiguration> {
         application.terminate()
     }
 
-    fun setMainScene(setter: () -> Scene?) {
+    fun setMainScene(setter: () -> SceneNode?) {
         sceneManager.setMainScene(setter)
     }
 

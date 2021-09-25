@@ -9,9 +9,8 @@ import com.mechanica.engine.scenes.scenes.Scene
 abstract class MovingSprite(x: Double = 0.0,
                             y: Double = 0.0,
                             width: Double = 1.0,
-                            height: Double = 1.0,
-                            order: Int = 0
-) : Scene(order), MovingViewable {
+                            height: Double = 1.0
+) : Scene(), MovingViewable {
 
     override val position = VariableVector2.create(x + width/2.0, y + height/2.0)
     override val view: View by lazy { MovingView(width, height) }

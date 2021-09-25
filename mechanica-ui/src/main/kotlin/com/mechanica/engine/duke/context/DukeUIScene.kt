@@ -9,15 +9,20 @@ import com.mechanica.engine.duke.NodeRendererToDrawer
 import com.mechanica.engine.duke.defaultDraw
 import com.mechanica.engine.duke.elements.Element
 import com.mechanica.engine.duke.elements.ElementDrawer
-import com.mechanica.engine.scenes.scenes.UIScene
+import com.mechanica.engine.game.Game
+import com.mechanica.engine.game.view.Camera
+import com.mechanica.engine.scenes.scenes.Renderable
+import com.mechanica.engine.scenes.scenes.SceneHub
 import com.mechanica.engine.util.extensions.fori
 
-abstract class DukeUIScene : UIScene() {
+abstract class DukeUIScene : SceneHub(), Renderable {
     private val context: DukeUI
     internal val firstNode: NodeData
         get() = context.firstElement
 
     val list = ArrayList<Element>()
+
+    val camera: Camera = Game.ui
 
     init {
         val viewport = Viewport(0.0, 0.0, camera.width, -camera.height)
