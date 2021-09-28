@@ -4,7 +4,7 @@ import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 
 fun main() {
     Game.configure {
@@ -17,7 +17,7 @@ fun main() {
 }
 
 
-private class StartMain : WorldScene() {
+private class StartMain : Scene() {
     override fun update(delta: Double) {
 
     }

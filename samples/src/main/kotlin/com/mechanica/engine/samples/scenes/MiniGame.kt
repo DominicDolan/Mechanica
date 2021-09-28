@@ -8,14 +8,16 @@ import com.mechanica.engine.animation.AnimationFormulas
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.game.view.Camera
 import com.mechanica.engine.game.view.View
 import com.mechanica.engine.game.view.intersects
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.input.keyboard.Keyboard
+import com.mechanica.engine.scenes.activation.ActivationListener
+import com.mechanica.engine.scenes.activation.ActiveStateWatcher
 import com.mechanica.engine.scenes.addAnimation
-import com.mechanica.engine.scenes.addExclusivelyActiveScenesNew
-import com.mechanica.engine.scenes.scenes.UIScene
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivation
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.scenes.scenes.sprites.MovingSprite
 import com.mechanica.engine.scenes.setNewMainScene
 import com.mechanica.engine.util.Timer
@@ -30,24 +32,26 @@ fun main() {
     Game.loop()
 }
 
-class PlayScene : WorldScene() {
+class PlayScene : Scene() {
     private val player = addScene(Player())
     private val enemy = Array(10) { addScene(Enemy()) }
 
     private var gameOver = false
 
-override fun update(delta: Double) {
-    if (!gameOver) {
-        if (player.hasHit(enemy)) {
-            gameOver()
+    override fun update(delta: Double) {
+        if (!gameOver) {
+            if (player.hasHit(enemy)) {
+                gameOver()
+            }
         }
     }
-}
+
+    override fun render(draw: Drawer) {}
 
     private fun gameOver() {
         gameOver = true
         pauseSprites()
-        addScene(GameOverScene())
+        addScene(GameOverScene(), 2)
     }
 
     private fun pauseSprites() {
@@ -57,14 +61,21 @@ override fun update(delta: Double) {
 }
 
 class Player : MovingSprite(), Inputs by Inputs.create() {
+    var paused = false
+        set(value) {
+            walkingState.paused = value
+            invisibilityState.paused = value
+            field = value
+        }
     private val speed = 2.0
 
     private val walkingState = WalkingState(this)
     private val invisibilityState = InvisibilityState(this)
 
-    private val states = addExclusivelyActiveScenesNew(walkingState, invisibilityState)
+    private val states = ExclusiveActivation.exactlyOneActivation(walkingState, invisibilityState)
 
     override fun update(delta: Double) {
+        if (paused) return
         if (keyboard.space.hasBeenPressed) {
             invisibilityState.active = true
         }
@@ -83,19 +94,26 @@ class Player : MovingSprite(), Inputs by Inputs.create() {
         }
     }
 
-    fun hasHit(enemies: Array<Enemy>) = states.active.hasHit(enemies)
+    override fun render(draw: Drawer) {}
+
+    fun hasHit(enemies: Array<Enemy>) = states.active?.hasHit(enemies) ?: false
 
 }
 
-abstract class PlayerState(private val player: Player) : MovingSprite() {
+abstract class PlayerState(private val player: Player) : MovingSprite(), ActiveStateWatcher {
+    var paused = false
     override val position: VariableVector2
         get() = player.position
     override val view: View
         get() = player.view
+    override val activator = ActivationListener()
 
     abstract fun hasHit(enemies: Array<Enemy>): Boolean
 
     fun hasHit(enemy: Enemy) = view.intersects(enemy.view)
+
+    override fun onActivate() {}
+    override fun onDeactivate() {}
 }
 
 class WalkingState(player: Player) : PlayerState(player) {
@@ -111,6 +129,8 @@ class WalkingState(player: Player) : PlayerState(player) {
     override fun render(draw: Drawer) {
         draw.inView.blue.rectangle()
     }
+
+    override fun update(delta: Double) { }
 
 }
 
@@ -129,6 +149,7 @@ class InvisibilityState(player: Player) : PlayerState(player) {
     override fun hasHit(enemies: Array<Enemy>) = false
 
     override fun update(delta: Double) {
+        if (paused) return
         if (activeTimer >= invisibilityTimeLimit) {
             active = false
             activeEnd = Timer.now
@@ -144,12 +165,13 @@ class InvisibilityState(player: Player) : PlayerState(player) {
         draw.inView.blue.alpha(0.3).rectangle()
     }
 
-    override fun activated() {
+    override fun onActivate() {
         activeStart = Timer.now
     }
 }
 
 class Enemy : MovingSprite() {
+    var paused = false
     private val startingPosition: InlineVector
     private val direction: Degree
 
@@ -189,10 +211,13 @@ class Enemy : MovingSprite() {
     }
 }
 
-class GameOverScene : UIScene(2) {
+class GameOverScene : Scene() {
     private val fadeIn = addAnimation(2.0, AnimationFormulas.linear(0.0, 1.0))
 
     private val keyboard = Keyboard.create()
+
+    private val camera: Camera
+        get() = Game.ui
 
     init {
         fadeIn.play()

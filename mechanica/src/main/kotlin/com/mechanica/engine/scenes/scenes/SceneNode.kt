@@ -1,6 +1,7 @@
 package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.drawer.Drawer
+import com.mechanica.engine.scenes.activation.Activatable
 
 interface SceneNode : Activatable {
     fun onRemove() {}

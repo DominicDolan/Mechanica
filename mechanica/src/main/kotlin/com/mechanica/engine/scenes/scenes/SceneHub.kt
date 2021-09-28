@@ -20,31 +20,6 @@ abstract class SceneHub : SceneNode {
     val hasChildren: Boolean
         get() = childHolders.isNotEmpty()
 
-    private val activationListener = ActivationListener()
-    final override var active: Boolean by activationListener
-
-    init {
-        addActivationChangedListener(1) {
-            if (it) onActivate()
-            else onDeactivate()
-        }
-    }
-    /**
-     * Adds a callback for when the value of [active] is changed. The [priority] value dictates the order in which
-     * the callbacks are executed, the higher the priority value, the earlier the callback will execute.
-     * The value can be negative, in which case the callback will be called after the value for [active]
-     * has been set
-     *
-     * @param priority an integer value which represents the order that the callbacks are executed, the higher
-     * the value, the earlier the execution, the value for [active] is changed at a priority of zero
-     *
-     * @param listener the callback which will execute when the value of [active] has been changed, the lambda takes
-     * a boolean expression which is the new value for [active]
-     */
-    fun addActivationChangedListener(priority: Int = 0, listener: (Boolean) -> Unit) {
-        activationListener.addListener(priority, listener)
-    }
-
     fun <S:SceneNode> addScene(scene: S, order: Int = 0): S {
         if (!hasScene(scene)) {
             childHolders.add(SceneNodeHolder(scene, order))
@@ -114,8 +89,6 @@ abstract class SceneHub : SceneNode {
     }
 
     internal fun updateChildren(delta: Double) {
-        activationListener.runOnce()
-
         val index = updateChildrenFor(delta) { it.order < 0 }
         if (this is Updateable) {
             this.update(delta)
