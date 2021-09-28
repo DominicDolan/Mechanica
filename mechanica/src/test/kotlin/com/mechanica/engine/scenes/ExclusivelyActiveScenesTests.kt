@@ -1,6 +1,6 @@
 package com.mechanica.engine.scenes
 
-import com.mechanica.engine.scenes.activation.ActiveStateWatcher
+import com.mechanica.engine.scenes.activation.ActiveState
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivation
 import org.junit.Before
 import org.junit.Test
@@ -8,10 +8,10 @@ import kotlin.test.assertEquals
 
 class ExclusivelyActiveScenesTests {
 
-    lateinit var watchers: Array<ActiveStateWatcher>
+    lateinit var watchers: Array<ActiveState>
     @Before
     fun setUp() {
-        watchers = Array(4) { ActiveStateWatcherImpl() }
+        watchers = Array(4) { ActiveStateImpl() }
     }
 
     @Test

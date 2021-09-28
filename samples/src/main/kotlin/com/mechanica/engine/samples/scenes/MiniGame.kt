@@ -14,7 +14,7 @@ import com.mechanica.engine.game.view.intersects
 import com.mechanica.engine.input.Inputs
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.scenes.activation.ActivationListener
-import com.mechanica.engine.scenes.activation.ActiveStateWatcher
+import com.mechanica.engine.scenes.activation.ActiveState
 import com.mechanica.engine.scenes.addAnimation
 import com.mechanica.engine.scenes.exclusiveScenes.ExclusiveActivation
 import com.mechanica.engine.scenes.scenes.Scene
@@ -100,7 +100,7 @@ class Player : MovingSprite(), Inputs by Inputs.create() {
 
 }
 
-abstract class PlayerState(private val player: Player) : MovingSprite(), ActiveStateWatcher {
+abstract class PlayerState(private val player: Player) : MovingSprite(), ActiveState {
     var paused = false
     override val position: VariableVector2
         get() = player.position

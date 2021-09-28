@@ -1,14 +1,14 @@
 package com.mechanica.engine.scenes
 
 import com.mechanica.engine.scenes.activation.ActivationListener
-import com.mechanica.engine.scenes.activation.ActiveStateWatcher
+import com.mechanica.engine.scenes.activation.ActiveState
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class ActiveStateWatcherTests {
+class ActiveStateTests {
     @Test
     fun activeStateWatcherCallsCallbacks() {
-        val watcher = ActiveStateWatcherImpl()
+        val watcher = ActiveStateImpl()
 
         watcher.active = false
 
@@ -30,7 +30,7 @@ class ActiveStateWatcherTests {
     @Test
     fun activeStateWatcherCallsListeners() {
         var listenerCallCount = 0
-        val watcher = ActiveStateWatcherImpl()
+        val watcher = ActiveStateImpl()
 
         watcher.addActiveStateChangedListener { listenerCallCount++ }
 
@@ -44,7 +44,7 @@ class ActiveStateWatcherTests {
 
     @Test
     fun activeStateWatcherCallsListenersInPriorityOrder() {
-        val watcher = ActiveStateWatcherImpl()
+        val watcher = ActiveStateImpl()
 
         fun assertLowPriority(value: Boolean) = assert(value == watcher.active) { "The listener has a negative priority but the active state was already changed" }
         fun assertHighPriority(value: Boolean) = assert(value != watcher.active) { "The listener has a positive priority but the active state was not changed" }
@@ -61,9 +61,9 @@ class ActiveStateWatcherTests {
 
 }
 
-class ActiveStateWatcherImpl(
+class ActiveStateImpl(
     private val onActivateCallback: () -> Unit = {},
-    private val onDeactivateCallback: () -> Unit = {}) : ActiveStateWatcher {
+    private val onDeactivateCallback: () -> Unit = {}) : ActiveState {
 
     override val activator = ActivationListener()
     var activateCounter = 0

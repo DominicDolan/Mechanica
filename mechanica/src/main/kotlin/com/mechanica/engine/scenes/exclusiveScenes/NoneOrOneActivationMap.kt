@@ -1,45 +1,45 @@
 package com.mechanica.engine.scenes.exclusiveScenes
 
-import com.mechanica.engine.scenes.activation.ActiveStateWatcher
+import com.mechanica.engine.scenes.activation.ActiveState
 
-open class NoneOrOneActivationMap<P : ActiveStateWatcher>(vararg watchers: P) : ExclusiveActivation<P> {
-    private val watchers: ArrayList<P> = ArrayList()
+open class NoneOrOneActivationMap<P : ActiveState>(vararg states: P) : ExclusiveActivation<P> {
+    private val states: ArrayList<P> = ArrayList()
     private var activeIndex = -1
     override val active: P?
-        get() = if (activeIndex != -1) watchers[activeIndex] else null
+        get() = if (activeIndex != -1) states[activeIndex] else null
 
     init {
-        for (i in watchers.indices) {
-            add(watchers[i])
+        for (i in states.indices) {
+            add(states[i])
         }
 
 
         @Suppress("LeakingThis")// Leaking this shouldn't be a problem because this is the last method in the constructor
-        initializeList(watchers)
+        initializeList(states)
     }
 
-    protected open fun initializeList(watchers: Array<out P>) {
-        for (i in watchers.indices) {
-            if(watchers[i].active) {
-                setExclusiveActivation(watchers[i])
+    protected open fun initializeList(states: Array<out P>) {
+        for (i in states.indices) {
+            if(states[i].active) {
+                setExclusiveActivation(states[i])
                 return
             }
         }
     }
 
-    final override fun <R : P> add(watcher: R): R {
-        watchers.add(watcher)
-        watcher.addActivationCallback()
-        return watcher
+    final override fun <R : P> add(state: R): R {
+        states.add(state)
+        state.addActivationCallback()
+        return state
     }
 
     fun activateNext() {
-        if (activeIndex < watchers.size - 1 && activeIndex >= 0) {
+        if (activeIndex < states.size - 1 && activeIndex >= 0) {
             activeIndex++
         } else {
             activeIndex = 0
         }
-        watchers[activeIndex].active = true
+        states[activeIndex].active = true
     }
 
     private fun P.addActivationCallback() {
@@ -52,16 +52,16 @@ open class NoneOrOneActivationMap<P : ActiveStateWatcher>(vararg watchers: P) : 
         }
     }
 
-    protected fun setExclusiveActivation(watcher: P) {
-        activeIndex = watchers.indexOf(watcher)
-        for (i in watchers.indices) {
-            if (watchers[i] != watcher) {
-                watchers[i].active = false
+    protected fun setExclusiveActivation(state: P) {
+        activeIndex = states.indexOf(state)
+        for (i in states.indices) {
+            if (states[i] != state) {
+                states[i].active = false
             }
         }
     }
 
-    protected open fun setCurrentlyActiveToInactive(process: P) {
+    protected open fun setCurrentlyActiveToInactive(state: P) {
         activeIndex = -1
     }
 }

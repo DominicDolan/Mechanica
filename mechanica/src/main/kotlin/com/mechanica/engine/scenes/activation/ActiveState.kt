@@ -1,6 +1,6 @@
 package com.mechanica.engine.scenes.activation
 
-interface ActiveStateWatcher : Activatable {
+interface ActiveState : Activatable {
 
     val activator: ActivationListener
     override var active: Boolean
@@ -35,8 +35,8 @@ interface ActiveStateWatcher : Activatable {
     }
 
     companion object {
-        fun createDefault(): ActiveStateWatcher {
-            return object : ActiveStateWatcher {
+        fun createDefault(): ActiveState {
+            return object : ActiveState {
                 override val activator = ActivationListener()
                 override fun onActivate() {}
                 override fun onDeactivate() {}

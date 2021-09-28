@@ -19,11 +19,11 @@ class ActivationListener {
         }
     }
 
-    operator fun getValue(thisRef: ActiveStateWatcher, property: KProperty<*>): Boolean {
+    operator fun getValue(thisRef: ActiveState, property: KProperty<*>): Boolean {
         return active
     }
 
-    operator fun setValue(thisRef: ActiveStateWatcher, property: KProperty<*>, value: Boolean) {
+    operator fun setValue(thisRef: ActiveState, property: KProperty<*>, value: Boolean) {
         val hasChanged = active != value
         if (hasChanged) {
             runHighPriorityCallbacks(value)
