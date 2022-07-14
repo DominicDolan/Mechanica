@@ -35,6 +35,7 @@ abstract class SceneHub : SceneNode {
         val sceneToRemove = childHolders.find { it.scene === scene }
         return if (sceneToRemove != null) {
             listHasChanged = true
+            sceneToRemove.scene.onRemove()
             childHolders.remove(sceneToRemove)
         } else false
     }
@@ -43,7 +44,9 @@ abstract class SceneHub : SceneNode {
         val index = childHolders.indexOfFirst { it.scene === old }
         if (index != -1) {
             val order = childHolders[index].order
-            childHolders.removeAt(index)
+            val oldScene = childHolders.removeAt(index)
+            oldScene.scene.onRemove()
+
             childHolders.add(index, SceneNodeHolder(new, order))
             childHolders.sortBy { it.order }
             listHasChanged = true
