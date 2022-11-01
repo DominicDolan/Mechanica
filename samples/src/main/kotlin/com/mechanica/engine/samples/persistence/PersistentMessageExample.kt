@@ -6,7 +6,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.TextInput
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.persistence.persistent
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.shaders.text.Text
 
 fun main() {
@@ -19,7 +19,7 @@ fun main() {
     Game.loop()
 }
 
-class PersistentMessageExample : WorldScene() {
+class PersistentMessageExample : Scene() {
     private var runCount by persistent(0)
     private var message by persistent("")
     private var oldMessage = "" + message
@@ -35,6 +35,8 @@ class PersistentMessageExample : WorldScene() {
         runCount++
         message = ""
     }
+
+    override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {
         draw.darkGrey.text(runCountInfo, 0.3, Game.ui.left + 0.1, Game.ui.top - 0.3)

@@ -3,11 +3,11 @@ package com.mechanica.engine.shaders.uniforms
 import com.cave.library.color.Color
 import com.cave.library.color.InlineColor
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
-import com.cave.library.vector.vec3.VariableVector3
+import com.cave.library.vector.vec3.MutableVector3
 import com.cave.library.vector.vec3.Vector3
-import com.cave.library.vector.vec4.VariableVector4
+import com.cave.library.vector.vec4.MutableVector4
 import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.qualifiers.UniformQualifier
 import com.mechanica.engine.shaders.script.Shader
@@ -88,11 +88,11 @@ abstract class UniformFloat(
 abstract class UniformVector2(
         x: Number, y: Number,
         override val name: String
-) : UniformVar<VariableVector2>(), VariableVector2 by VariableVector2.create(x.toDouble(), y.toDouble()) {
-    override val value: VariableVector2 by lazy { this }
+) : UniformVar<MutableVector2>(), MutableVector2 by MutableVector2.create(x.toDouble(), y.toDouble()) {
+    override val value: MutableVector2 by lazy { this }
     override val type = ShaderType.vec2()
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: VariableVector2) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: MutableVector2) {
         this.value.set(value)
     }
 }
@@ -101,7 +101,7 @@ abstract class UniformVector3(
         x: Number, y: Number, z: Number,
         override val name: String
 ) : UniformVar<Vector3>() {
-    override var value: VariableVector3 = VariableVector3.create()
+    override var value: MutableVector3 = MutableVector3.create()
     override val type = ShaderType.vec3()
 
     init { set(x, y, z) }
@@ -121,7 +121,7 @@ abstract class UniformVector4 (
         x: Number, y: Number, z: Number, w: Number,
         override val name: String
 ) : UniformVar<Vector4>() {
-    override var value: VariableVector4 = VariableVector4.create()
+    override var value: MutableVector4 = MutableVector4.create()
     override val type = ShaderType.vec4()
 
     init { set(x, y, z, w) }

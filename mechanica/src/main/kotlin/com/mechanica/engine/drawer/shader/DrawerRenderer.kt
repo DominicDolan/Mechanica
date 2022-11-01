@@ -3,7 +3,7 @@ package com.mechanica.engine.drawer.shader
 import com.cave.library.color.Color
 import com.cave.library.color.toColor
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.shaders.models.Model
 
@@ -112,7 +112,7 @@ class DrawerRenderer {
                     if (value) 1f else 0f
         }
 
-    val size: VariableVector2 = fragment.size.value
+    val size: MutableVector2 = fragment.size.value
 
     var strokeWidth = 0.0
 

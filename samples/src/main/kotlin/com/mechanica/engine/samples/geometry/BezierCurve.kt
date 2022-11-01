@@ -7,7 +7,7 @@ import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 
 fun main() {
     Game.configure {
@@ -18,17 +18,17 @@ fun main() {
     Game.loop()
 }
 
-class BezierCurve : WorldScene() {
+class BezierCurve : Scene() {
 
     private val maxVertices = 1000
     private val minLineLength = 0.1
 
-    private val vertices = ArrayList<VariableVector2>(maxVertices)
+    private val vertices = ArrayList<MutableVector2>(maxVertices)
     private var index = 0
 
-    var p1 = VariableVector2.create(-6.0, -3.0)
-    var p2 = VariableVector2.create(6.0, -3.0)
-    var bezierPoint = VariableVector2.create(0.0, 3.0)
+    var p1 = MutableVector2.create(-6.0, -3.0)
+    var p2 = MutableVector2.create(6.0, -3.0)
+    var bezierPoint = MutableVector2.create(0.0, 3.0)
 
     private val constructionPoints = arrayOf(p1, bezierPoint, p2)
 
@@ -90,7 +90,7 @@ class BezierCurve : WorldScene() {
             vertices[index].set(vector)
             index++
         } else {
-            vertices.add(VariableVector2.create(vector))
+            vertices.add(MutableVector2.create(vector))
         }
     }
 

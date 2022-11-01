@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.vars
 
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
 
@@ -25,7 +25,7 @@ class FloatShaderType : ShaderType<Float> {
     override fun toString() = type
 }
 
-class Vec2ShaderType : ShaderType<VariableVector2> {
+class Vec2ShaderType : ShaderType<MutableVector2> {
     override val type: String = "vec2"
     override val coordinateSize: Int = 2
 

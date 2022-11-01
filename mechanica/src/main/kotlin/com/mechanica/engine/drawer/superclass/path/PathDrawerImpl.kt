@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.superclass.path
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.drawer.state.DrawState
@@ -9,11 +9,11 @@ import com.mechanica.engine.util.VectorArray
 class PathDrawerImpl(private val state: DrawState): PathDrawer {
 
     private val renderer = PathRenderer()
-    private val line = ArrayList<VariableVector2>()
+    private val line = ArrayList<MutableVector2>()
 
     init {
-        line.add(VariableVector2.create())
-        line.add(VariableVector2.create())
+        line.add(MutableVector2.create())
+        line.add(MutableVector2.create())
     }
 
     override fun path(path: Array<out Vector2>, count: Int) {

@@ -33,6 +33,8 @@ class TriangulationScene : Scene() {
         triangulate()
     }
 
+    override fun update(delta: Double) { }
+
     override fun render(draw: Drawer) {
 
         polygons.forEach {

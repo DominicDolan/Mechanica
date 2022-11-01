@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.attributes
 
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.models.Bindable
@@ -56,7 +56,7 @@ abstract class AttributeFloat(
 
 abstract class AttributeVector2(
         override val name: String
-) : AttributeVar<VariableVector2>() {
+) : AttributeVar<MutableVector2>() {
     override val type = ShaderType.vec2()
 }
 

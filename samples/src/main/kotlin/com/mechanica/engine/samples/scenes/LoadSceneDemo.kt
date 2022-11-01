@@ -46,6 +46,8 @@ class LoadSceneDemo : LoadScene() {
 
 class ExampleGameScene : Scene() {
     val text = Text("Example Game Scene", Font.defaults.black(true))
+    override fun update(delta: Double) { }
+
     override fun render(draw: Drawer) {
         draw.white.background()
         draw.centered.darkGrey.text(text)

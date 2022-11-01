@@ -1,6 +1,6 @@
 package com.mechanica.engine.text
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.shaders.text.Font
 import org.lwjgl.stb.STBTTAlignedQuad
 import org.lwjgl.stb.STBTTFontinfo
@@ -29,7 +29,7 @@ class  LwjglStandardFont(resource: ByteBuffer, initializer: FontAtlasConfigurati
 
     private val metrics = FontMetrics(data.info, data.scale)
 
-    override fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<VariableVector2>, texCoords: Array<VariableVector2>) {
+    override fun addCharacterDataToArrays(cursor: CharacterCursor, positions: Array<MutableVector2>, texCoords: Array<MutableVector2>) {
         val c = cursor.currentChar
         val atlasScale = atlas.scale
         val dataScale = data.scale

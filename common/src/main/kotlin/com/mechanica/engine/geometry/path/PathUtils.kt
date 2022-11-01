@@ -1,12 +1,12 @@
 package com.mechanica.engine.geometry.path
 
 import com.cave.library.vector.vec2.InlineVector
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
 import kotlin.math.sqrt
 
-fun Iterable<VariableVector2>.moveToOrigin() {
+fun Iterable<MutableVector2>.moveToOrigin() {
     val minX = (this.minByOrNull { it.x } ?: vec(0.0, 0.0)).x
     val minY = (this.minByOrNull { it.y } ?: vec(0.0, 0.0)).y
     this.forEach { vec ->
@@ -21,9 +21,9 @@ fun List<InlineVector>.moveToOrigin(): List<InlineVector> {
     return this.map { vec(it.x - minX, it.y - minY) }
 }
 
-fun Iterable<VariableVector2>.scale(scale: Double) = scale(scale, scale)
+fun Iterable<MutableVector2>.scale(scale: Double) = scale(scale, scale)
 
-fun Iterable<VariableVector2>.scale(scaleX: Double, scaleY: Double) {
+fun Iterable<MutableVector2>.scale(scaleX: Double, scaleY: Double) {
     this.forEach { vec ->
         vec.x *= scaleX
         vec.y *= scaleY
@@ -48,7 +48,7 @@ fun Iterable<Vector2>.centroid(): InlineVector {
     return vec(xAverage, yAverage)
 }
 
-fun Iterable<VariableVector2>.normalizeX(width: Double): Iterable<VariableVector2> {
+fun Iterable<MutableVector2>.normalizeX(width: Double): Iterable<MutableVector2> {
     val currentHeight = this.xRange()
     val factor = width/currentHeight
     this.scale(factor)
@@ -56,13 +56,13 @@ fun Iterable<VariableVector2>.normalizeX(width: Double): Iterable<VariableVector
 }
 
 
-fun Iterable<VariableVector2>.normalizeY(height: Double) {
+fun Iterable<MutableVector2>.normalizeY(height: Double) {
     val currentHeight = this.yRange()
     val factor = height/currentHeight
     this.scale(factor)
 }
 
-fun Iterable<VariableVector2>.flipVertically() {
+fun Iterable<MutableVector2>.flipVertically() {
     this.forEach {
         it.y = -it.y
     }
@@ -70,19 +70,19 @@ fun Iterable<VariableVector2>.flipVertically() {
 
 fun Iterable<InlineVector>.flipVertically() = this.map { vec(it.x, -it.y) }
 
-fun Iterable<VariableVector2>.xRange(): Double {
+fun Iterable<MutableVector2>.xRange(): Double {
     val max = this.maxByOrNull { it.x } ?: vec(0.0, 0.0)
     val min = this.minByOrNull { it.x } ?: vec(0.0, 0.0)
     return max.x - min.x
 }
 
-fun Iterable<VariableVector2>.yRange(): Double {
+fun Iterable<MutableVector2>.yRange(): Double {
     val max = this.maxByOrNull { it.y } ?: vec(0.0, 0.0)
     val min = this.minByOrNull { it.y } ?: vec(0.0, 0.0)
     return max.y - min.y
 }
 
-fun Iterable<VariableVector2>.calculateLength(): Double {
+fun Iterable<MutableVector2>.calculateLength(): Double {
     var previous = this.first()
     var length = 0.0
     for (vector in this) {

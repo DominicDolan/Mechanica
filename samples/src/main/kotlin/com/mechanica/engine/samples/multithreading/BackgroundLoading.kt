@@ -7,8 +7,8 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.resources.create
 import com.mechanica.engine.scenes.addAnimation
-import com.mechanica.engine.scenes.processes.LoadProcess
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.LoadScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.shaders.models.Image
 
 fun main() {
@@ -20,11 +20,13 @@ fun main() {
     Game.loop()
 }
 
-class BackgroundLoadingDemo : WorldScene() {
-    private val imageLoader = addProcess(ImageLoader())
+class BackgroundLoadingDemo : Scene() {
+    private val imageLoader = addScene(ImageLoader())
 
     private val dotAnimation = addAnimation(2.0, AnimationFormulas.linear(0.0, 4.0)).also { it.looped = true }
     private val sb = StringBuilder()
+
+    override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {
         if (imageLoader.hasFinishedLoading) {
@@ -49,7 +51,7 @@ class BackgroundLoadingDemo : WorldScene() {
 }
 
 
-class ImageLoader : LoadProcess() {
+class ImageLoader : LoadScene() {
     var image: Image? = null
 
     var hasFinishedLoading: Boolean = false
@@ -66,4 +68,5 @@ class ImageLoader : LoadProcess() {
         hasFinishedLoading = true
     }
 
+    override fun render(draw: Drawer) { }
 }

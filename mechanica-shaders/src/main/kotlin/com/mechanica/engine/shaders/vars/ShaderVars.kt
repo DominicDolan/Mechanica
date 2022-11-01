@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.vars
 
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
 import com.mechanica.engine.shaders.attributes.AttributeVar
@@ -14,7 +14,7 @@ interface ShaderVars<Q : Qualifier> {
 
     fun float(name: String? = null): ShaderVar<Float, Q>
 
-    fun vec2(name: String? = null): ShaderVar<VariableVector2, Q>
+    fun vec2(name: String? = null): ShaderVar<MutableVector2, Q>
 
     fun vec3(name: String? = null): ShaderVar<Vector3, Q>
 

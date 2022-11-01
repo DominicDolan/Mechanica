@@ -1,9 +1,9 @@
 package com.mechanica.engine.audio
 
-import com.cave.library.vector.vec3.VariableVector3
+import com.cave.library.vector.vec3.MutableVector3
 
 interface AudioObject {
     var gain: Float
-    var position: VariableVector3
-    var velocity: VariableVector3
+    var position: MutableVector3
+    var velocity: MutableVector3
 }

@@ -5,7 +5,7 @@ import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.color.VariableColor
 import com.cave.library.vector.vec2.*
-import com.cave.library.vector.vec3.VariableVector3
+import com.cave.library.vector.vec3.MutableVector3
 import com.mechanica.engine.util.extensions.fori
 
 
@@ -21,10 +21,10 @@ class DrawStateVariableList {
     }
 
     fun addVector2(resetValue: Double = 0.0): Vector2Variable {
-        return addVector2(VariableVector2.create(), resetValue)
+        return addVector2(MutableVector2.create(), resetValue)
     }
 
-    fun addVector2(vector: VariableVector2, resetValue: Double = 0.0): Vector2Variable {
+    fun addVector2(vector: MutableVector2, resetValue: Double = 0.0): Vector2Variable {
         val newVariable = Vector2Variable(this, vector, elements.size, resetValue)
         elements.add(newVariable)
         return newVariable
@@ -171,7 +171,7 @@ abstract class DrawStateVariable<T>(
 
 
 class Vector3Variable(list: DrawStateVariableList, index: Int, private val resetValue: Double = 0.0)
-    : DrawStateVariable<VariableVector3>(list, VariableVector3.create(), index) {
+    : DrawStateVariable<MutableVector3>(list, MutableVector3.create(), index) {
 
     var x: Double
         get() = variable.x
@@ -205,8 +205,8 @@ class Vector3Variable(list: DrawStateVariableList, index: Int, private val reset
     }
 }
 
-class Vector2Variable(list: DrawStateVariableList, vector: VariableVector2, index: Int, private val resetValue: Double = 0.0)
-    : DrawStateVariable<VariableVector2>(list, vector, index), VariableVector2 {
+class Vector2Variable(list: DrawStateVariableList, vector: MutableVector2, index: Int, private val resetValue: Double = 0.0)
+    : DrawStateVariable<MutableVector2>(list, vector, index), MutableVector2 {
 
     override var x: Double
         get() = variable.x

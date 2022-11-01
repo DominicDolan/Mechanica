@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.view
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 
 class DefaultDynamicView(
         override var x: Double = 0.0,
@@ -9,7 +9,7 @@ class DefaultDynamicView(
         override var height: Double = 1.0) : DynamicView {
 
     @Suppress("SetterBackingFieldAssignment")
-    override var xy: VariableVector2 = object : VariableVector2 {
+    override var xy: MutableVector2 = object : MutableVector2 {
         override var x: Double
             get() = this@DefaultDynamicView.x
             set(value) {this@DefaultDynamicView.x = value}
@@ -23,7 +23,7 @@ class DefaultDynamicView(
         }
 
     @Suppress("SetterBackingFieldAssignment")
-    override var wh: VariableVector2 = object : VariableVector2 {
+    override var wh: MutableVector2 = object : MutableVector2 {
         override var x: Double
             get() = this@DefaultDynamicView.width
             set(value) {this@DefaultDynamicView.width = value }

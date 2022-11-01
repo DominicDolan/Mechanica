@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.view
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 
 interface DynamicView : View {
     override var x: Double
@@ -8,8 +8,8 @@ interface DynamicView : View {
     override var width: Double
     override var height: Double
 
-    override val xy: VariableVector2
-    override val wh: VariableVector2
+    override val xy: MutableVector2
+    override val wh: MutableVector2
 
     companion object {
         fun create(x: Double = 0.0,

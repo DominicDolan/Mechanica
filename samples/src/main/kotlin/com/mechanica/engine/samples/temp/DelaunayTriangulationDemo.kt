@@ -30,6 +30,8 @@ class DelaunayTriangulationDemo : Scene() {
         ElementIndexArray(triangulator.triangulate())
     )
 
+    override fun update(delta: Double) { }
+
     override fun render(draw: Drawer) {
         draw.green.alpha(0.2).model(delaunayModel)
     }

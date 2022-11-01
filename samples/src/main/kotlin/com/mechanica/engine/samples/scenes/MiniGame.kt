@@ -102,7 +102,7 @@ class Player : MovingSprite(), Inputs by Inputs.create() {
 
 abstract class PlayerState(private val player: Player) : MovingSprite(), ActiveState {
     var paused = false
-    override val position: VariableVector2
+    override val position: MutableVector2
         get() = player.position
     override val view: View
         get() = player.view

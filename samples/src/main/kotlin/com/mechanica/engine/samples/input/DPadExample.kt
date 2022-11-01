@@ -1,7 +1,7 @@
 package com.mechanica.engine.samples.input
 
 import com.cave.library.vector.plusAssign
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.times
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
@@ -21,7 +21,7 @@ fun main() {
 }
 
 class DPadExample : Scene(), Inputs by Inputs.create() {
-    private var position = VariableVector2.create(0.0, 0.0)
+    private var position = MutableVector2.create(0.0, 0.0)
     private val speed = 2.0
     private val dPad = DPad.createWithWASD(speed)
 

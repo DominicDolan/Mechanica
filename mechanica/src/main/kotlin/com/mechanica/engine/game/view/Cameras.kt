@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.view
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.game.Game
@@ -79,7 +79,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
         }
 
     @Suppress("SetterBackingFieldAssignment")
-    override var xy: VariableVector2 = object : VariableVector2 {
+    override var xy: MutableVector2 = object : MutableVector2 {
         override var x: Double
             get() = this@WorldCamera.x
             set(value) {this@WorldCamera.x = value}
@@ -93,7 +93,7 @@ class WorldCamera internal constructor(view: View, private val gameMatrices: Gam
         }
 
     @Suppress("SetterBackingFieldAssignment")
-    override var wh: VariableVector2 = object : VariableVector2 {
+    override var wh: MutableVector2 = object : MutableVector2 {
         override var x: Double
             get() = this@WorldCamera.width
             set(value) {this@WorldCamera.width = value }

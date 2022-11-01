@@ -1,12 +1,12 @@
 package com.mechanica.engine.audio
 
-import com.cave.library.vector.vec3.VariableVector3
+import com.cave.library.vector.vec3.MutableVector3
 import com.cave.library.vector.vec3.Vector3
 import org.lwjgl.openal.AL10
 
 abstract class ALAudioObject : AudioObject {
     private val _position: ALVector3 by lazy { ALVector3(AL10.AL_POSITION, FloatArray(3)) }
-    override var position: VariableVector3
+    override var position: MutableVector3
         get() {
             getVector3(_position)
             return _position
@@ -16,7 +16,7 @@ abstract class ALAudioObject : AudioObject {
         }
 
     private val _velocity: ALVector3 by lazy { ALVector3(AL10.AL_VELOCITY, FloatArray(3)) }
-    override var velocity: VariableVector3
+    override var velocity: MutableVector3
         get() {
             getVector3(_velocity)
             return _velocity
@@ -30,7 +30,7 @@ abstract class ALAudioObject : AudioObject {
     protected abstract fun setVector3(vec: ALVector3)
 
 
-    inner class ALVector3(val property: Int, val array: FloatArray, private val offset: Int = 0) : VariableVector3 {
+    inner class ALVector3(val property: Int, val array: FloatArray, private val offset: Int = 0) : MutableVector3 {
         private var _x: Double
             get() = array[offset].toDouble()
             set(value) {

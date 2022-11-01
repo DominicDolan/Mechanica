@@ -1,6 +1,6 @@
 package com.mechanica.engine.shaders.text
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.text.CharacterCursor
 import com.mechanica.engine.util.extensions.constrain
@@ -20,9 +20,9 @@ class Text(text: String, font: Font = ShaderFactory.fontFactory.defaultFont()) {
             update(string, font)
         }
 
-    var positions: Array<VariableVector2> = Array(text.length*8){ VariableVector2.create() }
+    var positions: Array<MutableVector2> = Array(text.length*8){ MutableVector2.create() }
         private set
-    var texCoords: Array<VariableVector2> = Array(text.length*8){ VariableVector2.create() }
+    var texCoords: Array<MutableVector2> = Array(text.length*8){ MutableVector2.create() }
         private set
 
     private var characterPositions = DoubleArray(100)
@@ -145,8 +145,8 @@ class Text(text: String, font: Font = ShaderFactory.fontFactory.defaultFont()) {
     }
 
     private fun increaseSize(newSize: Int) {
-        positions = Array(newSize){ VariableVector2.create() }
-        texCoords = Array(newSize){ VariableVector2.create() }
+        positions = Array(newSize){ MutableVector2.create() }
+        texCoords = Array(newSize){ MutableVector2.create() }
     }
 
     private fun increaseNewLineArraySize(newSize: Int) {

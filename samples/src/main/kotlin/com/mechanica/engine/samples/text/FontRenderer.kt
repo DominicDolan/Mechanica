@@ -3,7 +3,7 @@ package com.mechanica.engine.samples.text
 import com.cave.library.color.Color
 import com.cave.library.color.toColor
 import com.cave.library.matrix.mat4.Matrix4
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.debug.ScreenLog
@@ -102,7 +102,7 @@ class FontRenderer {
 
     var fontSize: Double = 1.0
 
-    var position: VariableVector2 = VariableVector2.create()
+    var position: MutableVector2 = MutableVector2.create()
         set(value) {
             field.set(value)
         }
@@ -151,19 +151,19 @@ class FontRenderer {
             get() = inputPosition.x
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as VariableVector2).x = value
+                (inputPosition as MutableVector2).x = value
             }
         var y: Double
             get() = inputPosition.y
             set(value) {
                 inputType = INPUT_POSITION
-                (inputPosition as VariableVector2).y = value
+                (inputPosition as MutableVector2).y = value
             }
 
-        var inputPosition: Vector2 = VariableVector2.create()
+        var inputPosition: Vector2 = MutableVector2.create()
             set(value) {
                 inputType = INPUT_POSITION
-                (field as VariableVector2).set(value)
+                (field as MutableVector2).set(value)
             }
 
         override fun getPosition(): Vector2 {

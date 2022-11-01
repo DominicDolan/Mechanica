@@ -13,7 +13,7 @@ import com.mechanica.engine.geometry.lines.LineSegment
 import com.mechanica.engine.geometry.lines.LineSegmentImpl
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 
 fun main() {
     Game.configure {
@@ -24,7 +24,7 @@ fun main() {
     Game.loop()
 }
 
-class LinesDemo : WorldScene() {
+class LinesDemo : Scene() {
     private val stroke = 0.05f
 
     private val renderer = PathRenderer()

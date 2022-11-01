@@ -1,6 +1,6 @@
 package com.mechanica.engine.scenes.scenes.sprites
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.view.DynamicView
 import com.mechanica.engine.game.view.DynamicViewable
@@ -14,7 +14,7 @@ abstract class DynamicSprite(
         height: Double = 1.0
 ) : Scene(), DynamicViewable {
 
-    override val position: VariableVector2 = VariableVector2.create(x, y)
+    override val position: MutableVector2 = MutableVector2.create(x, y)
     override val view: DynamicView by lazy { DynamicViewableView(width, height) }
 
     constructor(
@@ -35,7 +35,7 @@ abstract class DynamicSprite(
             get() = position.y
             set(value) { position.y = value }
 
-        override val xy: VariableVector2 = object : VariableVector2 {
+        override val xy: MutableVector2 = object : MutableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.x
                 set(value) {this@DynamicViewableView.x = value }
@@ -44,7 +44,7 @@ abstract class DynamicSprite(
                 set(value) { this@DynamicViewableView.y = value}
         }
 
-        override val wh: VariableVector2 = object : VariableVector2 {
+        override val wh: MutableVector2 = object : MutableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.width
                 set(value) {this@DynamicViewableView.width = value }

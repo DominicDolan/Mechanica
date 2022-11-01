@@ -1,6 +1,6 @@
 package com.mechanica.engine.text
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import org.lwjgl.stb.STBTTAlignedQuad
 import org.lwjgl.stb.STBTTFontinfo
 import org.lwjgl.stb.STBTruetype
@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryStack
 import java.nio.IntBuffer
 import kotlin.math.max
 
-fun STBTTAlignedQuad.copyToArrays(cursor: CharacterCursor, scale: Double, atlas: FontAtlas, p: Array<VariableVector2>, tc: Array<VariableVector2>) {
+fun STBTTAlignedQuad.copyToArrays(cursor: CharacterCursor, scale: Double, atlas: FontAtlas, p: Array<MutableVector2>, tc: Array<MutableVector2>) {
     val i = max(cursor.nonWhiteSpaceIndex - 1, 0) *4
 
     val padding = atlas.padding*1.01

@@ -11,7 +11,7 @@ import com.mechanica.engine.drawer.shader.PathRenderer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 
 fun main() {
     Game.configure {
@@ -23,7 +23,7 @@ fun main() {
     Game.loop()
 }
 
-class DrawingExample : WorldScene() {
+class DrawingExample : Scene() {
     private val renderer = PathRenderer()
 
     private val transformation = Matrix4.identity()

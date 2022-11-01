@@ -11,7 +11,7 @@ import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.resources.Res
 import com.mechanica.engine.resources.create
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.shaders.models.PolygonModel
 
@@ -24,7 +24,7 @@ fun main() {
     Game.loop()
 }
 
-private class StartMain : WorldScene() {
+private class StartMain : Scene() {
     private val transformation = Matrix4.identity()
 
     val image: Image

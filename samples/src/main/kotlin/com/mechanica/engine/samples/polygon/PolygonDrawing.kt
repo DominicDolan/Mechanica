@@ -12,7 +12,7 @@ import com.mechanica.engine.geometry.triangulation.lists.TriangulatorList
 import com.mechanica.engine.geometry.triangulation.polygon.DiagonalTriangulator
 import com.mechanica.engine.geometry.triangulation.polygon.GrahamScanTriangulator
 import com.mechanica.engine.input.Inputs
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.shaders.models.PolygonModel
 import com.mechanica.engine.util.extensions.fori
 import com.mechanica.engine.util.extensions.indexLooped
@@ -28,7 +28,7 @@ fun main() {
     Game.loop()
 }
 
-class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
+class PolygonDrawing : Scene(), Inputs by Inputs.create() {
     private val selectionRadius = 0.07
 
     private val vertices = ArrayList<Vector2>()
@@ -45,8 +45,6 @@ class PolygonDrawing : WorldScene(), Inputs by Inputs.create() {
     private val list = TriangulatorList<Vector2>()
 
     override fun update(delta: Double) {
-        super.update(delta)
-
         handleInput()
 
         if (keyboard.space.hasBeenPressed) {

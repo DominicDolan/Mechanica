@@ -6,7 +6,7 @@ import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.Inputs
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 
 fun main() {
     Game.configure {
@@ -17,7 +17,7 @@ fun main() {
     Game.loop()
 }
 
-class MouseExample : WorldScene(), Inputs by Inputs.create() {
+class MouseExample : Scene(), Inputs by Inputs.create() {
     private var circlePositions = ArrayList<Vector2>()
 
     override fun update(delta: Double) {
@@ -36,7 +36,7 @@ class MouseExample : WorldScene(), Inputs by Inputs.create() {
         draw.red.alpha(0.5).circle(mouse.world, 0.5)
 
         if (mouse.scroll.hasBeenPressed) {
-            camera.y += mouse.scroll.distance
+            Game.world.y += mouse.scroll.distance
         }
     }
 }

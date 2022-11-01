@@ -1,7 +1,7 @@
 package com.mechanica.engine.duke.style
 
 import com.cave.library.color.VariableColor
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.shaders.text.Font
 
 class Style {
@@ -22,7 +22,7 @@ class Style {
 
         var size: Double = 1.0
 
-        val alignment: VariableVector2 = VariableVector2.create(0.0, 0.0)
+        val alignment: MutableVector2 = MutableVector2.create(0.0, 0.0)
 
         var font: Font? = null
 

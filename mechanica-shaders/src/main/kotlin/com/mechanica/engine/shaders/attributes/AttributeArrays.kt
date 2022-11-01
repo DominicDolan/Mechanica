@@ -1,7 +1,7 @@
 package com.mechanica.engine.shaders.attributes
 
 import com.cave.library.color.Color
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec3.Vector3
 import com.cave.library.vector.vec4.Vector4
@@ -209,10 +209,10 @@ abstract class AttributeArrayMultiCoordForFloats<T> : AttributeArrayForFloats<Ar
     }
 }
 
-class Vec2AttributeArray(array: Array<out Vector2>) : AttributeArrayMultiCoordForFloats<VariableVector2>() {
-    override var value: Array<VariableVector2> = Array(array.size) { VariableVector2.create(array[it]) }
+class Vec2AttributeArray(array: Array<out Vector2>) : AttributeArrayMultiCoordForFloats<MutableVector2>() {
+    override var value: Array<MutableVector2> = Array(array.size) { MutableVector2.create(array[it]) }
 
-    override val valueToFloatConverter: (VariableVector2, Int) -> Float = { v, coord -> v.getOrZero(coord).toFloat() }
+    override val valueToFloatConverter: (MutableVector2, Int) -> Float = { v, coord -> v.getOrZero(coord).toFloat() }
 }
 
 class Vec3AttributeArray(override var value: Array<Vector3>) : AttributeArrayMultiCoordForFloats<Vector3>() {

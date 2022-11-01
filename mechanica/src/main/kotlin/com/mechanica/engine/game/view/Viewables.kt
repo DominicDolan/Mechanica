@@ -1,6 +1,6 @@
 package com.mechanica.engine.game.view
 
-import com.cave.library.vector.vec2.VariableVector2
+import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.drawer.Drawer
 
@@ -23,7 +23,7 @@ interface Viewable {
 }
 
 interface MovingViewable : Viewable{
-    override val position: VariableVector2
+    override val position: MutableVector2
 
     companion object {
         fun create(
@@ -44,7 +44,7 @@ private open class MovingViewableImpl(
         height: Double = 1.0,
 ) : MovingViewable {
 
-    override val position = VariableVector2.create(x + width/2.0, y + height/2.0)
+    override val position = MutableVector2.create(x + width/2.0, y + height/2.0)
 
     override val view: View by lazy { MovingView(width, height) }
 
@@ -57,7 +57,7 @@ private open class MovingViewableImpl(
         override val y: Double
             get() = position.y
 
-        override val xy: VariableVector2
+        override val xy: MutableVector2
             get() = position
 
         override var wh: Vector2 = object : Vector2 {
@@ -102,7 +102,7 @@ private class DynamicViewableImpl(
             get() = position.y
             set(value) { position.y = value }
 
-        override val xy: VariableVector2 = object : VariableVector2 {
+        override val xy: MutableVector2 = object : MutableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.x
                 set(value) {this@DynamicViewableView.x = value }
@@ -111,7 +111,7 @@ private class DynamicViewableImpl(
                 set(value) { this@DynamicViewableView.y = value}
         }
 
-        override val wh: VariableVector2 = object : VariableVector2 {
+        override val wh: MutableVector2 = object : MutableVector2 {
             override var x: Double
                 get() = this@DynamicViewableView.width
                 set(value) {this@DynamicViewableView.width = value }

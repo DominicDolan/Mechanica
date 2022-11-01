@@ -8,7 +8,7 @@ import com.mechanica.engine.game.Game
 import com.mechanica.engine.input.TextInput
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
-import com.mechanica.engine.scenes.scenes.WorldScene
+import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.util.extensions.constrain
 import kotlin.math.max
 import kotlin.math.min
@@ -26,7 +26,7 @@ fun main() {
 }
 
 
-private class StartText : WorldScene() {
+private class StartText : Scene() {
     val renderer = FontRenderer()
 
     val transformation = Matrix4.identity()
@@ -46,12 +46,12 @@ private class StartText : WorldScene() {
 
     override fun update(delta: Double) {
         fun setViewPosition() {
-            camera.x = startPosition.x + Game.world.width/2.0
-            camera.y = startPosition.y + 1.0 - Game.world.height/2.0
+            Game.world.x = startPosition.x + Game.world.width/2.0
+            Game.world.y = startPosition.y + 1.0 - Game.world.height/2.0
         }
 
         if (Mouse.scroll.hasBeenPressed) {
-            camera.height /= 1.0 + Mouse.scroll.distance/10.0
+            Game.world.height /= 1.0 + Mouse.scroll.distance/10.0
             setViewPosition()
         }
 
