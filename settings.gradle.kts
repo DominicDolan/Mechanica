@@ -6,18 +6,14 @@
  * Detailed information about configuring a multi-project build in Gradle can be found
  * in the user manual at https://docs.gradle.org/6.0/userguide/multi_project_builds.html
  */
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
 rootProject.name = "Mechanica"
 
-includeBuild("F:/Src/Mechanica/Kotlin-CAVE")
+includeBuild("/home/doghouse/IdeaProjects/Kotlin-CAVE")
 include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
-
-pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id.startsWith("org.jetbrains.kotlin.")) {
-                useVersion("1.4.0")
-            }
-        }
-    }
-}

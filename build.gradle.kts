@@ -6,17 +6,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  * This generated file contains a sample Kotlin application project to get you started.
  */
 
-val kotlinVersion: String = "1.4.20"
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
+val kotlinVersion: String = "1.9.0"
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+    kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     `java-library`
 }
 
@@ -28,6 +22,7 @@ val commonDependencies: DependencyHandlerScope.() -> Unit = {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
 
     api("com.cave.library:Kotlin-CAVE:0.1")
 
@@ -38,8 +33,6 @@ allprojects {
     version = 0.1
 
     repositories {
-        jcenter()
-
         mavenLocal()
         maven {
             url = uri("https://repo.maven.apache.org/maven2")
@@ -51,7 +44,7 @@ allprojects {
     val compileKotlin: KotlinCompile by tasks
     compileKotlin.kotlinOptions {
         freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
-        languageVersion = "1.4"
+        languageVersion = "1.9"
         jvmTarget = "1.8"
     }
 

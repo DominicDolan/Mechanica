@@ -30,7 +30,7 @@ class FontRenderer {
         //language=GLSL
         override val main: String =
                 """
-                out vec2 tc;
+                sample out vec2 tc;
                 layout (binding=0) uniform sampler2D samp;
                 
                 void main(void) {
@@ -82,7 +82,7 @@ class FontRenderer {
             field = value
         }
 
-    private val font: Font = Font.create(Res.font["Roboto-Regular.ttf"]) {
+    private val font: Font = Font.create(Res.font["roboto/Roboto-Regular.ttf"]) {
         characterSize = 100f
         configureSDF {
             start = -20.0
