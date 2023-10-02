@@ -5,7 +5,7 @@ plugins {
 }
 
 val lwjglVersion = "3.2.3"
-val lwjglNatives = "natives-linux"
+val lwjglNatives = "natives-windows"
 
 
 val coreLwjgl: DependencyHandlerScope.() -> Unit = {

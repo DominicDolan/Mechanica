@@ -12,7 +12,7 @@ import java.util.stream.Stream
 class LwjglFileFactory : FileFactory {
     override fun resource(path: String): Resource {
         val fileForURL = path.replace("\\", "/")
-        val url = getResourceURL("./" + fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
+        val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
         return ResourceImpl(url)
     }
 

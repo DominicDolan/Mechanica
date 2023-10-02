@@ -33,7 +33,7 @@ interface Resource : GenericResource {
             dataInputStream.readFully(bytes)
             val buffer = ShaderFactory.bufferFactories.byteBuffer(bytes.size)
             buffer.put(bytes)
-            buffer.flip()
+            (buffer as java.nio.Buffer).position(0)
             return buffer
         }
 

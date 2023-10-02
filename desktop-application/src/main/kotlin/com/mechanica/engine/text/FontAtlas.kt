@@ -72,7 +72,7 @@ class FontAtlas(private val data: LwjglStandardFont.FontData, private val config
                 }
             }
         }
-        bitmap.position(0)
+        (bitmap as java.nio.Buffer).position(0)
     }
 
     private fun getScale(data: LwjglStandardFont.FontData): Double {

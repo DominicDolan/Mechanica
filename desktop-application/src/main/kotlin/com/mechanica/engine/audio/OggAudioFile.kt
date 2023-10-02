@@ -43,14 +43,14 @@ class OggAudioFile(res: Resource) : AudioFile {
     private fun convertToGCBuffer(ogg: ShortBuffer?): ShortBuffer? {
         return if (ogg != null) {
             val buffer = BufferUtils.createShortBuffer(ogg.remaining())
-            buffer.put(ogg).position(0)
+            (buffer.put(ogg) as java.nio.Buffer).position(0)
             freeVorbis(ogg)
             buffer
         } else null
     }
 
     private fun freeVorbis(buffer: ShortBuffer) {
-        buffer.position(0)
+        (buffer as java.nio.Buffer).position(0)
         LibCStdlib.free(buffer)
     }
 }

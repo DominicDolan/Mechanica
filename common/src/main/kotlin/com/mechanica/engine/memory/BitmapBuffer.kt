@@ -25,7 +25,7 @@ class BitmapBuffer(val buffer: ByteBuffer, val width: Int, val height: Int) {
             _x = x
             _y = y
             val row = y*width
-            buffer.position(row+x)
+            (buffer as java.nio.Buffer).position(row+x)
         }
 
         override fun toString() = IntVector2.toString(this)
@@ -34,7 +34,7 @@ class BitmapBuffer(val buffer: ByteBuffer, val width: Int, val height: Int) {
     val stBufferPosition = STVector()
     
     fun advanceBy(advance: Int) {
-        buffer.position(buffer.position() + advance)
+        (buffer as java.nio.Buffer).position(buffer.position() + advance)
     }
     
     fun insert(other: ByteBuffer, otherWidth: Int, s: Float, t: Float) {
@@ -62,15 +62,15 @@ class BitmapBuffer(val buffer: ByteBuffer, val width: Int, val height: Int) {
     }
 
     fun zero() {
-        buffer.position(0)
+        (buffer as java.nio.Buffer).position(0)
     }
 
     private fun insert(other: ByteBuffer, otherWidth: Int) {
         var j = 0
         val limit = other.limit()
         while (other.position() < limit - otherWidth) {
-            other.limit((j + 1)*otherWidth - 1)
-            other.position(j++*otherWidth)
+            (other as java.nio.Buffer).limit((j + 1)*otherWidth - 1)
+            (other as java.nio.Buffer).position(j++*otherWidth)
             buffer.put(other)
             advanceBy(width - otherWidth + 1)
         }
