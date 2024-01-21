@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.state
 
-import com.cave.library.angle.Radian
+import com.cave.library.angle.Angle
 import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.color.VariableColor
@@ -30,13 +30,13 @@ class DrawStateVariableList {
         return newVariable
     }
 
-    fun addAngleVector2(vector: VariableAngleVector2, resetValue: Radian = 0.0.radians): AngleVector2Variable {
+    fun addAngleVector2(vector: VariableAngleVector2, resetValue: Angle = 0.0.radians): AngleVector2Variable {
         val newVariable = AngleVector2Variable(this, vector, elements.size, resetValue)
         elements.add(newVariable)
         return newVariable
     }
 
-    fun addAngleVector2(resetValue: Radian = 0.0.radians): AngleVector2Variable {
+    fun addAngleVector2(resetValue: Angle = 0.0.radians): AngleVector2Variable {
         return addAngleVector2(VariableAngleVector2.create(), resetValue)
     }
 
@@ -58,7 +58,7 @@ class DrawStateVariableList {
         return newVariable
     }
 
-    fun addRadian(value: Radian): DrawStateRadian {
+    fun addRadian(value: Angle): DrawStateRadian {
         val newVariable = DrawStateRadian(value, elements.size)
         elements.add(newVariable)
         return newVariable
@@ -125,12 +125,12 @@ class DrawStateVariableList {
         }
     }
 
-    inner class DrawStateRadian(private val resetValue: Radian, val index: Int) : Resettable {
+    inner class DrawStateRadian(private val resetValue: Angle, val index: Int) : Resettable {
 
         var wasChanged = true
             private set
 
-        var value: Radian = resetValue
+        var value: Angle = resetValue
             set(value) {
                 field = value
                 wasChanged = true
@@ -228,13 +228,13 @@ class Vector2Variable(list: DrawStateVariableList, vector: MutableVector2, index
     override fun toString() = Vector2.toString(this)
 }
 
-class AngleVector2Variable(list: DrawStateVariableList, vector: VariableAngleVector2, index: Int, private val resetValue: Radian = 0.0.radians)
+class AngleVector2Variable(list: DrawStateVariableList, vector: VariableAngleVector2, index: Int, private val resetValue: Angle = 0.0.radians)
     : DrawStateVariable<VariableAngleVector2>(list, vector, index), VariableAngleVector2 {
 
-    override var x: Radian
+    override var x: Angle
         get() = variable.x
         set(value) = set(value, y)
-    override var y: Radian
+    override var y: Angle
         get() = variable.y
         set(value) = set(x, value)
 
@@ -243,7 +243,7 @@ class AngleVector2Variable(list: DrawStateVariableList, vector: VariableAngleVec
         variable.set(resetValue, resetValue)
     }
 
-    override fun set(x: Radian, y: Radian) {
+    override fun set(x: Angle, y: Angle) {
         markChanged()
         variable.set(x, y)
     }

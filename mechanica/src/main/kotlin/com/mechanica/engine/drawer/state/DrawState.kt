@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.state
 
-import com.cave.library.angle.Radian
+import com.cave.library.angle.Angle
 import com.cave.library.angle.plus
 import com.cave.library.color.Color
 import com.cave.library.color.InlineColor
@@ -51,7 +51,7 @@ class DrawState : AbstractDrawState() {
         translation.set(translation.x + x, translation.y + y)
     }
 
-    fun setRotate(angle: Radian) {
+    fun setRotate(angle: Angle) {
         transformation.rotation.value += angle
     }
 
@@ -60,7 +60,7 @@ class DrawState : AbstractDrawState() {
         scale.set(scale.x*x, scale.y*y, 1.0)
     }
 
-    fun setSkew(x: Radian, y: Radian) {
+    fun setSkew(x: Angle, y: Angle) {
         val skew = transformation.skew
         skew.set(skew.x + x, skew.y + y)
     }

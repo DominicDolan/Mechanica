@@ -1,8 +1,6 @@
 package com.mechanica.engine.drawer.subclasses.transformation
 
-import com.cave.library.angle.Degree
-import com.cave.library.angle.Radian
-import com.cave.library.angle.degrees
+import com.cave.library.angle.Angle
 import com.cave.library.angle.radians
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.InlineVector
@@ -21,8 +19,7 @@ interface TransformationDrawer : Drawer {
     fun scale(scale: Vector2) = scale(scale.x, scale.y)
     fun scale(scale: Double) = scale(scale, scale)
 
-    fun skew(horizontal: Degree = 0.degrees, vertical: Degree = 0.degrees): TransformationDrawer = skew(horizontal.toRadians(), vertical.toRadians())
-    fun skew(horizontal: Radian = 0.radians, vertical: Radian = 0.radians): TransformationDrawer
+    fun skew(horizontal: Angle = 0.radians, vertical: Angle = 0.radians): TransformationDrawer
 
     fun matrix(matrix: Matrix4): TransformationDrawer
 

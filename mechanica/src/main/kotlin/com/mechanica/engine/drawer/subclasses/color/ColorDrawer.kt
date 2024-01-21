@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.subclasses.color
 
-import com.cave.library.angle.Degree
+import com.cave.library.angle.Angle
 import com.cave.library.color.Color
 import com.cave.library.color.InlineColor
 import com.cave.library.color.hex
@@ -26,7 +26,7 @@ interface ColorDrawer : Drawer, Color {
         return this
     }
 
-    fun hue(hue: Degree): ColorDrawer {
+    fun hue(hue: Angle): ColorDrawer {
         this.invoke(hsl(hue, saturation, lightness))
         return this
     }

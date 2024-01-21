@@ -1,6 +1,6 @@
 package com.mechanica.engine.drawer.subclasses.transformation
 
-import com.cave.library.angle.Radian
+import com.cave.library.angle.Angle
 import com.cave.library.matrix.mat4.Matrix4
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.drawer.state.DrawState
@@ -16,7 +16,7 @@ class TransformationDrawerImpl(drawer: Drawer, private val state: DrawState): Tr
         return this
     }
 
-    override fun skew(horizontal: Radian, vertical: Radian): TransformationDrawer {
+    override fun skew(horizontal: Angle, vertical: Angle): TransformationDrawer {
         state.setSkew(horizontal, vertical)
         return this
     }
