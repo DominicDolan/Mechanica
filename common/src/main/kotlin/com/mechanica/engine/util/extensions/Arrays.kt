@@ -146,10 +146,22 @@ fun List<*>.indexLooped(index: Int): Int {
     return index.looped(this.size)
 }
 
+fun Array<*>.indexLooped(index: Int): Int {
+    return index.looped(this.size)
+}
+
 fun Int.looped(size: Int): Int {
     return when {
         this < 0 -> size + this
         this >= size -> this - size
+        else -> this
+    }
+}
+fun Double.looped(size: Double): Double {
+    require(size > 0)
+    return when {
+        this < 0.0 -> size + this
+        this >= size -> (this - size).looped(size)
         else -> this
     }
 }
@@ -164,4 +176,6 @@ fun List<*>.indexConstrained(index: Int): Int {
 
 fun <E> List<E>.loopedGet(index: Int): E = this[indexLooped(index)]
 fun <E> List<E>.getConstrained(index: Int): E = this[indexConstrained(index)]
+
+fun <E> Array<E>.getLooped(index: Int): E = this[indexLooped(index)]
 
