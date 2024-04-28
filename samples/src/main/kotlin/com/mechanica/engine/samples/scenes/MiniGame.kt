@@ -1,6 +1,6 @@
 package com.mechanica.engine.samples.scenes
 
-import com.cave.library.angle.Degree
+import com.cave.library.angle.Angle
 import com.cave.library.angle.degrees
 import com.cave.library.angle.plus
 import com.cave.library.vector.vec2.*
@@ -173,7 +173,7 @@ class InvisibilityState(player: Player) : PlayerState(player) {
 class Enemy : MovingSprite() {
     var paused = false
     private val startingPosition: InlineVector
-    private val direction: Degree
+    private val direction: Angle
 
     private val speedVector: InlineVector
     private val travelDistance = 15.0

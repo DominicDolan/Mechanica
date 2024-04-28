@@ -8,14 +8,13 @@ import java.io.InputStreamReader
 import java.net.URI
 import java.net.URL
 import java.nio.ByteBuffer
-import kotlin.streams.toList
+import java.util.stream.Collectors
 
 interface Resource : GenericResource {
     override val lines: List<String>
         get() {
             val reader = BufferedReader(InputStreamReader(stream))
-            val lines = reader.lines().toList()
-            reader.close()
+            val lines = reader.lines().collect(Collectors.toList())
             return lines
         }
     override val contents: String
