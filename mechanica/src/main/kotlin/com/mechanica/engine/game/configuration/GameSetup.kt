@@ -7,6 +7,7 @@ import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.debug.GameDebugConfiguration
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.*
 import com.mechanica.engine.scenes.SceneManager
 
@@ -20,6 +21,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
 
     val sceneManager: SceneManager
 
+    val deltaCalculator: DeltaCalculator
 
     private val resolutionToCameraConverter: ResolutionToCameraConverter
 
@@ -50,6 +52,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
 
         cameras = Cameras(data, application.surfaceContext)
 
+        deltaCalculator = data.deltaCalculator
         sceneManager = SceneManager(data.deltaCalculator, data.startingScene ?: { null })
 
         if (Game.persistenceMap == null) {

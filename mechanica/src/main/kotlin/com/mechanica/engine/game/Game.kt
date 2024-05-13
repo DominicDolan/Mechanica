@@ -8,6 +8,7 @@ import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
 import com.mechanica.engine.game.configuration.GameSetup
+import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
@@ -46,6 +47,9 @@ object Game : Configurable<GameConfiguration> {
 
     val scene: SceneNode
         get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
+
+    val deltaCalculator: DeltaCalculator
+        get() = setup.deltaCalculator
 
     private var hasStarted = false
     private var hasFinished = false
