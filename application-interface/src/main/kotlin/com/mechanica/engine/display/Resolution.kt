@@ -9,7 +9,8 @@ interface Resolution {
 }
 
 
-inline class Pixel(private val value: Int) {
+@JvmInline
+value class Pixel(private val value: Int) {
     fun toInt() = value
     fun toDouble() = value.toDouble()
 }

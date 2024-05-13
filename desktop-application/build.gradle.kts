@@ -4,7 +4,7 @@ plugins {
     `java-library`
 }
 
-val lwjglVersion = "3.2.3"
+val lwjglVersion = "3.3.3"
 val lwjglNatives = "natives-linux"
 
 

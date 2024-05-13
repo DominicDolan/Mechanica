@@ -15,7 +15,7 @@ class MultiUpdateCalculator(updateTime: Double) : DeltaCalculator {
             update(dt)
 
             for (i in variableTrackers.indices) {
-                variableTrackers[i].update(dt)
+                variableTrackers[i].update()
             }
             val updateRealTime = Timer.now - preUpdateTime
 
@@ -27,7 +27,7 @@ class MultiUpdateCalculator(updateTime: Double) : DeltaCalculator {
         }
 
         for (i in variableTrackers.indices) {
-            variableTrackers[i].preRenderUpdate(accumulator, dt, lastFrame, thisFrame)
+            variableTrackers[i].preRenderUpdate(accumulator, dt)
         }
 
         render()

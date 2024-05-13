@@ -11,19 +11,19 @@ class RenderableDouble(private val getValue: () -> Double, getVelocity: (() -> D
 
     private var renderableVelocity: RenderableDouble? = if (getVelocity != null) RenderableDouble(getVelocity) else null
 
-    fun update(delta: Double) {
+    fun update() {
         lastValue = currentValue
         currentValue = getValue()
     }
 
-    fun preRenderUpdate(accumulated: Double, delta: Double, lastFrame: Double, thisFrame: Double) {
+    fun preRenderUpdate(accumulated: Double, delta: Double) {
         val velocity = renderableVelocity?.value ?: accumulated
         val fraction = velocity/delta
         value = currentValue  + fraction*(currentValue - lastValue)
     }
 
     companion object {
-        fun create(getValue: () -> Double, getVelocity: (() -> Double)? = null): RenderableDouble {
+        fun create(getValue: () -> Double, getVelocity: (() -> Double)?): RenderableDouble {
             val double = RenderableDouble(getValue, getVelocity)
             val deltaCalculator = Game.deltaCalculator
             if (deltaCalculator !is MultiUpdateCalculator) {
@@ -34,6 +34,10 @@ class RenderableDouble(private val getValue: () -> Double, getVelocity: (() -> D
             deltaCalculator.addVariableTracker(double)
 
             return double
+        }
+
+        fun create(getValue: () -> Double): RenderableDouble {
+            return create(getValue, null)
         }
     }
 }
