@@ -168,21 +168,18 @@ abstract class AttributeArrayForFloats<T> : AttributeArray {
 
             return fillFloatArray(floatArray, coordinateSize, converter)
         }
+    }
+}
 
-        fun <T> Array<T>.fillFloatArray(floats: FloatArray, coordinateSize: Int, converter: (T, Int) -> Float): FloatArray {
+fun <T> Array<T>.fillFloatArray(floats: FloatArray, coordinateSize: Int, converter: (T, Int) -> Float): FloatArray {
+    for (i in this.indices) {
+        for (coordinate in 0..coordinateSize) {
+            val value = converter(this[i], coordinate)
 
-            for (i in this.indices) {
-                fun FloatArray.setAt(coordinate: Int, value: Float) {
-                    if (coordinate < coordinateSize) this[i*coordinateSize + coordinate] = value
-                }
-                var coordinate = 0
-                while (coordinate < coordinateSize) {
-                    floats.setAt(coordinate, converter(this[i], coordinate++))
-                }
-            }
-            return floats
+            if (coordinate < coordinateSize) floats[i*coordinateSize + coordinate] = value
         }
     }
+    return floats
 }
 
 class FloatAttributeArray(override var value: FloatArray) : AttributeArrayForFloats<FloatArray>() {

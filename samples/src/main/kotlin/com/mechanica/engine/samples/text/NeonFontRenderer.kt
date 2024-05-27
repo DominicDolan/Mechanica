@@ -6,7 +6,6 @@ import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
 import com.cave.library.vector.vec2.vec
-import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.drawer.shader.DrawerShader
 import com.mechanica.engine.game.Game
@@ -20,7 +19,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 
-class FontRenderer {
+class NeonFontRenderer {
 
     private val transformation = Matrix4.identity()
     private val projection = Game.matrices.projection
@@ -115,7 +114,6 @@ class FontRenderer {
         }
         shader.render(this.model, transformation, projection, view)
         if (transformation == this.transformation) { transformation.identity() }
-        ScreenLog { "testing testing" }
     }
 
     fun from(index: Int): CharacterOutput {
@@ -192,14 +190,14 @@ class FontRenderer {
 
         fun getCharacterPosition(index: Int): Vector2 {
             val safeIndex = max(0, index)
-            val x = model.getCharacterPosition(safeIndex)*fontSize + this@FontRenderer.position.x
-            val y = -model.getLine(safeIndex)*fontSize + this@FontRenderer.position.y
+            val x = model.getCharacterPosition(safeIndex)*fontSize + this@NeonFontRenderer.position.x
+            val y = -model.getLine(safeIndex)*fontSize + this@NeonFontRenderer.position.y
 //            println(" Calculated x: $x, font size: ${fontSize}, position x: ${this@FontRenderer.position.x}")
             return vec(x, y)
         }
 
         fun getCharacterIndex(x: Double, y: Double): Int {
-            val textPosition = this@FontRenderer.position
+            val textPosition = this@NeonFontRenderer.position
             val adjustedY = (y - textPosition.y)/fontSize
             val adjustedX = (x - textPosition.x)/fontSize
 
@@ -210,7 +208,7 @@ class FontRenderer {
         }
 
         fun getClosestCharacterPosition(x: Double, y: Double): Vector2 {
-            val textPosition = this@FontRenderer.position
+            val textPosition = this@NeonFontRenderer.position
             val adjustedY = (y - textPosition.y)/fontSize
             val adjustedX = (x - textPosition.x)/fontSize
 

@@ -1,5 +1,6 @@
 package com.mechanica.engine.samples.text
 
+import com.cave.library.color.Color
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.vec
 import com.mechanica.engine.config.configure
@@ -17,6 +18,7 @@ fun main() {
     Game.configure {
         setViewport(height = 10.0)
         setStartingScene { StartText() }
+        setFullscreen(false)
         configureDebugMode {
             constructionDraws = true
         }
@@ -27,7 +29,7 @@ fun main() {
 
 
 private class StartText : Scene() {
-    val renderer = FontRenderer()
+    val renderer = NeonFontRenderer()
 
     val transformation = Matrix4.identity()
 
@@ -39,6 +41,7 @@ private class StartText : Scene() {
 
     init {
         renderer.text = ""
+        renderer.color = Color.white
 
         renderer.position.set(startPosition)
 
