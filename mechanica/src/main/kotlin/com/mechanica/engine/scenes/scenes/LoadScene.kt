@@ -13,7 +13,9 @@ abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoo
 
     private var exception: Throwable? = null
 
+    private var onFinishCalled = false
     override fun update(delta: Double) {
+        if (onFinishCalled) return
         when (stage) {
             Stage.WAIT -> wait(delta)
             Stage.FINISHED_WAIT -> startLoading()
@@ -24,7 +26,9 @@ abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoo
                     this.exception = null
                     throw exception
                 }
+
                 onFinish()
+                onFinishCalled = true
             }
         }
     }
