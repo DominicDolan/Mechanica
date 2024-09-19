@@ -14,12 +14,19 @@ class RenderableDouble(private val getValue: () -> Double, getVelocity: (() -> D
     fun update() {
         lastValue = currentValue
         currentValue = getValue()
+        renderableVelocity?.update()
     }
 
     fun preRenderUpdate(accumulated: Double, delta: Double) {
-        val velocity = renderableVelocity?.value ?: accumulated
-        val fraction = velocity/delta
-        value = currentValue  + fraction*(currentValue - lastValue)
+        val rv = renderableVelocity
+        if (rv == null) {
+            val fraction = accumulated/delta
+            value = currentValue  + fraction*(currentValue - lastValue)
+        } else {
+            rv.preRenderUpdate(accumulated, delta)
+            val velocity = rv.value
+            value = currentValue + velocity * accumulated
+        }
     }
 
     companion object {

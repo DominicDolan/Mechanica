@@ -20,9 +20,10 @@ fun main() {
 
 class RenderVariableDemo : Scene() {
     var position: Double = 0.0
-    val renderablePosistion = RenderableDouble.create { position }
+    private val renderablePosition = RenderableDouble.create({ position }, { 6.0 })
     override fun update(delta: Double) {
-        position += 0.2
+
+        position += 6.0*delta
 
         if (position > 10.0) {
             position = -10.0
@@ -31,6 +32,6 @@ class RenderVariableDemo : Scene() {
 
     override fun render(draw: Drawer) {
         draw.red.circle(position, 2.0, 0.5)
-        draw.red.circle(renderablePosistion.value, -2.0, 0.5)
+        draw.red.circle(renderablePosition.value, -2.0, 0.5)
     }
 }
