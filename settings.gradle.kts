@@ -15,5 +15,5 @@ pluginManagement {
 
 rootProject.name = "Mechanica"
 
-includeBuild("/home/doghouse/Source/Mechanica/Kotlin-CAVE")
+includeBuild("C:/Users/Doghouse/FSrc/Mechanica/Kotlin-CAVE")
 include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
