@@ -39,6 +39,7 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
     }
 
     override fun setPersistence(jsonStorer: JsonStorer) {
+        println("setting persistence")
         val map = PersistenceMap(jsonStorer)
         map.populate()
         Game.persistenceMap = map

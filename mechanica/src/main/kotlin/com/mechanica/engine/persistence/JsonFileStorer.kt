@@ -5,6 +5,9 @@ import java.io.FileNotFoundException
 
 
 class JsonFileStorer(private val path: String) : JsonStorer {
+    init {
+        println("path: $path")
+    }
     override fun getJson(): String {
         return try {
             val file = Resource.external(path, false)

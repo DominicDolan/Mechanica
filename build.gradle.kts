@@ -42,6 +42,8 @@ allprojects {
     dependencies(commonDependencies)
 
     kotlin {
+        jvmToolchain(22)
+
         sourceSets.all {
             languageSettings {
                 languageVersion = "2.0"

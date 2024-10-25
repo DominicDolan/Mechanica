@@ -4,6 +4,7 @@ import com.duke.ui.hierarchy.DukeUI
 import com.duke.ui.hierarchy.NodeData
 import com.duke.ui.hierarchy.Viewport
 import com.duke.ui.hierarchy.Window
+import com.duke.ui.output.RenderDescription
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.duke.NodeRendererToDrawer
 import com.mechanica.engine.duke.defaultDraw
@@ -11,6 +12,7 @@ import com.mechanica.engine.duke.elements.Element
 import com.mechanica.engine.duke.elements.ElementDrawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.Camera
+import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.scenes.scenes.Renderable
 import com.mechanica.engine.scenes.scenes.SceneHub
 import com.mechanica.engine.util.extensions.fori
@@ -24,18 +26,38 @@ abstract class DukeUIScene : SceneHub(), Renderable {
 
     val camera: Camera = Game.ui
 
+    protected val mouse = Mouse.create()
+
+    protected inline fun Element.onClick(onClick: () -> Unit) {
+        if (isHovering && mouse.MB1.hasBeenPressed) {
+            onClick()
+        }
+    }
+
+
     init {
         val viewport = Viewport(0.0, 0.0, camera.width, -camera.height)
         val window = Window(-camera.width/2.0, -camera.height/2.0, camera.width, camera.height)
+//        val test = RenderDescription(CameraWindow(camera), viewport)
 
-        context = DukeUI(window, viewport)
+        context = DukeUI(CameraWindow(camera), viewport)
 
         context.defaultRender = NodeRendererToDrawer { draw, style -> defaultDraw(draw, style) }
     }
 
     override fun render(draw: Drawer) {
         context.data = draw
-        context.ui { getElement { OuterElement() }.ui() }
+        context.ui {
+            val outer = getElement { OuterElement() }
+
+            outer.layout.edit { _, _ ->
+                left = -camera.width/2.0
+                top = -camera.height/2.0
+                width = camera.width
+                height = camera.height
+            }
+            outer.ui()
+        }
     }
 
     inline fun <reified E : Element> getElement(initiator: (DukeUIScene) -> E): E {

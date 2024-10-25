@@ -2,6 +2,8 @@ package com.mechanica.engine.scenes.activation
 
 interface Activatable {
     val active: Boolean get() = true
+    val playing: Boolean get() = true
+    val visible: Boolean get() = true
 
     /**
      * A function to be overridden which will run while [active] is set to false

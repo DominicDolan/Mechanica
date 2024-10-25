@@ -67,7 +67,7 @@ class LwjglExternalResource(filePath: String, createIfAbsent: Boolean = false) :
 
     init {
         val path =if (File(filePath).isAbsolute) filePath
-        else (System.getenv("APPDATA") + "/Mechanica/" + filePath).replace("/", System.getProperty("file.separator"))
+        else ((System.getenv("APPDATA") ?: "persistence") + "/Mechanica/" + filePath).replace("/", System.getProperty("file.separator"))
 
         absoluteFile = getFile(path, createIfAbsent)
     }

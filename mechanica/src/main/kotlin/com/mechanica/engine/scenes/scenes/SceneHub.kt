@@ -82,7 +82,7 @@ abstract class SceneHub : SceneNode {
             val scene = holder.scene
             if (!condition(holder)) break
 
-            if (scene.active) {
+            if (scene.active && scene.visible) {
                 if (scene is SceneHub) scene.renderChildren(draw)
                 else if (scene is Renderable) scene.render(draw)
             }
@@ -105,7 +105,7 @@ abstract class SceneHub : SceneNode {
             val holder = childHolders.getOrNull(childHolders.lastIndex - (inverseI)) ?: break
             val scene = holder.scene
             if (condition(holder)) {
-                if (scene.active) {
+                if (scene.active && scene.playing) {
                     if (scene is SceneHub) scene.updateChildren(delta)
                     else if (scene is Updateable) scene.update(delta)
                 } else {
