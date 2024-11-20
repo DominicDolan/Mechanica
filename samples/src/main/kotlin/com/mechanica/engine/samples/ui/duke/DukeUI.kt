@@ -168,7 +168,7 @@ class DukeUI(private val context: DukeContext) {
                 children.add(currentChildIndex, newNode)
                 newNode
             }
-            println(currentChildIndex)
+
             currentChildIndex++
             return newChild
         }

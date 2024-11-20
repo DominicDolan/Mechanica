@@ -22,7 +22,6 @@ class MechanicaDukeContext(camera: Camera) : DukeContext() {
         val draw = drawer
         require(draw != null) { "Tried to draw UI but the Drawer is null! use setDrawer before running UI" }
 
-        println("rendering $renderContext")
         draw.ui.color(renderContext.style.color).rectangle(renderContext.x, renderContext.y, renderContext.width, renderContext.height)
     }
 
