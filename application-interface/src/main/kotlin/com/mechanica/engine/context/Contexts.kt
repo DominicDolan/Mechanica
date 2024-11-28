@@ -6,6 +6,7 @@ import com.mechanica.engine.configuration.ContextConfigurationData
 import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.display.Display
 import com.mechanica.engine.display.DrawSurface
+import java.awt.image.BufferedImage
 
 interface Context : Version {
     /**
@@ -36,6 +37,7 @@ interface SurfaceContext : Context {
 
 interface OpenGLContext : Context {
     fun startFrame()
+    fun screenshot(): BufferedImage
 }
 
 interface AudioContext : Context {

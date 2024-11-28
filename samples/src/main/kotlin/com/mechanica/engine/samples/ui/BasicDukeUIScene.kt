@@ -5,12 +5,19 @@ import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.Camera
 import com.mechanica.engine.samples.ui.duke.DukeUI
-import com.mechanica.engine.samples.ui.duke.component.ComponentBuilder
-import com.mechanica.engine.samples.ui.duke.component.ContentBuilder
+import com.mechanica.engine.samples.ui.duke.DukeUI.DukeBuilder
+import com.mechanica.engine.samples.ui.duke.builder.NodeBuilder
+import com.mechanica.engine.samples.ui.duke.builder.ContentBuilder
 import com.mechanica.engine.samples.ui.duke.context.DukeContext
 import com.mechanica.engine.samples.ui.duke.context.DukeViewport
 import com.mechanica.engine.samples.ui.duke.context.DukeWindow
 import com.mechanica.engine.samples.ui.duke.context.RenderDescription
+import com.mechanica.engine.samples.ui.duke.h
+import com.mechanica.engine.samples.ui.duke.layout.alignLeft
+import com.mechanica.engine.samples.ui.duke.layout.alignTop
+import com.mechanica.engine.samples.ui.duke.layout.width
+import com.mechanica.engine.samples.ui.duke.theme.DukeTheme
+import com.mechanica.engine.samples.ui.duke.theme.buildTheme
 
 
 class MechanicaDukeContext(camera: Camera) : DukeContext() {
@@ -23,6 +30,16 @@ class MechanicaDukeContext(camera: Camera) : DukeContext() {
         require(draw != null) { "Tried to draw UI but the Drawer is null! use setDrawer before running UI" }
 
         draw.ui.color(renderContext.style.color).rectangle(renderContext.x, renderContext.y, renderContext.width, renderContext.height)
+    }
+
+    override val theme = buildTheme {
+        hook("app") {
+            color.set(0x00FF00FF)
+
+            hook("listItem") {
+                color.set(0xFF00FFFF)
+            }
+        }
     }
 
     fun setDrawer(drawer: Drawer) {
@@ -41,35 +58,13 @@ class BasicDukeUIScene : Scene() {
 
     override fun update(delta: Double) {
         uiEngine.build {
-            e.layout.edit { p, s ->
-                top = p.top + 1.0
-                width = 5.0
+
+            h().layout().alignTop(1.0).width(5.0).alignLeft(3.0).edit { p, s ->
                 height = p.height/2.0
-                left = p.left + 3.0
-            }.style.edit {
-                color.set(0x00FF00FF)
-            }.content {
-                e.layout.edit { p, s ->
-                    center.set(p.center)
-                    width = p.width/2.0
-                    height = p.height/2.0
-                }.style.edit {
-                    color.set(0x0000FFFF)
-                }
-
-                e.layout.edit { p, s ->
-                    top = s.bottom
-                    height = 1.0
-
-                    left = p.left
-                    width = p.width
-                }.style.edit {
-                    color.set(0xFFFF00FF)
-                }
+            }.style().theme("app").content {
+                h()
             }
         }
     }
 }
 
-val ContentBuilder.e: ComponentBuilder
-    get() = appendComponent()

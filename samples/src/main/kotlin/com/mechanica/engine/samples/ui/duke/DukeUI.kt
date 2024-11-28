@@ -1,10 +1,10 @@
 package com.mechanica.engine.samples.ui.duke
 
-import com.mechanica.engine.samples.ui.duke.component.ComponentBuilder
-import com.mechanica.engine.samples.ui.duke.component.ComponentBuilderImpl
-import com.mechanica.engine.samples.ui.duke.component.ContentBuilder
-import com.mechanica.engine.samples.ui.duke.component.LayoutBuilderImpl
-import com.mechanica.engine.samples.ui.duke.component.StyleBuilderImpl
+import com.mechanica.engine.samples.ui.duke.builder.NodeBuilder
+import com.mechanica.engine.samples.ui.duke.builder.NodeBuilderImpl
+import com.mechanica.engine.samples.ui.duke.builder.ContentBuilder
+import com.mechanica.engine.samples.ui.duke.builder.LayoutBuilderImpl
+import com.mechanica.engine.samples.ui.duke.builder.StyleBuilderImpl
 import com.mechanica.engine.samples.ui.duke.context.DukeContext
 import com.mechanica.engine.samples.ui.duke.context.RenderDescription
 import com.mechanica.engine.samples.ui.duke.layout.Layout
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 class DukeUI(private val context: DukeContext) {
 
     private val baseNode = Node(null, null)
-    private val grandParentLayout = object : StaticLayout(context) {
+    private val rootLayout = object : StaticLayout(context) {
         override val x: Double
             get() = context.viewport.x
         override val y: Double
@@ -53,20 +53,44 @@ class DukeUI(private val context: DukeContext) {
 
 
     val dukeBuilder = DukeBuilder()
-    val componentBuilder = ComponentBuilderImpl(dukeBuilder)
     val builderMap = mutableMapOf<KClass<*>, Any>()
 
     var cursor = baseNode
+    var currentContentBuilder: ContentBuilder? = null
 
     inline fun build(builder: ContentBuilder.() -> Unit) {
-        dukeBuilder.appendContent(builder)
+        dukeBuilder.createNode().content(builder)
     }
 
     inner class DukeBuilder {
+        val currentLayouts: NodeLayouts
+            get() = cursor.layouts
+        val currentStyle: Style
+            get() = cursor.style
+        val currentThemeHooks: MutableSet<String>
+            get() = cursor.themeHooks
+        val currentContentBuilder: ContentBuilder
+            get() {
+                val value = this@DukeUI.currentContentBuilder
+                require(value != null) { "Tried to get the current content builder but it is null"}
+                return value
+            }
+
         val layout = LayoutBuilderImpl(this)
         val style = StyleBuilderImpl(this)
 
-        inline fun <reified T> useBuilder(constructor: (dukeBuilder: DukeBuilder) -> T): T {
+        fun matchThemeHook(hook: String) {
+            val nodes = context.theme.getMatchedNodes(hook)
+            if (nodes.isEmpty()) return
+
+            if (nodes.size == 1) {
+//                nodes[0].builder(currentStyle)
+                return
+            }
+
+        }
+
+        inline fun <reified T> useBuilder(constructor: (DukeBuilder) -> T): T {
             val builderClass = T::class
 
             if (builderMap.containsKey(builderClass)) {
@@ -78,21 +102,35 @@ class DukeUI(private val context: DukeContext) {
             }
         }
 
-        fun appendComponent(): ComponentBuilder {
+        inline fun <reified T> useBuilder(): T {
+            val builderClass = T::class
+
+            if (builderMap.containsKey(builderClass)) {
+                return builderMap[builderClass] as T
+            } else {
+                throw IllegalStateException("Tried to get a builder of type ${T::class} but a builder of that type has not been instantiated")
+            }
+        }
+
+        inline fun <reified C : ContentBuilder> createNodeWithBuilder(
+            contentBuilderConstructor: (DukeBuilder) -> C, prepareBuilder: ((C) -> Unit) = {}): NodeBuilder<C> {
             nextChild()
-            componentBuilder.prepare(cursor.layouts, cursor.style)
-            return componentBuilder
+//            currentContentBuilder.triggerOnPostAppend(cursor.currentChildIndex)
+            val contentBuilder = useBuilder(contentBuilderConstructor)
+            prepareBuilder(contentBuilder)
+            this@DukeUI.currentContentBuilder = contentBuilder
+
+            return useBuilder { NodeBuilderImpl(it) as NodeBuilder<C> }
         }
 
-        inline fun content(build: ContentBuilder.() -> Unit) {
-            appendContent(build)
+        fun createNode(): NodeBuilder<ContentBuilder> {
+            return createNodeWithBuilder({ ContentBuilder(it) })
         }
 
-        inline fun appendContent(build: ContentBuilder.() -> Unit) {
-            val contentBuilder = useBuilder { ContentBuilder(it) }
+        inline fun <C> buildContent(build: C.() -> Unit) {
             val oldCursor = cursor
             cursor = cursor.nextChild()
-            build(contentBuilder)
+            build(currentContentBuilder as C)
             cursor = oldCursor
         }
     }
@@ -118,8 +156,8 @@ class DukeUI(private val context: DukeContext) {
     fun render() {
         baseNode.layouts.layout.x = 0.0
         baseNode.layouts.layout.y = 0.0
-        baseNode.layouts.layout.width = grandParentLayout.width
-        baseNode.layouts.layout.height = grandParentLayout.height
+        baseNode.layouts.layout.width = rootLayout.width
+        baseNode.layouts.layout.height = rootLayout.height
 
         renderNode(baseNode)
         reset()
@@ -129,6 +167,7 @@ class DukeUI(private val context: DukeContext) {
         val children: ArrayList<Node> = ArrayList()
         val layout: MutableLayout = MutableLayout.create(context)
         override val style = Style()
+        val themeHooks = mutableSetOf<String>()
 
         override val x: Double
             get() = layout.x * widthScale + xAdjust
@@ -148,7 +187,7 @@ class DukeUI(private val context: DukeContext) {
         var currentChildIndex: Int = 0
 
         val parentLayout: Layout
-            get() = parent?.layouts?.layout ?: grandParentLayout
+            get() = parent?.layouts?.layout ?: rootLayout
 
         val firstLayout = object : StaticLayout(context) {
             override val x: Double
@@ -182,7 +221,7 @@ class DukeUI(private val context: DukeContext) {
 
         val layouts: NodeLayouts = object : NodeLayouts {
             override val layout: MutableLayout = this@Node.layout
-            override val parent: Layout = this@Node.parent?.layouts?.layout ?: grandParentLayout
+            override val parent: Layout = this@Node.parent?.layouts?.layout ?: rootLayout
             override var sibling: Layout = this@Node.sibling?.layouts?.layout ?: firstLayout
         }
     }

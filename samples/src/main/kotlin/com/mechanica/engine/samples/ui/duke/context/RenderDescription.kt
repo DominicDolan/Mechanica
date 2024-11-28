@@ -27,9 +27,7 @@ class RenderDescriptionImpl(context: DukeContext) {
         get() = layout.y * heightScale + yAdjust
 
     val width: Double
-        get() {
-            return layout.width * widthScale
-        }
+        get() = layout.width * widthScale
 
     val height: Double
         get() = layout.height * heightScale

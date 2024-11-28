@@ -40,24 +40,14 @@ abstract class DukeUIScene : SceneHub(), Renderable {
         val window = Window(-camera.width/2.0, -camera.height/2.0, camera.width, camera.height)
 //        val test = RenderDescription(CameraWindow(camera), viewport)
 
-        context = DukeUI(CameraWindow(camera), viewport)
+        context = DukeUI(window, viewport)
 
         context.defaultRender = NodeRendererToDrawer { draw, style -> defaultDraw(draw, style) }
     }
 
     override fun render(draw: Drawer) {
         context.data = draw
-        context.ui {
-            val outer = getElement { OuterElement() }
-
-            outer.layout.edit { _, _ ->
-                left = -camera.width/2.0
-                top = -camera.height/2.0
-                width = camera.width
-                height = camera.height
-            }
-            outer.ui()
-        }
+        context.ui { getElement { OuterElement() }.ui() }
     }
 
     inline fun <reified E : Element> getElement(initiator: (DukeUIScene) -> E): E {

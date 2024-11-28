@@ -1,9 +1,13 @@
 package com.mechanica.engine.samples.ui.duke.context
 
+import com.mechanica.engine.samples.ui.duke.theme.DukeTheme
+
 abstract class DukeContext {
 
     abstract val window: DukeWindow
     abstract val viewport: DukeViewport
+
+    abstract val theme: DukeTheme
 
     val leftIsLow by lazy {
         val horizontalIsRightwards = window.right > window.left
