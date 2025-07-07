@@ -53,16 +53,20 @@ class PathRenderer() {
                 vec4 rightAdjustment = vec4(x, y, 0.0, 0.0);
                 vec4 leftAdjustment = vec4(-x, -y, 0.0, 0.0);
                 
-                gl_Position = matrices(gl_in[0].gl_Position + rightAdjustment); 
+                gl_Position = matrices(gl_in[0].gl_Position + rightAdjustment);
+                gs_out.v_TexCoord = vec2(0.0, 0.0);
                 EmitVertex();
-
+            
                 gl_Position = matrices(gl_in[0].gl_Position + leftAdjustment);
+                gs_out.v_TexCoord = vec2(1.0, 0.0);
                 EmitVertex();
-
+            
                 gl_Position = matrices(gl_in[1].gl_Position + rightAdjustment);
+                gs_out.v_TexCoord = vec2(0.0, 1.0);
                 EmitVertex();
-
+            
                 gl_Position = matrices(gl_in[1].gl_Position + leftAdjustment);
+                gs_out.v_TexCoord = vec2(1.0, 1.0);
                 EmitVertex();
                                 
                 EndPrimitive();
@@ -120,7 +124,7 @@ class PathRenderer() {
                 in GS_OUT
                 {
                     vec2 v_TexCoord;
-                } fs_in;
+                } gs_out;
                                 
                 const float border = 0.01;
                 const float edge = 0.99;
@@ -129,7 +133,7 @@ class PathRenderer() {
                     if ($mode == 0.0) {
                         fragColor = $color;
                     } else {
-                        vec2 st = (fs_in.v_TexCoord - vec2(0.5));
+                        vec2 st = (gs_out.v_TexCoord - vec2(0.5));
                         float distance = dot(st, st)*2.0;
                         
                         float alpha = 1.0 - step(0.5 , distance);
