@@ -4,14 +4,14 @@ import com.mechanica.engine.util.Timer
 import kotlin.math.min
 
 class MultiUpdateCalculator(updateTime: Double) : DeltaCalculator {
-    private var dt = updateTime
+    private val dt = updateTime
     private var accumulator = 0.0
     private var variableTrackers = ArrayList<RenderableDouble>()
 
     override fun Updater.updateAndRender(lastFrame: Double, thisFrame: Double) {
         val frameLength = thisFrame - lastFrame
         accumulator += frameLength
-        dt = min(frameLength, dt)
+        val dt = min(frameLength, dt)
 
         while (accumulator > dt) {
             val preUpdateTime = Timer.now
