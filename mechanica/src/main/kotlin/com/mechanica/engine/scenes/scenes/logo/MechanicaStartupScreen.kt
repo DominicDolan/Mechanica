@@ -43,8 +43,8 @@ class MechanicaStartupScreen(private val textColor: Color = Color.black) : Scene
     override fun update(delta: Double) { }
 
     override fun render(draw: Drawer) {
-//        draw.darkGrey.alpha(textFadeIn.value*alpha).text(poweredBy, 0.04*titleSize, -0.47*titleSize, 0.225*titleSize)
-//        draw.color(textColor).alpha(textFadeIn.value*alpha)
-//        draw.centered.ui.transformed.scale(titleSize).model(title, 0f, 1f, true)
+        draw.darkGrey.alpha(textFadeIn.value*alpha).text(poweredBy, 0.04*titleSize, -0.47*titleSize, 0.225*titleSize)
+        draw.color(textColor).alpha(textFadeIn.value*alpha)
+        draw.centered.ui.transformed.scale(titleSize).model(title, 0f, 1f, true)
     }
 }
