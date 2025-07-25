@@ -1,6 +1,8 @@
 package com.mechanica.engine.scenes.exclusiveScenes
 
+import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.scenes.activation.ActiveState
+import com.mechanica.engine.scenes.scenes.Scene
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
