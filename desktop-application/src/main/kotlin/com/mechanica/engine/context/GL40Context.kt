@@ -32,13 +32,15 @@ class GL40Context(private val application: Application) : OpenGLContext {
         GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f)
         GL11.glClearColor(0f, 0f, 0f, 0f)
 
-        GL11.glEnable(GL11.GL_STENCIL_TEST)
-
         enableAlphaBlending()
     }
 
     override fun startFrame() {
+        GL11.glEnable(GL11.GL_STENCIL_TEST)
+        GL20.glStencilMask(0xFF)
+        GL11.glClearStencil(0)
         GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL11.GL_STENCIL_BUFFER_BIT)
+        GL11.glDisable(GL11.GL_STENCIL_TEST)
     }
 
     override fun screenshot(): BufferedImage {

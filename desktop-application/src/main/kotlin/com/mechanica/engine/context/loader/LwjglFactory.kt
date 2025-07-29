@@ -6,5 +6,6 @@ class LwjglFactory : MechanicaFactory {
     override val audioFactory = LwjglAudioFactory()
     override val inputFactory = LwjglInputFactory()
     override val miscFactory = LwjglMiscFactory()
+    override val stencilFactory = LwjglStencilFactory()
     override val shaderFactory = LwjglShaderFactory()
 }

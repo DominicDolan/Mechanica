@@ -5,6 +5,7 @@ import com.cave.library.color.toColor
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.context.loader.MechanicaFactory
+import com.mechanica.engine.context.loader.StencilType
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.attributes.FloatAttributeArray
 import com.mechanica.engine.shaders.models.Model
@@ -147,20 +148,13 @@ class PathRenderer() {
     }
 
     private val lineShader = DrawerShader.create(vertex, fragment, geometry = lineGeometry) {
-        prepareStencil()
-
         drawLineStrip.arrays(it)
-
-        MechanicaFactory.miscFactory.stencilFunction()
     }
     private val circleShader = DrawerShader.create(vertex, fragment, geometry = circleGeometry) {
-        prepareStencil()
 
         drawPoints.arrays(it)
 
         MechanicaFactory.miscFactory.enableAlphaBlending()
-
-        MechanicaFactory.miscFactory.stencilFunction()
     }
 
     var color: Color
@@ -189,11 +183,14 @@ class PathRenderer() {
     }
 
     fun render(transformation: Matrix4) {
-        MechanicaFactory.miscFactory.clearStencil()
+        MechanicaFactory.stencilFactory.enableStencilWrite(true)
+        MechanicaFactory.stencilFactory.prepareStencil(StencilType.Difference)
         fragment.mode.value = 0f
         lineShader.render(this.model, transformation)
         fragment.mode.value = 1f
         circleShader.render(this.model, transformation)
+        MechanicaFactory.stencilFactory.enableStencilWrite(false)
+        MechanicaFactory.stencilFactory.disableStencilTest()
     }
 
     fun fillFloats(path: List<Vector2>, count: Int = path.size) {
@@ -221,10 +218,4 @@ class PathRenderer() {
             floats = FloatArray(pathSize*3*2)
         }
     }
-
-    private fun prepareStencil() {
-        MechanicaFactory.miscFactory.prepareStencilForPath()
-    }
-
-
 }

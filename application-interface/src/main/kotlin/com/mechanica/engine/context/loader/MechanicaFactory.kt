@@ -10,6 +10,7 @@ interface MechanicaFactory {
     val audioFactory: AudioFactory
     val inputFactory: InputFactory
     val shaderFactory: ShaderFactory
+    val stencilFactory: StencilFactory
 
     val miscFactory: MiscFactory
 

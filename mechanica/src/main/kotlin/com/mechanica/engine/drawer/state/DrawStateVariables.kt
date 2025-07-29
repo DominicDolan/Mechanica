@@ -58,6 +58,18 @@ class DrawStateVariableList {
         return newVariable
     }
 
+    fun addInt(value: Int): DrawStateInt {
+        val newVariable = DrawStateInt(value, elements.size)
+        elements.add(newVariable)
+        return newVariable
+    }
+
+    fun addBoolean(value: Boolean): DrawStateBoolean {
+        val newVariable = DrawStateBoolean(value, elements.size)
+        elements.add(newVariable)
+        return newVariable
+    }
+
     fun addRadian(value: Angle): DrawStateRadian {
         val newVariable = DrawStateRadian(value, elements.size)
         elements.add(newVariable)
@@ -112,6 +124,44 @@ class DrawStateVariableList {
             private set
 
         var value: Double = resetValue
+            set(value) {
+                field = value
+                wasChanged = true
+                elements[index] = this
+            }
+
+        override fun reset() {
+            value = resetValue
+            wasChanged = false
+            elements[index] = null
+        }
+    }
+
+    inner class DrawStateInt(private val resetValue: Int, val index: Int) : Resettable {
+
+        var wasChanged = true
+            private set
+
+        var value: Int = resetValue
+            set(value) {
+                field = value
+                wasChanged = true
+                elements[index] = this
+            }
+
+        override fun reset() {
+            value = resetValue
+            wasChanged = false
+            elements[index] = null
+        }
+    }
+
+    inner class DrawStateBoolean(private val resetValue: Boolean, val index: Int) : Resettable {
+
+        var wasChanged = true
+            private set
+
+        var value: Boolean = resetValue
             set(value) {
                 field = value
                 wasChanged = true
