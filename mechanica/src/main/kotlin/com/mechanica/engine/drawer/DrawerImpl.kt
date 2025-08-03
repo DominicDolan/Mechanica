@@ -9,6 +9,8 @@ import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
 import com.mechanica.engine.drawer.subclasses.layout.OriginDrawerImpl
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawerImpl
+import com.mechanica.engine.drawer.subclasses.stencil.StencilDrawer
+import com.mechanica.engine.drawer.subclasses.stencil.StencilDrawerImpl
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawer
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawerImpl
 import com.mechanica.engine.drawer.subclasses.transformation.TransformationDrawer
@@ -81,6 +83,8 @@ class DrawerImpl(private val state: DrawState,
             state.viewMatrix.variable = Game.matrices.worldCamera
             return this
         }
+
+    override val stencil: StencilDrawer = StencilDrawerImpl(this, state)
 
     override fun radius(r: Number): Drawer {
         state.setRadius(r)

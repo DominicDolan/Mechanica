@@ -4,6 +4,7 @@ import com.cave.library.color.Color
 import com.cave.library.color.toColor
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.MutableVector2
+import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.shaders.models.Model
 
@@ -121,6 +122,16 @@ class DrawerRenderer {
     }
 
     fun render(state: DrawState, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
+        if (state.stencil.hasChanged) {
+            if (state.stencil.isWithColor.value) {
+                MechanicaFactory.miscFactory.enableColor()
+            } else {
+                MechanicaFactory.miscFactory.disableColor()
+            }
+
+            MechanicaFactory.stencilFactory.enableStencilWrite(state.stencil.writeMode.value)
+            MechanicaFactory.stencilFactory.prepareStencil(state.stencil.type.variable, state.stencil.reference.value)
+        }
         fragment.blend.value = blend
         fragment.alphaBlend.value = alphaBlend
         fragment.colorPassthrough.value = if (colorPassthrough) 1f else 0f

@@ -40,6 +40,7 @@ class DrawState : AbstractDrawState() {
     val transformation: TransformationState = list.add(TransformationState(origin))
     val color: ColorState = list.add(ColorState())
     val shader: ShaderState = list.add(ShaderState())
+    val stencil: StencilState = list.add(StencilState())
 
     var noReset = false
 

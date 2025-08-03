@@ -4,6 +4,8 @@ import com.cave.library.angle.radians
 import com.cave.library.color.Color
 import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.arrays.Vector2Arrays
+import com.mechanica.engine.context.loader.MechanicaFactory
+import com.mechanica.engine.context.loader.StencilType
 import com.mechanica.engine.drawer.shader.DrawerScript
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
@@ -83,5 +85,22 @@ class ColorState : AbstractDrawState() {
 
     fun assignColorsToFragment(fragmentScript: DrawerScript) {
         fragmentScript.color.set(fill)
+    }
+}
+
+class StencilState : AbstractDrawState() {
+    val type = list.addVariable(StencilType.Union) { variable = StencilType.Union }
+    val writeMode = list.addBoolean(true)
+    val mask = list.addInt(0xFF)
+    val reference = list.addInt(1)
+    val isWithColor = list.addBoolean(true)
+    var suppressReset: Boolean = false
+
+    override fun reset() {
+        if (!suppressReset) {
+            super.reset()
+            MechanicaFactory.stencilFactory.disableStencilTest()
+            MechanicaFactory.miscFactory.enableColor()
+        }
     }
 }

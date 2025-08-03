@@ -7,6 +7,7 @@ import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.drawer.subclasses.color.ColorDrawer
 import com.mechanica.engine.drawer.subclasses.layout.OriginDrawer
 import com.mechanica.engine.drawer.subclasses.rotation.RotatedDrawer
+import com.mechanica.engine.drawer.subclasses.stencil.StencilDrawer
 import com.mechanica.engine.drawer.subclasses.stroke.StrokeDrawer
 import com.mechanica.engine.drawer.subclasses.transformation.TransformationDrawer
 import com.mechanica.engine.drawer.superclass.circle.CircleDrawer
@@ -88,6 +89,8 @@ interface Drawer : RectangleDrawer, CircleDrawer, ImageDrawer, TextDrawer, PathD
     val world: Drawer
 
     val transformed: TransformationDrawer
+
+    val stencil: StencilDrawer
 
     fun background()
 
