@@ -6,6 +6,7 @@ import com.cave.library.matrix.mat4.Matrix4
 import com.cave.library.vector.vec2.MutableVector2
 import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.drawer.state.DrawState
+import com.mechanica.engine.drawer.state.StencilState
 import com.mechanica.engine.shaders.models.Model
 
 class DrawerRenderer {
@@ -67,7 +68,13 @@ class DrawerRenderer {
                         float smoothEnd = radius + smoothStroke*(1.0 - strokeShift);
                         
                         float alpha = 1.0 - smoothstep(smoothStart, smoothEnd, distance);
-                        fragColor = vec4(inColor.rgb, inColor.a*alpha);
+                        float fragAlpha = inColor.a*alpha;
+                        
+                        if (fragAlpha == 0.0) {
+                            discard;
+                        }
+                        
+                        fragColor = vec4(inColor.rgb, fragAlpha);
                     } else {
                         fragColor = inColor;
                     }
@@ -122,16 +129,7 @@ class DrawerRenderer {
     }
 
     fun render(state: DrawState, blend: Float, alphaBlend: Float, colorPassthrough: Boolean) {
-        if (state.stencil.hasChanged) {
-            if (state.stencil.isWithColor.value) {
-                MechanicaFactory.miscFactory.enableColor()
-            } else {
-                MechanicaFactory.miscFactory.disableColor()
-            }
-
-            MechanicaFactory.stencilFactory.enableStencilWrite(state.stencil.writeMode.value)
-            MechanicaFactory.stencilFactory.prepareStencil(state.stencil.type.variable, state.stencil.reference.value)
-        }
+        prepareStencil(state.stencil)
         fragment.blend.value = blend
         fragment.alphaBlend.value = alphaBlend
         fragment.colorPassthrough.value = if (colorPassthrough) 1f else 0f
@@ -153,5 +151,20 @@ class DrawerRenderer {
         colorPassthrough = false
         blend = 0f
         alphaBlend = 0f
+    }
+
+    companion object {
+        fun prepareStencil(state: StencilState) {
+            if (state.hasChanged) {
+                if (state.isWithColor.value) {
+                    MechanicaFactory.miscFactory.enableColor()
+                } else {
+                    MechanicaFactory.miscFactory.disableColor()
+                }
+
+                MechanicaFactory.stencilFactory.enableStencilWrite(state.writeMode.value)
+                MechanicaFactory.stencilFactory.prepareStencil(state.type.variable, state.reference.value)
+            }
+        }
     }
 }

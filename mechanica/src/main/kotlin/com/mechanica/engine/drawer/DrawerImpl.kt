@@ -113,6 +113,7 @@ class DrawerImpl(private val state: DrawState,
     }
 
     override fun shader(shader: DrawerShader, model: Model?) {
+        DrawerRenderer.prepareStencil(state.stencil)
         shader.fragment.color.set(state.color.fill)
         shader.fragment.size.set(state.shader.cornerSize)
         shader.fragment.radius.value = state.shader.radius.value.toFloat()

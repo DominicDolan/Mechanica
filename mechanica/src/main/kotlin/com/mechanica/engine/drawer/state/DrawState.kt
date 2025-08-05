@@ -72,7 +72,12 @@ class DrawState : AbstractDrawState() {
     }
 
     fun setRadius(radius: Number) {
+        val diameter = radius.toDouble()*2.0
         shader.radius.value = radius.toDouble()
+
+        setScale(diameter, diameter)
+        shader.cornerSize.set(diameter, diameter)
+
     }
 
     fun setModel(model: Model) {
