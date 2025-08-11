@@ -13,10 +13,15 @@ class LwjglStencilFactory : StencilFactory {
         }
     }
 
+    override fun enableStencilWrite(allowedBits: Int) {
+        GL20.glEnable(GL20.GL_STENCIL_TEST)
+        GL20.glStencilMask(allowedBits)
+    }
+
     /*
-        Stencil test formula:
-        (stencil_buffer_value & mask) COMPARE_OP (ref & mask)
-     */
+            Stencil test formula:
+            (stencil_buffer_value & mask) COMPARE_OP (ref & mask)
+         */
     override fun prepareStencil(type: StencilType, ref: Int, mask: Int) {
         GL20.glEnable(GL20.GL_STENCIL_TEST)
         val func = when (type) {
