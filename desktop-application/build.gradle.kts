@@ -5,8 +5,7 @@ plugins {
 }
 
 val lwjglVersion = "3.3.4"
-val lwjglNatives = "natives-windows"
-
+val lwjglNatives = providers.gradleProperty("lwjgl_natives").get()
 
 val coreLwjgl: DependencyHandlerScope.() -> Unit = {
     //lwjgl

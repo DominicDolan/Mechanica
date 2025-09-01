@@ -12,6 +12,13 @@ Examples can be seen in the `samples` module in Mechanica
 
 Clone or download the repository and build with gradle.
 
+Add a `gradle.properties` which looks like this:
+
+```properties
+kotlin_cave_home=/home/user/Source/Mechanica/Kotlin-CAVE
+lwjgl_natives=natives-linux
+```
+
 Building it will require java 12 or later and note that later versions of Java require the latest version of Gradle.
 
 Try and run one of the samples in the samples module to check that everything is working.
