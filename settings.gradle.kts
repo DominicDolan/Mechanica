@@ -15,6 +15,4 @@ pluginManagement {
 
 rootProject.name = "Mechanica"
 
-val pathToKotlinCave = providers.gradleProperty("kotlin_cave_home").get()
-includeBuild(pathToKotlinCave)
 include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")

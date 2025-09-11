@@ -3,11 +3,15 @@ package com.mechanica.engine.animation
 import com.mechanica.engine.util.extensions.constrainLooped
 import com.mechanica.engine.util.extensions.fori
 
-class AnimationSequence(private vararg val animations: AnimationController): AnimationController {
+class AnimationSequence(offset: Double?, vararg val animations: AnimationController): AnimationController {
     override val startTime: Double
     override val endTime: Double
 
+    val offset: Double = offset ?: 0.0
+
     override var looped: Boolean = false
+
+    constructor(vararg animations: AnimationController): this(null, *animations)
 
     override var time: Double = 0.0
         private set(value) {
@@ -60,14 +64,14 @@ class AnimationSequence(private vararg val animations: AnimationController): Ani
     override fun goTo(time: Double) {
         this.time = time
         animations.fori {
-            it.goTo(time)
+            it.goTo(time + offset)
         }
     }
 
     override fun update(delta: Double) {
         if (!paused) {
             animations.fori {
-                it.goTo(time)
+                it.goTo(time + offset)
             }
             time += delta
         }
