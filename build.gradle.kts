@@ -23,7 +23,7 @@ val commonDependencies: DependencyHandlerScope.() -> Unit = {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
 
-    api(files("libs/Kotlin-CAVE-jvm-0.1.jar"))
+    api(files("libs/Kotlin-CAVE-jvm-0.2.jar"))
 
 }
 
