@@ -13,6 +13,16 @@ pluginManagement {
     }
 }
 
+// DukeCompose — the reactive layout engine mechanica-ui is built on. Included as a composite
+// build rather than a published jar (as DukeUI was) because both sides are moving: an edit in
+// DukeCompose is picked up by the next Mechanica build with no publish step. Override the
+// location with `dukecompose_home` in gradle.properties if it is not a sibling checkout.
+//
+// This build's Gradle version runs the included build too, which is why DukeCompose is pinned to
+// the same Gradle / Kotlin / JVM versions as Mechanica.
+val dukeComposeHome = providers.gradleProperty("dukecompose_home").orNull ?: "../DukeUI2/DukeCompose"
+includeBuild(dukeComposeHome)
+
 rootProject.name = "Mechanica"
 
 include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
