@@ -1,30 +1,26 @@
 package com.mechanica.engine.compose
 
-import com.dubulduke.layout.DukeBackend
-import com.dubulduke.layout.DukeHost
-import com.dubulduke.layout.Element
-import com.dubulduke.layout.ElementTree
-import com.dubulduke.dsl.ElementScope
-import com.dubulduke.dsl.RefSignal
-import com.dubulduke.dsl.Signal
+import com.dubulduke.dsl.DukeApp
 import com.dubulduke.dsl.StyleFactory
-import com.dubulduke.dsl.refSignal
-import com.dubulduke.dsl.signal
-import com.dubulduke.dsl.compose
-import com.dubulduke.layout.Pointer
+import com.dubulduke.layout.ClipRect
+import com.dubulduke.layout.Element
+import com.dubulduke.layout.NodeView
 import com.dubulduke.layout.Viewport
 import com.dubulduke.layout.Window
-import com.dubulduke.layout.draw
-import com.dubulduke.reactivity.Graph
-import com.dubulduke.reactivity.Slot
+import com.dubulduke.layout.fontOf
+import com.dubulduke.layout.widthOf
+import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
-import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.game.view.UICamera
+import com.mechanica.engine.input.mouse.Mouse
+import com.mechanica.engine.shaders.text.Text
+import java.util.IdentityHashMap
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
- * DukeCompose wired to a Mechanica UI camera: host, graph, element tree and draw walk in one
- * object, split into the phases `dsl-and-engine.md` §6.2 asks for.
+ * DukeCompose on a Mechanica UI camera: the whole integration in one class.
  *
  * ```kotlin
  * class MyScene : Scene() {
@@ -45,80 +41,42 @@ import com.mechanica.engine.game.view.UICamera
  * }
  * ```
  *
- * ### Compose once
+ * Everything platform-independent — the graph, the element tree, the pointer, the viewport inputs,
+ * `compose` / `update` / `draw` — lives in [DukeApp]. What is left here is only what is actually
+ * about Mechanica: the camera mapping, the mouse, and how a `Drawer` paints a box and a string.
+ * `compose` may be called **once**; see [DukeApp].
  *
- * [compose] may be called once. That is not a limitation being worked around, it is the point:
- * values change by writing graph inputs, not by re-running composition, so a UI whose *structure*
- * is fixed never recomposes at all. Iteration B's `uiEngine.build { }` ran every frame from
- * `update(delta)`; doing that here would rebuild the graph every frame, discard every memoised
- * value, and grow the node array without bound — `:reactivity` has no disposal yet.
+ * A subclass extends the same four things it already overrides — which is how a game with its own
+ * shaders customises drawing, rather than by supplying a separate backend object:
  *
- * Structural change — a list whose length varies, a panel that appears — therefore needs
- * reconciliation, which is not built (`layout-design.md` Q10). Until it is, compose the maximum
- * structure and hide what is not wanted with `isVisible`, or rebuild the whole `MechanicaUI`.
- *
- * ### The order of the phases
- *
- * [update] pushes the camera size into the graph; [draw] pulls. Nothing is laid out in between,
- * because reading geometry *is* what evaluates it — the draw walk is the layout driver, and a
- * frame in which nothing changed recomputes nothing.
+ * ```kotlin
+ * class NeonUI : MechanicaUI<NeonStyle>(StyleFactory { NeonStyle() }) {
+ *     override fun fill(node: NodeView<NeonStyle>, style: NeonStyle, renderer: Drawer) {
+ *         if (style.glowLevel > 0.0) drawGlow(node, style, renderer) else super.fill(node, style, renderer)
+ *     }
+ * }
+ * ```
  *
  * **A font requires an OpenGL context**, so construct this after `Game.create()` / inside a
  * `Scene`, never in a top-level `val`.
  */
-class MechanicaUI<S>(
-    /**
-     * Makes the application's style objects. There are no framework default styles (§4.5) — but
-     * `MechanicaUI()` with no arguments gives you [MechanicaStyle], which is the batteries-included
-     * path for an application that has not outgrown what a `Drawer` can draw.
-     */
-    val styles: StyleFactory<S>,
+open class MechanicaUI<S>(
+    styles: StyleFactory<S>,
     private val camera: UICamera = Game.ui,
+    /**
+     * Shared with the draw path deliberately: layout decides how tall a label is by wrapping it,
+     * and [drawText] has to reproduce the identical breaks or the box and its contents disagree.
+     * Two metrics objects with the same settings would agree today and nothing would keep them
+     * that way.
+     */
     val metrics: MechanicaTextMetrics = MechanicaTextMetrics(),
-    /**
-     * Substitutable so an application can supply its own drawing — a glow shader, a widget that is
-     * not a rectangle. Defaults to one sharing [metrics], because the backend has to re-apply the
-     * same wrap layout measured with, and a substitute that draws text is responsible for the same.
-     */
-    private val backend: DukeBackend<S, Drawer> = MechanicaBackend(metrics),
-) : DukeHost where S : Any, S : HasBackground, S : HasText {
-
-    val graph = Graph()
-    val tree = ElementTree(graph, metrics)
-
-    /**
-     * The camera's size, as graph inputs.
-     *
-     * Two independent nodes rather than one "viewport" object, because the axes are independent
-     * (`layout-design.md` §2.2): a window that gets wider but no taller must not invalidate
-     * anything that only reads the height. That is measurable — a resize on the benchmark scene
-     * re-runs about a quarter of the graph, not all of it.
-     */
-    private val viewportWidthSlot: Slot = graph.input(camera.width, "viewport.width")
-    private val viewportHeightSlot: Slot = graph.input(camera.height, "viewport.height")
-
-    /**
-     * The camera's size, read through the graph.
-     *
-     * Plain `Double` getters rather than exposed slots, so a layout expression says
-     * `width { ui.viewportWidth }` and never `g.read(...)`. The read is tracked exactly as before —
-     * tracking is dynamic, so what matters is that something is evaluating when the getter runs,
-     * not how the call is spelled.
-     */
-    val viewportWidth: Double get() = graph.read(viewportWidthSlot)
-    val viewportHeight: Double get() = graph.read(viewportHeightSlot)
-
-    /** Create an application-owned value the layout graph can watch. */
-    fun signal(initial: Double = 0.0, name: String? = null): Signal = graph.signal(initial, name)
-
-    /** Create an application-owned reference — a label's text, a selected item — the graph watches. */
-    fun <T> refSignal(initial: T, name: String? = null): RefSignal<T> = graph.refSignal(initial, name)
+) : DukeApp<S, Drawer>(styles, metrics) where S : Any, S : HasBackground, S : HasText {
 
     /**
      * Layout coordinates are y-down with the origin at the top-left of the camera, which is what
-     * makes `origin { 0.0 }` mean "the top-left corner" and lets a list stack downwards by adding.
-     * The flip back to Mechanica's y-up camera is the negative viewport height in [viewport], and
-     * it happens once, in the draw walk.
+     * makes `top { 0.0 }` mean "the top of the screen" and lets a list stack downwards by adding.
+     * The flip back to Mechanica's y-up camera is the negative viewport height below, and it
+     * happens once, in the draw walk.
      */
     override val window: Window
         get() = Window(-camera.width / 2.0, -camera.height / 2.0, camera.width, camera.height)
@@ -126,49 +84,176 @@ class MechanicaUI<S>(
     override val viewport: Viewport
         get() = Viewport(0.0, 0.0, camera.width, -camera.height)
 
-    override val textMetrics get() = metrics
-
-    private var composed = false
-
-    /** Build the UI. Once — see the class docs. Returns the root element. */
-    fun compose(build: ElementScope<S>.() -> Unit): Element {
-        check(!composed) { "MechanicaUI.compose may only be called once; drive changes with inputs" }
-        composed = true
-        return tree.compose(styles, "ui", build)
-    }
-
-    /**
-     * Hover, press and click dispatch. `dsl-and-engine.md` §7.
-     *
-     * Hit-tests against the geometry the *last* frame settled on, which is why this is not a cycle
-     * even though hover can change layout: one frame of lag is already inherent, since input is
-     * sampled before anything is drawn.
-     */
-    val pointer = Pointer(tree)
-
     private val mouse = Mouse.create()
 
-    /**
-     * Push this frame's input and camera size into the graph, and dispatch any clicks.
-     *
-     * Order matters, and it is the order of §7.1: hit test and dispatch first, so a handler that
-     * mutates application state does so *before* the layout that will read it. Writing an
-     * unchanged input is free — the graph compares before it marks — so a still pointer over a
-     * still window costs one hit test and no invalidation at all.
-     */
-    fun update() {
-        if (composed) {
-            val p = mouse.ui
-            pointer.update(this, p.x, p.y, down = mouse.MB1.isDown)
-        }
-        graph.setInput(viewportWidthSlot, camera.width)
-        graph.setInput(viewportHeightSlot, camera.height)
+    /** Sample the mouse and run the frame. See [DukeApp.update]. */
+    override fun update() {
+        val p = mouse.ui
+        // `distance` is this frame's wheel movement and is zero on almost every frame, so it is
+        // read unconditionally rather than gated on `hasBeenPressed` — the gate is what a polled
+        // caller needs, and dispatch already does nothing when the delta is zero.
+        update(p.x, p.y, pressed = mouse.MB1.isDown, wheel = mouse.scroll.distance)
     }
 
-    /** Lay out whatever is stale and draw. */
-    fun draw(drawer: Drawer) {
-        if (!composed) return
-        tree.draw(this, backend, drawer)
+    // ── Clipping ──────────────────────────────────────────────────────────────────────────────
+
+    /**
+     * The clips currently in force, innermost last.
+     *
+     * A stack rather than a single rectangle because [popClip] has to *restore*, and GL scissor
+     * state is a single register with no notion of nesting. DukeCompose has already intersected
+     * each rectangle with its ancestors, so what is stored here is the final answer at each depth
+     * and restoring is a plain re-apply.
+     */
+    private val clips = ArrayList<ClipRect>()
+
+    override fun pushClip(clip: ClipRect, renderer: Drawer) {
+        clips += clip
+        applyScissor(clip)
+    }
+
+    override fun popClip(renderer: Drawer) {
+        clips.removeAt(clips.lastIndex)
+        val enclosing = clips.lastOrNull()
+        if (enclosing == null) MechanicaFactory.scissorFactory.disableScissor()
+        else applyScissor(enclosing)
+    }
+
+    /**
+     * Convert a clip from UI-camera coordinates to framebuffer pixels and hand it to GL.
+     *
+     * The camera spans `±width/2` about the origin and is y-up, which is also the scissor
+     * rectangle's convention, so this is a scale and an offset with no flip — the y-down of layout
+     * was already undone by the negative [viewport] height before a [ClipRect] was built.
+     *
+     * Rounded outwards rather than to nearest: a half-covered boundary pixel is better kept than
+     * dropped, since the alternative shows a one-pixel gap between a panel's border and the content
+     * it is clipping.
+     */
+    private fun applyScissor(clip: ClipRect) {
+        val surface = Game.surface
+        val w = camera.width
+        val h = camera.height
+        if (w == 0.0 || h == 0.0) return
+
+        val x0 = floor((clip.minX + w / 2.0) / w * surface.width).toInt()
+        val y0 = floor((clip.minY + h / 2.0) / h * surface.height).toInt()
+        val x1 = ceil((clip.maxX + w / 2.0) / w * surface.width).toInt()
+        val y1 = ceil((clip.maxY + h / 2.0) / h * surface.height).toInt()
+
+        MechanicaFactory.scissorFactory.enableScissor(x0, y0, x1 - x0, y1 - y0)
+    }
+
+    /**
+     * Draw the UI, leaving the scissor test off however the walk ended.
+     *
+     * Belt and braces: [popClip] already balances [pushClip], but GL scissor state is global, so
+     * an exception part-way through a clipped subtree would otherwise leave the *world* camera
+     * clipped to a UI panel — a bug that shows up three systems away as "the game stopped
+     * rendering" with nothing pointing back here.
+     */
+    override fun draw(renderer: Drawer) {
+        try {
+            super.draw(renderer)
+        } finally {
+            if (clips.isNotEmpty()) {
+                clips.clear()
+                MechanicaFactory.scissorFactory.disableScissor()
+            }
+        }
+    }
+
+    // ── Drawing ───────────────────────────────────────────────────────────────────────────────
+    //
+    // Geometry arrives already in window coordinates — the viewport transform lives in
+    // DukeCompose's draw walk — so nothing here sees layout coordinates. Extents arrive *signed*:
+    // the UI camera is y-up while layout is y-down, so `height` is normally negative.
+    // `Drawer.rectangle` handles that, and the text placement below is iteration A's formula
+    // unchanged for the same reason.
+
+    /**
+     * One [Text] per text element, plus what it was last built from.
+     *
+     * `Text` rebuilds its vertex buffers in its constructor and again on every `string` / `font`
+     * assignment, so allocating or reassigning one per frame would re-tesselate every glyph in the
+     * UI every frame. Caching the inputs means a static label costs nothing after its first frame,
+     * and a re-wrap happens exactly when the text, the font or the laid-out width changed.
+     *
+     * Keyed by element identity, which is stable because composition happens once; **this leaks one
+     * entry per text element retired by a recomposition**, and wants clearing from reconciliation
+     * when that exists.
+     */
+    private class Cached(@JvmField val model: Text) {
+        @JvmField var source: String? = null
+        @JvmField var width: Double = Double.NaN
+        @JvmField var font: MechanicaFont? = null
+    }
+
+    private val texts = IdentityHashMap<Element, Cached>()
+
+    override fun drawBox(node: NodeView<S>, renderer: Drawer) {
+        val style = node.styleOrNull ?: return
+        fill(node, style, renderer)
+    }
+
+    override fun drawText(node: NodeView<S>, text: String, renderer: Drawer) {
+        val style = node.styleOrNull ?: return
+        if (!style.isVisible) return
+        fill(node, style, renderer)
+
+        // The font layout measured with, so that what is drawn matches what was laid out. Any other
+        // FontRef is one DukeCompose could measure but Mechanica cannot draw, which is silent
+        // misalignment rather than an error — worth failing loudly for.
+        val content = node.element.content ?: return
+        val font = node.graph.fontOf(content) as? MechanicaFont
+            ?: throw IllegalStateException(
+                "${node.element} was laid out with a ${node.graph.fontOf(content)::class.simpleName}, " +
+                        "which MechanicaUI cannot draw; use a MechanicaFont"
+            )
+
+        // Mechanica's `Text` breaks on explicit \n and nothing else, so the wrap layout used to
+        // decide this element's height has to be materialised into the string. Without this the box
+        // is three lines tall and the text is one long line running out the side of it.
+        //
+        // Measured in layout units, not `node.width`: the latter has been through the viewport
+        // transform and is signed, while the metrics wrapped in the space layout works in.
+        val width = node.graph.widthOf(node.element)
+
+        val cached = texts.getOrPut(node.element) { Cached(Text(text, font.font)) }
+        if (cached.source != text || cached.width != width || cached.font !== font) {
+            val model = cached.model
+            // Both setters re-tesselate, so only assign on an actual change. This is the draw-side
+            // twin of RefEquality.EQUALS on the text node.
+            if (model.font !== font.font) model.font = font.font
+            val broken = metrics.wrapped(text, font, width)
+            if (model.string != broken) model.string = broken
+            cached.source = text
+            cached.width = width
+            cached.font = font
+        }
+
+        val a = style.textAlignment
+        renderer.ui.color(style.textColor)
+            .origin.normalized(a.x, 1.0 - a.y)
+            .text(cached.model, font.size, node.x + a.x * node.width, node.y + a.y * node.height)
+    }
+
+    /**
+     * Paint this element's background.
+     *
+     * `protected open` on purpose: this is the seam for a custom-shaded widget. A subclass with a
+     * richer style type overrides it, checks its own capability — a glow level, a shader handle —
+     * and falls back to `super.fill(...)` for the ordinary case, without reimplementing text
+     * handling or the wrap cache. Overriding `drawCustom` and routing through `kind("…")` is the
+     * other route, and the better one when the widget is not a rectangle at all.
+     */
+    protected open fun fill(node: NodeView<S>, style: S, renderer: Drawer) {
+        if (!style.isVisible || style.color.a <= 0.0) return
+
+        renderer.ui
+            .radius(style.radius)
+            .color(style.color)
+            .rectangle(node.x, node.y, node.width, node.height)
     }
 }
 

@@ -23,8 +23,8 @@ import com.cave.library.vector.vec2.MutableVector2
  * fun <S> ElementScope<S>.neonPanel(body: ElementScope<S>.() -> Unit)
  *     where S : Any, S : HasBackground, S : HasGlow { … }
  *
- * // and a backend that knows how to render it
- * class NeonBackend(m: MechanicaTextMetrics) : MechanicaBackend<NeonStyle>(m) {
+ * // and a UI that knows how to render it
+ * class NeonUI : MechanicaUI<NeonStyle>(StyleFactory { NeonStyle() }) {
  *     override fun fill(node: NodeView<NeonStyle>, style: NeonStyle, renderer: Drawer) {
  *         if (style.glowLevel > 0.0) drawGlow(node, style, renderer) else super.fill(node, style, renderer)
  *     }
