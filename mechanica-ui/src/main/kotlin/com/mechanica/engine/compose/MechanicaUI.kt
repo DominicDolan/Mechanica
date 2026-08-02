@@ -1,6 +1,7 @@
 package com.mechanica.engine.compose
 
 import com.dubulduke.dsl.DukeApp
+import com.dubulduke.dsl.DukeInput
 import com.dubulduke.dsl.StyleFactory
 import com.dubulduke.layout.ClipRect
 import com.dubulduke.layout.Element
@@ -16,6 +17,7 @@ import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.shaders.text.Text
 import java.util.IdentityHashMap
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -86,13 +88,21 @@ open class MechanicaUI<S>(
 
     private val mouse = Mouse.create()
 
-    /** Sample the mouse and run the frame. See [DukeApp.update]. */
-    override fun update() {
-        val p = mouse.ui
-        // `distance` is this frame's wheel movement and is zero on almost every frame, so it is
-        // read unconditionally rather than gated on `hasBeenPressed` — the gate is what a polled
-        // caller needs, and dispatch already does nothing when the delta is zero.
-        update(p.x, p.y, pressed = mouse.MB1.isDown, wheel = mouse.scroll.distance)
+    override val input = object : DukeInput {
+        override fun isClickDown(): Boolean {
+            return mouse.MB1.isDown
+        }
+
+        override fun isRightClickDown(): Boolean {
+            return mouse.MB2.isDown
+        }
+
+        override val pointerX: Double
+            get() = mouse.ui.x
+        override val pointerY: Double
+            get() = mouse.ui.y
+        override val scrollDistance: Double
+            get() = mouse.scroll.distance
     }
 
     // ── Clipping ──────────────────────────────────────────────────────────────────────────────

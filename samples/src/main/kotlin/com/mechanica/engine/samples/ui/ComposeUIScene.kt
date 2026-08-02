@@ -287,7 +287,7 @@ class ComposeUIScene : Scene() {
     override fun update(delta: Double) {
         elapsed += delta
         clock.value = elapsed
-        ui.update()
+        ui.update(delta)
     }
 
     override fun render(draw: Drawer) = ui.draw(draw)
