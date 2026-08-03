@@ -5,6 +5,7 @@ import com.dubulduke.dsl.DukeInput
 import com.dubulduke.dsl.StyleFactory
 import com.dubulduke.layout.ClipRect
 import com.dubulduke.layout.Element
+import com.dubulduke.layout.FocusCommand
 import com.dubulduke.layout.NodeView
 import com.dubulduke.layout.Viewport
 import com.dubulduke.layout.Window
@@ -14,6 +15,7 @@ import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
 import com.mechanica.engine.game.view.UICamera
+import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.shaders.text.Text
 import java.util.IdentityHashMap
@@ -88,6 +90,15 @@ open class MechanicaUI<S>(
 
     private val mouse = Mouse.create()
 
+    /**
+     * The keyboard, for focus navigation only.
+     *
+     * `MechanicaUI` deliberately does not consume text: a UI that swallowed keys the game wanted
+     * would be worse than one that ignores them, and text entry needs a focused field to go to,
+     * which does not exist yet.
+     */
+    private val keyboard = Keyboard
+
     override val input = object : DukeInput {
         override fun isClickDown(): Boolean {
             return mouse.MB1.isDown
@@ -103,6 +114,34 @@ open class MechanicaUI<S>(
             get() = mouse.ui.y
         override val scrollDistance: Double
             get() = mouse.scroll.distance
+
+        /**
+         * Keyboard to [FocusCommand], which is the only place in the stack that knows a key code.
+         *
+         * `hasBeenPressed` rather than `isDown` throughout: navigation is a discrete gesture, and a
+         * held tab key that advanced focus every frame would cross a menu in a tenth of a second.
+         *
+         * Order is precedence, and only one of these can be true per frame by construction — but
+         * stating it as a chain rather than a `when` over independent booleans makes the tab /
+         * shift-tab pair readable, which is the one case where two keys combine.
+         */
+        override val navigation: FocusCommand?
+            get() = when {
+                keyboard.tab.hasBeenPressed ->
+                    if (keyboard.shift.isDown) FocusCommand.PREVIOUS else FocusCommand.NEXT
+
+                keyboard.up.hasBeenPressed -> FocusCommand.UP
+                keyboard.down.hasBeenPressed -> FocusCommand.DOWN
+                keyboard.left.hasBeenPressed -> FocusCommand.LEFT
+                keyboard.right.hasBeenPressed -> FocusCommand.RIGHT
+
+                keyboard.enter.hasBeenPressed || keyboard.space.hasBeenPressed ->
+                    FocusCommand.ACTIVATE
+
+                keyboard.esc.hasBeenPressed -> FocusCommand.CANCEL
+
+                else -> null
+            }
     }
 
     // ── Clipping ──────────────────────────────────────────────────────────────────────────────
@@ -189,9 +228,11 @@ open class MechanicaUI<S>(
      * UI every frame. Caching the inputs means a static label costs nothing after its first frame,
      * and a re-wrap happens exactly when the text, the font or the laid-out width changed.
      *
-     * Keyed by element identity, which is stable because composition happens once; **this leaks one
-     * entry per text element retired by a recomposition**, and wants clearing from reconciliation
-     * when that exists.
+     * Keyed by element identity, which is stable because composition happens once — but *only* for
+     * as long as the element lives. A `forEach` row that is reconciled away is simply absent from
+     * the next draw walk rather than announced, so without the [ElementTree.onDispose] hook below
+     * this map grows for as long as a list churns. The entry is a `Text` holding two arrays sized
+     * to the string, so the leak is real rather than nominal.
      */
     private class Cached(@JvmField val model: Text) {
         @JvmField var source: String? = null
@@ -200,6 +241,15 @@ open class MechanicaUI<S>(
     }
 
     private val texts = IdentityHashMap<Element, Cached>()
+
+    init {
+        // `Text` owns no GL handle — it is plain heap arrays — so dropping the reference is the
+        // whole of the cleanup. If that ever changes this is where the release goes.
+        tree.onDispose { texts.remove(it) }
+    }
+
+    /** How many text models are cached. Diagnostics: it should track the live text elements. */
+    val cachedTextCount: Int get() = texts.size
 
     override fun drawBox(node: NodeView<S>, renderer: Drawer) {
         val style = node.styleOrNull ?: return
