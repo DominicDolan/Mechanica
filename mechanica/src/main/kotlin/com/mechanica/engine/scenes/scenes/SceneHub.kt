@@ -31,25 +31,31 @@ abstract class SceneHub : SceneNode {
         return scene
     }
 
+    /**
+     * Detaches [scene] from this hub and notifies its entire subtree, deepest first.
+     * Every detached node receives [SceneNode.onRemove] exactly once.
+     */
     fun removeScene(scene: SceneNode): Boolean {
-        val sceneToRemove = childHolders.find { it.scene === scene }
-        return if (sceneToRemove != null) {
-            listHasChanged = true
-            sceneToRemove.scene.onRemove()
-            childHolders.remove(sceneToRemove)
-        } else false
+        val index = childHolders.indexOfFirst { it.scene === scene }
+        if (index == -1) return false
+
+        childHolders.removeAt(index)
+        listHasChanged = true
+        scene.detach()
+        return true
     }
 
     fun <S : SceneNode> replaceScene(old: S, new: S): S {
         val index = childHolders.indexOfFirst { it.scene === old }
         if (index != -1) {
             val order = childHolders[index].order
-            val oldScene = childHolders.removeAt(index)
-            oldScene.scene.onRemove()
+            childHolders.removeAt(index)
 
             childHolders.add(index, SceneNodeHolder(new, order))
             childHolders.sortBy { it.order }
             listHasChanged = true
+
+            old.detach()
             return new
         }
         return old
@@ -59,12 +65,26 @@ abstract class SceneHub : SceneNode {
         return childHolders.find { it.scene === scene } != null
     }
 
+    /**
+     * Detaches every child of this hub, notifying each subtree exactly once.
+     * The children are removed from the hub before they are notified, so calling
+     * this a second time is a no-op rather than a second round of [SceneNode.onRemove].
+     */
     internal fun removeChildren() {
-        for (i in childHolders.indices) {
-            val scene = childHolders[i].scene
-            if (scene is SceneHub) scene.removeChildren()
-            scene.onRemove()
+        if (childHolders.isEmpty()) return
+
+        val detaching = childHolders.toList()
+        childHolders.clear()
+        listHasChanged = true
+
+        for (i in detaching.indices) {
+            detaching[i].scene.detach()
         }
+    }
+
+    private fun SceneNode.detach() {
+        if (this is SceneHub) removeChildren()
+        onRemove()
     }
 
     internal fun renderChildren(draw: Drawer) {
