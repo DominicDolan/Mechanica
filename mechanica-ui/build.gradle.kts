@@ -17,6 +17,10 @@ dependencies {
     api("com.dubulduke:layout:1.0-SNAPSHOT")
     // The authoring surface. `api` for the same reason: a scene names ElementScope directly.
     api("com.dubulduke:dsl:1.0-SNAPSHOT")
+    // The layout vocabulary — `fill`, `below`, `flexRow`, `grid` — downstream of `:dsl` and used
+    // by every scene, so `api` again. Nothing in `:dsl` depends on it: it is where the utilities
+    // moved to, not a second engine.
+    api("com.dubulduke:utils:1.0-SNAPSHOT")
 
     testImplementation(kotlin("test"))
 }

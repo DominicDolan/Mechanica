@@ -1,16 +1,27 @@
 package com.mechanica.engine.samples.ui
 
 import com.dubulduke.dsl.ElementScope
-import com.dubulduke.dsl.below
 import com.dubulduke.dsl.box
 import com.dubulduke.dsl.column
-import com.dubulduke.dsl.fillWidth
-import com.dubulduke.dsl.flexRow
 import com.dubulduke.dsl.forEach
 import com.dubulduke.dsl.label
 import com.dubulduke.dsl.scrollArea
-import com.dubulduke.dsl.square
 import com.dubulduke.dsl.stackAcross
+// The layout vocabulary lives in `:utils`, downstream of `:dsl` — utilities, the flex row and the
+// grid alike. Nothing in `:dsl` uses any of it, which is what keeps "a container is not
+// privileged" a fact about the build rather than a claim in a doc.
+import com.dubulduke.utils.Placement
+import com.dubulduke.utils.below
+import com.dubulduke.utils.fillWidth
+import com.dubulduke.utils.flexRow
+import com.dubulduke.utils.fr
+import com.dubulduke.utils.grid
+import com.dubulduke.utils.percent
+import com.dubulduke.utils.square
+import com.dubulduke.utils.stackGrid
+import com.dubulduke.utils.track
+import com.dubulduke.utils.tracks
+import com.dubulduke.utils.wrapChildrenHeight
 import com.dubulduke.layout.isFocused
 import com.dubulduke.layout.isHovered
 import com.dubulduke.layout.isPressed
@@ -352,6 +363,97 @@ class ComposeUIScene : Scene() {
                         fixed({ 16.0 }, id = "flexBadge") {
                             style { color.set(BADGE); radius = 8.0 }
                             layout { height { 16.0 }; centerY { parent.centerY } }
+                        }
+                    }
+
+                    // A grid, and the interesting thing about it is how much less it needs than
+                    // the flex row above. Flex is hard because the pool its items share can only
+                    // be computed from the items themselves; a grid has no such quantity — a
+                    // track's size depends on the grid and on nothing any cell does. So a cell is
+                    // ordinary slot expressions, and there is no hoisted node and no governor
+                    // anywhere behind this.
+                    //
+                    // Three columns — one fixed, one taking what is left, one a quarter of the
+                    // whole — over two rows that split the height.
+                    grid(
+                        columns = tracks(track(28.0), fr(1.0), percent(0.25)),
+                        rows = tracks(2, fr(1.0)),
+                        gap = 8.0,
+                        id = "grid",
+                    ) {
+                        style { color.set(ROW); radius = 6.0 }
+                        layout { fillWidth(12.0); below(8.0); height { 72.0 } }
+
+                        // Spans both rows, so it is as tall as the two of them and the gap.
+                        cell(0, 0, rowSpan = 2, id = "gridIcon") {
+                            style { color.set(ICON); radius = 6.0 }
+                        }
+
+                        cell(1, 0, id = "gridOne") {
+                            text("fixed | 1fr | 25% of the grid", bodyFont)
+                            style { textColor.set(TEXT); textAlignment.set(0.0, 0.5) }
+                        }
+
+                        cell(1, 1, id = "gridTwo") {
+                            text("resize the window: the fixed track holds, the others move", bodyFont)
+                            style { textColor.set(TEXT); textAlignment.set(0.0, 0.5) }
+                        }
+
+                        // A cell is stamped as a **container default**, so `align` is not a special
+                        // feature: CENTER writes only the cell's centre line, leaving this free to
+                        // state its own height and sit in the middle of the span rather than fill
+                        // it. That is `align-self`, falling out of the override rule §2.4 already
+                        // had.
+                        cell(2, 0, rowSpan = 2, align = Placement.CENTER, id = "gridBadge") {
+                            style { color.set(BADGE); radius = 8.0 }
+                            layout { height { 16.0 } }
+                        }
+                    }
+
+                    // The same rows again, as grid items. `stackGrid` is the container half of the
+                    // grid, the way `stackDown` is of `column`: each child's cell comes from its
+                    // own index and the rows are implied by how many children there are. So the
+                    // sidebar's "+ add a row" reflows this into a new row and clicking a badge in
+                    // the list above closes the gap — with nothing here counting anything.
+                    //
+                    // Worth knowing why that is not free: `index` is a plain field, so a cell
+                    // computed from it alone would be right until a sibling was inserted and then
+                    // silently stale. The utility reads the published child list first, which is
+                    // what makes an insertion invalidate every cell after it.
+                    box(id = "cards") {
+                        stackGrid(
+                            columns = tracks(3, fr(1.0)),
+                            rowHeight = 32.0,
+                            columnGap = 8.0,
+                            rowGap = 8.0,
+                        )
+                        // Shrink-wrapped to the rows the grid ended up needing. No cycle: a cell's
+                        // vertical placement counts rows of a stated height rather than reading
+                        // this height back.
+                        layout { fillWidth(12.0); below(8.0); wrapChildrenHeight() }
+
+                        forEach({ rows }, key = { it.id }) { item ->
+                            val palette = ambient(Theme)
+                            interactive()
+                            onClick { selected.value = item.key }
+                            // Selection is shared with the list above — the same signal, read by
+                            // two elements that know nothing about each other.
+                            style {
+                                rowSurface(
+                                    palette,
+                                    when {
+                                        selected.value == item.key -> RowState.SELECTED
+                                        graph.isPressed(element) -> RowState.PRESSED
+                                        graph.isHovered(element) -> RowState.HOVERED
+                                        else -> RowState.NORMAL
+                                    },
+                                )
+                            }
+
+                            label({ item.value.title }, bodyFont) {
+                                style { label(palette, bright = true); centred() }
+                                layout { fillWidth(6.0); centerY { parent.centerY } }
+                            }
                         }
                     }
                 }

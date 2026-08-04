@@ -64,6 +64,28 @@ class SceneStateMachine<S : SceneState> internal constructor(
         next.onEnter(previous)
     }
 
+    /**
+     * Makes [next] current and delivers [SceneState.onEnter] even if it was already current.
+     *
+     * This is for restarting a nested machine when the scene that owns it is re-entered, so
+     * the inner state runs its entry logic again rather than silently continuing from where
+     * the previous visit left off. [SceneState.onEnter] receives the state that was current
+     * beforehand, which may be [next] itself.
+     */
+    fun restartAt(next: S) {
+        val previous = current
+
+        if (previous !== next) {
+            previous.onExit(next)
+            previous.active = false
+        }
+
+        current = next
+        next.active = true
+
+        next.onEnter(previous)
+    }
+
     internal class Transition<S : SceneState>(val state: S, val guard: () -> Boolean)
 
     class Builder<S : SceneState> internal constructor(private val default: S) {

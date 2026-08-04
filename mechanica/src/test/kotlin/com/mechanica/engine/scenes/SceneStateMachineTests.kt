@@ -178,6 +178,37 @@ class SceneStateMachineTests {
     }
 
     @Test
+    fun restartAtReEntersAStateThatIsAlreadyCurrent() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { false })
+
+        machine.restartAt(default)
+
+        assertEquals(1, default.enterCount, "restartAt should re-enter the state even when it is already current")
+        assertEquals(0, default.exitCount, "restartAt should not exit a state on the way back into itself")
+        assertTrue(default.active, "the restarted state should stay active")
+        assertSame(default, machine.current, "the restarted state should stay current")
+    }
+
+    @Test
+    fun restartAtExitsADifferentCurrentStateFirst() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { true })
+        machine.evaluate()
+
+        machine.restartAt(default)
+
+        assertEquals(1, other.exitCount, "the state being left should be exited once")
+        assertEquals(false, other.active, "the state being left should be deactivated")
+        assertSame(default, machine.current, "the restart target should become current")
+        assertTrue(default.active, "the restart target should be active")
+    }
+
+    @Test
     fun transitionToBypassesTheGuards() {
         val default = TestState("default")
         val other = TestState("other")
