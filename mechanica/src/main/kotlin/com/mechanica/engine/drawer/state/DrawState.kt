@@ -77,6 +77,9 @@ class DrawState : AbstractDrawState() {
      * Geometry is deliberately not changed here.  A rectangle applies its own width and
      * height when it is drawn; scaling here made `radius(r).rectangle(..., w, h)` render
      * at `(2r * w, 2r * h)`.
+     *
+     * A bare `radius(r).shader(s)` has no drawable to apply anything, so it gets its size from the
+     * radius in `DrawerImpl.sizeFromRadius` instead.
      */
     fun setRadius(radius: Number) {
         shader.radius.value = radius.toDouble()

@@ -113,6 +113,7 @@ class DrawerImpl(private val state: DrawState,
     }
 
     override fun shader(shader: DrawerShader, model: Model?) {
+        sizeFromRadius()
         DrawerRenderer.prepareStencil(state.stencil)
         shader.fragment.color.set(state.color.fill)
         shader.fragment.size.set(state.shader.cornerSize)
@@ -125,5 +126,23 @@ class DrawerImpl(private val state: DrawState,
                 state.viewMatrix.variable
         )
         state.reset()
+    }
+
+    /**
+     * Give a bare shader draw its geometry from [radius], when nothing else has supplied any.
+     *
+     * `rectangle`, `circle` and `image` each scale the unit quad and set `cornerSize` themselves,
+     * so for them `radius` means a corner radius and must not touch the geometry.  A shader drawn
+     * on its own has no such call: `radius(r).shader(s)` is the only size it is ever given, so here
+     * it means what it means for `circle` — half the extent.  Without this the quad stays 1x1 and
+     * `cornerSize` stays zero, which divides by zero in any shader that normalises by `size`.
+     */
+    private fun sizeFromRadius() {
+        val cornerSize = state.shader.cornerSize
+        if (cornerSize.wasChanged) return
+        val diameter = state.shader.radius.value*2.0
+        if (diameter <= 0.0) return
+        state.setScale(diameter, diameter)
+        cornerSize.set(diameter, diameter)
     }
 }
