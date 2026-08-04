@@ -13,6 +13,6 @@ fun main() {
     val draw = Drawer.create()
 
     Game.loop {
-        draw.red.rectangle()
+        draw.red.radius(0.2).rectangle(0.0, 0.0, 1.0, 1.0)
     }
 }

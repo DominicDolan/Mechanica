@@ -11,6 +11,7 @@ interface MechanicaFactory {
     val inputFactory: InputFactory
     val shaderFactory: ShaderFactory
     val stencilFactory: StencilFactory
+    val scissorFactory: ScissorFactory
 
     val miscFactory: MiscFactory
 

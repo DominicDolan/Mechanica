@@ -61,7 +61,16 @@ class TextDrawerImpl(
 
     private fun bottomRight(model: TextModel): InlineVector {
         val lc = model.lineCount
-        val y = lc.toDouble()
+        // Each line after the first advances by the font's line height — that is what
+        // `Text.addNewLine` writes into `yAdvance` — while the first line occupies the em box,
+        // `ascent - descent`, which is 1.0 by construction because the metrics are scaled by
+        // `stbtt_ScaleForPixelHeight(info, 1f)`.
+        //
+        // This used to be `lc`, one unit per line, which under-measures multi-line text by the
+        // line gap per line: the box stopped containing the glyphs it was boxing, so anything
+        // anchored with `origin.normalized` drifted as the line count grew. Single-line text is
+        // unaffected — for `lc == 1` this is the same `1.0` it was before.
+        val y = (lc - 1) * model.textHolder.font.lineHeight.toDouble() + 1.0
         var longest = 0.0
         for (i in 0 until lc) {
             val length = model.getEndOfLinePosition(i)

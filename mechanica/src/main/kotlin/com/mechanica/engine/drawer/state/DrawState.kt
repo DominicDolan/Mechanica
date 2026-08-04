@@ -71,13 +71,15 @@ class DrawState : AbstractDrawState() {
         translation.set(translation.x, translation.y, translation.z-z)
     }
 
+    /**
+     * Sets the corner radius for the next drawable.
+     *
+     * Geometry is deliberately not changed here.  A rectangle applies its own width and
+     * height when it is drawn; scaling here made `radius(r).rectangle(..., w, h)` render
+     * at `(2r * w, 2r * h)`.
+     */
     fun setRadius(radius: Number) {
-        val diameter = radius.toDouble()*2.0
         shader.radius.value = radius.toDouble()
-
-        setScale(diameter, diameter)
-        shader.cornerSize.set(diameter, diameter)
-
     }
 
     fun setModel(model: Model) {
