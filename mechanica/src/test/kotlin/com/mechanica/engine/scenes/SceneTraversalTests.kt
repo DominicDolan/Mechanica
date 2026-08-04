@@ -104,6 +104,77 @@ class SceneTraversalTests {
             "a leaf that is not playing should receive updateWhileInactive")
     }
 
+    /** A leaf that mutates its parent from inside its own update. */
+    private class MutatingLeaf(
+        private val log: MutableList<String>,
+        private val name: String,
+        private val onUpdate: () -> Unit
+    ) : Updateable {
+        override fun update(delta: Double) {
+            log.add("$name.update")
+            onUpdate()
+        }
+    }
+
+    @Test
+    fun removingASiblingDuringUpdateDoesNotSkipTheNextOne() {
+        val log = ArrayList<String>()
+        val root = RecordingHub(log, "root")
+
+        val second = RecordingLeaf(log, "second")
+        val third = RecordingLeaf(log, "third")
+        root.addScene(MutatingLeaf(log, "first") { root.removeScene(second) }, 1)
+        root.addScene(second, 2)
+        root.addScene(third, 3)
+
+        root.updateChildren(0.016)
+
+        assertEquals(listOf("root.update", "first.update", "third.update"), log,
+            "removing a sibling mid traversal should skip that sibling without skipping the next one")
+    }
+
+    @Test
+    fun addingASceneDuringUpdateDoesNotDisturbTheRestOfTheWalk() {
+        val log = ArrayList<String>()
+        val root = RecordingHub(log, "root")
+
+        val added = RecordingLeaf(log, "added")
+        var hasAdded = false
+        root.addScene(MutatingLeaf(log, "first") {
+            if (!hasAdded) {
+                hasAdded = true
+                root.addScene(added, 5)
+            }
+        }, 1)
+        root.addScene(RecordingLeaf(log, "second"), 2)
+
+        root.updateChildren(0.016)
+
+        assertEquals(listOf("root.update", "first.update", "second.update"), log,
+            "a scene added mid traversal should wait for the next traversal")
+
+        log.clear()
+        root.updateChildren(0.016)
+
+        assertEquals(listOf("root.update", "first.update", "second.update", "added.update"), log,
+            "the added scene should take part in the following traversal")
+    }
+
+    @Test
+    fun aSceneRemovedDuringUpdateIsNotUpdatedAfterOnRemove() {
+        val log = ArrayList<String>()
+        val root = RecordingHub(log, "root")
+
+        val doomed = RecordingLeaf(log, "doomed")
+        root.addScene(MutatingLeaf(log, "first") { root.removeScene(doomed) }, 1)
+        root.addScene(doomed, 2)
+
+        root.updateChildren(0.016)
+
+        assertEquals(listOf("root.update", "first.update"), log,
+            "a scene removed mid traversal should not be updated afterwards")
+    }
+
     @Test
     fun nestedHubsUpdateDepthFirstInOrder() {
         val log = ArrayList<String>()

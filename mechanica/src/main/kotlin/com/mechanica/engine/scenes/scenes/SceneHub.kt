@@ -17,18 +17,52 @@ abstract class SceneHub : SceneNode {
             return _children
         }
 
+    private var snapshotHasChanged = true
+    private var snapshot: Array<SceneNodeHolder> = emptyArray()
+
+    /**
+     * A stable view of the children for the duration of one traversal.
+     *
+     * A child is free to add or remove scenes from inside its own update, so the list backing
+     * this hub can change while it is being walked. Traversing this array instead means an
+     * add or a remove cannot shift the list out from under the walk and make it skip a
+     * sibling; the change is picked up on the next traversal. Removals take effect
+     * immediately even so, because detaching marks the holder and the walk skips it.
+     */
+    private val traversalSnapshot: Array<SceneNodeHolder>
+        get() {
+            if (snapshotHasChanged) {
+                snapshot = childHolders.toTypedArray()
+                snapshotHasChanged = false
+            }
+            return snapshot
+        }
+
     val hasChildren: Boolean
         get() = childHolders.isNotEmpty()
 
+    /**
+     * Adds [scene] as a child of this hub.
+     *
+     * [order] governs both the traversal position and the render depth: children with a
+     * negative order are updated and rendered before this hub's own update and render, and
+     * the rest afterwards. So a child this hub reads during its own update belongs at a
+     * negative order, and a child that must draw on top of it belongs at a non negative one.
+     */
     fun <S:SceneNode> addScene(scene: S, order: Int = 0): S {
         if (!hasScene(scene)) {
             childHolders.add(SceneNodeHolder(scene, order))
             childHolders.sortBy { it.order }
-            listHasChanged = true
+            invalidateChildren()
         } else {
             throw IllegalArgumentException("Cannot add scene because it has already been added")
         }
         return scene
+    }
+
+    private fun invalidateChildren() {
+        listHasChanged = true
+        snapshotHasChanged = true
     }
 
     /**
@@ -39,8 +73,8 @@ abstract class SceneHub : SceneNode {
         val index = childHolders.indexOfFirst { it.scene === scene }
         if (index == -1) return false
 
-        childHolders.removeAt(index)
-        listHasChanged = true
+        childHolders.removeAt(index).detached = true
+        invalidateChildren()
         scene.detach()
         return true
     }
@@ -49,11 +83,11 @@ abstract class SceneHub : SceneNode {
         val index = childHolders.indexOfFirst { it.scene === old }
         if (index != -1) {
             val order = childHolders[index].order
-            childHolders.removeAt(index)
+            childHolders.removeAt(index).detached = true
 
             childHolders.add(index, SceneNodeHolder(new, order))
             childHolders.sortBy { it.order }
-            listHasChanged = true
+            invalidateChildren()
 
             old.detach()
             return new
@@ -75,9 +109,10 @@ abstract class SceneHub : SceneNode {
 
         val detaching = childHolders.toList()
         childHolders.clear()
-        listHasChanged = true
+        invalidateChildren()
 
         for (i in detaching.indices) {
+            detaching[i].detached = true
             detaching[i].scene.detach()
         }
     }
@@ -92,20 +127,29 @@ abstract class SceneHub : SceneNode {
      * [visible] gates only this hub's own render, not its children's.
      */
     internal fun renderChildren(draw: Drawer) {
-        val index = renderChildrenFor(draw) { it.order < 0}
+        // Captured once so both halves of the walk agree on the list, even if a child
+        // adds or removes a scene from inside its own render.
+        val holders = traversalSnapshot
+
+        val index = renderChildrenFor(holders, draw) { it.order < 0}
         if (this is Renderable) {
             if (visible) render(draw) else renderWhileInactive(draw)
         }
-        renderChildrenFor(draw, index) { it.order >= 0 }
+        renderChildrenFor(holders, draw, index) { it.order >= 0 }
     }
 
-    private inline fun renderChildrenFor(draw: Drawer, from: Int = 0, condition: (SceneNodeHolder) -> Boolean): Int {
+    private inline fun renderChildrenFor(
+        holders: Array<SceneNodeHolder>,
+        draw: Drawer,
+        from: Int = 0,
+        condition: (SceneNodeHolder) -> Boolean
+    ): Int {
         var i = from
-        while (true) {
-            val holder = childHolders.getOrNull(i) ?: break
+        while (i < holders.size) {
+            val holder = holders[i]
             if (!condition(holder)) break
 
-            renderNode(holder.scene, draw)
+            if (!holder.detached) renderNode(holder.scene, draw)
             i++
         }
         return i
@@ -130,20 +174,29 @@ abstract class SceneHub : SceneNode {
      * [playing] gates only this hub's own update, not its children's.
      */
     internal fun updateChildren(delta: Double) {
-        val index = updateChildrenFor(delta) { it.order < 0 }
+        // Captured once so both halves of the walk agree on the list, even if a child
+        // adds or removes a scene from inside its own update.
+        val holders = traversalSnapshot
+
+        val index = updateChildrenFor(holders, delta) { it.order < 0 }
         if (this is Updateable) {
             if (playing) update(delta) else updateWhileInactive(delta)
         }
-        updateChildrenFor(delta, index) { it.order >= 0 }
+        updateChildrenFor(holders, delta, index) { it.order >= 0 }
     }
 
-    private inline fun updateChildrenFor(delta: Double, from: Int = 0, condition: (SceneNodeHolder) -> Boolean): Int {
+    private inline fun updateChildrenFor(
+        holders: Array<SceneNodeHolder>,
+        delta: Double,
+        from: Int = 0,
+        condition: (SceneNodeHolder) -> Boolean
+    ): Int {
         var i = from
-        while (true) {
-            val holder = childHolders.getOrNull(i) ?: break
+        while (i < holders.size) {
+            val holder = holders[i]
             if (!condition(holder)) break
 
-            updateNode(holder.scene, delta)
+            if (!holder.detached) updateNode(holder.scene, delta)
             i++
         }
         return i
@@ -163,6 +216,9 @@ abstract class SceneHub : SceneNode {
         }
     }
 
-    private class SceneNodeHolder(val scene: SceneNode, val order: Int)
+    private class SceneNodeHolder(val scene: SceneNode, val order: Int) {
+        /** Set when the node leaves this hub, so a traversal already in flight skips it. */
+        var detached = false
+    }
 
 }
