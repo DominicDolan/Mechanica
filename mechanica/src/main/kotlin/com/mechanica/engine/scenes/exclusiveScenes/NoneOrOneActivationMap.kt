@@ -33,15 +33,6 @@ open class NoneOrOneActivationMap<P : ActiveState>(vararg states: P) : Exclusive
         return state
     }
 
-    fun activateNext() {
-        if (activeIndex < states.size - 1 && activeIndex >= 0) {
-            activeIndex++
-        } else {
-            activeIndex = 0
-        }
-        states[activeIndex].active = true
-    }
-
     private fun P.addActivationCallback() {
         addActiveStateChangedListener(0) {
             if (it) {
