@@ -87,56 +87,81 @@ abstract class SceneHub : SceneNode {
         onRemove()
     }
 
+    /**
+     * Renders the children ordered before this hub, then the hub itself, then the rest.
+     * [visible] gates only this hub's own render, not its children's.
+     */
     internal fun renderChildren(draw: Drawer) {
         val index = renderChildrenFor(draw) { it.order < 0}
         if (this is Renderable) {
-            this.render(draw)
+            if (visible) render(draw) else renderWhileInactive(draw)
         }
         renderChildrenFor(draw, index) { it.order >= 0 }
     }
 
     private inline fun renderChildrenFor(draw: Drawer, from: Int = 0, condition: (SceneNodeHolder) -> Boolean): Int {
         var i = from
-        do {
+        while (true) {
             val holder = childHolders.getOrNull(i) ?: break
-            val scene = holder.scene
             if (!condition(holder)) break
 
-            if (scene.active && scene.visible) {
-                if (scene is SceneHub) scene.renderChildren(draw)
-                else if (scene is Renderable) scene.render(draw)
-            }
+            renderNode(holder.scene, draw)
             i++
-        } while (true)
+        }
         return i
     }
 
+    private fun renderNode(scene: SceneNode, draw: Drawer) {
+        if (!scene.active) {
+            scene.renderWhileInactive(draw)
+            return
+        }
+
+        // A hub renders itself from inside renderChildren, so that its own render lands
+        // between the children ordered before it and those ordered after it.
+        if (scene is SceneHub) scene.renderChildren(draw)
+        else if (scene is Renderable) {
+            if (scene.visible) scene.render(draw) else scene.renderWhileInactive(draw)
+        }
+    }
+
+    /**
+     * Updates the children ordered before this hub, then the hub itself, then the rest.
+     * [playing] gates only this hub's own update, not its children's.
+     */
     internal fun updateChildren(delta: Double) {
         val index = updateChildrenFor(delta) { it.order < 0 }
         if (this is Updateable) {
-            this.update(delta)
+            if (playing) update(delta) else updateWhileInactive(delta)
         }
         updateChildrenFor(delta, index) { it.order >= 0 }
     }
 
     private inline fun updateChildrenFor(delta: Double, from: Int = 0, condition: (SceneNodeHolder) -> Boolean): Int {
-        var inverseI = childHolders.lastIndex - from
-        do {
-            val holder = childHolders.getOrNull(childHolders.lastIndex - (inverseI)) ?: break
-            val scene = holder.scene
-            if (condition(holder)) {
-                if (scene.active && scene.playing) {
-                    if (scene is SceneHub) scene.updateChildren(delta)
-                    else if (scene is Updateable) scene.update(delta)
-                } else {
-                    scene.whileInactive(delta)
-                }
-            } else break
-            inverseI--
-        } while (true)
-        return childHolders.lastIndex - inverseI
+        var i = from
+        while (true) {
+            val holder = childHolders.getOrNull(i) ?: break
+            if (!condition(holder)) break
+
+            updateNode(holder.scene, delta)
+            i++
+        }
+        return i
     }
 
+    private fun updateNode(scene: SceneNode, delta: Double) {
+        if (!scene.active) {
+            scene.updateWhileInactive(delta)
+            return
+        }
+
+        // A hub updates itself from inside updateChildren, so that its own update lands
+        // between the children ordered before it and those ordered after it.
+        if (scene is SceneHub) scene.updateChildren(delta)
+        else if (scene is Updateable) {
+            if (scene.playing) scene.update(delta) else scene.updateWhileInactive(delta)
+        }
+    }
 
     private class SceneNodeHolder(val scene: SceneNode, val order: Int)
 
