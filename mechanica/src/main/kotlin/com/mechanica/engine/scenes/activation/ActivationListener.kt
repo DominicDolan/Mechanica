@@ -3,21 +3,11 @@ package com.mechanica.engine.scenes.activation
 import kotlin.reflect.KProperty
 
 class ActivationListener {
-    private val activationListeners = ArrayList<ActivationChangedEvents>()
+    private val activationListeners = ArrayList<(Boolean) -> Unit>()
     private var active = true
-    private var zeroPriorityIndex = 0
 
-    fun addListener(priority: Int = 0, listener: (Boolean) -> Unit) {
-        activationListeners.add(ActivationChangedEvents(priority, listener))
-        activationListeners.sortByDescending { it.priority }
-
-        // Everything before this index runs before the value is written, everything from
-        // it onwards runs after. With no negative priority listener the split sits past
-        // the end of the list, so every listener runs before the write.
-        val firstNegativePriority = activationListeners.indexOfFirst { it.priority < 0 }
-        zeroPriorityIndex = if (firstNegativePriority == -1) {
-            activationListeners.size
-        } else firstNegativePriority
+    fun addListener(listener: (Boolean) -> Unit) {
+        activationListeners.add(listener)
     }
 
     operator fun getValue(thisRef: ActiveState, property: KProperty<*>): Boolean {
@@ -25,29 +15,16 @@ class ActivationListener {
     }
 
     operator fun setValue(thisRef: ActiveState, property: KProperty<*>, value: Boolean) {
-        val hasChanged = active != value
-        if (hasChanged) {
-            runHighPriorityCallbacks(value)
+        if (active == value) return
 
-            active = value
-            if (value) thisRef.onActivate()
-            else thisRef.onDeactivate()
-
-            runLowPriorityCallbacks(value)
+        // Listeners run in registration order, before the value is written, so they still see
+        // the state that is being left behind.
+        for (i in activationListeners.indices) {
+            activationListeners[i].invoke(value)
         }
-    }
 
-    private fun runHighPriorityCallbacks(activate: Boolean) {
-        for (i in 0 until zeroPriorityIndex) {
-            activationListeners[i].listener.invoke(activate)
-        }
+        active = value
+        if (value) thisRef.onActivate()
+        else thisRef.onDeactivate()
     }
-
-    private fun runLowPriorityCallbacks(activate: Boolean) {
-        for (i in zeroPriorityIndex until activationListeners.size) {
-            activationListeners[i].listener.invoke(activate)
-        }
-    }
-
-    private class ActivationChangedEvents(val priority: Int, val listener: (Boolean) -> Unit)
 }

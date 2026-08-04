@@ -43,51 +43,45 @@ class ActiveStateTests {
     }
 
     @Test
-    fun activeStateWatcherCallsListenersInPriorityOrder() {
+    fun listenersRunBeforeTheValueChanges() {
         val watcher = ActiveStateImpl()
+        val observed = ArrayList<Boolean>()
 
-        fun assertLowPriority(value: Boolean) = assert(value == watcher.active) { "The listener has a negative priority but the active state was already changed" }
-        fun assertHighPriority(value: Boolean) = assert(value != watcher.active) { "The listener has a positive priority but the active state was not changed" }
-
-        watcher.addActiveStateChangedListener(-1, ::assertLowPriority)
-        watcher.addActiveStateChangedListener(3, ::assertHighPriority)
-        watcher.addActiveStateChangedListener(-2, ::assertLowPriority)
-        watcher.addActiveStateChangedListener(4, ::assertHighPriority)
+        watcher.addActiveStateChangedListener { observed.add(watcher.active) }
+        watcher.addActiveStateChangedListener { observed.add(watcher.active) }
 
         watcher.active = false
-        watcher.active = false
-        watcher.active = true
+
+        assertEquals(listOf(true, true), observed,
+            "a listener should observe the state being left behind, so it must run before the write")
     }
 
     @Test
-    fun nonNegativeListenersRunBeforeTheValueChangesWithNoNegativeListenerPresent() {
-        val watcher = ActiveStateImpl()
-        var observedFromPositivePriority: Boolean? = null
-        var observedFromZeroPriority: Boolean? = null
-
-        watcher.addActiveStateChangedListener(1) { observedFromPositivePriority = watcher.active }
-        watcher.addActiveStateChangedListener(0) { observedFromZeroPriority = watcher.active }
-
-        watcher.active = false
-
-        assertEquals(true, observedFromPositivePriority,
-            "a positive priority listener should observe the old value, so it must run before the write")
-        assertEquals(true, observedFromZeroPriority,
-            "a zero priority listener should observe the old value, so it must run before the write")
-    }
-
-    @Test
-    fun listenersRunInDescendingPriorityOrderRegardlessOfRegistrationOrder() {
+    fun listenersRunInRegistrationOrder() {
         val watcher = ActiveStateImpl()
         val order = ArrayList<Int>()
 
-        watcher.addActiveStateChangedListener(-1) { order.add(-1) }
-        watcher.addActiveStateChangedListener(2) { order.add(2) }
-        watcher.addActiveStateChangedListener(0) { order.add(0) }
+        watcher.addActiveStateChangedListener { order.add(1) }
+        watcher.addActiveStateChangedListener { order.add(2) }
+        watcher.addActiveStateChangedListener { order.add(3) }
 
         watcher.active = false
 
-        assertEquals(listOf(2, 0, -1), order, "listeners should run in descending priority order")
+        assertEquals(listOf(1, 2, 3), order, "listeners should run in the order they were registered")
+    }
+
+    @Test
+    fun listenersRunBeforeTheActivationCallbacks() {
+        val order = ArrayList<String>()
+        val watcher = ActiveStateImpl(
+            onDeactivateCallback = { order.add("onDeactivate") })
+
+        watcher.addActiveStateChangedListener { order.add("listener") }
+
+        watcher.active = false
+
+        assertEquals(listOf("listener", "onDeactivate"), order,
+            "listeners should run before onActivate/onDeactivate")
     }
 
 }

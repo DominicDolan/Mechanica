@@ -34,7 +34,7 @@ open class NoneOrOneActivationMap<P : ActiveState>(vararg states: P) : Exclusive
     }
 
     private fun P.addActivationCallback() {
-        addActiveStateChangedListener(0) {
+        addActiveStateChangedListener {
             if (it) {
                 setExclusiveActivation(this)
             } else if (this@NoneOrOneActivationMap.active === this) {

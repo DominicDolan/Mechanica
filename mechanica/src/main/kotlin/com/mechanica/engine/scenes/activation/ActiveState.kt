@@ -19,19 +19,19 @@ interface ActiveState : Activatable {
     fun onDeactivate()
 
     /**
-     * Adds a callback for when the value of [active] is changed. The [priority] value dictates the order in which
-     * the callbacks are executed, the higher the priority value, the earlier the callback will execute.
-     * The value can be negative, in which case the callback will be called after the value for [active]
-     * has been set
+     * Adds a callback for when the value of [active] changes.
      *
-     * @param priority an integer value which represents the order that the callbacks are executed, the higher
-     * the value, the earlier the execution, the value for [active] is changed at a priority of zero
+     * Callbacks run in the order they were registered, before [active] is written and before
+     * [onActivate] or [onDeactivate] is called, so a callback still observes the state that is
+     * being left behind. To order work around a transition rather than merely observe it, use a
+     * [com.mechanica.engine.scenes.states.SceneStateMachine], whose entry hook is handed the
+     * outgoing state directly.
      *
      * @param listener the callback which will execute when the value of [active] has been changed, the lambda takes
      * a boolean expression which is the new value for [active]
      */
-    fun addActiveStateChangedListener(priority: Int = 0, listener: (Boolean) -> Unit) {
-        activator.addListener(priority, listener)
+    fun addActiveStateChangedListener(listener: (Boolean) -> Unit) {
+        activator.addListener(listener)
     }
 
     companion object {
