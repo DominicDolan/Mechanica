@@ -295,8 +295,45 @@ open class MechanicaUI<S>(
         val a = style.textAlignment
         renderer.ui.color(style.textColor)
             .origin.normalized(a.x, 1.0 - a.y)
-            .text(cached.model, font.size, node.x + a.x * node.width, node.y + a.y * node.height)
+            .text(
+                cached.model,
+                font.size,
+                node.x + a.x * node.width,
+                node.y + a.y * node.height + baselineCorrection(font),
+            )
     }
+
+    /**
+     * How far up to nudge text so that [HasText.textAlignment] means what it says.
+     *
+     * `TextDrawer` builds its pivot from a box it believes runs from model `y = -1` to
+     * `y = (lines - 1) * lineHeight`. The glyphs do not live there. `copyToArrays` writes them
+     * y-up with the **baseline at zero**, so line 0 occupies `descent .. ascent` — and since the
+     * metrics are scaled by `stbtt_ScaleForPixelHeight(info, 1f)`, `ascent - descent` is exactly
+     * `1`, which is why the box's *height* comes out right and only its *position* is wrong.
+     *
+     * Working the pivot through for `origin.normalized(ax, 1 - ay)`, the drawer places the pivot at
+     * `(1 - ay) * height - (lines - 1) * lineHeight`, where the box's own geometry says it belongs
+     * at `descent - (lines - 1) * lineHeight + (1 - ay) * height`. The two differ by `descent` —
+     * **a constant**, independent of the alignment, the font size and the line count. So every
+     * string drawn this way lands `|descent|` em below where it was asked to go, about a fifth of
+     * the font size.
+     *
+     * That is why nothing here could be centred by asking for `0.5`, and why the pre-migration
+     * menus each carried a different fudge factor — `0.2` here, `0.3` there, `-0.4` on the pause
+     * buttons, and a level tile that computed `2.0 - layout.height`, compensating with a number
+     * that depended on the element's height because the error is a fixed distance and a fraction of
+     * a box is not.
+     *
+     * **The bug is one layer down, in `TextDrawerImpl.drawText`, and is deliberately not fixed
+     * there.** That method backs every `draw.ui.text(...)` call in the engine and in any game on
+     * it, all of them authored against the current behaviour; correcting it would silently shift
+     * every existing label by a fifth of its size. This class owns the `textAlignment` contract, so
+     * this is where the contract gets honoured. If the drawer is ever corrected, delete this and
+     * the compensation disappears with it.
+     */
+    private fun baselineCorrection(font: MechanicaFont): Double =
+        -font.font.descent.toDouble() * font.size
 
     /**
      * Paint this element's background.
