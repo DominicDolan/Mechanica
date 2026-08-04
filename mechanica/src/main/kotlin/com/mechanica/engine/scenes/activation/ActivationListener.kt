@@ -11,12 +11,13 @@ class ActivationListener {
         activationListeners.add(ActivationChangedEvents(priority, listener))
         activationListeners.sortByDescending { it.priority }
 
-        for (i in activationListeners.indices) {
-            if (activationListeners[i].priority < 0) {
-                zeroPriorityIndex = i
-                break
-            }
-        }
+        // Everything before this index runs before the value is written, everything from
+        // it onwards runs after. With no negative priority listener the split sits past
+        // the end of the list, so every listener runs before the write.
+        val firstNegativePriority = activationListeners.indexOfFirst { it.priority < 0 }
+        zeroPriorityIndex = if (firstNegativePriority == -1) {
+            activationListeners.size
+        } else firstNegativePriority
     }
 
     operator fun getValue(thisRef: ActiveState, property: KProperty<*>): Boolean {
