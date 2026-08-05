@@ -25,6 +25,8 @@ class SceneStateMachine<S : SceneState> internal constructor(
     var current: S = default
         private set
 
+    private var reEnterOnNextEvaluate = false
+
     init {
         for (i in transitions.indices) {
             transitions[i].state.active = false
@@ -37,14 +39,35 @@ class SceneStateMachine<S : SceneState> internal constructor(
      * Typically called once per frame from the owning scene's update.
      */
     fun evaluate() {
+        val next = selectState()
+
+        if (reEnterOnNextEvaluate) {
+            reEnterOnNextEvaluate = false
+            restartAt(next)
+        } else {
+            transitionTo(next)
+        }
+    }
+
+    private fun selectState(): S {
         for (i in transitions.indices) {
             val transition = transitions[i]
-            if (transition.guard()) {
-                transitionTo(transition.state)
-                return
-            }
+            if (transition.guard()) return transition.state
         }
-        transitionTo(default)
+        return default
+    }
+
+    /**
+     * Makes the next [evaluate] deliver [SceneState.onEnter] to the winning state even if it
+     * is already current.
+     *
+     * This is for a nested machine whose owner has been re-entered, but whose choice of state
+     * depends on data that is not settled yet. [restartAt] re-enters immediately and needs to
+     * be told which state to pick; this defers both the choice and the re-entry to the owner's
+     * next update, when the guards can be trusted.
+     */
+    fun restartOnNextEvaluate() {
+        reEnterOnNextEvaluate = true
     }
 
     /**

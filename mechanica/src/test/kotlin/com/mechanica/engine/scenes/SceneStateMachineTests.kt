@@ -209,6 +209,57 @@ class SceneStateMachineTests {
     }
 
     @Test
+    fun restartOnNextEvaluateReEntersTheWinningStateEvenIfItIsAlreadyCurrent() {
+        val default = TestState("default")
+        val other = TestState("other")
+        var otherApplies = true
+
+        val machine = machineOf(default, other to { otherApplies })
+        machine.evaluate()
+        assertEquals(1, other.enterCount, "the matching state should have been entered")
+
+        // The owner of this machine has been re-entered while the guards still pick `other`.
+        machine.restartOnNextEvaluate()
+        machine.evaluate()
+
+        assertEquals(2, other.enterCount, "the winning state should be re-entered even though it was already current")
+        assertSame(other, machine.current, "the winning state should still be current")
+    }
+
+    @Test
+    fun restartOnNextEvaluateAppliesOnlyToTheNextEvaluate() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { true })
+
+        machine.restartOnNextEvaluate()
+        machine.evaluate()
+        machine.evaluate()
+        machine.evaluate()
+
+        assertEquals(1, other.enterCount, "the re-entry should not repeat on later evaluations")
+    }
+
+    @Test
+    fun restartOnNextEvaluateStillHonoursTheGuards() {
+        val default = TestState("default")
+        val other = TestState("other")
+        var otherApplies = false
+
+        val machine = machineOf(default, other to { otherApplies })
+        machine.evaluate()
+
+        // Guards are re-read at evaluate time, not captured when the restart was requested.
+        machine.restartOnNextEvaluate()
+        otherApplies = true
+        machine.evaluate()
+
+        assertSame(other, machine.current, "the guards should decide which state is re-entered")
+        assertEquals(1, other.enterCount, "the newly winning state should be entered")
+    }
+
+    @Test
     fun transitionToBypassesTheGuards() {
         val default = TestState("default")
         val other = TestState("other")
