@@ -260,6 +260,65 @@ class SceneStateMachineTests {
     }
 
     @Test
+    fun exitLeavesTheCurrentStateWithoutEnteringAnother() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { false })
+
+        machine.exit()
+
+        assertEquals(1, default.exitCount, "the current state should be exited")
+        assertEquals(false, default.active, "the current state should be deactivated")
+        assertSame(default, machine.current, "the machine should still report a current state")
+        assertEquals(0, other.enterCount, "no other state should be entered")
+    }
+
+    @Test
+    fun exitIsIdempotent() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { false })
+
+        machine.exit()
+        machine.exit()
+
+        assertEquals(1, default.exitCount, "exiting an already exited machine should do nothing")
+    }
+
+    @Test
+    fun aMachineThatWasExitedReEntersOnTheNextEvaluate() {
+        val default = TestState("default")
+        val other = TestState("other")
+
+        val machine = machineOf(default, other to { false })
+
+        machine.exit()
+        machine.evaluate()
+
+        assertEquals(1, default.enterCount, "the winning state should be entered again after an exit")
+        assertEquals(true, default.active, "the re-entered state should be active again")
+    }
+
+    @Test
+    fun transitioningAwayFromAnExitedMachineDoesNotExitTwice() {
+        val default = TestState("default")
+        val other = TestState("other")
+        var otherApplies = false
+
+        val machine = machineOf(default, other to { otherApplies })
+
+        machine.exit()
+        otherApplies = true
+        machine.evaluate()
+
+        assertEquals(1, default.exitCount, "a state that was already exited should not be exited again")
+        assertSame(other, machine.current, "the newly winning state should become current")
+        assertEquals(1, other.enterCount, "the newly winning state should be entered")
+    }
+
+    @Test
     fun transitionToBypassesTheGuards() {
         val default = TestState("default")
         val other = TestState("other")

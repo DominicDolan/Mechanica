@@ -78,13 +78,31 @@ class SceneStateMachine<S : SceneState> internal constructor(
         if (next === current) return
 
         val previous = current
-        previous.onExit(next)
+        if (previous.active) previous.onExit(next)
 
         previous.active = false
         current = next
         next.active = true
 
         next.onEnter(previous)
+    }
+
+    /**
+     * Exits the current state without entering another, for when the scene that owns this
+     * machine is itself being left.
+     *
+     * Without this a nested machine stays entered while its owner is gone, so state the inner
+     * state clears on the way out never gets cleared, and coming back re-selects a state it
+     * never really left. The state remains [current] so the machine always has an answer, but
+     * it is deactivated and receives [SceneState.onExit], and the next [evaluate] is marked to
+     * re-enter properly.
+     */
+    fun exit(to: SceneState? = null) {
+        if (!current.active) return
+
+        current.onExit(to)
+        current.active = false
+        reEnterOnNextEvaluate = true
     }
 
     /**
@@ -99,7 +117,7 @@ class SceneStateMachine<S : SceneState> internal constructor(
         val previous = current
 
         if (previous !== next) {
-            previous.onExit(next)
+            if (previous.active) previous.onExit(next)
             previous.active = false
         }
 
