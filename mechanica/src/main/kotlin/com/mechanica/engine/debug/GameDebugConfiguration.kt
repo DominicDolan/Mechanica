@@ -15,11 +15,16 @@ class GameDebugConfiguration : DebugConfiguration {
     override var lwjglDebug = true
         get() = field && debugMode
 
+    override val isPaused: Boolean
+        get() = Game.sceneManager.isPaused
+
     override fun pauseUpdates(pause: Boolean) {
         Game.sceneManager.pauseExecution(pause)
     }
 
-    override fun frameAdvance() {
-        Game.sceneManager.frameAdvance()
+    override fun frameAdvance() = stepFrames(1)
+
+    override fun stepFrames(frames: Int) {
+        Game.sceneManager.step(frames)
     }
 }

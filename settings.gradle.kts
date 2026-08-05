@@ -20,7 +20,7 @@ pluginManagement {
 //
 // This build's Gradle version runs the included build too, which is why DukeCompose is pinned to
 // the same Gradle / Kotlin / JVM versions as Mechanica.
-val dukeComposeHome = providers.gradleProperty("dukecompose_home").orNull ?: "../DukeUI2/DukeCompose"
+val dukeComposeHome = providers.gradleProperty("dukecompose_home").orNull ?: "../DukeCompose"
 includeBuild(dukeComposeHome)
 
 rootProject.name = "Mechanica"

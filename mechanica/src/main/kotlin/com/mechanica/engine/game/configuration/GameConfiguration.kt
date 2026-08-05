@@ -29,4 +29,12 @@ interface GameConfiguration {
     fun configureProjectionMatrix(configuration: Matrix4.(View) -> Unit)
 
     fun setDeltaTimeCalculator(calculator: DeltaCalculator)
+
+    /**
+     * The longest gap between two frames, in seconds, that the game is willing to simulate.
+     *
+     * Anything longer means the process was suspended rather than running slowly, so the time
+     * is discarded instead of being passed to update(). Defaults to 0.25 seconds.
+     */
+    fun setMaxFrameTime(seconds: Double)
 }

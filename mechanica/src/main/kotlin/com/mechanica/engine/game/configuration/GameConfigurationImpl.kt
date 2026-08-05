@@ -68,6 +68,10 @@ internal class GameConfigurationImpl(private val configure: GameConfiguration.()
         data.deltaCalculator = calculator
     }
 
+    override fun setMaxFrameTime(seconds: Double) {
+        data.maxFrameTime = seconds
+    }
+
     fun configure() {
         this.configure.invoke(this)
     }

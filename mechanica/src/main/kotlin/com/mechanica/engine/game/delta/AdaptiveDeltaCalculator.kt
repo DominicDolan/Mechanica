@@ -16,6 +16,15 @@ internal class AdaptiveDeltaCalculator(frameTime: Double) : DeltaCalculator {
 
     private var frameCounter = 0
 
+    override val timeStep: Double
+        get() = dt
+
+    override fun resync() {
+        // The frames either side of a suspend tell us nothing about how fast the game runs,
+        // so start the sampling window again rather than tuning dt from them.
+        frameCounter = 0
+    }
+
     override fun Updater.updateAndRender(lastFrame: Double, thisFrame: Double) {
         var frameDelta = (thisFrame - lastFrame)
         frameTimes.add(frameDelta)

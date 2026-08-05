@@ -35,4 +35,6 @@ class ConfigurationData : ContextConfigurationData {
     var projectionMatrixConfiguration: (Matrix4.(View) -> Unit) = GameMatrices.Companion::defaultProjectionMatrix
 
     var deltaCalculator: DeltaCalculator = DeltaCalculator.basicVariableCalculator()
+
+    var maxFrameTime: Double = 0.25
 }

@@ -23,11 +23,18 @@ object BackendDebugConfiguration : DebugConfiguration {
     override val lwjglDebug: Boolean
         get() = configuration?.lwjglDebug ?: false
 
+    override val isPaused: Boolean
+        get() = configuration?.isPaused ?: false
+
     override fun pauseUpdates(pause: Boolean) {
         configuration?.pauseUpdates(pause)
     }
 
     override fun frameAdvance() {
         configuration?.frameAdvance()
+    }
+
+    override fun stepFrames(frames: Int) {
+        configuration?.stepFrames(frames)
     }
 }

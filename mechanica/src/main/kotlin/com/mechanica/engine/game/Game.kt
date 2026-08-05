@@ -4,6 +4,7 @@ import com.mechanica.engine.configuration.Configurable
 import com.mechanica.engine.context.Application
 import com.mechanica.engine.context.MechanicaInitializer
 import com.mechanica.engine.debug.DebugConfiguration
+import com.mechanica.engine.debug.ScreenLog
 import com.mechanica.engine.display.DrawSurface
 import com.mechanica.engine.game.configuration.GameConfiguration
 import com.mechanica.engine.game.configuration.GameConfigurationImpl
@@ -12,6 +13,7 @@ import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.view.GameMatrices
 import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.game.view.WorldCamera
+import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.persistence.PersistenceMap
 import com.mechanica.engine.scenes.SceneManager
 import com.mechanica.engine.scenes.scenes.Scene
@@ -118,9 +120,27 @@ object Game : Configurable<GameConfiguration> {
 
         gameMatrices.updateMatrices()
 
+        checkDebugKeys()
+
         sceneManager.updateAndRender()
 
         return surface.update()
+    }
+
+    /**
+     * Polled here, outside the scene tree, so the controls keep working while updates are paused.
+     *
+     * [com.mechanica.engine.input.Key.hasBeenPressed] is edge triggered and changes state when it
+     * is read, so this must remain the only place these keys are polled.
+     */
+    private fun checkDebugKeys() {
+        if (!debug.debugMode) return
+
+        if (Keyboard.F6.hasBeenPressed) debug.pauseUpdates(!debug.isPaused)
+        if (Keyboard.F7.hasBeenPressed) debug.stepFrames(1)
+        if (Keyboard.F8.hasBeenPressed) debug.stepFrames(10)
+
+        if (debug.isPaused) ScreenLog { "PAUSED   F7 step   F8 step x10   F6 resume" }
     }
 
     fun screenshot() {

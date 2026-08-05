@@ -13,6 +13,7 @@ import com.mechanica.engine.util.Timer
 
 internal class SceneManager(
         private val deltaCalculator: DeltaCalculator,
+        private val maxFrameTime: Double,
         private val sceneStarter: (() -> Scene?)) : SceneNode, Updater {
 
     private val scenes = ChildScenes()
@@ -49,25 +50,25 @@ internal class SceneManager(
     private var drawer: Drawer? = null
 
     private var startOfLoop = Timer.now
-    private var updateDuration = 0.1
 
-    private var pause = false
-    private var hasPaused = false
+    private var paused = false
+    private var stepsPending = 0
 
-    private var frameAdvance = false
+    val isPaused: Boolean
+        get() = paused
 
     fun pauseExecution(pause: Boolean) {
-        this.pause = pause
-        hasPaused = false
-
-        if (!pause) {
-            updateDuration = 0.017
-            startOfLoop = Timer.now
-        }
+        this.paused = pause
+        stepsPending = 0
+        startOfLoop = Timer.now
     }
 
-    fun frameAdvance() {
-        frameAdvance = true
+    /**
+     * Queues [frames] single steps, each simulating exactly one [DeltaCalculator.timeStep],
+     * one per rendered frame. Only has an effect while execution is paused.
+     */
+    fun step(frames: Int) {
+        stepsPending += frames
     }
 
     fun startScene() {
@@ -84,22 +85,36 @@ internal class SceneManager(
 
     fun updateAndRender() {
         val now = Timer.now
-        val lastFrame = startOfLoop
+        var lastFrame = startOfLoop
         startOfLoop = now
-        deltaCalculator.updateAndRender(lastFrame, now, this)
+
+        // A gap this large is never a slow frame, it's the process having been suspended: a
+        // breakpoint, a long GC pause, an OS sleep or a window drag. Simulating it would hand
+        // update() a delta orders of magnitude larger than any real frame, which tunnels
+        // physics straight through colliders, so drop the time instead of catching up on it.
+        if (now - lastFrame > maxFrameTime) {
+            lastFrame = now
+            deltaCalculator.resync()
+        }
+
+        when {
+            !paused -> deltaCalculator.updateAndRender(lastFrame, now, this)
+            // Every step is the same size regardless of how long we waited between them,
+            // so stepping is repeatable and the delta never depends on the debugger.
+            stepsPending > 0 -> {
+                stepsPending--
+                deltaCalculator.step(this, deltaCalculator.timeStep)
+            }
+            // Frozen, but still drawing, and the loop still pumps input so the debug keys work.
+            else -> render()
+        }
 
         checkStateChange()
     }
 
     override fun update(delta: Double) {
-        if (!pause || frameAdvance) {
-            updateVar?.invoke(delta)
-            scenes.updateChildren(delta)
-            frameAdvance = false
-        } else {
-            updatePaused()
-        }
-
+        updateVar?.invoke(delta)
+        scenes.updateChildren(delta)
     }
 
     override fun render() {
@@ -125,15 +140,6 @@ internal class SceneManager(
         val drawer = this.drawer ?: Drawer.create()
         this.drawer = drawer
         return drawer
-    }
-
-
-    private fun updatePaused() {
-        if (!hasPaused) {
-            hasPaused = true
-            updateDuration = Timer.now - startOfLoop
-        }
-        startOfLoop = Timer.now
     }
 
     override fun onRemove() = scenes.onRemove()

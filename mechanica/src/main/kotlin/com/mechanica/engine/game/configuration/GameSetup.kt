@@ -53,7 +53,7 @@ internal class GameSetup(application: Application, configuration: GameConfigurat
         cameras = Cameras(data, application.surfaceContext)
 
         deltaCalculator = data.deltaCalculator
-        sceneManager = SceneManager(data.deltaCalculator, data.startingScene ?: { null })
+        sceneManager = SceneManager(data.deltaCalculator, data.maxFrameTime, data.startingScene ?: { null })
 
         if (Game.persistenceMap == null) {
             configuration.setPersistence()

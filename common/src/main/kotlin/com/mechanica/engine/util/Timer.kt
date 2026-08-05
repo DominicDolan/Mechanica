@@ -3,7 +3,7 @@ package com.mechanica.engine.util
 
 object Timer {
     private val ids = HashMap<Int, Double>()
-    val now get() = (System.nanoTime()/1000000L)/1000.0
+    val now get() = System.nanoTime()/1e9
     val begin = now
     val elapsed get() = now - begin
 
