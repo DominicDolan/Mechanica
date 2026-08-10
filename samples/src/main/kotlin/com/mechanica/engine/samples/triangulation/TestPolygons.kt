@@ -1,6 +1,8 @@
 package com.mechanica.engine.samples.triangulation
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.isCounterClockwise
+import com.mechanica.engine.geometry.shapes.Triangle
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -41,19 +43,6 @@ val testPolygons: List<TestPolygon> = listOf(
     // Same shape as the hexagon, wound the other way.
     TestPolygon("Clockwise hexagon", regularPolygon(sides = 6, radius = 3.0), clockwise = true),
 )
-
-/** Shoelace area, positive when [outline] is counter-clockwise. */
-fun signedArea(outline: List<Vector2>): Double {
-    var total = 0.0
-    for (i in outline.indices) {
-        val current = outline[i]
-        val next = outline[(i + 1) % outline.size]
-        total += current.x * next.y - next.x * current.y
-    }
-    return total / 2.0
-}
-
-fun isCounterClockwise(outline: List<Vector2>) = signedArea(outline) > 0.0
 
 /** Builds a vertex list from flat `x, y, x, y, ...` coordinates. */
 private fun points(vararg xy: Double): List<Vector2> {

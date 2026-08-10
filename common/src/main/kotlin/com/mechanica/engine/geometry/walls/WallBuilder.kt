@@ -1,6 +1,10 @@
-package com.mechanica.engine.samples.triangulation
+package com.mechanica.engine.geometry.walls
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.isCounterClockwise
+import com.mechanica.engine.geometry.segmentCrossing
+import com.mechanica.engine.geometry.selfIntersections
+import com.mechanica.engine.geometry.shapes.Triangle
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -12,15 +16,12 @@ import kotlin.math.sqrt
 
 private const val EPSILON = 1e-9
 
-/** A single triangle, for drawing. Physics only ever sees [WallQuad.corners]. */
-data class Triangle(val a: Vector2, val b: Vector2, val c: Vector2)
-
 /**
  * One wall segment: the quad lining the inside of a single outline edge.
  *
  * [outerFrom] and [outerTo] are the outline edge itself, so they are shared exactly with the
  * neighbouring quads; [innerFrom] and [innerTo] are the corners those two ends were pushed in to.
- * The four are in order round the quad, which is what a physics polygon shape wants.
+ * The four are in order round the quad, which is the order a physics polygon shape wants.
  */
 class WallQuad(
     val outerFrom: Vector2,
@@ -37,16 +38,22 @@ class WallQuad(
      * Normally that is the two halves either side of a diagonal. But in a pinched region the two
      * ends can be pushed in far enough to cross over, leaving the quad a bowtie; splitting a bowtie
      * across its diagonal covers neither lobe and leaves a hole in the middle. Splitting it at the
-     * crossing instead gives exactly the two lobes. A physics engine that hulls the corners never
-     * sees the difference — see [toFixture] — but a renderer does.
+     * crossing instead gives exactly the two lobes. A physics engine that builds a convex hull out
+     * of [corners] never sees the difference, but a renderer does.
      */
     val triangles: List<Triangle>
         get() {
-            val crossing = seamCrossing(outerFrom, innerFrom, outerTo, innerTo)
+            val crossing = segmentCrossing(outerFrom, innerFrom, outerTo, innerTo)
             return if (crossing == null) {
-                listOf(Triangle(outerFrom, outerTo, innerTo), Triangle(outerFrom, innerTo, innerFrom))
+                listOf(
+                    Triangle.create(outerFrom, outerTo, innerTo),
+                    Triangle.create(outerFrom, innerTo, innerFrom)
+                )
             } else {
-                listOf(Triangle(outerFrom, outerTo, crossing), Triangle(crossing, innerTo, innerFrom))
+                listOf(
+                    Triangle.create(outerFrom, outerTo, crossing),
+                    Triangle.create(crossing, innerTo, innerFrom)
+                )
             }
         }
 }
@@ -55,20 +62,21 @@ class WallQuad(
 class WallBand(
     /**
      * The wall along the outline edges, in order. One per edge, except where an edge had to be
-     * broken to step around something — see [addEdgeQuads].
+     * broken to step around something the polygon doubles back into.
      */
     val quads: List<WallQuad>,
-    /** The quads bridging the turn at each reflex corner. Empty on a fully convex outline. */
+    /** The quads bridging the turn at each reflex corner. Empty on a convex outline. */
     val caps: List<WallQuad>,
-    /** The inner boundary of the wall: `inner[i]` is outline vertex `i` pushed inwards. */
+    /** The inner boundary: `inner[i]` is outline vertex `i` pushed inwards. Useful for debugging. */
     val inner: List<Vector2>,
     /** Set where a corner had to be cut short of its true miter point. */
     val limited: BooleanArray,
 ) {
-    /** Everything that becomes a physics fixture. */
+    /** Every piece of the wall. This is what a caller turns into collision shapes. */
     val pieces: List<WallQuad>
         get() = quads + caps
 
+    /** Every piece as triangles, for drawing the wall. */
     val triangles: List<Triangle>
         get() = pieces.flatMap { it.triangles }
 
@@ -95,41 +103,48 @@ private const val MAX_CAP_SWEEP = PI / 3.0
 /**
  * Lines the inside of [outline] with a wall of the given [thickness], as quads.
  *
- * [outline] must be a simple polygon — it must not cross itself. See [selfIntersections] for what
- * goes wrong if it does, and why that is worth checking before calling this rather than after.
+ * Built for collision rather than for drawing. Where a polygon is used as a solid surface, giving
+ * its boundary real depth stops bodies crossing it in a single step — the failure that an
+ * infinitely thin edge shape invites, especially when a body changes shape while touching one.
+ *
+ * [outline] must be a simple polygon: it must not cross itself. Check with [selfIntersections]
+ * first if the outline comes from anywhere you do not control, because a crossed one fails silently
+ * and badly — it has no consistent inside, so parts of the wall get built into open air.
+ *
+ * ### How it fits together
  *
  * The two long sides of a quad are its outline edge and that same edge pushed [thickness] straight
  * inwards. The short sides are the interesting part. Rather than giving every quad its own pair of
  * end caps, the corner where two neighbouring quads meet is a *single* point: the miter point,
- * where the two inset edges intersect. Both quads are built from that one point, so the seam
- * between them is one shared edge rather than two edges that nearly line up, and the wall closes up
- * with no seam to slip through. Nothing about that depends on the corner being convex — a reflex
- * corner finds its miter point exactly the same way, on the other side of the vertex.
+ * where the two inset edges intersect. Both quads are built from that one point, so the seam between
+ * them is one shared edge rather than two that nearly line up, and the wall closes with no seam to
+ * slip through.
  *
- * A miter point sits `thickness / sin(θ/2)` from a vertex whose interior angle is θ, so it runs
- * away as the corner sharpens — unbounded at a needle — and on a polygon thinner than the wall it
- * lands outside. Two things bound it. It is cut to the first piece of outline its own bisector
- * reaches, which is what stops the wall spilling into open air, and [miterLimit] caps it at a
- * multiple of [thickness] regardless, which catches needles. Both cut along the same bisector, so
- * the point stays shared and the quads stay well formed.
+ * A miter point sits `thickness / sin(θ/2)` from a vertex whose interior angle is θ, so it runs away
+ * as the corner sharpens — unbounded at a needle — and on a polygon thinner than the wall it lands
+ * outside. Two things bound it: it is cut to the first piece of outline its own bisector reaches,
+ * which stops the wall spilling into open air, and [miterLimit] caps it at a multiple of [thickness]
+ * regardless, which catches needles. Both cut along the same bisector, so the point stays shared.
  *
- * Reflex corners are the exception to that sharing, and get quads of their own in [WallBand.caps]
- * to bridge the turn — see the reflex branch in the body for why sharing goes wrong there.
+ * Reflex corners are the exception to that sharing and get quads of their own in [WallBand.caps] —
+ * see the reflex branch in the body for why sharing goes wrong there. And an edge is broken into
+ * more than one quad wherever the polygon doubles back within [thickness] of it, so the wall steps
+ * around the obstruction rather than ploughing through it. Straight, open edges stay a single quad,
+ * which is nearly all of them.
  *
- * An edge is also broken into more than one quad wherever the polygon doubles back within
- * [thickness] of it, so the wall steps around the obstruction rather than ploughing through it.
- * See [addEdgeQuads]. Straight, open edges — nearly all of them — stay a single quad.
+ * ### What it optimises for
  *
- * ### What this optimises for
+ * Collision and drawing want opposite things here. Overlapping pieces cost a physics engine nothing,
+ * while a gap is the whole point of the exercise — something thin slips through it. So this is
+ * biased throughout toward covering too much rather than too little.
  *
- * This is built for collision, not for drawing, and those want opposite things. Overlapping pieces
- * cost a physics engine nothing, while a gap is the whole bug being fixed — something thin slips
- * through it. So everything here is biased toward covering too much.
- *
- * That bias is also why nothing tries to keep the quads convex, or even un-crossed, where the
- * polygon is pinched: the consumer replaces each one with its convex hull, which covers more, not
- * less. See [toFixture]. Handing a renderer these quads works too, but only because
+ * That bias is why nothing tries to keep the quads convex, or even un-crossed, where the polygon is
+ * pinched: a physics engine that replaces each shape with its convex hull, as Box2D does, covers
+ * more that way rather than less. Feeding these quads to a renderer works too, but only because
  * [WallQuad.triangles] handles the crossed case separately.
+ *
+ * Set [thickness] below the narrowest gap in the geometry. Above that there is genuinely nowhere for
+ * the wall to go, and it starts spilling outside the outline.
  */
 fun buildWalls(
     outline: List<Vector2>,
@@ -223,7 +238,7 @@ fun buildWalls(
             //
             // And even at an ordinary right-angled one, the miter sits out diagonally, so a quad
             // anchored to it runs diagonally too — across the notch beside it and out the far side.
-            // That was most of the spill around a comb's teeth.
+            // That was most of the spill around the teeth of a comb.
             //
             // Both go away if each quad simply takes its own edge's perpendicular offset and keeps
             // full thickness, with the caps below bridging the turn between them.
@@ -252,16 +267,22 @@ fun buildWalls(
     return WallBand(quads, caps, inner, limited)
 }
 
+/** Builds a wall from an outline held as an array, as the rest of the geometry package does. */
+fun buildWalls(
+    outline: Array<out Vector2>,
+    thickness: Double,
+    miterLimit: Double = DEFAULT_MITER_LIMIT
+): WallBand = buildWalls(outline.toList(), thickness, miterLimit)
+
 /**
- * Covers the turn a cut-short reflex corner left open, as quads.
+ * Covers the turn at a reflex corner, as quads.
  *
- * A reflex corner has to sweep the whole turn between the two edge normals, and a point only covers
- * a wedge, so once the corner has been cut short the rest of that sweep is simply missing — which
- * is how a slit almost closed on itself tears open at its tip. The sweep is filled by walking round
- * it at [thickness] from the vertex, cutting each step to stay inside the outline, and taking the
- * steps in threes so every piece is a quad: the vertex, the two ends, and the point between them.
- * A wide corner needs several, which is why [MAX_CAP_SWEEP] exists — one quad spanning 180° would
- * be a flat sliver covering almost none of it.
+ * A reflex corner has to sweep the whole turn between its two edge normals, and a single point only
+ * covers a wedge of that. The sweep is filled by walking round it at [thickness] from the vertex,
+ * cutting each step to stay inside the outline, and taking the steps in threes so every piece comes
+ * out a quad: the vertex, the two ends, and the point between them. A wide corner needs several,
+ * which is what [MAX_CAP_SWEEP] is for — one quad spanning 180° would be a flat sliver covering
+ * almost none of it.
  */
 private fun addCaps(
     ring: List<Vector2>,
@@ -309,9 +330,9 @@ private fun addCaps(
  * instead of ploughing through it. Any number of obstructions works; each adds one more piece.
  *
  * The pieces are kept separate rather than joined into one bent polygon on purpose. Bending inwards
- * makes a *concave* shape, and jbox2d would hull it straight again — restoring the exact leak this
- * removes. Convex pieces survive hulling untouched. They still share their edges, so the wall has
- * no seam through it.
+ * makes a *concave* shape, and a physics engine that hulls its shapes would straighten it out again,
+ * restoring the exact leak this removes. Convex pieces survive hulling untouched, and they still
+ * share their edges, so the wall has no seam through it.
  */
 private fun addEdgeQuads(
     ring: List<Vector2>,
@@ -332,8 +353,8 @@ private fun addEdgeQuads(
     if (lengthSquared < EPSILON) return
 
     // Breaking the edge too close to an end, or twice in nearly the same place, leaves a piece with
-    // no area in it. jbox2d cannot hull three points that are all but coincident, and quietly
-    // substitutes a 1x1 box when it fails — so a break has to be worth making or not made at all.
+    // no area in it. A physics engine cannot make a polygon out of three all-but-coincident points,
+    // and Box2D quietly substitutes a 1x1 box when it fails — so a break has to be worth making.
     val length = sqrt(lengthSquared)
     val minimumPiece = 0.05 * thickness
 
@@ -380,7 +401,7 @@ private fun addEdgeQuads(
     // is still a straight slab, and where the outline curves away in between — the inside of a
     // star's point, say — the slab cuts the corner and escapes again. So each piece is checked in
     // the middle, and broken again if there is less room there than the piece assumes. Twice is
-    // enough to catch it without turning one edge into a dozen fixtures.
+    // enough to catch it without turning one edge into a dozen shapes.
     val startDepth = (innerStart.x - from.x) * normalX + (innerStart.y - from.y) * normalY
     val endDepth = (innerEnd.x - to.x) * normalX + (innerEnd.y - to.y) * normalY
 
@@ -425,46 +446,6 @@ private fun addEdgeQuads(
     into.add(WallQuad(previousOuter, to, innerEnd, previousInner))
 }
 
-/**
- * How far a ray leaving a point *on* edge [edgeIndex] gets before reaching the outline again.
- *
- * The edge it starts from is skipped, since the ray begins sitting on it. Unlike the version that
- * starts at a vertex, the edges either side are not skipped: from the middle of an edge they are
- * ordinary obstacles like any other.
- */
-private fun distanceFromPoint(
-    ring: List<Vector2>,
-    edgeIndex: Int,
-    origin: Vector2,
-    directionX: Double,
-    directionY: Double
-): Double {
-    val count = ring.size
-    var nearest = Double.POSITIVE_INFINITY
-
-    for (i in 0 until count) {
-        if (i == edgeIndex) continue
-
-        val from = ring[i]
-        val to = ring[(i + 1) % count]
-        val edgeX = to.x - from.x
-        val edgeY = to.y - from.y
-
-        val denominator = directionX * edgeY - directionY * edgeX
-        if (abs(denominator) < EPSILON) continue
-
-        val offsetX = origin.x - from.x
-        val offsetY = origin.y - from.y
-        val alongRay = -(offsetX * edgeY - offsetY * edgeX) / denominator
-        val alongEdge = -(offsetX * directionY - offsetY * directionX) / denominator
-
-        if (alongRay > EPSILON && alongEdge >= 0.0 && alongEdge <= 1.0 && alongRay < nearest) {
-            nearest = alongRay
-        }
-    }
-    return nearest
-}
-
 /** A point [thickness] from vertex [vertexIndex] along a direction, cut to stay inside the outline. */
 private fun offsetAlong(
     ring: List<Vector2>,
@@ -479,9 +460,32 @@ private fun offsetAlong(
 }
 
 /**
- * How far a ray leaving vertex [vertexIndex] along the given unit direction travels before it
- * reaches the outline again, or [Double.POSITIVE_INFINITY] if it never does. The two edges meeting
- * at that vertex are skipped, since the ray starts out sitting on both of them.
+ * How far a ray leaving a point *on* edge [edgeIndex] gets before reaching the outline again.
+ *
+ * The edge it starts from is skipped, since the ray begins sitting on it. Unlike [distanceToOutline]
+ * the edges either side are not skipped: from the middle of an edge they are ordinary obstacles.
+ */
+private fun distanceFromPoint(
+    ring: List<Vector2>,
+    edgeIndex: Int,
+    origin: Vector2,
+    directionX: Double,
+    directionY: Double
+): Double {
+    var nearest = Double.POSITIVE_INFINITY
+
+    for (i in ring.indices) {
+        if (i == edgeIndex) continue
+        val hit = rayHitsEdge(ring, i, origin, directionX, directionY)
+        if (hit < nearest) nearest = hit
+    }
+    return nearest
+}
+
+/**
+ * How far a ray leaving vertex [vertexIndex] travels before it reaches the outline again, or
+ * [Double.POSITIVE_INFINITY] if it never does. The two edges meeting at that vertex are skipped,
+ * since the ray starts out sitting on both of them.
  *
  * This is what keeps the wall inside the polygon: a corner is never pushed further in than there is
  * polygon to push into.
@@ -498,78 +502,33 @@ private fun distanceToOutline(
 
     for (i in 0 until count) {
         if (i == vertexIndex || i == (vertexIndex + count - 1) % count) continue
-
-        val from = ring[i]
-        val to = ring[(i + 1) % count]
-        val edgeX = to.x - from.x
-        val edgeY = to.y - from.y
-
-        val denominator = directionX * edgeY - directionY * edgeX
-        if (kotlin.math.abs(denominator) < EPSILON) continue // running parallel to this edge
-
-        val offsetX = origin.x - from.x
-        val offsetY = origin.y - from.y
-        val alongRay = -(offsetX * edgeY - offsetY * edgeX) / denominator
-        val alongEdge = -(offsetX * directionY - offsetY * directionX) / denominator
-
-        if (alongRay > EPSILON && alongEdge >= 0.0 && alongEdge <= 1.0 && alongRay < nearest) {
-            nearest = alongRay
-        }
+        val hit = rayHitsEdge(ring, i, origin, directionX, directionY)
+        if (hit < nearest) nearest = hit
     }
-
     return nearest
 }
 
-/**
- * Every point where [outline] crosses itself. Empty for a well formed outline.
- *
- * A simple outline — one that never crosses itself — is a hard precondition of [buildWalls], not a
- * nicety. Everything it does rests on knowing which side is inside, and it works that out from the
- * outline's winding. Cross two edges and there is no consistent answer: the winding says one thing
- * while part of the boundary runs the other way, so the inward normals along that part point
- * outward and the wall is built into open air. Measured on a hexagon with a single crossed edge,
- * 45% of the collision area ended up outside the shape.
- *
- * The failure is silent, and it looks like a bug in the wall builder rather than in its input,
- * which is exactly why it is worth checking for and saying so out loud.
- */
-fun selfIntersections(outline: List<Vector2>): List<Vector2> {
-    val crossings = ArrayList<Vector2>()
-    val count = outline.size
+/** Distance along the ray to edge [edgeIndex], or infinity if it misses. */
+private fun rayHitsEdge(
+    ring: List<Vector2>,
+    edgeIndex: Int,
+    origin: Vector2,
+    directionX: Double,
+    directionY: Double
+): Double {
+    val from = ring[edgeIndex]
+    val to = ring[(edgeIndex + 1) % ring.size]
+    val edgeX = to.x - from.x
+    val edgeY = to.y - from.y
 
-    for (i in 0 until count) {
-        for (j in i + 1 until count) {
-            // Edges that share a vertex always touch there; that is not a crossing.
-            if (j == i + 1 || (i == 0 && j == count - 1)) continue
+    val denominator = directionX * edgeY - directionY * edgeX
+    if (abs(denominator) < EPSILON) return Double.POSITIVE_INFINITY // running parallel to this edge
 
-            val crossing = seamCrossing(
-                outline[i], outline[(i + 1) % count],
-                outline[j], outline[(j + 1) % count]
-            )
-            if (crossing != null) crossings.add(crossing)
-        }
-    }
-    return crossings
-}
+    val offsetX = origin.x - from.x
+    val offsetY = origin.y - from.y
+    val alongRay = -(offsetX * edgeY - offsetY * edgeX) / denominator
+    val alongEdge = -(offsetX * directionY - offsetY * directionX) / denominator
 
-/** Where two seams cross, or `null` if they don't properly cross each other. */
-internal fun seamCrossing(fromA: Vector2, toA: Vector2, fromB: Vector2, toB: Vector2): Vector2? {
-    val aX = toA.x - fromA.x
-    val aY = toA.y - fromA.y
-    val bX = toB.x - fromB.x
-    val bY = toB.y - fromB.y
-
-    val denominator = aX * bY - aY * bX
-    if (kotlin.math.abs(denominator) < EPSILON) return null // parallel seams never cross
-
-    val offsetX = fromB.x - fromA.x
-    val offsetY = fromB.y - fromA.y
-    val alongA = (offsetX * bY - offsetY * bX) / denominator
-    val alongB = (offsetX * aY - offsetY * aX) / denominator
-
-    // Strictly interior to both seams: touching at an endpoint is not a bowtie.
-    if (alongA <= EPSILON || alongA >= 1.0 - EPSILON) return null
-    if (alongB <= EPSILON || alongB >= 1.0 - EPSILON) return null
-
-    return Vector2.create(fromA.x + alongA * aX, fromA.y + alongA * aY)
+    return if (alongRay > EPSILON && alongEdge >= 0.0 && alongEdge <= 1.0) alongRay
+    else Double.POSITIVE_INFINITY
 }

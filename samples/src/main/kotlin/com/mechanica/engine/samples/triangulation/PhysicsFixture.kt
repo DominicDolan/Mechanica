@@ -1,6 +1,7 @@
 package com.mechanica.engine.samples.triangulation
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.walls.WallBand
 import kotlin.math.hypot
 
 /**

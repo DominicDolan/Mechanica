@@ -1,6 +1,10 @@
 package com.mechanica.engine.samples.triangulation
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.isCounterClockwise
+import com.mechanica.engine.geometry.selfIntersections
+import com.mechanica.engine.geometry.walls.DEFAULT_MITER_LIMIT
+import com.mechanica.engine.geometry.walls.buildWalls
 import kotlin.math.abs
 import kotlin.math.hypot
 
@@ -158,45 +162,9 @@ fun main() {
         } else println("ok    $name")
     }
 
-    // A 4x4 square inset by 0.5 must give a 3x3 square, with no corner hitting the limit.
-    val square = listOf(p(-2.0, -2.0), p(2.0, -2.0), p(2.0, 2.0), p(-2.0, 2.0))
-    val squareWall = buildWalls(square, 0.5)
-    check("square: one quad per edge", squareWall.quads.size == 4, "${squareWall.quads.size}")
-    check("square: nothing limited", squareWall.limitedCount == 0, "${squareWall.limitedCount}")
-    check(
-        "square: inner is 3x3",
-        squareWall.inner.all { abs(abs(it.x) - 1.5) < 1e-9 && abs(abs(it.y) - 1.5) < 1e-9 },
-        squareWall.inner.joinToString { "(${it.x}, ${it.y})" }
-    )
-
-    // The L-shape's reflex corner sits at the origin; its miter point must be at (-t, -t).
-    val lShape = listOf(p(-2.5, -2.5), p(2.5, -2.5), p(2.5, 0.0), p(0.0, 0.0), p(0.0, 2.5), p(-2.5, 2.5))
-    val reflex = buildWalls(lShape, 0.4).inner[3]
-    check(
-        "L-shape: reflex miter at (-0.4, -0.4)",
-        abs(reflex.x + 0.4) < 1e-9 && abs(reflex.y + 0.4) < 1e-9,
-        "(${reflex.x}, ${reflex.y})"
-    )
-
-    // Clockwise input must give the same wall as the same outline wound the other way.
-    val clockwise = buildWalls(square.reversed(), 0.5)
-    check("clockwise input: nothing limited", clockwise.limitedCount == 0)
-    check(
-        "clockwise input: inner is still 3x3",
-        clockwise.inner.all { abs(abs(it.x) - 1.5) < 1e-9 && abs(abs(it.y) - 1.5) < 1e-9 }
-    )
-
-    // A needle: the miter would run away to infinity, so the limit has to catch it.
-    val needle = listOf(p(-3.0, 0.0), p(3.0, -0.05), p(3.0, 0.05))
-    val needleWall = buildWalls(needle, 0.5, miterLimit = 2.5)
-    check(
-        "needle: tip is capped at the miter limit",
-        needleWall.inner.all { hypot(it.x - needle[0].x, it.y - needle[0].y) <= 2.5 * 0.5 + 1e-9 ||
-            hypot(it.x - needle[1].x, it.y - needle[1].y) <= 2.5 * 0.5 + 1e-9 ||
-            hypot(it.x - needle[2].x, it.y - needle[2].y) <= 2.5 * 0.5 + 1e-9 },
-        needleWall.inner.joinToString { "(%.3f, %.3f)".format(it.x, it.y) }
-    )
-    check("needle: all corners finite", needleWall.inner.all { it.x.isFinite() && it.y.isFinite() })
+    // The exact facts about buildWalls itself — corner positions, miter limits, where an edge
+    // gets broken — are unit tested next to it, in common's WallBuilderTests. What is here is
+    // everything that needs whole shapes and a lot of sampling to say anything about.
 
     // The precondition every other measurement here rests on.
     for (testCase in testPolygons + TestPolygon("Dogleg", dogleg)) {

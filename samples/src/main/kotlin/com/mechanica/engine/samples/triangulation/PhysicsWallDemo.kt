@@ -1,6 +1,12 @@
 package com.mechanica.engine.samples.triangulation
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.isCounterClockwise
+import com.mechanica.engine.geometry.selfIntersections
+import com.mechanica.engine.geometry.shapes.Triangle
+import com.mechanica.engine.geometry.walls.DEFAULT_MITER_LIMIT
+import com.mechanica.engine.geometry.walls.WallBand
+import com.mechanica.engine.geometry.walls.buildWalls
 import com.mechanica.engine.config.configure
 import com.mechanica.engine.drawer.Drawer
 import com.mechanica.engine.game.Game
@@ -291,7 +297,7 @@ class PhysicsWallDemo : Scene(), Inputs by Inputs.create() {
     /** A convex polygon as a triangle fan. Only valid because a hull is convex by construction. */
     private fun fanOf(hull: List<Vector2>): List<Triangle> =
         if (hull.size < 3) emptyList()
-        else (1 until hull.size - 1).map { Triangle(hull[0], hull[it], hull[it + 1]) }
+        else (1 until hull.size - 1).map { Triangle.create(hull[0], hull[it], hull[it + 1]) }
 
     /** A path that returns to its first point, which is what [Drawer.path] needs to close a loop. */
     private fun closedPath(vertices: List<Vector2>) =

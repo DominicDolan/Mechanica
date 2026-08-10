@@ -1,6 +1,7 @@
 package com.mechanica.engine.samples.triangulation
 
 import com.cave.library.vector.vec2.Vector2
+import com.mechanica.engine.geometry.shapes.Triangle
 import com.mechanica.engine.shaders.attributes.AttributeArray
 import com.mechanica.engine.shaders.models.Model
 
