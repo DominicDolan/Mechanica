@@ -2,6 +2,7 @@ package com.mechanica.engine.scenes
 
 import com.mechanica.engine.scenes.scenes.SceneHub
 import com.mechanica.engine.scenes.scenes.SceneNode
+import com.mechanica.engine.scenes.scenes.Updateable
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -27,6 +28,15 @@ class SceneRemovalTests {
         }
     }
 
+    private class RecordingLeaf : Updateable {
+        var updateCount = 0
+            private set
+
+        override fun update(delta: Double) {
+            updateCount++
+        }
+    }
+
     @Test
     fun removeSceneNotifiesTheWholeSubtreeExactlyOnce() {
         val root = CountingHub()
@@ -38,7 +48,45 @@ class SceneRemovalTests {
         assertEquals(1, branch.removeCount, "the removed hub should be notified exactly once")
         assertEquals(1, leaf.removeCount, "a descendant of the removed hub should be notified exactly once")
         assertFalse(root.hasScene(branch), "the removed hub should be detached from its parent")
-        assertFalse(branch.hasChildren, "the removed hub should have released its children")
+        assertTrue(branch.hasChildren, "the removed hub should keep its own children")
+    }
+
+    @Test
+    fun aDetachedHubStillHasItsSubtreeWhenItIsAddedSomewhereElse() {
+        // A scene shared between parents, or handed from one parent to the next, is detached
+        // from the old parent and added to the new one. Detaching notifies its subtree but
+        // must not dismantle it, or the scene arrives at its new parent hollow.
+        val oldParent = CountingHub()
+        val shared = CountingHub()
+        val child = shared.addScene(CountingNode())
+        oldParent.addScene(shared)
+
+        oldParent.removeChildren()
+
+        assertTrue(shared.hasScene(child), "the shared hub should still hold its child")
+        assertEquals(1, child.removeCount, "the child should have been notified of the detach")
+
+        val newParent = CountingHub()
+        newParent.addScene(shared)
+
+        assertTrue(newParent.hasScene(shared), "the shared hub should attach to its new parent")
+        assertTrue(shared.hasScene(child), "the shared hub should still hold its child under the new parent")
+    }
+
+    @Test
+    fun aDetachedSubtreeIsStillTraversed() {
+        val oldParent = CountingHub()
+        val shared = CountingHub()
+        val leaf = shared.addScene(RecordingLeaf())
+        oldParent.addScene(shared)
+
+        oldParent.removeChildren()
+
+        val newParent = CountingHub()
+        newParent.addScene(shared)
+        newParent.updateChildren(1.0)
+
+        assertEquals(1, leaf.updateCount, "a re-parented hub's children should still be traversed")
     }
 
     @Test

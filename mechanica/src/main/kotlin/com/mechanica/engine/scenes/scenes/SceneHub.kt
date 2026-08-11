@@ -118,8 +118,24 @@ abstract class SceneHub : SceneNode {
     }
 
     private fun SceneNode.detach() {
-        if (this is SceneHub) removeChildren()
+        if (this is SceneHub) notifyDetached()
         onRemove()
+    }
+
+    /**
+     * Notifies this hub's subtree that it has been detached, deepest first, without
+     * unlinking anything.
+     *
+     * Only the node handed to [removeScene] leaves its parent, and only [removeChildren]
+     * empties a hub. Everything else keeps the children it was built with, so a hub that is
+     * detached and later added to another parent still works. Scenes shared between parents,
+     * or handed from one parent to the next, depend on this.
+     */
+    private fun notifyDetached() {
+        val holders = childHolders.toList()
+        for (i in holders.indices) {
+            holders[i].scene.detach()
+        }
     }
 
     /**
