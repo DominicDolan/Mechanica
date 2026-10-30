@@ -1,7 +1,7 @@
 package com.mechanica.engine.input
 
 open class Key (label: String, private val condition: () -> Boolean) {
-    private val label = label.toUpperCase()
+    private val label = label.uppercase()
 
     val isDown: Boolean
         get() {

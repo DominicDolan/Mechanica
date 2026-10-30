@@ -1,6 +1,8 @@
 package com.mechanica.engine.scenes.scenes
 
 import com.mechanica.engine.game.Game
+import com.mechanica.engine.context.loader.BackgroundTask
+import com.mechanica.engine.context.loader.MechanicaFactory
 
 abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoops: Int = 2) : Scene() {
 
@@ -11,7 +13,7 @@ abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoo
     private var currentLoops = 0
     private var currentWait = 0.0
 
-    private var exception: Throwable? = null
+    private var loadingTask: BackgroundTask? = null
 
     private var onFinishCalled = false
     override fun update(delta: Double) {
@@ -19,14 +21,14 @@ abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoo
         when (stage) {
             Stage.WAIT -> wait(delta)
             Stage.FINISHED_WAIT -> startLoading()
-            Stage.LOADING -> whileLoading (delta)
+            Stage.LOADING -> {
+                val task = loadingTask!!
+                if (task.isFinished) {
+                    task.failure?.let { throw it }
+                    stage = Stage.FINISHED_LOADING
+                } else whileLoading(delta)
+            }
             Stage.FINISHED_LOADING -> {
-                val exception = this.exception
-                if (exception != null) {
-                    this.exception = null
-                    throw exception
-                }
-
                 onFinish()
                 onFinishCalled = true
             }
@@ -42,20 +44,11 @@ abstract class LoadScene(private val waitTime: Float = 0.2f, private val waitLoo
     }
 
     private fun startLoading() {
-        val runnable = Runnable {
-            try {
-                loadingContext.activate()
-                load()
-            } finally {
-                stage = Stage.FINISHED_LOADING
-            }
-        }
-
-        val thread = Thread(runnable)
-
         stage = Stage.LOADING
-        thread.setUncaughtExceptionHandler { _, e -> exception = e }
-        thread.start()
+        loadingTask = MechanicaFactory.miscFactory.startBackgroundTask {
+            loadingContext.activate()
+            load()
+        }
     }
 
     abstract fun load()

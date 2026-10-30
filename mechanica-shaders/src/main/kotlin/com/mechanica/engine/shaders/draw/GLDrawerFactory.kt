@@ -1,7 +1,6 @@
 package com.mechanica.engine.shaders.draw
 
 import com.mechanica.engine.shaders.models.Model
-import java.nio.IntBuffer
 
 interface GLDrawerFactory {
     /**
@@ -54,7 +53,7 @@ interface GLDrawerFactory {
      * parameters that would be valid for a call to
      * glDrawElementsBaseVertex().
      */
-    fun multiDrawElementsBaseVertex(models: Array<Model>, baseVertex: IntBuffer)
+    fun multiDrawElementsBaseVertex(models: Array<Model>, baseVertex: IntArray)
 
     /**
      * The same as [multiDrawElementsBaseVertex] but the same [baseVertex] is

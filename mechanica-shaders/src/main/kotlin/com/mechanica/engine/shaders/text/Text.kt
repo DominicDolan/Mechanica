@@ -74,7 +74,7 @@ class Text(text: String, font: Font = ShaderFactory.fontFactory.defaultFont()) {
         val start = carriageReturnIndex(line-1)
         val end = max(carriageReturnIndex(line) - 1, start)
 
-        val search = characterPositions.binarySearch(x, start, end)
+        val search = characterPositions.asList().binarySearch(x, start, end)
 
         return if (search == 0) 0
         else abs(search) - 1
@@ -155,6 +155,6 @@ class Text(text: String, font: Font = ShaderFactory.fontFactory.defaultFont()) {
     }
 
     companion object {
-        private val LINE_SEPARATOR = System.getProperty("line.separator")
+        private val LINE_SEPARATOR = "\r\n"
     }
 }

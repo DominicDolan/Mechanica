@@ -41,7 +41,7 @@ interface Triangle {
             0 -> a
             1 -> b
             2 -> c
-            else -> throw ArrayIndexOutOfBoundsException("Tried to get index 3 of a triangle")
+            else -> throw IndexOutOfBoundsException("Tried to get index 3 of a triangle")
         }
     }
 

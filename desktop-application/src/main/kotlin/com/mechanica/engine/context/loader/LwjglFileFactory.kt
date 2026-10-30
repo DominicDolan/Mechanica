@@ -3,6 +3,7 @@ package com.mechanica.engine.context.loader
 import com.mechanica.engine.resources.ExternalResource
 import com.mechanica.engine.resources.Resource
 import com.mechanica.engine.resources.ResourceDirectory
+import com.mechanica.engine.resources.ResourceNotFoundException
 import java.io.*
 import java.net.URI
 import java.net.URL
@@ -14,14 +15,6 @@ class LwjglFileFactory : FileFactory {
         val fileForURL = path.replace("\\", "/")
         val url = getResourceURL(fileForURL) ?: throw FileNotFoundException("Resource not found at $fileForURL")
         return ResourceImpl(url)
-    }
-
-    override fun resource(url: URL): Resource {
-        return ResourceImpl(url)
-    }
-
-    override fun resource(uri: URI): Resource {
-        return ResourceImpl(uri.toURL())
     }
 
     override fun externalResource(path: String, createIfAbsent: Boolean): ExternalResource {
@@ -39,7 +32,7 @@ class LwjglFileFactory : FileFactory {
         else null
     }
 
-    private class ResourceImpl(private val url: URL) : Resource {
+    internal class ResourceImpl(private val url: URL) : Resource {
         private val protocol = url.protocol
         override val path: String
             get() {
@@ -49,11 +42,7 @@ class LwjglFileFactory : FileFactory {
                     url.path
                 }
             }
-        override val stream: InputStream
-            get() {
-                val conn = url.openConnection()
-                return conn.getInputStream()
-            }
+        override fun readBytes(): ByteArray = url.openStream().use { it.readBytes() }
 
     }
 }
@@ -62,8 +51,11 @@ class LwjglExternalResource(filePath: String, createIfAbsent: Boolean = false) :
     private val absoluteFile: File
     override val path: String
         get() = absoluteFile.path
-    override val stream: InputStream
-        get() = FileInputStream(absoluteFile)
+    override fun readBytes(): ByteArray = try {
+        absoluteFile.readBytes()
+    } catch (error: FileNotFoundException) {
+        throw ResourceNotFoundException(path, error)
+    }
 
     init {
         val path =if (File(filePath).isAbsolute) filePath
@@ -128,7 +120,7 @@ class LwjglResourceDirectory private constructor(directory: String, recursive: B
         val walk: Stream<Path> = Files.walk(path, 1)
         for (e in walk) {
             if (!Files.isDirectory(e)) {
-                resourceList.add(Resource(e.toUri()))
+                resourceList.add(LwjglFileFactory.ResourceImpl(e.toUri().toURL()))
             } else if (Files.isDirectory(e)) {
                 val relative = path.relativize(e).toString()
                 if (relative.isNotEmpty() && relative != "." && relative != "..") {

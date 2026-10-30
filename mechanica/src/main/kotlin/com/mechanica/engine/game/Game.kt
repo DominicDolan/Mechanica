@@ -20,8 +20,6 @@ import com.mechanica.engine.scenes.scenes.Scene
 import com.mechanica.engine.scenes.scenes.SceneNode
 import com.mechanica.engine.util.CameraMatrices
 import com.mechanica.engine.util.Timer
-import java.io.File
-import javax.imageio.ImageIO
 
 object Game : Configurable<GameConfiguration> {
     private var _application: Application? = null
@@ -50,7 +48,7 @@ object Game : Configurable<GameConfiguration> {
         get() = setup.sceneManager
 
     val scene: SceneNode
-        get() = sceneManager.currentScene ?: throw UninitializedPropertyAccessException("The top level scene has not yet been initialized")
+        get() = sceneManager.currentScene ?: throw IllegalStateException("The top level scene has not yet been initialized")
 
     val deltaCalculator: DeltaCalculator
         get() = setup.deltaCalculator
@@ -144,15 +142,9 @@ object Game : Configurable<GameConfiguration> {
     }
 
     fun screenshot() {
-        val image = application.glContext.screenshot()
-        // Save the image to a file
         try {
             val filepath = "./test.png"
-            // Make sure parent directories exist
-
-            File(filepath).parentFile?.mkdirs()
-
-            ImageIO.write(image, "PNG", File(filepath))
+            application.glContext.saveScreenshot(filepath)
             println("Screenshot saved successfully to: $filepath")
         } catch (e: Exception) {
             println("Failed to save screenshot: ${e.message}")

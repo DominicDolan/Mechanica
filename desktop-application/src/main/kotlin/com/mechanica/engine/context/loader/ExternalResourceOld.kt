@@ -13,20 +13,11 @@ class ExternalResourceOld(filePath: String, createIfAbsent: Boolean = false) : R
 
     override val path: String
         get() = absoluteFile.path
-    override val stream: InputStream
-        get() {
-            return when {
-                this.fileForJar != null -> {
-                    FileInputStream(fileForJar)
-                }
-                resource != null -> {
-                    resource.stream
-                }
-                else -> {
-                    ByteArrayInputStream(byteArrayOf())
-                }
-            }
-        }
+    override fun readBytes(): ByteArray = when {
+        fileForJar != null -> fileForJar.readBytes()
+        resource != null -> resource.readBytes()
+        else -> byteArrayOf()
+    }
 
     init {
         val sep = System.getProperty("file.separator")

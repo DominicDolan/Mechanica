@@ -11,7 +11,6 @@ import com.mechanica.engine.shaders.attributes.FloatAttributeArray
 import com.mechanica.engine.shaders.models.Model
 import com.mechanica.engine.util.VectorArray
 import com.mechanica.engine.util.extensions.fill
-import org.intellij.lang.annotations.Language
 
 class PathRenderer() {
 
@@ -31,7 +30,7 @@ class PathRenderer() {
 
         val width = uniform.float(1f)
 
-        @Language("GLSL")
+        // language=GLSL
         override val main: String = """
             layout (lines) in;
             layout (triangle_strip, max_vertices = 4) out;
@@ -79,7 +78,7 @@ class PathRenderer() {
 
         val width = uniform.float(1f)
 
-        @Language("GLSL")
+        // language=GLSL
         override val main: String = """
             layout (points) in;
             layout (triangle_strip, max_vertices = 4) out;

@@ -1,5 +1,7 @@
 package com.mechanica.engine.display
 
+import kotlin.jvm.JvmInline
+
 interface Resolution {
     val width: Pixel
     val height: Pixel

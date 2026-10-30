@@ -1,40 +1,12 @@
 package com.mechanica.engine.util
 
-fun calculateIsJar(): Boolean {
-    val callingClass = getCallingClass()
-    val simpleName = callingClass.simpleName
-    val protocol = callingClass.getResource("$simpleName.class").protocol
-
-    return  protocol == "jar"
-}
-
-fun calculateResourceDirectory(): String {
-    val callingClass = getCallingClass()
-    val simpleName = callingClass.simpleName
-    val path = callingClass.getResource("$simpleName.class").path
-    return path
-}
-
-fun getCallingClass(): Class<*> {
-    val stack = Exception().stackTrace
-    return Class.forName(stack.last().className)
-}
-
-fun codepointToString(cp: Int): String {
-    val sb = StringBuilder()
-    when {
-        Character.isBmpCodePoint(cp) -> {
-            sb.append(cp.toChar())
-        }
-        Character.isValidCodePoint(cp) -> {
-            sb.append(Character.highSurrogate(cp))
-            sb.append(Character.lowSurrogate(cp))
-        }
-        else -> {
-            sb.append('?')
-        }
+fun codepointToString(cp: Int): String = when (cp) {
+    in 0..0xFFFF -> cp.toChar().toString()
+    in 0x10000..0x10FFFF -> {
+        val value = cp - 0x10000
+        "${(0xD800 + (value shr 10)).toChar()}${(0xDC00 + (value and 0x3FF)).toChar()}"
     }
-    return sb.toString()
+    else -> "?"
 }
 
 fun scriptWithLineNumbers(script: String): String {

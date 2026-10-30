@@ -1,7 +1,6 @@
 package com.mechanica.engine.shaders.draw
 
 import com.mechanica.engine.shaders.models.Model
-import java.nio.IntBuffer
 
 
 class DrawBaseVertex(private val glDrawCommands: GLDrawerFactory) : ElementsDrawCommand, MultiElementsDrawCommand {
@@ -17,7 +16,7 @@ class DrawBaseVertex(private val glDrawCommands: GLDrawerFactory) : ElementsDraw
 }
 
 class MultiDrawBaseVertex(private val glDrawCommands: GLDrawerFactory) : MultiElementsDrawCommand {
-    var baseVertex: IntBuffer? = null
+    var baseVertex: IntArray? = null
 
     override fun elements(models: Array<Model>) {
         val buffer = baseVertex

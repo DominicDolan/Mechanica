@@ -3,7 +3,6 @@ package com.mechanica.engine.resources
 import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.text.Font
 import com.mechanica.engine.text.FontAtlasConfiguration
-import java.nio.ByteBuffer
 
 open class FontSet(protected val name: String, protected val configureAtlas: FontAtlasConfiguration.() -> Unit = { }) {
     protected var modifier = Modifiers.REGULAR
@@ -48,7 +47,7 @@ open class FontSet(protected val name: String, protected val configureAtlas: Fon
         return create()
     }
 
-    open fun create() = Font.create(Resource(fileName).buffer, configureAtlas)
+    open fun create() = Font.create(Resource(fileName).readBytes(), configureAtlas)
 
     override fun toString(): String {
         return "$name-$modifier$italic"
@@ -97,10 +96,10 @@ fun Font.Companion.defaults(config: FontAtlasConfiguration.() -> Unit): FontSet 
     return FontSet("roboto/Roboto", config)
 }
 
-fun Font.Companion.create(ttfFile: ByteBuffer, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
+fun Font.Companion.create(ttfFile: ByteArray, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
     return ShaderFactory.fontFactory.font(ttfFile, configureAtlas)
 }
 
 fun Font.Companion.create(resource: Resource, configureAtlas: FontAtlasConfiguration.() -> Unit = { }): Font {
-    return create(resource.buffer, configureAtlas)
+    return create(resource.readBytes(), configureAtlas)
 }

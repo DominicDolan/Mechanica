@@ -1,0 +1,4 @@
+headers = stb/stb_image.h stb/stb_image_write.h stb/stb_rect_pack.h stb/stb_truetype.h stb/stb_vorbis.h
+compilerOpts = -idirafter /usr/include
+linkerOpts = -L/usr/lib/x86_64-linux-gnu -lstb --allow-shlib-undefined
+package = com.mechanica.nativebackend.stb

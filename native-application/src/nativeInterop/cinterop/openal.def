@@ -1,0 +1,4 @@
+headers = AL/al.h AL/alc.h
+compilerOpts = -idirafter /usr/include
+linkerOpts = -L/usr/lib/x86_64-linux-gnu -lopenal --allow-shlib-undefined
+package = com.mechanica.nativebackend.openal

@@ -2,7 +2,7 @@ package com.mechanica.engine.persistence
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
+import com.mechanica.engine.context.loader.MechanicaFactory
 
 class PersistentVariable<T:Any>(
         private val map: PersistenceMap,
@@ -64,8 +64,7 @@ class PersistentVariable<T:Any>(
         val fullName = this.fullPropertyName
         return if (fullName != null) fullName
         else {
-            val newName = if (ref != null) ref::class.java.canonicalName + "." + property.name
-            else (property.javaField?.declaringClass?.canonicalName ?: "static") + "." + property.name
+            val newName = MechanicaFactory.miscFactory.persistencePropertyName(ref, property)
             fullPropertyName = newName
             newName
         }

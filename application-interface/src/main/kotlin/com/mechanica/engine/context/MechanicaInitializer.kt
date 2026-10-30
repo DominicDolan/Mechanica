@@ -7,7 +7,7 @@ import com.mechanica.engine.shaders.context.MechanicaShadersInitializer
 object MechanicaInitializer {
     private var _factory: MechanicaFactory? = null
     internal val factory: MechanicaFactory
-        get() = _factory ?: throw UninitializedPropertyAccessException("The OpenGL context has not been initialized")
+        get() = _factory ?: throw IllegalStateException("The OpenGL context has not been initialized")
 
     fun initialize(factory: MechanicaFactory): EventCallbacks {
         if (_factory == null) {

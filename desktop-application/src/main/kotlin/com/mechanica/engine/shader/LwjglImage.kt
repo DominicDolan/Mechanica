@@ -1,6 +1,7 @@
 package com.mechanica.engine.shader
 
 import com.mechanica.engine.resources.Resource
+import com.mechanica.engine.utils.toDirectBuffer
 import com.mechanica.engine.shaders.models.Image
 import com.mechanica.engine.utils.ImageData
 import org.lwjgl.opengl.GL11
@@ -17,7 +18,7 @@ class LwjglImage(override val id: Int) : Image {
 
     companion object {
         fun create(resource: Resource): LwjglImage {
-            return create(resource.buffer)
+            return create(resource.readBytes().toDirectBuffer())
         }
 
         fun create(buffer: ByteBuffer): LwjglImage {

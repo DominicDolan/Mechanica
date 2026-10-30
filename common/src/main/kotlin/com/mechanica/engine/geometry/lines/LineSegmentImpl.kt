@@ -20,7 +20,7 @@ class LineSegmentImpl(p1: Vector2, p2: Vector2) : LineSegment() {
             }
 
         override fun toString(): String {
-            return "%.2f, %.2f".format(x, y)
+            return "$x, $y"
         }
     }
 

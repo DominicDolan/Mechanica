@@ -22,7 +22,8 @@ pluginManagement {
 // the same Gradle / Kotlin / JVM versions as Mechanica.
 val dukeComposeHome = providers.gradleProperty("dukecompose_home").orNull ?: "../DukeCompose"
 includeBuild(dukeComposeHome)
+includeBuild(providers.gradleProperty("kotlin_cave_home").orNull ?: "../Kotlin-CAVE")
 
 rootProject.name = "Mechanica"
 
-include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "mechanica-ui")
+include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "samples:native-window", "samples:native-engine", "native-application", "mechanica-ui")

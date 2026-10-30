@@ -63,7 +63,7 @@ class DelaunayTriangle(
             0 -> ab
             1 -> bc
             2 -> ca
-            else -> throw ArrayIndexOutOfBoundsException("Tried to get index 3 of a triangle")
+            else -> throw IndexOutOfBoundsException("Tried to get index 3 of a triangle")
         }
     }
 

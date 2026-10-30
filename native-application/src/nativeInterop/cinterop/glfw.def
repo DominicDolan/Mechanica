@@ -1,0 +1,4 @@
+headers = GLFW/glfw3.h GL/gl.h
+compilerOpts = -DGLFW_INCLUDE_NONE -DGL_GLEXT_PROTOTYPES -idirafter /usr/include
+linkerOpts = -L/usr/lib/x86_64-linux-gnu -lglfw -lGL --allow-shlib-undefined
+package = com.mechanica.samples.nativegl

@@ -51,7 +51,7 @@ abstract class ShortBufferObject : GLBufferObject {
 
 abstract class IntBufferObject : GLBufferObject {
     abstract var ints: IntArray
-    override val type: GLPrimitive = GLPrimitive.short()
+    override val type: GLPrimitive = GLPrimitive.int()
 
     companion object {
         fun createArrayBuffer(ints: IntArray): IntBufferObject {

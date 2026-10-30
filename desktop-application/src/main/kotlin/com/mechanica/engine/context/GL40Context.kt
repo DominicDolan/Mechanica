@@ -7,6 +7,8 @@ import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.*
 import java.nio.ByteBuffer
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 
 class GL40Context(private val application: Application) : OpenGLContext {
 
@@ -43,7 +45,7 @@ class GL40Context(private val application: Application) : OpenGLContext {
         GL11.glDisable(GL11.GL_STENCIL_TEST)
     }
 
-    override fun screenshot(): BufferedImage {
+    override fun saveScreenshot(path: String) {
         // Clear with transparency for the screenshot
 //        GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL11.GL_STENCIL_BUFFER_BIT)
 //        GL20.glClear(GL20.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
@@ -75,7 +77,9 @@ class GL40Context(private val application: Application) : OpenGLContext {
             }
         }
 
-        return image
+        val file = File(path)
+        file.parentFile?.mkdirs()
+        check(ImageIO.write(image, "PNG", file)) { "No PNG writer available" }
     }
 
     override fun destroy() {

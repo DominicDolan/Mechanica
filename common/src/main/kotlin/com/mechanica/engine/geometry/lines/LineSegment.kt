@@ -66,7 +66,7 @@ abstract class LineSegment() : Line {
     }
 
     override fun toString(): String {
-        return "p1: $p1, p2: $p2, slope: %.2f, intercept Y: %.2f, intercept X: %.2f".format(m, b, c)
+        return "p1: $p1, p2: $p2, slope: $m, intercept Y: $b, intercept X: $c"
     }
 
     companion object {

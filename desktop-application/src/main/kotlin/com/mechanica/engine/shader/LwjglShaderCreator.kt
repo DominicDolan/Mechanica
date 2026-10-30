@@ -108,7 +108,7 @@ class LwjglShaderCreator(
     }
 
     private fun getShaderTypeFromLog(log: String): Int {
-        val lowerCase = log.toLowerCase()
+        val lowerCase = log.lowercase()
         return when {
             lowerCase.contains("vertex") -> 0
             lowerCase.contains("fragment") -> 1

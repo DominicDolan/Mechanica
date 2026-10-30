@@ -38,5 +38,7 @@ dependencies {
 sourceSets.test {
     resources.srcDir("../mechanica/src/main/resources")
     resources.include("res/fonts/roboto/Roboto-Regular.ttf")
+    resources.srcDir("../samples/src/main/resources")
+    resources.include("res/audio/switch3.ogg")
 }
 

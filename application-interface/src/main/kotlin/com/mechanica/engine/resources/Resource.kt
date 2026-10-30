@@ -1,41 +1,15 @@
 package com.mechanica.engine.resources
 
 import com.mechanica.engine.context.loader.MechanicaFactory
-import com.mechanica.engine.shaders.context.ShaderFactory
-import java.io.BufferedReader
-import java.io.DataInputStream
-import java.io.InputStreamReader
-import java.net.URI
-import java.net.URL
-import java.nio.ByteBuffer
-import java.util.stream.Collectors
 
 interface Resource : GenericResource {
     override val lines: List<String>
-        get() {
-            val reader = BufferedReader(InputStreamReader(stream))
-            val lines = reader.lines().collect(Collectors.toList())
-            return lines
+        get() = readBytes().decodeToString().lineSequence().toList().let {
+            // BufferedReader.readLine does not return an extra line after a final newline.
+            if (it.lastOrNull() == "" && (it.size > 1 || it[0].isEmpty())) it.dropLast(1) else it
         }
     override val contents: String
-        get() {
-            val sb = StringBuilder()
-            lines.forEach {
-                sb.appendLine(it)
-            }
-            return sb.toString()
-        }
-    override val buffer: ByteBuffer
-        get() {
-            val bytes = ByteArray(stream.available())
-            val dataInputStream = DataInputStream(stream)
-            dataInputStream.readFully(bytes)
-            val buffer = ShaderFactory.bufferFactories.byteBuffer(bytes.size)
-            buffer.put(bytes)
-            (buffer as java.nio.Buffer).position(0)
-            return buffer
-        }
-
+        get() = buildString { lines.forEach { appendLine(it) } }
     companion object {
         private val factory = MechanicaFactory.fileFactory
 
@@ -45,14 +19,6 @@ interface Resource : GenericResource {
 
         fun create(path: String): Resource {
             return factory.resource(path)
-        }
-
-        operator fun invoke(url: URL): Resource {
-            return factory.resource(url)
-        }
-
-        operator fun invoke(uri: URI): Resource {
-            return factory.resource(uri)
         }
 
         fun external(path: String, createIfAbsent: Boolean = true): ExternalResource {
@@ -65,6 +31,8 @@ interface Resource : GenericResource {
 
     }
 }
+
+class ResourceNotFoundException(path: String, cause: Throwable? = null) : Exception("Resource not found: $path", cause)
 
 interface ExternalResource : Resource {
     fun write(content: String)

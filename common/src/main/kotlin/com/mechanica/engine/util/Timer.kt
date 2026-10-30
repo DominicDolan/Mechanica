@@ -1,9 +1,12 @@
 @file:Suppress("unused") // There will be functions here that go unused most of the time
 package com.mechanica.engine.util
 
+import kotlin.time.TimeSource
+
 object Timer {
+    private val origin = TimeSource.Monotonic.markNow()
     private val ids = HashMap<Int, Double>()
-    val now get() = System.nanoTime()/1e9
+    val now get() = origin.elapsedNow().inWholeNanoseconds / 1e9
     val begin = now
     val elapsed get() = now - begin
 

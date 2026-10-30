@@ -3,7 +3,6 @@ package com.mechanica.engine.context.loader
 import com.mechanica.engine.shaders.draw.GLDrawerFactory
 import com.mechanica.engine.shaders.models.Model
 import org.lwjgl.opengl.GL42.*
-import java.nio.IntBuffer
 
 class LwjglDrawerFactory(val mode: Int, val type: Int) : GLDrawerFactory {
 
@@ -41,7 +40,7 @@ class LwjglDrawerFactory(val mode: Int, val type: Int) : GLDrawerFactory {
         TODO("not implemented")
     }
 
-    override fun multiDrawElementsBaseVertex(models: Array<Model>, baseVertex: IntBuffer) {
+    override fun multiDrawElementsBaseVertex(models: Array<Model>, baseVertex: IntArray) {
         TODO("not implemented")
     }
 

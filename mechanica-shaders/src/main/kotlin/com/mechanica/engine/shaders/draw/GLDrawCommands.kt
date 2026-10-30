@@ -2,7 +2,6 @@ package com.mechanica.engine.shaders.draw
 
 import com.mechanica.engine.shaders.context.ShaderFactory
 import com.mechanica.engine.shaders.models.Model
-import java.nio.IntBuffer
 
 class GLDraw {
     private val glDrawer = ShaderFactory.drawFactories.glTrianglesDrawer
@@ -58,7 +57,7 @@ class GLDrawCommands(private val glDrawCommands: GLDrawerFactory) : MultiDrawCom
         return baseVertexDraw
     }
 
-    fun baseVertex(baseVertex: IntBuffer): MultiDrawBaseVertex {
+    fun baseVertex(baseVertex: IntArray): MultiDrawBaseVertex {
         baseVertexMultiDraw.baseVertex = baseVertex
         return baseVertexMultiDraw
     }

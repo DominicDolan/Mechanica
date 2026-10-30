@@ -18,7 +18,7 @@ class ImageData(val buffer: ByteBuffer) {
     val width: Int
     val height: Int
 
-    constructor(resource: Resource) : this(resource.buffer)
+    constructor(resource: Resource) : this(resource.readBytes().toDirectBuffer())
 
     init {
         val widthBuffer = BufferUtils.createIntBuffer(1)

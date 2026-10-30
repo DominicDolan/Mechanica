@@ -1,30 +1,29 @@
-plugins {
-    kotlin("jvm")
-    `java-library`
+plugins { kotlin("multiplatform") }
+
+kotlin {
+    jvmToolchain(22)
+    jvm()
+    linuxX64()
+    sourceSets {
+        commonMain {
+            kotlin.srcDir("src/main/kotlin")
+            resources.srcDir("src/main/resources")
+            dependencies {
+                api(project(":application-interface"))
+                api(project(":mechanica"))
+                api("com.cave.library:Kotlin-CAVE:0.2")
+                api("com.dubulduke:layout:1.0-SNAPSHOT")
+                api("com.dubulduke:dsl:1.0-SNAPSHOT")
+                api("com.dubulduke:utils:1.0-SNAPSHOT")
+            }
+        }
+        jvmTest {
+            kotlin.srcDir("src/test/kotlin")
+            resources.srcDir("src/test/resources")
+            dependencies { implementation(kotlin("test")) }
+        }
+    }
 }
 
-dependencies {
-    implementation(project(":application-interface"))
-    implementation(project(":desktop-application"))
-    implementation(project(":mechanica"))
-
-    // DukeCompose, resolved by the composite build declared in settings.gradle.kts — the version
-    // is only there to satisfy the notation, dependency substitution ignores it.
-    //
-    // `api`, not `implementation`: an application writing a UI names Element, ElementTree and the
-    // layout expressions directly, so they belong on its compile classpath. `:layout` re-exports
-    // `:reactivity` for the same reason.
-    api("com.dubulduke:layout:1.0-SNAPSHOT")
-    // The authoring surface. `api` for the same reason: a scene names ElementScope directly.
-    api("com.dubulduke:dsl:1.0-SNAPSHOT")
-    // The layout vocabulary — `fill`, `below`, `flexRow`, `grid` — downstream of `:dsl` and used
-    // by every scene, so `api` again. Nothing in `:dsl` depends on it: it is where the utilities
-    // moved to, not a second engine.
-    api("com.dubulduke:utils:1.0-SNAPSHOT")
-
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
+tasks.named<Test>("jvmTest") { useJUnitPlatform() }
+tasks.register("test") { dependsOn("jvmTest") }

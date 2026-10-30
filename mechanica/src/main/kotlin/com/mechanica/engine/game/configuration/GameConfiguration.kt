@@ -8,7 +8,7 @@ import com.mechanica.engine.game.view.View
 import com.mechanica.engine.persistence.JsonFileStorer
 import com.mechanica.engine.persistence.JsonStorer
 import com.mechanica.engine.scenes.scenes.Scene
-import com.mechanica.engine.util.getCallingClass
+import com.mechanica.engine.context.loader.MechanicaFactory
 
 interface GameConfiguration {
     var initalize: Boolean
@@ -17,7 +17,7 @@ interface GameConfiguration {
     fun setViewport(width: Double = 0.0, height: Double = 0.0)
     fun setViewLocation(x: Double, y: Double)
 
-    fun setPersistence(jsonStorer: JsonStorer = JsonFileStorer(getCallingClass().`package`.name + "/res/data/persistence.json"))
+    fun setPersistence(jsonStorer: JsonStorer = JsonFileStorer(MechanicaFactory.miscFactory.defaultPersistencePath()))
 
     fun setStartingScene(scene: () -> Scene)
 

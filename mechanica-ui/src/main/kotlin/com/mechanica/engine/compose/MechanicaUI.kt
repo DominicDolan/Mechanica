@@ -1,5 +1,7 @@
 package com.mechanica.engine.compose
 
+import kotlin.jvm.JvmField
+
 import com.dubulduke.dsl.DukeApp
 import com.dubulduke.dsl.DukeInput
 import com.dubulduke.dsl.StyleFactory
@@ -18,7 +20,6 @@ import com.mechanica.engine.game.view.UICamera
 import com.mechanica.engine.input.keyboard.Keyboard
 import com.mechanica.engine.input.mouse.Mouse
 import com.mechanica.engine.shaders.text.Text
-import java.util.IdentityHashMap
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -240,7 +241,7 @@ open class MechanicaUI<S>(
         @JvmField var font: MechanicaFont? = null
     }
 
-    private val texts = IdentityHashMap<Element, Cached>()
+    private val texts = mutableMapOf<Element, Cached>()
 
     init {
         // `Text` owns no GL handle — it is plain heap arrays — so dropping the reference is the

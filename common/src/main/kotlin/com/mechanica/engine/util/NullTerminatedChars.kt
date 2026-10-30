@@ -3,14 +3,14 @@ package com.mechanica.engine.util
 import kotlin.math.min
 
 class NullTerminatedChars(capacity: Int = 50) {
-    val chars = CharArray(capacity) { Character.MIN_VALUE }
+    val chars = CharArray(capacity) { '\u0000' }
     var size: Int = 0
 
     fun add(char: Char) {
         var index = 0
 
         while (index < chars.size) {
-            if (chars[index] == Character.MIN_VALUE) {
+            if (chars[index] == '\u0000') {
                 chars[index] = char
                 break
             }
@@ -20,15 +20,7 @@ class NullTerminatedChars(capacity: Int = 50) {
     }
 
     fun addCodePoint(cp: Int) {
-        when {
-            Character.isBmpCodePoint(cp) -> {
-                add(cp.toChar())
-            }
-            Character.isValidCodePoint(cp) -> {
-                add(Character.highSurrogate(cp))
-                add(Character.lowSurrogate(cp))
-            }
-        }
+        if (cp in 0..0x10FFFF) codepointToString(cp).forEach { add(it) }
     }
 
     fun get(other: NullTerminatedChars) {
@@ -39,7 +31,7 @@ class NullTerminatedChars(capacity: Int = 50) {
         val endIndex = min(other.size, this.chars.size)
         this.chars.copyInto(other, endIndex = endIndex)
         if (endIndex < other.size) {
-            other.fill(Character.MIN_VALUE, endIndex, other.lastIndex)
+            other.fill('\u0000', endIndex, other.lastIndex)
         }
     }
 
@@ -58,7 +50,7 @@ class NullTerminatedChars(capacity: Int = 50) {
 
     fun clear() {
         size = 0
-        setEach { Character.MIN_VALUE }
+        setEach { '\u0000' }
     }
 
     inline fun forEach(operation: (Char) -> Unit) {
@@ -69,7 +61,7 @@ class NullTerminatedChars(capacity: Int = 50) {
         var i = 0
         var currentChar = chars.first()
 
-        while (currentChar != Character.MIN_VALUE && i < chars.size - 1) {
+        while (currentChar != '\u0000' && i < chars.size - 1) {
             chars[i] = operation(currentChar)
             currentChar = chars[++i]
         }

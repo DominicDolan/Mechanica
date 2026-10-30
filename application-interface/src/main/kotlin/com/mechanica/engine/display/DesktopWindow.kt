@@ -1,7 +1,6 @@
 package com.mechanica.engine.display
 
 import com.mechanica.engine.resources.Resource
-import java.nio.ByteBuffer
 
 interface DesktopWindow : DrawSurface {
     val title: String
@@ -22,7 +21,7 @@ interface DesktopWindow : DrawSurface {
 
     fun requestAttention()
     fun setIcon(resource: Resource)
-    fun setIcon(width: Int, height: Int, imageBuffer: ByteBuffer)
+    fun setIcon(width: Int, height: Int, imageBuffer: ByteArray)
     fun setFullscreen()
     fun setFullscreen(display: Display)
     fun setFullscreen(display: Display, width: Int, height: Int, refreshRate: Int = 60)

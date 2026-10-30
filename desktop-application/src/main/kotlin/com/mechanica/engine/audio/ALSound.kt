@@ -11,7 +11,7 @@ class ALSound(file: AudioFile) : Sound, AudioFile by file {
     constructor(res: Resource) : this(OggAudioFile(res))
 
     init {
-        alBufferData(id, format, buffer, sampleRate)
+        alBufferData(id, format, samples, sampleRate)
     }
 
     override fun destroy() {

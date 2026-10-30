@@ -2,6 +2,7 @@ package com.mechanica.engine.display
 
 import com.mechanica.engine.context.callbacks.EventCallbacks
 import com.mechanica.engine.resources.Resource
+import com.mechanica.engine.utils.toDirectBuffer
 import com.mechanica.engine.utils.ImageData
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -203,13 +204,20 @@ class GLFWWindow private constructor(width: Int, height: Int, override val title
         val image = ImageData(resource)
 
         if (image.data != null) {
-            setIcon(image.width, image.height, image.data)
+            setIconBuffer(image.width, image.height, image.data)
         }
 
         image.free()
     }
 
-    override fun setIcon(width: Int, height: Int, imageBuffer: ByteBuffer) {
+    override fun setIcon(width: Int, height: Int, imageBuffer: ByteArray) {
+        require(width > 0 && height > 0 && imageBuffer.size.toLong() == width.toLong() * height * 4) {
+            "Icon must contain width × height RGBA bytes"
+        }
+        setIconBuffer(width, height, imageBuffer.toDirectBuffer())
+    }
+
+    private fun setIconBuffer(width: Int, height: Int, imageBuffer: ByteBuffer) {
         val image: GLFWImage = GLFWImage.malloc()
         val imagebf: GLFWImage.Buffer = GLFWImage.malloc(1)
 

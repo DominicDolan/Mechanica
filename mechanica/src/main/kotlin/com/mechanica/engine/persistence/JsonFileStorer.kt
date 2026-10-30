@@ -1,7 +1,7 @@
 package com.mechanica.engine.persistence
 
 import com.mechanica.engine.resources.Resource
-import java.io.FileNotFoundException
+import com.mechanica.engine.resources.ResourceNotFoundException
 
 
 class JsonFileStorer(private val path: String) : JsonStorer {
@@ -9,7 +9,7 @@ class JsonFileStorer(private val path: String) : JsonStorer {
         return try {
             val file = Resource.external(path, false)
             file.contents
-        } catch (ex: FileNotFoundException) {
+        } catch (ex: ResourceNotFoundException) {
             "{}"
         }
     }
