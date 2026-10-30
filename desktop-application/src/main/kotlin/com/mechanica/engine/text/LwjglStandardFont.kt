@@ -20,12 +20,18 @@ class  LwjglStandardFont(resource: ByteBuffer, initializer: FontAtlasConfigurati
         get() = metrics.lineGap
 
     private val config = LwjglFontAtlasConfiguration(initializer)
-    private val charRange = config.charRange.first.toInt()..config.charRange.last.toInt()
-    private val unknownIndex = 128 - charRange.first
+    private val charRange = config.charRange.first.code..config.charRange.last.code
+    private val unknownIndex = when {
+        '?'.code in charRange -> '?'.code - charRange.first
+        else -> 0
+    }
 
     private val data = FontData(resource)
 
     override val atlas = FontAtlas(data, config)
+
+    override val distanceFieldEdge: Float?
+        get() = atlas.distanceFieldEdge
 
     private val metrics = FontMetrics(data.info, data.scale)
 
@@ -34,15 +40,19 @@ class  LwjglStandardFont(resource: ByteBuffer, initializer: FontAtlasConfigurati
         val atlasScale = atlas.scale
         val dataScale = data.scale
         
-        val kern = stbtt_GetCodepointKernAdvance(data.info, cursor.previousChar.toInt(), c.toInt()).toFloat()/atlasScale.toFloat()
-        val charAsInt = if (c.toInt() in charRange) c.toInt() - charRange.first else unknownIndex
+        val charAsInt = if (c.code in charRange) c.code - charRange.first else unknownIndex
+        val kern = if (cursor.previousChar.code in charRange) {
+            stbtt_GetCodepointKernAdvance(data.info, cursor.previousChar.code, charRange.first + charAsInt) / atlasScale.toFloat()
+        } else 0f
         
         MemoryStack.stackPush().use { stack ->
             val x = stack.floats(cursor.xAdvance/(dataScale*atlasScale).toFloat() + kern)
-            val y = stack.floats(cursor.yAdvance)
-            val q = STBTTAlignedQuad.mallocStack(stack)
+            // Line advance is applied in copyToArrays in normalized font units.
+            val y = stack.floats(0f)
+            val q = STBTTAlignedQuad.malloc(stack)
 
-            STBTruetype.stbtt_GetPackedQuad(data.cdata, atlas.width, atlas.height, charAsInt, x, y, q, true)
+            // Atlas-pixel rounding causes spacing to change with the chosen bake size.
+            STBTruetype.stbtt_GetPackedQuad(data.cdata, atlas.width, atlas.height, charAsInt, x, y, q, false)
             cursor.xAdvance = (x[0]*dataScale*atlasScale).toFloat()
 
             if (c != ' ') q.copyToArrays(cursor, dataScale*atlasScale, atlas, positions, texCoords)
@@ -55,6 +65,7 @@ class  LwjglStandardFont(resource: ByteBuffer, initializer: FontAtlasConfigurati
         val scale: Float
 
         init {
+            require(ttf.remaining() >= 12) { "Font resource is empty or shorter than a font header" }
             check(STBTruetype.stbtt_InitFont(info, ttf)) { "Failed to initialize font information." }
             cdata = STBTTPackedchar.create(charRange.count())
             scale = STBTruetype.stbtt_ScaleForPixelHeight(info, 1f)

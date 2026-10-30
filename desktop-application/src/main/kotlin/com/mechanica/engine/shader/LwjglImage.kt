@@ -33,26 +33,39 @@ class LwjglImage(override val id: Int) : Image {
         }
 
 
-        fun create(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, format: Int = GL11.GL_RGBA): LwjglImage {
+        fun create(buffer: ByteBuffer, width: Int, height: Int, levels: Int = 4, format: Int = GL11.GL_RGBA,
+                   clampToEdge: Boolean = false): LwjglImage {
 
             val image = GL11.glGenTextures()
             glBindTexture(GL11.GL_TEXTURE_2D, image)
 
-            setMipmapping(buffer, width, height, levels, format)
+            setMipmapping(buffer, width, height, levels, format, clampToEdge)
 
             check(GL11.glIsTexture(image)) { "Unable to load texture" }
 
             return LwjglImage(image)
         }
 
-        private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int, format: Int) {
-            for (i in 0..levels) {
-                GL11.glTexImage2D(GL11.GL_TEXTURE_2D, i, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, data)
+        private fun setMipmapping(data: ByteBuffer, width: Int, height: Int, levels: Int, format: Int, clampToEdge: Boolean) {
+            require(width > 0 && height > 0 && levels >= 0)
+            val maxLevel = minOf(levels, 31 - Integer.numberOfLeadingZeros(maxOf(width, height)))
+            // Single-channel font rows need not be multiples of OpenGL's default four-byte alignment.
+            val alignment = GL11.glGetInteger(GL11.GL_UNPACK_ALIGNMENT)
+            try {
+                GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1)
+                GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, data)
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, maxLevel)
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR)
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER,
+                    if (maxLevel == 0) GL11.GL_LINEAR else GL11.GL_LINEAR_MIPMAP_LINEAR)
+                if (clampToEdge) {
+                    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
+                    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
+                }
+                if (maxLevel > 0) GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
+            } finally {
+                GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, alignment)
             }
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR)
-            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
-            GL11.glTexParameteri (GL11.GL_TEXTURE_2D, GL12.GL_TEXTURE_MAX_LEVEL, levels)
-
         }
     }
 }

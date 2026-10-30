@@ -90,7 +90,7 @@ val Font.Companion.defaults: FontSet
     get() = CachedFontSet("roboto/Roboto") {
         width = 1024
         height = 1024
-        characterSize = 175f
+        characterSize = 48f
     }
 
 fun Font.Companion.defaults(config: FontAtlasConfiguration.() -> Unit): FontSet {

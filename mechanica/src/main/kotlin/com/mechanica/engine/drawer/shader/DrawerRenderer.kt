@@ -8,6 +8,7 @@ import com.mechanica.engine.context.loader.MechanicaFactory
 import com.mechanica.engine.drawer.state.DrawState
 import com.mechanica.engine.drawer.state.StencilState
 import com.mechanica.engine.shaders.models.Model
+import com.mechanica.engine.shaders.models.TextModel
 
 class DrawerRenderer {
 
@@ -32,6 +33,7 @@ class DrawerRenderer {
         val blend = uniform.float(0f)
         val alphaBlend = uniform.float(0f)
         val colorPassthrough = uniform.float(0f)
+        val distanceFieldEdge = uniform.float(-1f)
 
         //language=GLSL
         override val main: String = """
@@ -44,6 +46,11 @@ class DrawerRenderer {
                     vec4 inColor;
                     if ($blend > 0.0 || $alphaBlend > 0.0) {
                         vec4 texColor = texture(samp, tc);
+                        if ($distanceFieldEdge >= 0.0) {
+                            float aa = max(fwidth(texColor.a), 0.00001);
+                            texColor.a = smoothstep($distanceFieldEdge - 0.5 * aa,
+                                                    $distanceFieldEdge + 0.5 * aa, texColor.a);
+                        }
                         inColor = vec4(mix($color.rgb, texColor.rgb, $blend), $color.a*texColor.a);
                     } else {
                         inColor = $color;
@@ -125,6 +132,7 @@ class DrawerRenderer {
     var strokeWidth = 0.0
 
     fun render(model: Model, transformation: Matrix4, projection: Matrix4, view: Matrix4) {
+        prepareFont(model)
         shader.render(model, transformation, projection, view)
     }
 
@@ -140,9 +148,15 @@ class DrawerRenderer {
         state.color.assignColorsToFragment(fragment)
 
         val transformation = state.transformation.getTransformationMatrix()
+        prepareFont(state.shader.model.variable)
         shader.render(state.shader.model.variable, transformation, state.projectionMatrix.variable, state.viewMatrix.variable)
 
         state.reset()
+    }
+
+    private fun prepareFont(model: Model) {
+        // Set for every draw so text cannot leave SDF decoding enabled for an image or shape.
+        fragment.distanceFieldEdge.value = (model as? TextModel)?.textHolder?.font?.distanceFieldEdge ?: -1f
     }
 
 

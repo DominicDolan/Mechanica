@@ -11,7 +11,7 @@ import kotlin.math.max
 fun STBTTAlignedQuad.copyToArrays(cursor: CharacterCursor, scale: Double, atlas: FontAtlas, p: Array<MutableVector2>, tc: Array<MutableVector2>) {
     val i = max(cursor.nonWhiteSpaceIndex - 1, 0) *4
 
-    val padding = atlas.padding*1.01
+    val padding = atlas.padding.toDouble()
     val texPaddingX = padding/atlas.width.toDouble()
     val texPaddingY = padding/atlas.height.toDouble()
 

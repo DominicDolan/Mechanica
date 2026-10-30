@@ -31,5 +31,12 @@ dependencies {
     implementation(project(":application-interface"))
     coreLwjgl()
     supplementaryLwjgl()
+    testImplementation(kotlin("test-junit"))
+}
+
+// Reuse the bundled engine font as a packing fixture without needing an OpenGL context.
+sourceSets.test {
+    resources.srcDir("../mechanica/src/main/resources")
+    resources.include("res/fonts/roboto/Roboto-Regular.ttf")
 }
 
