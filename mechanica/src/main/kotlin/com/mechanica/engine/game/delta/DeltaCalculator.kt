@@ -11,6 +11,9 @@ interface DeltaCalculator {
     val timeStep: Double
         get() = 1.0/60.0
 
+    /** Blend from the previous to current simulation state; 1 displays the current state. */
+    val interpolationAlpha: Double get() = 1.0
+
     fun updateAndRender(lastFrame: Double, thisFrame: Double, updater: Updater) {
         updater.updateAndRender(lastFrame, thisFrame)
     }
@@ -60,6 +63,12 @@ interface DeltaCalculator {
          * @param updateTime the time in seconds to pass to update()
          */
         fun multiUpdateCalculator(updateTime: Double = 1.0/120.0): DeltaCalculator = MultiUpdateCalculator(updateTime)
+
+        /** Fixed game updates and an interpolation fraction for rendering. */
+        fun fixedStepCalculator(updatesPerSecond: Double = 120.0, maxUpdatesPerFrame: Int = 8): DeltaCalculator {
+            require(updatesPerSecond.isFinite() && updatesPerSecond > 0.0) { "Update rate must be finite and positive" }
+            return FixedStepCalculator(1.0 / updatesPerSecond, maxUpdatesPerFrame)
+        }
 
         /**
          * Works similarly to [multiUpdateCalculator] however it is possible that the value passed in to update()

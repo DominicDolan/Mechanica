@@ -26,4 +26,4 @@ includeBuild(providers.gradleProperty("kotlin_cave_home").orNull ?: "../Kotlin-C
 
 rootProject.name = "Mechanica"
 
-include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "samples", "samples:native-window", "samples:native-engine", "native-application", "mechanica-ui")
+include("common", "desktop-application", "application-interface", "mechanica-shaders", "mechanica", "physics", "samples", "samples:native-window", "samples:native-engine", "native-application", "mechanica-ui")
