@@ -5,7 +5,8 @@ JVM on Linux x64 and Kotlin/Native `linuxX64`, using the same pinned Box2D sourc
 The first build downloads the GitHub release archive and verifies its SHA-256;
 subsequent builds can reuse the cached archive under `physics/build`. Building
 requires a Linux x64 host, network access for the first download, CMake 3.22 or
-newer, a C/C++ compiler, and JDK 22 with JNI headers.
+newer, a C/C++ compiler, and JDK 22 for Gradle. The JVM target additionally
+uses JNI headers and builds its JNI bridge only when that target is requested.
 
 ```sh
 ./gradlew :physics:jvmTest :physics:linuxX64Test
@@ -17,20 +18,22 @@ executable. Box2D is MIT licensed; its license is in `BOX2D-LICENSE`, is include
 in the JVM JAR, and must accompany distributed native executables too.
 
 Create bodies with a Kotlin builder. Shape centers and box angles are local to
-the body; body position and angle are in world space. Angles are in radians and
-may differ slightly from the input due to Box2D's approximations.
+the body; body position and angle are in world space. Angles use Kotlin-CAVE's
+`Angle` type and may differ slightly from the input due to Box2D's approximations.
 
 ```kotlin
+import com.cave.library.angle.radians
+
 val world = PhysicsWorld(Vector2.create(0.0, -9.81))
 val ground = world.buildBody {
     type = BodyType.Static
-    angle = 0.2
+    angle = 0.2.radians
     buildShape { box(width = 30.0, height = 0.5); friction = 1.0 }
 }
 val block = world.buildBody {
     type = BodyType.Dynamic
     position.set(0.0, 4.0)
-    angle = 0.2
+    angle = 0.2.radians
     buildShape { box(width = 1.0, height = 1.0); density = 2.0; friction = 1.0 }
 }
 val physics = FixedStep(world)
@@ -77,8 +80,16 @@ simulation step behind the latest state; use the same alpha for the camera and
 all connected vehicle parts. Transform tracking is render-only and never changes
 the physics simulation.
 
+For suspended wheels, `world.buildWheelJoint(chassis, wheel) { ... }` connects
+bodies in the same world. `anchor` and `axis` are in world coordinates at
+creation; the anchor defaults to the wheel's position and the axis defaults to
+up. Configure `springHertz`, `dampingRatio`, `lowerTranslation`, and
+`upperTranslation` in the builder. The wheel can rotate freely; a powered motor
+is not yet exposed. Destroying a body also destroys its attached joints.
+
 A world owns its bodies; close it when finished. Individual bodies can be
-`destroy()`ed. All access, including vector views, must be confined to the
+`destroy()`ed. Angular velocity remains a `Double` in radians per second, since
+Kotlin-CAVE does not define an angular-velocity type. All access, including vector views, must be confined to the
 simulation thread. CAVE vectors use doubles; Box2D uses floats, so conversion
 occurs at the boundary.
 
@@ -88,9 +99,26 @@ occurs at the boundary.
    simulation through both backends and through an independent composite consumer.
 2. **Done:** body and shape builders, fixed-step scheduling, transforms and a
    live velocity view; a shared test settles a body on an inclined surface.
-3. Add wheel joints, suspension and motors, and test a chassis with two wheels
-   rolling down a slope. Keep the editable vehicle definition separate from the
-   live simulation.
-4. Add a MechanicaGame scene that renders the slope and the three body transforms,
-   steps with an accumulator and cleans up the world when the scene is disposed.
-   Run it on JVM and Linux Native.
+3. **Done:** wheel joints and suspension, with a two-wheel chassis tested rolling
+   down a slope. Wheel motors and editable vehicle definitions remain future work.
+4. **Done:** MechanicaGame renders the slope and interpolated body transforms,
+   steps at a fixed rate, and cleans up its world on scene removal.
+
+
+## Open terrain chains
+
+`world.createTerrainChain(points, friction)` creates an owned static body with an
+open Box2D 3 chain. Points use world coordinates; the collidable face is to the
+**right** of each directed edge. Supply a right-to-left floor for upward collision.
+The wrapper adds extrapolated ghost vertices so the first and last real edges
+also collide. Points must be finite and consecutive points at least 1cm apart.
+Callers must avoid self-intersections and overlapping/backtracking edges.
+Destroy the returned body or close its world to release the chain.
+
+`body.setFixedRotation(true)` keeps a character upright. `world.groundDistance`
+casts downward against static surfaces whose normal has y >= 0.45, ignoring
+dynamic bodies; it returns a distance or null. It is a small walkable-ground query,
+not a general contact or sensor API.
+
+Connected streamed chains require explicit shared neighbour points; extrapolated
+endpoint ghosts alone do not provide continuity across independently loaded chains.

@@ -1,5 +1,6 @@
 #include "physics_bridge.h"
 #include <box2d/box2d.h>
+#include <stdlib.h>
 
 uint32_t mp_world_create(float gx, float gy) {
     b2WorldDef def = b2DefaultWorldDef();
@@ -42,3 +43,51 @@ float mp_body_velocity_y(uint64_t body) { return b2Body_GetLinearVelocity(b2Load
 void mp_body_set_velocity(uint64_t body, float x, float y) { b2Body_SetLinearVelocity(b2LoadBodyId(body), (b2Vec2){x, y}); }
 float mp_body_angular_velocity(uint64_t body) { return b2Body_GetAngularVelocity(b2LoadBodyId(body)); }
 void mp_body_set_angular_velocity(uint64_t body, float velocity) { b2Body_SetAngularVelocity(b2LoadBodyId(body), velocity); }
+uint64_t mp_wheel_create(uint32_t world, uint64_t a, uint64_t b, float anchor_x, float anchor_y, float axis_x, float axis_y, float hertz, float damping, float lower, float upper) {
+    b2BodyId body_a = b2LoadBodyId(a), body_b = b2LoadBodyId(b);
+    b2Vec2 anchor = {anchor_x, anchor_y}, axis = {axis_x, axis_y};
+    b2WheelJointDef def = b2DefaultWheelJointDef();
+    def.bodyIdA = body_a;
+    def.bodyIdB = body_b;
+    def.localAnchorA = b2Body_GetLocalPoint(body_a, anchor);
+    def.localAnchorB = b2Body_GetLocalPoint(body_b, anchor);
+    def.localAxisA = b2Body_GetLocalVector(body_a, axis);
+    def.enableSpring = true;
+    def.hertz = hertz;
+    def.dampingRatio = damping;
+    def.enableLimit = true;
+    def.lowerTranslation = lower;
+    def.upperTranslation = upper;
+    return b2StoreJointId(b2CreateWheelJoint(b2LoadWorldId(world), &def));
+}
+void mp_wheel_destroy(uint64_t joint) { b2DestroyJoint(b2LoadJointId(joint)); }
+
+// xy includes one ghost point at each end; only the interior edges collide.
+int mp_body_add_chain(uint64_t body, const float* xy, int count, float friction) {
+    b2Vec2* points = malloc(sizeof(b2Vec2) * count);
+    if (!points) return 0;
+    for (int i = 0; i < count; ++i) points[i] = (b2Vec2){xy[2*i], xy[2*i+1]};
+    b2SurfaceMaterial material = b2DefaultSurfaceMaterial();
+    material.friction = friction;
+    b2ChainDef def = b2DefaultChainDef();
+    def.points = points;
+    def.count = count;
+    def.materials = &material;
+    def.materialCount = 1;
+    b2ChainId chain = b2CreateChain(b2LoadBodyId(body), &def);
+    free(points);
+    return B2_IS_NON_NULL(chain);
+}
+void mp_body_fixed_rotation(uint64_t body, int fixed) { b2Body_SetFixedRotation(b2LoadBodyId(body), fixed != 0); }
+// Query only static terrain; player bodies must not ground themselves.
+static float ground_ray(b2ShapeId shape, b2Vec2 point, b2Vec2 normal, float fraction, void* context) {
+    (void)point;
+    if (b2Body_GetType(b2Shape_GetBody(shape)) != b2_staticBody || normal.y < 0.45f) return -1.0f;
+    *(float*)context = fraction;
+    return fraction;
+}
+float mp_world_ground_ray(uint32_t world, float x, float y, float length) {
+    float fraction = -1.0f;
+    b2World_CastRay(b2LoadWorldId(world), (b2Vec2){x,y}, (b2Vec2){0,-length}, b2DefaultQueryFilter(), ground_ray, &fraction);
+    return fraction;
+}

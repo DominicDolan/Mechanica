@@ -61,9 +61,16 @@ val buildPhysics by tasks.registering(Exec::class) {
     inputs.dir("native")
     inputs.dir(box2dSource)
     outputs.files(nativeBuild.map { it.file("libmechanica_physics.a") },
-        nativeBuild.map { it.file("box2d/src/libbox2d.a") },
-        nativeBuild.map { it.file("libmechanica_physics_jni.so") })
-    commandLine("cmake", "--build", nativeBuild.get().asFile, "--parallel", "2")
+        nativeBuild.map { it.file("box2d/src/libbox2d.a") })
+    commandLine("cmake", "--build", nativeBuild.get().asFile, "--target", "mechanica_physics", "--parallel", "2")
+}
+
+val buildPhysicsJni by tasks.registering(Exec::class) {
+    dependsOn(buildPhysics)
+    inputs.dir("native")
+    inputs.files(buildPhysics)
+    outputs.file(nativeBuild.map { it.file("libmechanica_physics_jni.so") })
+    commandLine("cmake", "--build", nativeBuild.get().asFile, "--target", "mechanica_physics_jni", "--parallel", "2")
 }
 
 val generatePhysicsDef by tasks.registering {
@@ -114,7 +121,7 @@ tasks.named("cinteropPhysicsLinuxX64") {
         nativeBuild.map { it.file("box2d/src/libbox2d.a") })
 }
 tasks.named<ProcessResources>("jvmProcessResources") {
-    dependsOn(buildPhysics)
+    dependsOn(buildPhysicsJni)
     from(nativeBuild.map { it.file("libmechanica_physics_jni.so") }) {
         into("com/mechanica/engine/physics/linux-x64")
     }

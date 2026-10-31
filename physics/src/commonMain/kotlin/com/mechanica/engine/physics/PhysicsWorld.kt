@@ -2,6 +2,8 @@ package com.mechanica.engine.physics
 
 import com.cave.library.vector.vec2.MutableVector2
 import com.cave.library.vector.vec2.Vector2
+import com.cave.library.angle.Angle
+import com.cave.library.angle.radians
 import com.mechanica.engine.physics.internal.LiveVector2
 import com.mechanica.engine.physics.internal.PlatformPhysics
 import kotlin.math.atan2
@@ -39,6 +41,47 @@ class PhysicsWorld(gravity: Vector2) {
         }
     }
 
+    /** Static open chain. The collidable side is to the RIGHT of each directed edge.
+     * End ghost vertices are extrapolated, so both end edges remain collidable.
+     * Neighbouring streamed chains will need explicit shared continuity data.
+     */
+    fun createTerrainChain(points: List<Vector2>, friction: Double = 0.6): PhysicsBody {
+        checkOpen()
+        require(points.size >= 2) { "A terrain chain needs at least two points" }
+        val f = friction.toPhysicsFloat()
+        require(f >= 0f)
+        val xy = FloatArray((points.size + 2) * 2)
+        points.forEachIndexed { index, p ->
+            xy[(index + 1) * 2] = p.x.toPhysicsFloat()
+            xy[(index + 1) * 2 + 1] = p.y.toPhysicsFloat()
+        }
+        for (i in 1 until points.size) {
+            val dx = xy[(i + 1) * 2] - xy[i * 2]
+            val dy = xy[(i + 1) * 2 + 1] - xy[i * 2 + 1]
+            require(dx * dx + dy * dy >= 0.0001f) { "Terrain points must be at least 1cm apart" }
+        }
+        xy[0] = (2.0 * xy[2] - xy[4]).toPhysicsFloat()
+        xy[1] = (2.0 * xy[3] - xy[5]).toPhysicsFloat()
+        val end = xy.size - 2
+        xy[end] = (2.0 * xy[end - 2] - xy[end - 4]).toPhysicsFloat()
+        xy[end + 1] = (2.0 * xy[end - 1] - xy[end - 3]).toPhysicsFloat()
+        val body = PlatformPhysics.createBody(handle, false, 0f, 0f, 0f)
+        check(body != 0L)
+        try {
+            check(PlatformPhysics.addChain(body, xy, f)) { "Could not create terrain chain" }
+            return PhysicsBody(this, body, BodyType.Static)
+        } catch (error: Throwable) { PlatformPhysics.destroyBody(body); throw error }
+    }
+
+    /** Downward ray against static walkable surfaces; returns distance, or null on a miss. */
+    fun groundDistance(position: Vector2, length: Double): Double? {
+        checkOpen()
+        val distance = length.toPhysicsFloat()
+        require(distance > 0f)
+        val fraction = PlatformPhysics.groundRay(handle, position.x.toPhysicsFloat(), position.y.toPhysicsFloat(), distance)
+        return if (fraction < 0f) null else fraction.toDouble() * length
+    }
+
     /** Convenience for a single dynamic circle. */
     fun createDynamicCircle(position: Vector2, radius: Double): PhysicsBody {
         val initialPosition = position
@@ -47,6 +90,23 @@ class PhysicsWorld(gravity: Vector2) {
             this.position.set(initialPosition)
             buildShape { circle(radius) }
         }
+    }
+
+    /** Connect two bodies with a suspended, freely rotating wheel at a world-space anchor. */
+    fun buildWheelJoint(chassis: PhysicsBody, wheel: PhysicsBody, block: WheelJointBuilder.() -> Unit = {}): WheelJoint {
+        checkOpen()
+        require(chassis !== wheel) { "A joint needs two distinct bodies" }
+        chassis.requireIn(this)
+        wheel.requireIn(this)
+        require(chassis.type == BodyType.Dynamic || wheel.type == BodyType.Dynamic) { "At least one joint body must be dynamic" }
+        val definition = WheelJointBuilder(wheel.position).apply(block).validated()
+        checkOpen()
+        chassis.requireIn(this)
+        wheel.requireIn(this)
+        val joint = PlatformPhysics.createWheel(handle, chassis.handle, wheel.handle, definition.ax, definition.ay,
+            definition.ux, definition.uy, definition.hertz, definition.damping, definition.lower, definition.upper)
+        check(joint != 0L) { "Box2D could not create a wheel joint" }
+        return WheelJoint(this, chassis, wheel, joint)
     }
 
     fun step(deltaSeconds: Double, substeps: Int = 4) {
@@ -76,17 +136,17 @@ class PhysicsWorld(gravity: Vector2) {
 
 enum class BodyType { Static, Dynamic }
 
-/** An independent world-space position and angle, in radians. */
-data class PhysicsTransform(val position: Vector2, val angle: Double)
+/** An independent world-space position and angle. */
+data class PhysicsTransform(val position: Vector2, val angle: Angle)
 
-class PhysicsBody internal constructor(private val world: PhysicsWorld, private val handle: Long, val type: BodyType) {
+class PhysicsBody internal constructor(private val world: PhysicsWorld, internal val handle: Long, val type: BodyType) {
     private var destroyed = false
     private var currentTransform = readTransform()
     private var previousTransform = currentTransform
 
     private fun readTransform() = PhysicsTransform(
         Vector2.create(PlatformPhysics.positionX(handle).toDouble(), PlatformPhysics.positionY(handle).toDouble()),
-        PlatformPhysics.angle(handle).toDouble(),
+        PlatformPhysics.angle(handle).toDouble().radians,
     )
 
     internal fun capturePreviousTransform() { previousTransform = currentTransform }
@@ -94,6 +154,11 @@ class PhysicsBody internal constructor(private val world: PhysicsWorld, private 
     private fun checkAlive() {
         world.checkOpen()
         check(!destroyed) { "Physics body is destroyed" }
+    }
+    internal val isAlive: Boolean get() = !world.isClosed && !destroyed
+    internal fun requireIn(owner: PhysicsWorld) {
+        require(world === owner) { "Joint bodies must belong to this world" }
+        checkAlive()
     }
 
     /** A snapshot of the body origin, in world units. */
@@ -103,8 +168,8 @@ class PhysicsBody internal constructor(private val world: PhysicsWorld, private 
             return Vector2.create(PlatformPhysics.positionX(handle).toDouble(), PlatformPhysics.positionY(handle).toDouble())
         }
 
-    /** Rotation in radians. */
-    val angle: Double get() { checkAlive(); return PlatformPhysics.angle(handle).toDouble() }
+    /** World-space rotation. */
+    val angle: Angle get() { checkAlive(); return PlatformPhysics.angle(handle).toDouble().radians }
 
     /** Interpolates the two most recent physics steps along the shortest rotation. */
     fun renderTransform(alpha: Double): PhysicsTransform {
@@ -112,14 +177,14 @@ class PhysicsBody internal constructor(private val world: PhysicsWorld, private 
         require(alpha.isFinite() && alpha in 0.0..1.0) { "Interpolation alpha must be between zero and one" }
         val before = previousTransform
         val after = currentTransform
-        val deltaAngle = after.angle - before.angle
+        val deltaAngle = after.angle.toRadians() - before.angle.toRadians()
         val shortestAngle = atan2(sin(deltaAngle), cos(deltaAngle))
         return PhysicsTransform(
             Vector2.create(
                 before.position.x + (after.position.x - before.position.x) * alpha,
                 before.position.y + (after.position.y - before.position.y) * alpha,
             ),
-            before.angle + shortestAngle * alpha,
+            (before.angle.toRadians() + shortestAngle * alpha).radians,
         )
     }
 
@@ -145,10 +210,13 @@ class PhysicsBody internal constructor(private val world: PhysicsWorld, private 
         },
     )
 
+    /** Lock a character upright while retaining normal collision response. */
+    fun setFixedRotation(fixed: Boolean) { checkAlive(); PlatformPhysics.fixedRotation(handle, fixed) }
+
     /** Teleports the body; use velocity or forces for normal movement. */
-    fun setTransform(position: Vector2, angle: Double) {
+    fun setTransform(position: Vector2, angle: Angle) {
         checkAlive()
-        PlatformPhysics.setTransform(handle, position.x.toPhysicsFloat(), position.y.toPhysicsFloat(), angle.toPhysicsFloat())
+        PlatformPhysics.setTransform(handle, position.x.toPhysicsFloat(), position.y.toPhysicsFloat(), angle.toRadians().toPhysicsFloat())
         currentTransform = readTransform()
         previousTransform = currentTransform
     }

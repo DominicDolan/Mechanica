@@ -20,6 +20,11 @@ internal object NativeBridge {
     external fun worldDestroy(world: Int)
     external fun worldStep(world: Int, delta: Float, substeps: Int)
     external fun bodyCreate(world: Int, dynamic: Boolean, x: Float, y: Float, angle: Float): Long
+    external fun wheelCreate(world: Int, a: Long, b: Long, ax: Float, ay: Float, ux: Float, uy: Float, hertz: Float, damping: Float, lower: Float, upper: Float): Long
+    external fun wheelDestroy(joint: Long)
+    external fun bodyAddChain(body: Long, xy: FloatArray, friction: Float): Boolean
+    external fun bodyFixedRotation(body: Long, fixed: Boolean)
+    external fun worldGroundRay(world: Int, x: Float, y: Float, length: Float): Float
     external fun bodyDestroy(body: Long)
     external fun bodyAddCircle(body: Long, x: Float, y: Float, radius: Float, density: Float, friction: Float, restitution: Float)
     external fun bodyAddBox(body: Long, x: Float, y: Float, halfWidth: Float, halfHeight: Float, angle: Float, density: Float, friction: Float, restitution: Float)
@@ -39,6 +44,11 @@ internal actual object PlatformPhysics {
     actual fun destroyWorld(world: Int) = NativeBridge.worldDestroy(world)
     actual fun stepWorld(world: Int, delta: Float, substeps: Int) = NativeBridge.worldStep(world, delta, substeps)
     actual fun createBody(world: Int, dynamic: Boolean, x: Float, y: Float, angle: Float) = NativeBridge.bodyCreate(world, dynamic, x, y, angle)
+    actual fun createWheel(world: Int, a: Long, b: Long, ax: Float, ay: Float, ux: Float, uy: Float, hertz: Float, damping: Float, lower: Float, upper: Float) = NativeBridge.wheelCreate(world, a, b, ax, ay, ux, uy, hertz, damping, lower, upper)
+    actual fun destroyWheel(joint: Long) = NativeBridge.wheelDestroy(joint)
+    actual fun addChain(body: Long, xy: FloatArray, friction: Float) = NativeBridge.bodyAddChain(body, xy, friction)
+    actual fun fixedRotation(body: Long, fixed: Boolean) = NativeBridge.bodyFixedRotation(body, fixed)
+    actual fun groundRay(world: Int, x: Float, y: Float, length: Float) = NativeBridge.worldGroundRay(world, x, y, length)
     actual fun destroyBody(body: Long) = NativeBridge.bodyDestroy(body)
     actual fun addCircle(body: Long, x: Float, y: Float, radius: Float, density: Float, friction: Float, restitution: Float) = NativeBridge.bodyAddCircle(body, x, y, radius, density, friction, restitution)
     actual fun addBox(body: Long, x: Float, y: Float, halfWidth: Float, halfHeight: Float, angle: Float, density: Float, friction: Float, restitution: Float) = NativeBridge.bodyAddBox(body, x, y, halfWidth, halfHeight, angle, density, friction, restitution)

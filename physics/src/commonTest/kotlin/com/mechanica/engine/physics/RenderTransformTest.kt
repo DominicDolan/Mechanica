@@ -1,5 +1,6 @@
 package com.mechanica.engine.physics
 
+import com.cave.library.angle.radians
 import com.cave.library.vector.vec2.Vector2
 import com.mechanica.engine.game.delta.DeltaCalculator
 import com.mechanica.engine.game.delta.Updater
@@ -61,10 +62,10 @@ class RenderTransformTest {
             assertEquals(2.25, moving.renderTransform(0.5).position.x, 0.001)
             val newBody = world.createDynamicCircle(Vector2.create(5.0, 6.0), 0.5)
             assertEquals(5.0, newBody.renderTransform(0.0).position.x, 0.001)
-            moving.setTransform(Vector2.create(20.0, 3.0), 0.5)
+            moving.setTransform(Vector2.create(20.0, 3.0), 0.5.radians)
             assertEquals(20.0, moving.renderTransform(0.0).position.x, 0.001)
             assertEquals(20.0, moving.renderTransform(0.5).position.x, 0.001)
-            fixed.setTransform(Vector2.create(-4.0, 0.0), 0.0)
+            fixed.setTransform(Vector2.create(-4.0, 0.0), 0.0.radians)
             assertEquals(-4.0, fixed.renderTransform(0.5).position.x, 0.001)
             assertFailsWith<IllegalArgumentException> { moving.renderTransform(Double.NaN) }
             assertFailsWith<IllegalArgumentException> { moving.renderTransform(1.1) }
@@ -83,14 +84,14 @@ class RenderTransformTest {
         try {
             val body = world.buildBody {
                 type = BodyType.Dynamic
-                angle = 3.1
+                angle = 3.1.radians
                 buildShape { circle(0.5) }
             }
             body.angularVelocity = 1.0
             world.step(0.125)
-            val before = body.renderTransform(0.0).angle
-            val after = body.renderTransform(1.0).angle
-            val middle = body.renderTransform(0.5).angle
+            val before = body.renderTransform(0.0).angle.toRadians()
+            val after = body.renderTransform(1.0).angle.toRadians()
+            val middle = body.renderTransform(0.5).angle.toRadians()
             assertTrue(abs(after - before) < 0.3, "Rotation should take the short path: $before to $after")
             assertTrue(middle > 3.0 && middle < PI + 0.2, "Unexpected middle angle $middle")
         } finally { world.close() }

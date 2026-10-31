@@ -1,16 +1,18 @@
 package com.mechanica.engine.physics
 
 import com.cave.library.vector.vec2.MutableVector2
+import com.cave.library.angle.Angle
+import com.cave.library.angle.radians
 
 @DslMarker
 annotation class PhysicsDsl
 
-/** Body transforms use world coordinates and radians. */
+/** Body transforms use world coordinates and CAVE angles. */
 @PhysicsDsl
 class BodyBuilder internal constructor() {
     var type: BodyType = BodyType.Static
     val position: MutableVector2 = MutableVector2.create()
-    var angle: Double = 0.0
+    var angle: Angle = 0.radians
     private val shapes = mutableListOf<ShapeBuilder>()
 
     fun buildShape(block: ShapeBuilder.() -> Unit) {
@@ -21,7 +23,7 @@ class BodyBuilder internal constructor() {
         val builtShapes = shapes.map { it.validated() }
         require(builtShapes.isNotEmpty()) { "A body requires at least one shape" }
         require(type != BodyType.Dynamic || builtShapes.any { it.density > 0f }) { "A dynamic body needs a shape with positive density" }
-        return BodyDefinition(type, position.x.toPhysicsFloat(), position.y.toPhysicsFloat(), angle.toPhysicsFloat(), builtShapes)
+        return BodyDefinition(type, position.x.toPhysicsFloat(), position.y.toPhysicsFloat(), angle.toRadians().toPhysicsFloat(), builtShapes)
     }
 }
 
@@ -40,11 +42,11 @@ class ShapeBuilder internal constructor() {
         setGeometry(Geometry.Circle(r))
     }
 
-    fun box(width: Double, height: Double, angle: Double = 0.0) {
+    fun box(width: Double, height: Double, angle: Angle = 0.radians) {
         val halfWidth = (width / 2.0).toPhysicsFloat()
         val halfHeight = (height / 2.0).toPhysicsFloat()
         require(halfWidth > 0f && halfHeight > 0f) { "Box dimensions must be positive" }
-        setGeometry(Geometry.Box(halfWidth, halfHeight, angle.toPhysicsFloat()))
+        setGeometry(Geometry.Box(halfWidth, halfHeight, angle.toRadians().toPhysicsFloat()))
     }
 
     private fun setGeometry(value: Geometry) {
