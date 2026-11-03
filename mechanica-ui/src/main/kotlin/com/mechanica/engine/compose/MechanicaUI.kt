@@ -5,6 +5,9 @@ import kotlin.jvm.JvmField
 import com.dubulduke.dsl.DukeApp
 import com.dubulduke.dsl.DukeInput
 import com.dubulduke.dsl.StyleFactory
+import com.dubulduke.dsl.TextEdit
+import com.mechanica.engine.input.TextInput
+import com.dubulduke.layout.isFocused
 import com.dubulduke.layout.ClipRect
 import com.dubulduke.layout.Element
 import com.dubulduke.layout.FocusCommand
@@ -91,13 +94,7 @@ open class MechanicaUI<S>(
 
     private val mouse = Mouse.create()
 
-    /**
-     * The keyboard, for focus navigation only.
-     *
-     * `MechanicaUI` deliberately does not consume text: a UI that swallowed keys the game wanted
-     * would be worse than one that ignores them, and text entry needs a focused field to go to,
-     * which does not exist yet.
-     */
+    /** Mechanica key mapping for navigation and editable fields. */
     private val keyboard = Keyboard
 
     override val input = object : DukeInput {
@@ -126,10 +123,31 @@ open class MechanicaUI<S>(
          * stating it as a chain rather than a `when` over independent booleans makes the tab /
          * shift-tab pair readable, which is the one case where two keys combine.
          */
+        override val textEdits: List<TextEdit> get() {
+            if (!isEditingText) return emptyList()
+            return buildList {
+                if (!keyboard.ctrl.isDown && TextInput.hasTextInput) {
+                    val text = StringBuilder(); TextInput.getCodepoints(text)
+                    if (text.isNotEmpty()) add(TextEdit.Insert(text.toString()))
+                }
+                if (keyboard.ctrl.isDown && keyboard.A.hasBeenPressed) add(TextEdit.SelectAll)
+                if (keyboard.left.hasBeenPressed) add(TextEdit.Left(keyboard.shift.isDown))
+                if (keyboard.right.hasBeenPressed) add(TextEdit.Right(keyboard.shift.isDown))
+                if (keyboard.home.hasBeenPressed) add(TextEdit.Home(keyboard.shift.isDown))
+                if (keyboard.end.hasBeenPressed) add(TextEdit.End(keyboard.shift.isDown))
+                if (keyboard.backspace.hasBeenPressed) add(TextEdit.Backspace)
+                if (keyboard.delete.hasBeenPressed) add(TextEdit.Delete)
+                if (keyboard.enter.hasBeenPressed) add(TextEdit.Submit)
+                if (keyboard.esc.hasBeenPressed) add(TextEdit.Cancel)
+            }
+        }
+
         override val navigation: FocusCommand?
             get() = when {
                 keyboard.tab.hasBeenPressed ->
                     if (keyboard.shift.isDown) FocusCommand.PREVIOUS else FocusCommand.NEXT
+
+                isEditingText -> null
 
                 keyboard.up.hasBeenPressed -> FocusCommand.UP
                 keyboard.down.hasBeenPressed -> FocusCommand.DOWN
@@ -278,7 +296,23 @@ open class MechanicaUI<S>(
         //
         // Measured in layout units, not `node.width`: the latter has been through the viewport
         // transform and is signed, while the metrics wrapped in the space layout works in.
-        val width = node.graph.widthOf(node.element)
+        val field = textFieldOf(node.element)
+        val width = if (field == null) node.graph.widthOf(node.element) else Double.POSITIVE_INFINITY
+        val geometry = field?.state?.geometry(field.font, node.graph.widthOf(node.element))
+        val scale = if (node.graph.widthOf(node.element) == 0.0) 1.0 else node.width / node.graph.widthOf(node.element)
+        val fieldClip = if (field != null) ClipRect(node.minX, node.minY, node.maxX, node.maxY).let {
+            clips.lastOrNull()?.intersect(it) ?: it
+        } else null
+        if (fieldClip != null) {
+            if (fieldClip.isEmpty) return
+            pushClip(fieldClip, renderer)
+        }
+        try {
+        if (geometry != null && node.graph.isFocused(node.element) && style is HasTextFieldColors) {
+            val x = node.x + geometry.selectionStart * scale
+            val selectionWidth = (geometry.selectionEnd - geometry.selectionStart) * scale
+            if (selectionWidth > 0.0) renderer.ui.color(style.fieldSelectionColor).rectangle(x, node.minY, selectionWidth, abs(node.height))
+        }
 
         val cached = texts.getOrPut(node.element) { Cached(Text(text, font.font)) }
         if (cached.source != text || cached.width != width || cached.font !== font) {
@@ -294,14 +328,21 @@ open class MechanicaUI<S>(
         }
 
         val a = style.textAlignment
+        val alignX = if (field == null) a.x else 0.0
         renderer.ui.color(style.textColor)
-            .origin.normalized(a.x, 1.0 - a.y)
+            .origin.normalized(alignX, 1.0 - a.y)
             .text(
                 cached.model,
                 font.size,
-                node.x + a.x * node.width,
+                node.x + alignX * node.width + (geometry?.textOffset ?: 0.0) * scale,
                 node.y + a.y * node.height + baselineCorrection(font),
             )
+        if (geometry != null && node.graph.isFocused(node.element) && style is HasTextFieldColors) {
+            val caretWidth = minOf(0.035, abs(node.width))
+            val x = (node.x + geometry.caret * scale - caretWidth / 2).coerceIn(node.minX, node.maxX - caretWidth)
+            renderer.ui.color(style.fieldCaretColor).rectangle(x, node.minY, caretWidth, abs(node.height))
+        }
+        } finally { if (fieldClip != null) popClip(renderer) }
     }
 
     /**

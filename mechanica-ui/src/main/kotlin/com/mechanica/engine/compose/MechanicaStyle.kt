@@ -68,10 +68,18 @@ interface HasText {
  * needing something Mechanica cannot draw implements the interfaces directly instead — nothing here
  * is privileged.
  */
-open class MechanicaStyle : HasBackground, HasText {
+interface HasTextFieldColors {
+    val fieldSelectionColor: VariableColor
+    val fieldCaretColor: VariableColor
+}
+
+open class MechanicaStyle : HasBackground, HasText, HasTextFieldColors {
     override val color: VariableColor = VariableColor.rgba(1.0, 1.0, 1.0, 0.0)
     override var radius: Double = 0.0
     override var isVisible: Boolean = true
+    /** Editable-field selection and caret colors. */
+    override val fieldSelectionColor = VariableColor.rgba(0.24, 0.38, 0.55, 1.0)
+    override val fieldCaretColor = VariableColor.rgba(0.9, 0.94, 1.0, 1.0)
     override val textColor: VariableColor = VariableColor.rgba(0.9, 0.9, 0.9, 1.0)
     override val textAlignment: MutableVector2 = MutableVector2.create(0.0, 0.0)
 }

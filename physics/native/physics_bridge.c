@@ -37,7 +37,11 @@ void mp_body_add_box(uint64_t body, float x, float y, float half_width, float ha
 float mp_body_position_x(uint64_t body) { return b2Body_GetPosition(b2LoadBodyId(body)).x; }
 float mp_body_position_y(uint64_t body) { return b2Body_GetPosition(b2LoadBodyId(body)).y; }
 float mp_body_angle(uint64_t body) { return b2Rot_GetAngle(b2Body_GetRotation(b2LoadBodyId(body))); }
-void mp_body_set_transform(uint64_t body, float x, float y, float angle) { b2Body_SetTransform(b2LoadBodyId(body), (b2Vec2){x, y}, b2MakeRot(angle)); }
+void mp_body_set_transform(uint64_t body, float x, float y, float angle) {
+    b2BodyId id = b2LoadBodyId(body);
+    b2Body_SetTransform(id, (b2Vec2){x, y}, b2MakeRot(angle));
+    if (b2Body_GetType(id) == b2_dynamicBody) b2Body_SetAwake(id, true);
+}
 float mp_body_velocity_x(uint64_t body) { return b2Body_GetLinearVelocity(b2LoadBodyId(body)).x; }
 float mp_body_velocity_y(uint64_t body) { return b2Body_GetLinearVelocity(b2LoadBodyId(body)).y; }
 void mp_body_set_velocity(uint64_t body, float x, float y) { b2Body_SetLinearVelocity(b2LoadBodyId(body), (b2Vec2){x, y}); }

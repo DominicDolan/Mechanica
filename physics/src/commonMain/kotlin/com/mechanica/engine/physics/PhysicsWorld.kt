@@ -42,10 +42,11 @@ class PhysicsWorld(gravity: Vector2) {
     }
 
     /** Static open chain. The collidable side is to the RIGHT of each directed edge.
-     * End ghost vertices are extrapolated, so both end edges remain collidable.
-     * Neighbouring streamed chains will need explicit shared continuity data.
+     * Explicit ghost neighbours preserve continuity between streamed pieces. They are
+     * not collidable edges. At open ends they default to linear extrapolation.
      */
-    fun createTerrainChain(points: List<Vector2>, friction: Double = 0.6): PhysicsBody {
+    fun createTerrainChain(points: List<Vector2>, friction: Double = 0.6,
+                           previousGhost: Vector2? = null, nextGhost: Vector2? = null): PhysicsBody {
         checkOpen()
         require(points.size >= 2) { "A terrain chain needs at least two points" }
         val f = friction.toPhysicsFloat()
@@ -60,11 +61,15 @@ class PhysicsWorld(gravity: Vector2) {
             val dy = xy[(i + 1) * 2 + 1] - xy[i * 2 + 1]
             require(dx * dx + dy * dy >= 0.0001f) { "Terrain points must be at least 1cm apart" }
         }
-        xy[0] = (2.0 * xy[2] - xy[4]).toPhysicsFloat()
-        xy[1] = (2.0 * xy[3] - xy[5]).toPhysicsFloat()
+        xy[0] = previousGhost?.x?.toPhysicsFloat() ?: (2.0 * xy[2] - xy[4]).toPhysicsFloat()
+        xy[1] = previousGhost?.y?.toPhysicsFloat() ?: (2.0 * xy[3] - xy[5]).toPhysicsFloat()
         val end = xy.size - 2
-        xy[end] = (2.0 * xy[end - 2] - xy[end - 4]).toPhysicsFloat()
-        xy[end + 1] = (2.0 * xy[end - 1] - xy[end - 3]).toPhysicsFloat()
+        xy[end] = nextGhost?.x?.toPhysicsFloat() ?: (2.0 * xy[end - 2] - xy[end - 4]).toPhysicsFloat()
+        xy[end + 1] = nextGhost?.y?.toPhysicsFloat() ?: (2.0 * xy[end - 1] - xy[end - 3]).toPhysicsFloat()
+        for (i in listOf(0, end - 2)) {
+            val dx = xy[i + 2] - xy[i]; val dy = xy[i + 3] - xy[i + 1]
+            require(dx * dx + dy * dy >= 0.0001f) { "Ghost neighbours must be at least 1cm from chain endpoints" }
+        }
         val body = PlatformPhysics.createBody(handle, false, 0f, 0f, 0f)
         check(body != 0L)
         try {
